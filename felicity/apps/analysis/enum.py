@@ -35,6 +35,8 @@ class ResultType(StrEnum):
     NUMERIC = auto()  # strict numeric
     SHORT_TEXT = auto()  # short text and numeric
     LONG_TEXT = auto()  # strictly long text
+    SELECT_LIST = auto()  # select a single result from drop down
+    MULTI_SELECT_LIST = auto()  # select multiple results from drop down
 
 
 class SampleRelationshipType(StrEnum):

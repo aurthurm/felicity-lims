@@ -23,6 +23,7 @@ mutation EditReflexRule($uid: String!, $payload: ReflexRuleInput!) {
             uid
             name
             description
+            isActive
             createdByUid
             createdAt
         }
@@ -33,192 +34,212 @@ mutation EditReflexRule($uid: String!, $payload: ReflexRuleInput!) {
     }
 }
 
-mutation AddReflexAction($payload: ReflexActionInput!) {
-    createReflexAction(payload: $payload) {
-        __typename
-        ... on ReflexActionType {
-            uid
-            description
-            level
-            analyses {
-                uid
-                name
-            }
-            reflexRule {
-                uid
-                name
-            }
+
+mutation createReflexDecision($payload: ReflexDecisionInput!) {
+  createReflexDecision(payload: $payload) {
+    ... on ReflexDecisionType {
+      uid
+      reflexTriggerUid
+      description
+      priority
+      ruleGroups {
+        uid
+        description
+        priority
+        rules {
+          uid
+          analysisUid
+          operator
+          value
+          priority
         }
-        ... on OperationError {
-            error
-            suggestion
-        }
+      }
+      addAnalyses {
+        uid
+        analysisUid
+        count
+      }
+      finalizeAnalyses {
+        uid
+        analysisUid
+        value
+      }
     }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
 }
 
-mutation editReflexAction($uid: String!, $payload: ReflexActionInput!) {
-    updateReflexAction(uid: $uid, payload: $payload) {
-        __typename
-        ... on ReflexActionType {
-            uid
-            description
-            level
-            analyses {
-                uid
-                name
-            }
-            reflexRule {
-                uid
-                name
-            }
+mutation updateReflexDecision($uid: String!, $payload: ReflexDecisionInput!) {
+  updateReflexDecision(uid: $uid, payload: $payload) {
+    ... on ReflexDecisionType {
+      uid
+      reflexTriggerUid
+      description
+      priority
+      ruleGroups {
+        uid
+        description
+        priority
+        rules {
+          uid
+          analysisUid
+          operator
+          value
+          priority
         }
-        ... on OperationError {
-            error
-            suggestion
-        }
+      }
+      addAnalyses {
+        uid
+        analysisUid
+        count
+      }
+      finalizeAnalyses {
+        uid
+        analysisUid
+        value
+      }
     }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
 }
 
-mutation AddReflexBrain($payload: ReflexBrainInput!) {
-    createReflexBrain(payload: $payload) {
-        __typename
-        ... on ReflexBrainType {
+mutation createReflexTrigger($payload: ReflexTriggerInput!) {
+  createReflexTrigger(payload: $payload) {
+    ... on ReflexTriggerType {
+      uid
+      reflexRuleUid
+      level
+      description
+      sampleTypeUid
+      posX
+      posY
+      analyses {
+        uid
+        name
+      }
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+
+mutation updateReflexTrigger($uid: String!, $payload: ReflexTriggerInput!) {
+  updateReflexTrigger(uid: $uid, payload: $payload) {
+    ... on ReflexTriggerType {
+      uid
+      reflexRuleUid
+      level
+      description
+      sampleTypeUid
+      analyses {
+        uid
+        name
+      }
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+
+mutation deleteReflexTrigger($uid: String!) {
+  deleteReflexTrigger(uid: $uid) {
+    ... on DeletedItem {
+      uid
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+
+mutation deleteReflexDecision($uid: String!) {
+  deleteReflexDecision(uid: $uid) {
+    ... on DeletedItem {
+      uid
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+
+mutation saveReflexRuleGraph($uid: String!, $graph: ReflexRuleGraphInput!) {
+  saveReflexRuleGraph(uid: $uid, graph: $graph) {
+    ... on ReflexRuleType {
+      uid
+      name
+      description
+      isActive
+      priority
+      reflexTriggers {
+        uid
+        level
+        description
+        posX
+        posY
+        analyses {
+          uid
+          name
+        }
+        decisions {
+          uid
+          description
+          priority
+          posX
+          posY
+          ruleGroups {
             uid
-            description
-            conditions {
             description
             priority
-            criteria {
-                analysisUid
-                analysis {
-                uid
-                name
-                resultOptions {
-                    optionKey
-                    value
-                    __typename
-                }
-                __typename
-                }
-                operator
-                value
-                __typename
+            posX
+            posY
+            rules {
+              uid
+              analysisUid
+              operator
+              value
+              priority
             }
-            }
-            actions {
-            addNew {
-                analysisUid
-                analysis {
-                uid
-                name
-                resultOptions {
-                    optionKey
-                    value
-                    __typename
-                }
-                __typename
-                }
-                count
-                __typename
-            }
-            finalise {
-                analysisUid
-                analysis {
-                name
-                resultOptions {
-                    optionKey
-                    value
-                    __typename
-                }
-                __typename
-                }
-                value
-                __typename
-            }
-            __typename
-            }
-            __typename
-        }
-        ... on OperationError {
-            error
-            suggestion
-        }
-    }
-}
-
-mutation editReflexBrain($uid: String!, $payload: ReflexBrainInput!) {
-    updateReflexBrain(uid: $uid, payload: $payload) {
-        __typename
-        ... on ReflexBrainType {
+          }
+          addAnalyses {
             uid
-            description
-            conditions {
-            description
-            priority
-            criteria {
-                analysisUid
-                analysis {
-                uid
-                name
-                resultOptions {
-                    optionKey
-                    value
-                    __typename
-                }
-                __typename
-                }
-                operator
-                value
-                __typename
-            }
-            }
-            actions {
-            addNew {
-                analysisUid
-                analysis {
-                uid
-                name
-                resultOptions {
-                    optionKey
-                    value
-                    __typename
-                }
-                __typename
-                }
-                count
-                __typename
-            }
-            finalise {
-                analysisUid
-                analysis {
-                name
-                resultOptions {
-                    optionKey
-                    value
-                    __typename
-                }
-                __typename
-                }
-                value
-                __typename
-            }
-            __typename
-            }
-            __typename
-        }
-        ... on OperationError {
-            error
-            suggestion
-        }
-    }
-}
-
-mutation deleteReflexBrain($uid: String!) {
-    deleteReflexBrain(uid: $uid) {
-        __typename
-        ... on DeletedItem {
+            analysisUid
+            count
+            posX
+            posY
+          }
+          finalizeAnalyses {
             uid
+            analysisUid
+            value
+            posX
+            posY
+          }
         }
+      }
     }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
 }
-

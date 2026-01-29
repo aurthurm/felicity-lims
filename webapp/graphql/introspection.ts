@@ -22366,35 +22366,12 @@ export default {
             ]
           },
           {
-            "name": "createReflexAction",
+            "name": "createReflexDecision",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
                 "kind": "UNION",
-                "name": "ReflexActionResponse",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "payload",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "createReflexBrain",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "UNION",
-                "name": "ReflexBrainResponse",
+                "name": "ReflexDecisionResponse",
                 "ofType": null
               }
             },
@@ -22418,6 +22395,29 @@ export default {
               "ofType": {
                 "kind": "UNION",
                 "name": "ReflexRuleResponse",
+                "ofType": null
+              }
+            },
+            "args": [
+              {
+                "name": "payload",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "createReflexTrigger",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "UNION",
+                "name": "ReflexTriggerResponse",
                 "ofType": null
               }
             },
@@ -23604,12 +23604,35 @@ export default {
             ]
           },
           {
-            "name": "deleteReflexBrain",
+            "name": "deleteReflexDecision",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
-                "kind": "OBJECT",
-                "name": "DeletedItem",
+                "kind": "UNION",
+                "name": "DeleteResponse",
+                "ofType": null
+              }
+            },
+            "args": [
+              {
+                "name": "uid",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "deleteReflexTrigger",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "UNION",
+                "name": "DeleteResponse",
                 "ofType": null
               }
             },
@@ -24426,6 +24449,39 @@ export default {
             "args": [
               {
                 "name": "organismUid",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              },
+              {
+                "name": "uid",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "saveReflexRuleGraph",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "UNION",
+                "name": "ReflexRuleResponse",
+                "ofType": null
+              }
+            },
+            "args": [
+              {
+                "name": "graph",
                 "type": {
                   "kind": "NON_NULL",
                   "ofType": {
@@ -27481,45 +27537,12 @@ export default {
             ]
           },
           {
-            "name": "updateReflexAction",
+            "name": "updateReflexDecision",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
                 "kind": "UNION",
-                "name": "ReflexActionResponse",
-                "ofType": null
-              }
-            },
-            "args": [
-              {
-                "name": "payload",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              },
-              {
-                "name": "uid",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              }
-            ]
-          },
-          {
-            "name": "updateReflexBrain",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "UNION",
-                "name": "ReflexBrainResponse",
+                "name": "ReflexDecisionResponse",
                 "ofType": null
               }
             },
@@ -27553,6 +27576,39 @@ export default {
               "ofType": {
                 "kind": "UNION",
                 "name": "ReflexRuleResponse",
+                "ofType": null
+              }
+            },
+            "args": [
+              {
+                "name": "payload",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              },
+              {
+                "name": "uid",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "updateReflexTrigger",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "UNION",
+                "name": "ReflexTriggerResponse",
                 "ofType": null
               }
             },
@@ -39253,6 +39309,26 @@ export default {
             ]
           },
           {
+            "name": "reflexDecisionByUid",
+            "type": {
+              "kind": "OBJECT",
+              "name": "ReflexDecisionType",
+              "ofType": null
+            },
+            "args": [
+              {
+                "name": "uid",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
             "name": "reflexRuleAll",
             "type": {
               "kind": "NON_NULL",
@@ -39311,6 +39387,52 @@ export default {
             "type": {
               "kind": "OBJECT",
               "name": "ReflexRuleType",
+              "ofType": null
+            },
+            "args": [
+              {
+                "name": "uid",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "reflexTriggerAll",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "LIST",
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "ReflexTriggerType",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "args": [
+              {
+                "name": "reflexRuleUid",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              }
+            ]
+          },
+          {
+            "name": "reflexTriggerByUid",
+            "type": {
+              "kind": "OBJECT",
+              "name": "ReflexTriggerType",
               "ofType": null
             },
             "args": [
@@ -41883,353 +42005,8 @@ export default {
         "interfaces": []
       },
       {
-        "kind": "UNION",
-        "name": "ReflexActionResponse",
-        "possibleTypes": [
-          {
-            "kind": "OBJECT",
-            "name": "OperationError"
-          },
-          {
-            "kind": "OBJECT",
-            "name": "ReflexActionType"
-          }
-        ]
-      },
-      {
         "kind": "OBJECT",
-        "name": "ReflexActionType",
-        "fields": [
-          {
-            "name": "analyses",
-            "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "NON_NULL",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "AnalysisType",
-                  "ofType": null
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "brains",
-            "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "NON_NULL",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "ReflexBrainType",
-                  "ofType": null
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "createdAt",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "createdBy",
-            "type": {
-              "kind": "OBJECT",
-              "name": "UserType",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "createdByUid",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "description",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "laboratory",
-            "type": {
-              "kind": "OBJECT",
-              "name": "LaboratoryType",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "laboratoryUid",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "level",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "reflexRule",
-            "type": {
-              "kind": "OBJECT",
-              "name": "ReflexRuleType",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "reflexRuleUid",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "sampleType",
-            "type": {
-              "kind": "OBJECT",
-              "name": "SampleTypeTyp",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "sampleTypeUid",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "uid",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "updatedAt",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "updatedBy",
-            "type": {
-              "kind": "OBJECT",
-              "name": "UserType",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "updatedByUid",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          }
-        ],
-        "interfaces": []
-      },
-      {
-        "kind": "OBJECT",
-        "name": "ReflexBrainActionType",
-        "fields": [
-          {
-            "name": "addNew",
-            "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "NON_NULL",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "ReflexBrainAdditionType",
-                  "ofType": null
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "createdAt",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "createdBy",
-            "type": {
-              "kind": "OBJECT",
-              "name": "UserType",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "createdByUid",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "description",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "finalise",
-            "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "NON_NULL",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "ReflexBrainFinalType",
-                  "ofType": null
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "laboratory",
-            "type": {
-              "kind": "OBJECT",
-              "name": "LaboratoryType",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "laboratoryUid",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "priority",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "reflexBrain",
-            "type": {
-              "kind": "OBJECT",
-              "name": "ReflexBrainType",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "reflexBrainUid",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "uid",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "updatedAt",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "updatedBy",
-            "type": {
-              "kind": "OBJECT",
-              "name": "UserType",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "updatedByUid",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          }
-        ],
-        "interfaces": []
-      },
-      {
-        "kind": "OBJECT",
-        "name": "ReflexBrainAdditionType",
+        "name": "ReflexAddAnalysisType",
         "fields": [
           {
             "name": "analysis",
@@ -42263,353 +42040,6 @@ export default {
             "args": []
           },
           {
-            "name": "laboratory",
-            "type": {
-              "kind": "OBJECT",
-              "name": "LaboratoryType",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "laboratoryUid",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "reflexBrainAction",
-            "type": {
-              "kind": "OBJECT",
-              "name": "ReflexBrainActionType",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "reflexBrainActionUid",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
-        ],
-        "interfaces": []
-      },
-      {
-        "kind": "OBJECT",
-        "name": "ReflexBrainConditionCriteriaType",
-        "fields": [
-          {
-            "name": "analysis",
-            "type": {
-              "kind": "OBJECT",
-              "name": "AnalysisType",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "analysisUid",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "laboratory",
-            "type": {
-              "kind": "OBJECT",
-              "name": "LaboratoryType",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "laboratoryUid",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "operator",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "reflexBrainCondition",
-            "type": {
-              "kind": "OBJECT",
-              "name": "ReflexBrainConditionType",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "reflexBrainConditionUid",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "value",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
-        ],
-        "interfaces": []
-      },
-      {
-        "kind": "OBJECT",
-        "name": "ReflexBrainConditionType",
-        "fields": [
-          {
-            "name": "criteria",
-            "type": {
-              "kind": "LIST",
-              "ofType": {
-                "kind": "NON_NULL",
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "ReflexBrainConditionCriteriaType",
-                  "ofType": null
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "description",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "laboratory",
-            "type": {
-              "kind": "OBJECT",
-              "name": "LaboratoryType",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "laboratoryUid",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "priority",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "reflexBrain",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "ReflexBrainType",
-                "ofType": null
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "reflexBrainUid",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "uid",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
-        ],
-        "interfaces": []
-      },
-      {
-        "kind": "OBJECT",
-        "name": "ReflexBrainFinalType",
-        "fields": [
-          {
-            "name": "analysis",
-            "type": {
-              "kind": "OBJECT",
-              "name": "AnalysisType",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "analysisUid",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "laboratory",
-            "type": {
-              "kind": "OBJECT",
-              "name": "LaboratoryType",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "laboratoryUid",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Any"
-            },
-            "args": []
-          },
-          {
-            "name": "reflexBrainAction",
-            "type": {
-              "kind": "OBJECT",
-              "name": "ReflexBrainActionType",
-              "ofType": null
-            },
-            "args": []
-          },
-          {
-            "name": "reflexBrainActionUid",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "value",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          }
-        ],
-        "interfaces": []
-      },
-      {
-        "kind": "UNION",
-        "name": "ReflexBrainResponse",
-        "possibleTypes": [
-          {
-            "kind": "OBJECT",
-            "name": "OperationError"
-          },
-          {
-            "kind": "OBJECT",
-            "name": "ReflexBrainType"
-          }
-        ]
-      },
-      {
-        "kind": "OBJECT",
-        "name": "ReflexBrainType",
-        "fields": [
-          {
-            "name": "actions",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "ReflexBrainActionType",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "args": []
-          },
-          {
-            "name": "conditions",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "LIST",
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "ReflexBrainConditionType",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "args": []
-          },
-          {
             "name": "createdAt",
             "type": {
               "kind": "SCALAR",
@@ -42635,17 +42065,6 @@ export default {
             "args": []
           },
           {
-            "name": "description",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
-          },
-          {
             "name": "laboratory",
             "type": {
               "kind": "OBJECT",
@@ -42663,27 +42082,32 @@ export default {
             "args": []
           },
           {
-            "name": "priority",
+            "name": "posX",
             "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
           {
-            "name": "reflexAction",
+            "name": "posY",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "reflexDecision",
             "type": {
               "kind": "OBJECT",
-              "name": "ReflexBrainType",
+              "name": "ReflexDecisionType",
               "ofType": null
             },
             "args": []
           },
           {
-            "name": "reflexActionUid",
+            "name": "reflexDecisionUid",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
@@ -42726,6 +42150,515 @@ export default {
             "type": {
               "kind": "SCALAR",
               "name": "Any"
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "UNION",
+        "name": "ReflexDecisionResponse",
+        "possibleTypes": [
+          {
+            "kind": "OBJECT",
+            "name": "OperationError"
+          },
+          {
+            "kind": "OBJECT",
+            "name": "ReflexDecisionType"
+          }
+        ]
+      },
+      {
+        "kind": "OBJECT",
+        "name": "ReflexDecisionType",
+        "fields": [
+          {
+            "name": "addAnalyses",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ReflexAddAnalysisType",
+                  "ofType": null
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "createdAt",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "createdBy",
+            "type": {
+              "kind": "OBJECT",
+              "name": "UserType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "createdByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "description",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "finalizeAnalyses",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ReflexFinalizeAnalysisType",
+                  "ofType": null
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "posX",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "posY",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "priority",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "reflexTrigger",
+            "type": {
+              "kind": "OBJECT",
+              "name": "ReflexTriggerType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "reflexTriggerUid",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "ruleGroups",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ReflexRuleGroupType",
+                  "ofType": null
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "uid",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "updatedAt",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "updatedBy",
+            "type": {
+              "kind": "OBJECT",
+              "name": "UserType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "updatedByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "ReflexFinalizeAnalysisType",
+        "fields": [
+          {
+            "name": "analysis",
+            "type": {
+              "kind": "OBJECT",
+              "name": "AnalysisType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "analysisUid",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "createdAt",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "createdBy",
+            "type": {
+              "kind": "OBJECT",
+              "name": "UserType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "createdByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "posX",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "posY",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "reflexDecision",
+            "type": {
+              "kind": "OBJECT",
+              "name": "ReflexDecisionType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "reflexDecisionUid",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "uid",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "updatedAt",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "updatedBy",
+            "type": {
+              "kind": "OBJECT",
+              "name": "UserType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "updatedByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "value",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "ReflexRuleCriteriaType",
+        "fields": [
+          {
+            "name": "analysis",
+            "type": {
+              "kind": "OBJECT",
+              "name": "AnalysisType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "analysisUid",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "createdAt",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "createdBy",
+            "type": {
+              "kind": "OBJECT",
+              "name": "UserType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "createdByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "operator",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "priority",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "reflexRuleGroup",
+            "type": {
+              "kind": "OBJECT",
+              "name": "ReflexRuleGroupType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "reflexRuleGroupUid",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "uid",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "updatedAt",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "updatedBy",
+            "type": {
+              "kind": "OBJECT",
+              "name": "UserType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "updatedByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "value",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
             "args": []
           }
@@ -42816,6 +42749,161 @@ export default {
                 "name": "ReflexRuleType",
                 "ofType": null
               }
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "ReflexRuleGroupType",
+        "fields": [
+          {
+            "name": "createdAt",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "createdBy",
+            "type": {
+              "kind": "OBJECT",
+              "name": "UserType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "createdByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "description",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "posX",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "posY",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "priority",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "reflexDecision",
+            "type": {
+              "kind": "OBJECT",
+              "name": "ReflexDecisionType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "reflexDecisionUid",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "rules",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ReflexRuleCriteriaType",
+                  "ofType": null
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "uid",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "updatedAt",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "updatedBy",
+            "type": {
+              "kind": "OBJECT",
+              "name": "UserType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "updatedByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           }
@@ -42927,17 +43015,221 @@ export default {
             "args": []
           },
           {
-            "name": "reflexActions",
+            "name": "reflexTriggers",
             "type": {
               "kind": "LIST",
               "ofType": {
                 "kind": "NON_NULL",
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "ReflexActionType",
+                  "name": "ReflexTriggerType",
                   "ofType": null
                 }
               }
+            },
+            "args": []
+          },
+          {
+            "name": "uid",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "updatedAt",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "updatedBy",
+            "type": {
+              "kind": "OBJECT",
+              "name": "UserType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "updatedByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "UNION",
+        "name": "ReflexTriggerResponse",
+        "possibleTypes": [
+          {
+            "kind": "OBJECT",
+            "name": "OperationError"
+          },
+          {
+            "kind": "OBJECT",
+            "name": "ReflexTriggerType"
+          }
+        ]
+      },
+      {
+        "kind": "OBJECT",
+        "name": "ReflexTriggerType",
+        "fields": [
+          {
+            "name": "analyses",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "AnalysisType",
+                  "ofType": null
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "createdAt",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "createdBy",
+            "type": {
+              "kind": "OBJECT",
+              "name": "UserType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "createdByUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "decisions",
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "NON_NULL",
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ReflexDecisionType",
+                  "ofType": null
+                }
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "description",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "laboratory",
+            "type": {
+              "kind": "OBJECT",
+              "name": "LaboratoryType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "laboratoryUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "level",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "posX",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "posY",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
+            "name": "reflexRule",
+            "type": {
+              "kind": "OBJECT",
+              "name": "ReflexRuleType",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "reflexRuleUid",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "sampleType",
+            "type": {
+              "kind": "OBJECT",
+              "name": "SampleTypeTyp",
+              "ofType": null
+            },
+            "args": []
+          },
+          {
+            "name": "sampleTypeUid",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -44005,8 +44297,11 @@ export default {
           {
             "name": "message",
             "type": {
-              "kind": "SCALAR",
-              "name": "Any"
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
             },
             "args": []
           },
@@ -48736,11 +49031,8 @@ export default {
           {
             "name": "description",
             "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },
@@ -48775,11 +49067,8 @@ export default {
           {
             "name": "synonyms",
             "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
+              "kind": "SCALAR",
+              "name": "Any"
             },
             "args": []
           },

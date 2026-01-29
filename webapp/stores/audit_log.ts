@@ -38,25 +38,19 @@ export const useAuditLogStore = defineStore('auditlog', {
                         if (typeof processedLog.stateAfter === 'string') {
                             try {
                                 processedLog.stateAfter = JSON.parse(processedLog.stateAfter);
-                            } catch (e) {
-                                console.error('Failed to parse stateAfter JSON:', e);
-                            }
+                            } catch {}
                         }
 
                         if (typeof processedLog.stateBefore === 'string') {
                             try {
                                 processedLog.stateBefore = JSON.parse(processedLog.stateBefore);
-                            } catch (e) {
-                                console.error('Failed to parse stateBefore JSON:', e);
-                            }
+                            } catch {}
                         }
 
                         if (typeof processedLog.extras === 'string') {
                             try {
                                 processedLog.extras = JSON.parse(processedLog.extras);
-                            } catch (e) {
-                                console.error('Failed to parse extras JSON:', e);
-                            }
+                            } catch {}
                         }
 
                         return processedLog;
@@ -66,7 +60,6 @@ export const useAuditLogStore = defineStore('auditlog', {
                 }
             } catch (err) {
                 this.error = err instanceof Error ? err.message : 'Unknown error occurred';
-                console.error('Error fetching audit logs:', err);
             } finally {
                 this.fetchingAudits = false;
             }

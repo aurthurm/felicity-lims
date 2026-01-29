@@ -63,7 +63,6 @@ from felicity.apps.grind.entities import GrindScheme  # noqa
 from felicity.apps.grind.entities import GrindStamp  # noqa
 from felicity.apps.idsequencer.entities import IdSequence  # noqa
 from felicity.apps.impress.entities import ReportImpress  # noqa
-
 # from felicity.apps.setup.entities import MethodValidation  # noqa
 # from felicity.apps.setup.entities import InstrumentCompetence  # noqa
 from felicity.apps.instrument.entities import CalibrationCertificate  # noqa
@@ -123,14 +122,14 @@ from felicity.apps.patient.entities import PatientIdentification  # noqa
 from felicity.apps.patient.search_indices import DateSearchIndex  # noqa
 from felicity.apps.patient.search_indices import PatientSearchIndex  # noqa
 from felicity.apps.patient.search_indices import PhoneSearchIndex  # noqa
-from felicity.apps.reflex.entities import ReflexAction  # noqa
-from felicity.apps.reflex.entities import ReflexBrain  # noqa
-from felicity.apps.reflex.entities import ReflexBrainAction  # noqa
-from felicity.apps.reflex.entities import ReflexBrainAddition  # noqa
-from felicity.apps.reflex.entities import ReflexBrainCondition  # noqa
-from felicity.apps.reflex.entities import ReflexBrainConditionCriteria  # noqa
-from felicity.apps.reflex.entities import ReflexBrainFinal  # noqa
+from felicity.apps.reflex.entities import ReflexAddAnalysis  # noqa
+from felicity.apps.reflex.entities import ReflexDecision  # noqa
+from felicity.apps.reflex.entities import ReflexDecisionExecution  # noqa
+from felicity.apps.reflex.entities import ReflexFinalizeAnalysis  # noqa
 from felicity.apps.reflex.entities import ReflexRule  # noqa
+from felicity.apps.reflex.entities import ReflexRuleCriteria  # noqa
+from felicity.apps.reflex.entities import ReflexRuleGroup  # noqa
+from felicity.apps.reflex.entities import ReflexTrigger  # noqa
 from felicity.apps.setup.entities import Country  # noqa
 from felicity.apps.setup.entities import Department  # noqa
 from felicity.apps.setup.entities import District  # noqa

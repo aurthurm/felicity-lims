@@ -482,6 +482,7 @@ const previewGraph = computed(() => generateGraph());
 </template>
 
 <style scoped>
+@import "tailwindcss";
 .wizard-overlay {
   @apply fixed inset-0 bg-black/50 flex items-center justify-center z-50;
   @apply backdrop-blur-sm;

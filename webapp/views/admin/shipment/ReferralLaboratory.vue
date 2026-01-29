@@ -1,5 +1,7 @@
 <script setup lang="ts">
-  import { ref, reactive, computed, defineAsyncComponent } from 'vue';
+  import { ref, computed, defineAsyncComponent } from 'vue';
+  import { useField, useForm } from 'vee-validate';
+  import * as yup from 'yup';
   import { ReferralLaboratoryType } from '@/types/gql'
   import { AddReferralLaboratoryDocument, AddReferralLaboratoryMutation, AddReferralLaboratoryMutationVariables,
     EditReferralLaboratoryDocument, EditReferralLaboratoryMutation, EditReferralLaboratoryMutationVariables } from '@/graphql/operations/shipment.mutations';
@@ -14,46 +16,97 @@
   
   let showModal = ref<boolean>(false);
   let formTitle = ref<string>('');
-  let form = reactive({}) as ReferralLaboratoryType;
   const formAction = ref<boolean>(true);
+  const currentUid = ref<string | null>(null);
+
+  const referralLabSchema = yup.object({
+    name: yup.string().trim().required('Laboratory name is required'),
+    code: yup.string().trim().nullable(),
+    url: yup.string().trim().nullable().url('Enter a valid URL'),
+    username: yup.string().trim().nullable(),
+    password: yup.string().trim().nullable(),
+    isReferral: yup.boolean().default(false),
+    isReference: yup.boolean().default(false),
+  });
+
+  const { handleSubmit, resetForm, setValues } = useForm({
+    validationSchema: referralLabSchema,
+    initialValues: {
+      name: '',
+      code: '',
+      url: '',
+      username: '',
+      password: '',
+      isReferral: false,
+      isReference: false,
+    },
+  });
+
+  const { value: name, errorMessage: nameError } = useField<string>('name');
+  const { value: code, errorMessage: codeError } = useField<string | null>('code');
+  const { value: url, errorMessage: urlError } = useField<string | null>('url');
+  const { value: username, errorMessage: usernameError } = useField<string | null>('username');
+  const { value: password, errorMessage: passwordError } = useField<string | null>('password');
+  const { value: isReferral } = useField<boolean>('isReferral');
+  const { value: isReference } = useField<boolean>('isReference');
 
   shipmentStore.fetchReferralLaboratories();
   const referralLaboratories = computed(() => shipmentStore.getReferalLaboratories)
 
-  function FormManager(create: boolean, obj = {} as ReferralLaboratoryType):void {
+  function FormManager(create: boolean, obj = {} as ReferralLaboratoryType): void {
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "REFERRAL LABORATORY";
     if (create) {
-      Object.assign(form, {} as ReferralLaboratoryType);
+      currentUid.value = null;
+      resetForm({
+        values: {
+          name: '',
+          code: '',
+          url: '',
+          username: '',
+          password: '',
+          isReferral: false,
+          isReference: false,
+        },
+      });
     } else {
-      Object.assign(form, { ...obj });
+      currentUid.value = obj.uid ?? null;
+      setValues({
+        name: obj.name ?? '',
+        code: obj.code ?? '',
+        url: obj.url ?? '',
+        username: obj.username ?? '',
+        password: obj.password ?? '',
+        isReferral: obj.isReferral ?? false,
+        isReference: obj.isReference ?? false,
+      });
     }
   }
 
-  function saveForm():void {
-    const payload = { 
-      name: form.name, 
-      code: form.code, 
-      url: form.url, 
-      username: form.username, 
-      password: form.password, 
-      isReferral: form.isReferral, 
-      isReference: form.isReference
-    }
+  const saveForm = handleSubmit((values) => {
+    const payload = {
+      name: values.name,
+      code: values.code ?? null,
+      url: values.url ?? null,
+      username: values.username ?? null,
+      password: values.password ?? null,
+      isReferral: values.isReferral,
+      isReference: values.isReference,
+    };
 
     if (formAction.value === true) {
       withClientMutation<AddReferralLaboratoryMutation, AddReferralLaboratoryMutationVariables>(AddReferralLaboratoryDocument, { payload }, "createReferralLaboratory")
       .then((result) => shipmentStore.addReferralLaboratory(result));
     };
 
-    if (formAction.value === false) {
-      withClientMutation<EditReferralLaboratoryMutation, EditReferralLaboratoryMutationVariables>(EditReferralLaboratoryDocument, { uid: form.uid, payload }, "updateReferralLaboratory")
+    if (formAction.value === false && currentUid.value) {
+      withClientMutation<EditReferralLaboratoryMutation, EditReferralLaboratoryMutationVariables>(EditReferralLaboratoryDocument, { uid: currentUid.value, payload }, "updateReferralLaboratory")
       .then((result) => shipmentStore.updateReferralLaboratory(result));
     };
 
     showModal.value = false;
-  }
+  });
 
 </script>
 
@@ -127,51 +180,56 @@
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-4 space-y-6">
+      <form @submit.prevent="saveForm" class="p-4 space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <label class="block col-span-1">
             <span class="text-sm font-medium text-foreground">Laboratory Name</span>
             <input
               class="mt-1 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
-              v-model="form.name"
+              v-model="name"
               placeholder="Name ..."
             />
+            <p v-if="nameError" class="mt-1 text-sm text-destructive">{{ nameError }}</p>
           </label>
           <label class="block col-span-1">
             <span class="text-sm font-medium text-foreground">Code</span>
             <input
               class="mt-1 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
-              v-model="form.code"
+              v-model="code"
               placeholder="Code ..."
             />
+            <p v-if="codeError" class="mt-1 text-sm text-destructive">{{ codeError }}</p>
           </label>
           <label class="block col-span-1 md:col-span-2">
             <span class="text-sm font-medium text-foreground">URL</span>
             <input
               class="mt-1 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
-              v-model="form.url"
+              v-model="url"
               placeholder="https://example.com ..."
               type="url"
             />
+            <p v-if="urlError" class="mt-1 text-sm text-destructive">{{ urlError }}</p>
           </label>
           <label class="block col-span-1">
             <span class="text-sm font-medium text-foreground">Username</span>
             <input
               class="mt-1 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
-              v-model="form.username"
+              v-model="username"
               placeholder="Optional username ..."
               autocomplete="off"
             />
+            <p v-if="usernameError" class="mt-1 text-sm text-destructive">{{ usernameError }}</p>
           </label>
           <label class="block col-span-1">
             <span class="text-sm font-medium text-foreground">Password</span>
             <input
               class="mt-1 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
-              v-model="form.password"
+              v-model="password"
               placeholder="Optional password ..."
               type="password"
               autocomplete="new-password"
             />
+            <p v-if="passwordError" class="mt-1 text-sm text-destructive">{{ passwordError }}</p>
           </label>
 
           <label for="isReferralToggle" class="flex items-center cursor-pointer col-span-1">
@@ -179,7 +237,7 @@
               <input
                 type="checkbox"
                 id="isReferralToggle"
-                v-model="form.isReferral"
+                v-model="isReferral"
                 class="sr-only peer"
               />
               <div class="block h-6 w-10 rounded-full bg-muted peer-checked:bg-primary transition"></div>
@@ -190,12 +248,12 @@
 
           <label for="isReferenceToggle" class="flex items-center cursor-pointer col-span-1">
              <div class="relative">
-               <input
-                 type="checkbox"
-                 id="isReferenceToggle"
-                 v-model="form.isReference"
-                 class="sr-only peer"
-               />
+              <input
+                type="checkbox"
+                id="isReferenceToggle"
+                v-model="isReference"
+                class="sr-only peer"
+              />
                <div class="block h-6 w-10 rounded-full bg-muted peer-checked:bg-primary transition"></div>
                <div class="absolute left-1 top-1 h-4 w-4 rounded-full bg-background border border-border transition-transform peer-checked:translate-x-full"></div>
              </div>
@@ -205,8 +263,7 @@
         </div>
         <hr class="border-t border-border" />
         <button
-          type="button"
-          @click.prevent="saveForm()"
+          type="submit"
           class="w-full rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
           Save Laboratory

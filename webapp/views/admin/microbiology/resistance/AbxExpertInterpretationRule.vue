@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
+import { useForm, useField } from 'vee-validate';
+import * as yup from 'yup';
 import { addListsUnique } from '@/utils';
 import useApiUtil from '@/composables/api_util';
-import { AbxExpertInterpretationRuleType, AbxGuidelineType } from "@/types/gql";
+import { AbxExpertInterpretationRuleType } from "@/types/gql";
 import { GetAbxExpertInterpretationRuleAllDocument, GetAbxExpertInterpretationRuleAllQuery, GetAbxExpertInterpretationRuleAllQueryVariables } from "@/graphql/operations/microbiology.queries";
 import { AddAbxExpertInterpretationRuleMutation, AddAbxExpertInterpretationRuleMutationVariables, AddAbxExpertInterpretationRuleDocument, EditAbxExpertInterpretationRuleMutation, EditAbxExpertInterpretationRuleMutationVariables, EditAbxExpertInterpretationRuleDocument } from '@/graphql/operations/microbiology.mutations';
 
@@ -14,13 +16,40 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as AbxExpertInterpretationRuleType;
 const formAction = ref<boolean>(true);
+const currentUid = ref<string | null>(null);
+
+const expertInterpretationSchema = yup.object({
+  ruleCode: yup.string().trim().required('Rule code is required'),
+  organismCode: yup.string().trim().required('Organism code is required'),
+  organismCodeType: yup.string().trim().required('Organism code type is required'),
+  ruleCriteria: yup.string().trim().required('Rule criteria is required'),
+  affectedAntibiotics: yup.string().trim().required('Affected antibiotics are required'),
+  antibioticExceptions: yup.string().trim().required('Antibiotic exceptions are required'),
+});
+
+const { handleSubmit, resetForm, setValues, errors } = useForm({
+  validationSchema: expertInterpretationSchema,
+  initialValues: {
+    ruleCode: '',
+    description: '',
+    organismCode: '',
+    organismCodeType: '',
+    ruleCriteria: '',
+    affectedAntibiotics: '',
+    antibioticExceptions: '',
+  },
+});
+const { value: ruleCode } = useField<string>('ruleCode');
+const { value: description } = useField<string>('description');
+const { value: organismCode } = useField<string>('organismCode');
+const { value: organismCodeType } = useField<string>('organismCodeType');
+const { value: ruleCriteria } = useField<string>('ruleCriteria');
+const { value: affectedAntibiotics } = useField<string>('affectedAntibiotics');
+const { value: antibioticExceptions } = useField<string>('antibioticExceptions');
 
 const fetchingExpertInterpretationRules = ref<boolean>(false);
 const abxExptResPhenotypes = ref<AbxExpertInterpretationRuleType[]>([]);
-
-const abxGuidelines = ref<AbxGuidelineType[]>([]);
 
 let abxParams = reactive({
   first: 50,
@@ -167,28 +196,38 @@ function showMoreExpertInterpretationRules(opts: any): void {
   fetchExpertInterpretationRules(abxParams);
 }
 
-const resetExpertInterpretationRule = () => Object.assign(form, {}) as AbxExpertInterpretationRuleType;
+const resetExpertInterpretationRule = () => resetForm();
 
 function FormManager(create: boolean, obj = {} as AbxExpertInterpretationRuleType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "ExpertInterpretationRule";
   if (create) {
-    Object.assign(form, {} as AbxExpertInterpretationRuleType);
+    currentUid.value = null;
+    resetForm();
   } else {
-    Object.assign(form, {...obj});
+    currentUid.value = obj.uid ?? null;
+    setValues({
+      ruleCode: obj.ruleCode ?? '',
+      description: obj.description ?? '',
+      organismCode: obj.organismCode ?? '',
+      organismCodeType: obj.organismCodeType ?? '',
+      ruleCriteria: obj.ruleCriteria ?? '',
+      affectedAntibiotics: obj.affectedAntibiotics ?? '',
+      antibioticExceptions: obj.antibioticExceptions ?? '',
+    });
   }
 }
 
-function saveForm(): void {
+const saveForm = handleSubmit((formValues) => {
   const payload = {
-    ruleCode: form.ruleCode,
-    description: form.description,
-    organismCode: form.organismCode,
-    organismCodeType: form.organismCodeType,
-    ruleCriteria: form.ruleCriteria,
-    affectedAntibiotics: form.affectedAntibiotics,
-    antibioticExceptions: form.antibioticExceptions,
+    ruleCode: formValues.ruleCode,
+    description: formValues.description,
+    organismCode: formValues.organismCode,
+    organismCodeType: formValues.organismCodeType,
+    ruleCriteria: formValues.ruleCriteria,
+    affectedAntibiotics: formValues.affectedAntibiotics,
+    antibioticExceptions: formValues.antibioticExceptions,
   }
 
   if (formAction.value === true) {
@@ -201,9 +240,9 @@ function saveForm(): void {
     });
   }
 
-  if (formAction.value === false) {
+  if (formAction.value === false && currentUid.value) {
     withClientMutation<EditAbxExpertInterpretationRuleMutation, EditAbxExpertInterpretationRuleMutationVariables>(
-      EditAbxExpertInterpretationRuleDocument, { uid: form.uid!, payload }, 
+      EditAbxExpertInterpretationRuleDocument, { uid: currentUid.value, payload }, 
       "updateAbxExpertInterpretationRule"
     ).then((result: any) => {
       if(result) {
@@ -214,7 +253,7 @@ function saveForm(): void {
   }
 
   showModal.value = false;
-}
+});
 
 </script>
 
@@ -252,20 +291,21 @@ function saveForm(): void {
     </template>
 
     <template v-slot:body>
-      <form class="space-y-6">
+      <form @submit.prevent="saveForm" class="space-y-6">
         <div class="grid grid-cols-2 gap-6">
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Rule Code</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-              v-model="form.ruleCode" 
+              v-model="ruleCode" 
               placeholder="Rule Code ..." />
+            <p v-if="errors.ruleCode" class="text-sm text-destructive">{{ errors.ruleCode }}</p>
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Description</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-              v-model="form.description" 
+              v-model="description" 
               placeholder="Description ..." />
           </label>
         </div>
@@ -275,15 +315,17 @@ function saveForm(): void {
             <span class="text-sm font-medium text-foreground">Organism Code</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-              v-model="form.organismCode" 
+              v-model="organismCode" 
               placeholder="Organism Code ..." />
+            <p v-if="errors.organismCode" class="text-sm text-destructive">{{ errors.organismCode }}</p>
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Organism Code Type</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-              v-model="form.organismCodeType" 
+              v-model="organismCodeType" 
               placeholder="Organism Code Type ..." />
+            <p v-if="errors.organismCodeType" class="text-sm text-destructive">{{ errors.organismCodeType }}</p>
           </label>
         </div>
 
@@ -292,15 +334,17 @@ function saveForm(): void {
             <span class="text-sm font-medium text-foreground">Rule Criteria</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-              v-model="form.ruleCriteria" 
+              v-model="ruleCriteria" 
               placeholder="Rule Criteria ..." />
+            <p v-if="errors.ruleCriteria" class="text-sm text-destructive">{{ errors.ruleCriteria }}</p>
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Affected Antibiotics</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-              v-model="form.affectedAntibiotics" 
+              v-model="affectedAntibiotics" 
               placeholder="Affected Antibiotics ..." />
+            <p v-if="errors.affectedAntibiotics" class="text-sm text-destructive">{{ errors.affectedAntibiotics }}</p>
           </label>
         </div>
 
@@ -309,15 +353,15 @@ function saveForm(): void {
             <span class="text-sm font-medium text-foreground">Antibiotic Exceptions</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-              v-model="form.antibioticExceptions" 
+              v-model="antibioticExceptions" 
               placeholder="Antibiotic Exceptions ..." />
+            <p v-if="errors.antibioticExceptions" class="text-sm text-destructive">{{ errors.antibioticExceptions }}</p>
           </label>
         </div>
 
         <hr class="border-border" />
         <button 
-          type="button" 
-          @click.prevent="saveForm()"
+          type="submit"
           class="inline-flex w-full items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
           Save Form
         </button>

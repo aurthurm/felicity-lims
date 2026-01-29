@@ -131,18 +131,14 @@ export const useAnalysisStore = defineStore('analysis', {
                 if (result && Array.isArray(result)) {
                     this.codingStandards = result as unknown as CodingStandardType[];
                 } else {
-                    console.error('Invalid coding standards data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching coding standards:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingCodingStandards = false;
             }
         },
 
         updateCodingStandard(payload: CodingStandardType): void {
             if (!payload?.uid) {
-                console.error('Invalid coding standard payload:', payload);
                 return;
             }
 
@@ -151,7 +147,6 @@ export const useAnalysisStore = defineStore('analysis', {
 
         addCodingStandard(payload: CodingStandardType): void {
             if (!payload?.uid) {
-                console.error('Invalid coding standard payload:', payload);
                 return;
             }
 
@@ -170,16 +165,12 @@ export const useAnalysisStore = defineStore('analysis', {
                 if (result && Array.isArray(result)) {
                     this.analysesCategories = result as unknown as AnalysisCategoryType[];
                 } else {
-                    console.error('Invalid analysis categories data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching analysis categories:', error);
-            }
+            } catch {}
         },
 
         updateAnalysisCategory(payload: AnalysisCategoryType): void {
             if (!payload?.uid) {
-                console.error('Invalid analysis category payload:', payload);
                 return;
             }
 
@@ -188,7 +179,6 @@ export const useAnalysisStore = defineStore('analysis', {
 
         addAnalysisCategory(payload: AnalysisCategoryType): void {
             if (!payload?.uid) {
-                console.error('Invalid analysis category payload:', payload);
                 return;
             }
 
@@ -207,16 +197,12 @@ export const useAnalysisStore = defineStore('analysis', {
                 if (result && typeof result === 'object' && 'items' in result) {
                     this.analysesServices = (result.items as unknown as AnalysisType[]) || [];
                 } else {
-                    console.error('Invalid analysis services data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching analysis services:', error);
-            }
+            } catch {}
         },
 
         updateAnalysisService(payload: AnalysisType): void {
             if (!payload?.uid) {
-                console.error('Invalid analysis service payload:', payload);
                 return;
             }
 
@@ -225,7 +211,6 @@ export const useAnalysisStore = defineStore('analysis', {
 
         addAnalysesService(payload: AnalysisType): void {
             if (!payload?.uid) {
-                console.error('Invalid analysis service payload:', payload);
                 return;
             }
 
@@ -250,16 +235,12 @@ export const useAnalysisStore = defineStore('analysis', {
                         this.analysesServices = analysisAll?.items as Array<AnalysisType>;
                     }
                 } else {
-                    console.error('Invalid profiles and services data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching profiles and services:', error);
-            }
+            } catch {}
         },
 
         async fetchAnalysesMappings(profileUid: string): Promise<void> {
             if (!profileUid) {
-                console.error('Invalid profile UID provided to fetchAnalysesMappings');
                 return;
             }
 
@@ -273,16 +254,12 @@ export const useAnalysisStore = defineStore('analysis', {
                 if (result && Array.isArray(result)) {
                     this.analysesMappings = result as unknown as AnalysisMappingType[];
                 } else {
-                    console.error('Invalid analysis mappings data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching analysis mappings:', error);
-            }
+            } catch {}
         },
 
         addAnalysesMapping(payload: AnalysisMappingType): void {
             if (!payload?.uid) {
-                console.error('Invalid analysis mapping payload:', payload);
                 return;
             }
 
@@ -291,7 +268,6 @@ export const useAnalysisStore = defineStore('analysis', {
 
         updateAnalysesMapping(payload: AnalysisMappingType): void {
             if (!payload?.uid) {
-                console.error('Invalid analysis mapping payload:', payload);
                 return;
             }
 
@@ -310,16 +286,12 @@ export const useAnalysisStore = defineStore('analysis', {
                 if (result && Array.isArray(result)) {
                     this.analysesProfiles = result as unknown as ProfileType[];
                 } else {
-                    console.error('Invalid analysis profiles data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching analysis profiles:', error);
-            }
+            } catch {}
         },
 
         updateAnalysesProfile(payload: ProfileType): void {
             if (!payload?.uid) {
-                console.error('Invalid analysis profile payload:', payload);
                 return;
             }
 
@@ -328,7 +300,6 @@ export const useAnalysisStore = defineStore('analysis', {
 
         addAnalysisProfile(payload: ProfileType): void {
             if (!payload?.uid) {
-                console.error('Invalid analysis profile payload:', payload);
                 return;
             }
 
@@ -337,7 +308,6 @@ export const useAnalysisStore = defineStore('analysis', {
 
         async fetchProfileMappings(profileUid: string): Promise<void> {
             if (!profileUid) {
-                console.error('Invalid profile UID provided to fetchProfileMappings');
                 return;
             }
 
@@ -351,16 +321,12 @@ export const useAnalysisStore = defineStore('analysis', {
                 if (result && Array.isArray(result)) {
                     this.profileMappings = result as unknown as ProfileMappingType[];
                 } else {
-                    console.error('Invalid profile mappings data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching profile mappings:', error);
-            }
+            } catch {}
         },
 
         addProfileMapping(payload: ProfileMappingType): void {
             if (!payload?.uid) {
-                console.error('Invalid profile mapping payload:', payload);
                 return;
             }
 
@@ -369,7 +335,6 @@ export const useAnalysisStore = defineStore('analysis', {
 
         updateProfileMapping(payload: ProfileMappingType): void {
             if (!payload?.uid) {
-                console.error('Invalid profile mapping payload:', payload);
                 return;
             }
 
@@ -388,16 +353,12 @@ export const useAnalysisStore = defineStore('analysis', {
                 if (result && Array.isArray(result)) {
                     this.analysesTemplates = result as unknown as AnalysisTemplateType[];
                 } else {
-                    console.error('Invalid analysis templates data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching analysis templates:', error);
-            }
+            } catch {}
         },
 
         updateAnalysesTemplate(payload: AnalysisTemplateType): void {
             if (!payload?.uid) {
-                console.error('Invalid analysis template payload:', payload);
                 return;
             }
 
@@ -406,7 +367,6 @@ export const useAnalysisStore = defineStore('analysis', {
 
         addAnalysisTemplate(payload: AnalysisTemplateType): void {
             if (!payload?.uid) {
-                console.error('Invalid analysis template payload:', payload);
                 return;
             }
 
@@ -425,16 +385,12 @@ export const useAnalysisStore = defineStore('analysis', {
                 if (result && Array.isArray(result)) {
                     this.qcLevels = result as unknown as QcLevelType[];
                 } else {
-                    console.error('Invalid QC levels data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching QC levels:', error);
-            }
+            } catch {}
         },
 
         updateQcLevel(payload: QcLevelType): void {
             if (!payload?.uid) {
-                console.error('Invalid QC level payload:', payload);
                 return;
             }
 
@@ -443,7 +399,6 @@ export const useAnalysisStore = defineStore('analysis', {
 
         addQcLevel(payload: QcLevelType): void {
             if (!payload?.uid) {
-                console.error('Invalid QC level payload:', payload);
                 return;
             }
 
@@ -466,16 +421,12 @@ export const useAnalysisStore = defineStore('analysis', {
                         return qcTemplate;
                     });
                 } else {
-                    console.error('Invalid QC templates data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching QC templates:', error);
-            }
+            } catch {}
         },
 
         updateQcTemplate(payload: QcTemplateType): void {
             if (!payload?.uid) {
-                console.error('Invalid QC template payload:', payload);
                 return;
             }
 
@@ -489,7 +440,6 @@ export const useAnalysisStore = defineStore('analysis', {
 
         addQcTemplate(payload: QcTemplateType): void {
             if (!payload?.uid) {
-                console.error('Invalid QC template payload:', payload);
                 return;
             }
 
@@ -501,7 +451,6 @@ export const useAnalysisStore = defineStore('analysis', {
         // Result Options
         addResultOption(payload: any): void {
             if (!payload?.uid || !payload?.analysisUid) {
-                console.error('Invalid result option payload:', payload);
                 return;
             }
 
@@ -518,7 +467,6 @@ export const useAnalysisStore = defineStore('analysis', {
 
         updateResultOption(payload: any): void {
             if (!payload?.uid || !payload?.analysisUid) {
-                console.error('Invalid result option payload:', payload);
                 return;
             }
 
@@ -535,7 +483,6 @@ export const useAnalysisStore = defineStore('analysis', {
         // Interim Fields
         addAnalysisInterim(payload: any): void {
             if (!payload?.uid || !payload?.analysisUid) {
-                console.error('Invalid analysis interim payload:', payload);
                 return;
             }
 
@@ -552,7 +499,6 @@ export const useAnalysisStore = defineStore('analysis', {
 
         updateAnalysisInterim(payload: any): void {
             if (!payload?.uid || !payload?.analysisUid) {
-                console.error('Invalid analysis interim payload:', payload);
                 return;
             }
 
@@ -569,7 +515,6 @@ export const useAnalysisStore = defineStore('analysis', {
         // Correction Factors
         addAnalysisCorrectionFactor(payload: any): void {
             if (!payload?.uid || !payload?.analysisUid) {
-                console.error('Invalid analysis correction factor payload:', payload);
                 return;
             }
 
@@ -586,7 +531,6 @@ export const useAnalysisStore = defineStore('analysis', {
 
         updateAnalysisCorrectionFactor(payload: any): void {
             if (!payload?.uid || !payload?.analysisUid) {
-                console.error('Invalid analysis correction factor payload:', payload);
                 return;
             }
 
@@ -603,7 +547,6 @@ export const useAnalysisStore = defineStore('analysis', {
         // Detection Limits
         addAnalysisDetectionLimit(payload: any): void {
             if (!payload?.uid || !payload?.analysisUid) {
-                console.error('Invalid analysis detection limit payload:', payload);
                 return;
             }
 
@@ -620,7 +563,6 @@ export const useAnalysisStore = defineStore('analysis', {
 
         updateAnalysisDetectionLimit(payload: any): void {
             if (!payload?.uid || !payload?.analysisUid) {
-                console.error('Invalid analysis detection limit payload:', payload);
                 return;
             }
 
@@ -637,7 +579,6 @@ export const useAnalysisStore = defineStore('analysis', {
         // Uncertainties
         addAnalysisUncertainty(payload: any): void {
             if (!payload?.uid || !payload?.analysisUid) {
-                console.error('Invalid analysis uncertainty payload:', payload);
                 return;
             }
 
@@ -654,7 +595,6 @@ export const useAnalysisStore = defineStore('analysis', {
 
         updateAnalysisUncertainty(payload: any): void {
             if (!payload?.uid || !payload?.analysisUid) {
-                console.error('Invalid analysis uncertainty payload:', payload);
                 return;
             }
 
@@ -671,7 +611,6 @@ export const useAnalysisStore = defineStore('analysis', {
         // Specifications
         addAnalysisSpecification(payload: any): void {
             if (!payload?.uid || !payload?.analysisUid) {
-                console.error('Invalid analysis specification payload:', payload);
                 return;
             }
 
@@ -688,7 +627,6 @@ export const useAnalysisStore = defineStore('analysis', {
 
         updateAnalysisSpecification(payload: any): void {
             if (!payload?.uid || !payload?.analysisUid) {
-                console.error('Invalid analysis specification payload:', payload);
                 return;
             }
 
@@ -714,16 +652,12 @@ export const useAnalysisStore = defineStore('analysis', {
                 if (result && Array.isArray(result)) {
                     this.rejectionReasons = result as unknown as RejectionReasonType[];
                 } else {
-                    console.error('Invalid rejection reasons data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching rejection reasons:', error);
-            }
+            } catch {}
         },
 
         updateRejectionReason(payload: RejectionReasonType): void {
             if (!payload?.uid) {
-                console.error('Invalid rejection reason payload:', payload);
                 return;
             }
 
@@ -732,7 +666,6 @@ export const useAnalysisStore = defineStore('analysis', {
 
         addRejectionReason(payload: RejectionReasonType): void {
             if (!payload?.uid) {
-                console.error('Invalid rejection reason payload:', payload);
                 return;
             }
 

@@ -84,13 +84,12 @@ export const useWorksheetStore = defineStore('worksheet', {
                     payload.forEach(template => {
                         const data: any = template.reserved;
                         const reserved = Object.entries(parseData(data)) as any[];
-                        let new_res: ReservedType[] = [];
+                        const new_res: ReservedType[] = [];
                         reserved?.forEach(item => new_res.push((keysToCamel(item[1]) as ReservedType) || {}));
                         template.reserved = new_res as any;
                     });
                     this.workSheetTemplates = payload as WorkSheetTemplateType[];
                 } else {
-                    console.error('Expected array of templates but got:', payload);
                     this.workSheetTemplates = [];
                 }
             } catch (error) {
@@ -107,7 +106,7 @@ export const useWorksheetStore = defineStore('worksheet', {
             const index = this.workSheetTemplates.findIndex(x => x.uid === payload.uid);
             const data: any = payload.reserved;
             const reserved = Object.entries(parseData(data)) as any[];
-            let new_res: ReservedType[] = [];
+            const new_res: ReservedType[] = [];
             reserved?.forEach(item => new_res.push((item[1] as ReservedType) || {}));
             payload.reserved = new_res;
             this.workSheetTemplates[index] = payload;
@@ -116,7 +115,7 @@ export const useWorksheetStore = defineStore('worksheet', {
         addWorksheetTemplate(payload) {
             const data: any = payload.reserved;
             const reserved = Object.entries(parseData(data)) as any[];
-            let new_res: ReservedType[] = [];
+            const new_res: ReservedType[] = [];
             reserved?.forEach(item => new_res.push((item[1] as ReservedType) || {}));
             payload.reserved = new_res;
             this.workSheetTemplates?.push(payload);
@@ -134,7 +133,6 @@ export const useWorksheetStore = defineStore('worksheet', {
 
                 const page = (payload as any).worksheetAll;
                 if (!page) {
-                    console.error('Invalid response format:', payload);
                     return;
                 }
 
@@ -235,7 +233,6 @@ export const useWorksheetStore = defineStore('worksheet', {
 
                 const page = (payload as any).analysisResultsForWsAssign;
                 if (!page) {
-                    console.error('Invalid response format:', payload);
                     return;
                 }
 

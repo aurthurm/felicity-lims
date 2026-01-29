@@ -58,7 +58,6 @@ watch(
         });
       });
       
-      console.log(group.group)
       plotUserMatrix(users, group.group, group.group);
     });
   }

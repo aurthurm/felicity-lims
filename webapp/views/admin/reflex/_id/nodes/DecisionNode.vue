@@ -92,11 +92,20 @@ const logicSummary = computed(() => {
       class="!bg-purple-500 !w-3 !h-3 !border-2 !border-white"
     />
 
-    <!-- Output Handle (to Rules/Actions) -->
+    <!-- Output Handles -->
     <Handle
+      id="rules"
       type="source"
       :position="Position.Right"
-      class="!bg-purple-500 !w-3 !h-3 !border-2 !border-white"
+      class="!bg-amber-500 !w-3 !h-3 !border-2 !border-white"
+      style="top: 35%;"
+    />
+    <Handle
+      id="actions"
+      type="source"
+      :position="Position.Right"
+      class="!bg-green-500 !w-3 !h-3 !border-2 !border-white"
+      style="top: 65%;"
     />
 
     <!-- Node Header -->
@@ -166,6 +175,7 @@ const logicSummary = computed(() => {
 </template>
 
 <style scoped>
+@import "tailwindcss";
 .decision-node {
   @apply bg-white border-2 border-purple-400 rounded-lg shadow-md;
   @apply px-4 py-3 min-w-[240px] max-w-[300px];

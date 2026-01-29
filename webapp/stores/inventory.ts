@@ -115,9 +115,7 @@ export const useInventoryStore = defineStore('inventory', {
                 await this.fetchHazards();
                 await this.fetchCategories();
                 await this.fetchUnits();
-            } catch (error) {
-                console.error('Error fetching all dependencies:', error);
-            }
+            } catch {}
         },
         // hazards
         async fetchHazards(): Promise<void> {
@@ -132,17 +130,13 @@ export const useInventoryStore = defineStore('inventory', {
                 if (result && Array.isArray(result)) {
                     this.hazards = result as HazardType[];
                 } else {
-                    console.error('Invalid hazards data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching hazards:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingHazards = false;
             }
         },
         addHazard(payload: HazardType): void {
             if (!payload?.uid) {
-                console.error('Invalid hazard payload:', payload);
                 return;
             }
 
@@ -150,7 +144,6 @@ export const useInventoryStore = defineStore('inventory', {
         },
         updateHazard(payload: HazardType): void {
             if (!payload?.uid) {
-                console.error('Invalid hazard payload:', payload);
                 return;
             }
 
@@ -173,17 +166,13 @@ export const useInventoryStore = defineStore('inventory', {
                 if (result && Array.isArray(result)) {
                     this.categories = result as StockCategoryType[];
                 } else {
-                    console.error('Invalid categories data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching categories:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingCategories = false;
             }
         },
         addCategory(payload: StockCategoryType): void {
             if (!payload?.uid) {
-                console.error('Invalid category payload:', payload);
                 return;
             }
 
@@ -191,7 +180,6 @@ export const useInventoryStore = defineStore('inventory', {
         },
         updateCategory(payload: StockCategoryType): void {
             if (!payload?.uid) {
-                console.error('Invalid category payload:', payload);
                 return;
             }
 
@@ -214,17 +202,13 @@ export const useInventoryStore = defineStore('inventory', {
                 if (result && Array.isArray(result)) {
                     this.units = result as StockUnitType[];
                 } else {
-                    console.error('Invalid units data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching units:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingUnits = false;
             }
         },
         addUnit(payload: StockUnitType): void {
             if (!payload?.uid) {
-                console.error('Invalid unit payload:', payload);
                 return;
             }
 
@@ -232,7 +216,6 @@ export const useInventoryStore = defineStore('inventory', {
         },
         updateUnit(payload: StockUnitType): void {
             if (!payload?.uid) {
-                console.error('Invalid unit payload:', payload);
                 return;
             }
 
@@ -257,17 +240,13 @@ export const useInventoryStore = defineStore('inventory', {
                     this.productsPaging.totalCount = result.totalCount;
                     this.productsPaging.pageInfo = result.pageInfo;
                 } else {
-                    console.error('Invalid products data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching products:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingProducts = false;
             }
         },
         addStockProduct(payload: StockItemVariantType): void {
             if (!payload?.uid) {
-                console.error('Invalid product payload:', payload);
                 return;
             }
 
@@ -275,7 +254,6 @@ export const useInventoryStore = defineStore('inventory', {
         },
         updateProduct(payload: StockItemVariantType): void {
             if (!payload?.uid) {
-                console.error('Invalid product payload:', payload);
                 return;
             }
 
@@ -301,17 +279,13 @@ export const useInventoryStore = defineStore('inventory', {
                     this.stockItemsPaging.totalCount = result.totalCount;
                     this.stockItemsPaging.pageInfo = result.pageInfo;
                 } else {
-                    console.error('Invalid stock items data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching stock items:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingItems = false;
             }
         },
         addItem(payload: StockItemType): void {
             if (!payload?.uid) {
-                console.error('Invalid stock item payload:', payload);
                 return;
             }
 
@@ -319,7 +293,6 @@ export const useInventoryStore = defineStore('inventory', {
         },
         updateItem(payload: StockItemType): void {
             if (!payload?.uid) {
-                console.error('Invalid stock item payload:', payload);
                 return;
             }
 
@@ -330,7 +303,6 @@ export const useInventoryStore = defineStore('inventory', {
         },
         async fetchItemVariants(stockItemUid: string): Promise<void> {
             if (!stockItemUid) {
-                console.error('Invalid stock item UID provided to fetchItemVariants');
                 return;
             }
 
@@ -348,15 +320,11 @@ export const useInventoryStore = defineStore('inventory', {
                         }
                     });
                 } else {
-                    console.error('Invalid stock item variants data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching stock item variants:', error);
-            }
+            } catch {}
         },
         addItemVariant(payload: StockItemVariantType): void {
             if (!payload?.uid || !payload?.stockItemUid) {
-                console.error('Invalid stock item variant payload:', payload);
                 return;
             }
 
@@ -371,7 +339,6 @@ export const useInventoryStore = defineStore('inventory', {
         },
         updateItemVariant(payload: StockItemVariantType): void {
             if (!payload?.uid || !payload?.stockItemUid) {
-                console.error('Invalid stock item variant payload:', payload);
                 return;
             }
 
@@ -402,17 +369,13 @@ export const useInventoryStore = defineStore('inventory', {
                     this.stockOrdersPaging.totalCount = result.totalCount;
                     this.stockOrdersPaging.pageInfo = result.pageInfo;
                 } else {
-                    console.error('Invalid stock orders data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching stock orders:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingStockOrders = false;
             }
         },
         addStockOrder(payload: StockOrderType): void {
             if (!payload?.uid) {
-                console.error('Invalid stock order payload:', payload);
                 return;
             }
 
@@ -420,7 +383,6 @@ export const useInventoryStore = defineStore('inventory', {
         },
         updateStockOrder(payload: StockOrderType): void {
             if (!payload?.uid) {
-                console.error('Invalid stock order payload:', payload);
                 return;
             }
 
@@ -432,7 +394,6 @@ export const useInventoryStore = defineStore('inventory', {
         },
         issueStockOrder(payload: { stockOrder: StockOrderType; orderProducts: { product: StockItemVariantType }[] }): void {
             if (!payload?.stockOrder?.uid) {
-                console.error('Invalid stock order payload:', payload);
                 return;
             }
 
@@ -462,17 +423,13 @@ export const useInventoryStore = defineStore('inventory', {
                     this.adjustmentsPaging.totalCount = result.totalCount;
                     this.adjustmentsPaging.pageInfo = result.pageInfo;
                 } else {
-                    console.error('Invalid stock adjustments data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching stock adjustments:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingAdjustments = false;
             }
         },
         addAdjustment(payload: StockAdjustmentType): void {
             if (!payload?.uid) {
-                console.error('Invalid stock adjustment payload:', payload);
                 return;
             }
 
@@ -480,7 +437,6 @@ export const useInventoryStore = defineStore('inventory', {
         },
         updateAdjustment(payload: StockAdjustmentType): void {
             if (!payload?.uid) {
-                console.error('Invalid stock adjustment payload:', payload);
                 return;
             }
 
@@ -493,13 +449,11 @@ export const useInventoryStore = defineStore('inventory', {
         // Basket
         addToBasket(uid: string, stockLotUid: string, quantity: number): void {
             if (!uid || !stockLotUid || quantity <= 0) {
-                console.error('Invalid parameters provided to addToBasket');
                 return;
             }
 
             const index = this.products.findIndex(item => item.uid === uid);
             if (index === -1) {
-                console.error('Product not found:', uid);
                 return;
             }
 
@@ -522,14 +476,12 @@ export const useInventoryStore = defineStore('inventory', {
         },
         updateBasket(uid: string, quantity: number): void {
             if (!uid || quantity < 0) {
-                console.error('Invalid parameters provided to updateBasket');
                 return;
             }
 
             // modify quantity
             const basketIndex = this.basket.findIndex(oi => oi.product.uid === uid);
             if (basketIndex === -1) {
-                console.error('Item not found in basket:', uid);
                 return;
             }
 
@@ -537,7 +489,6 @@ export const useInventoryStore = defineStore('inventory', {
         },
         removeFromBasket(uid: string): void {
             if (!uid) {
-                console.error('Invalid UID provided to removeFromBasket');
                 return;
             }
 

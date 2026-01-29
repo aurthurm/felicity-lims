@@ -1,5 +1,7 @@
 <script setup lang="ts">
-  import { computed, ref, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
+  import { computed, ref, toRefs, watch, defineAsyncComponent } from 'vue';
+  import { useField, useForm } from 'vee-validate';
+  import * as yup from 'yup';
   import { AddAnalysisUncertaintyDocument, AddAnalysisUncertaintyMutation, AddAnalysisUncertaintyMutationVariables,
     EditAnalysisUncertaintyDocument, EditAnalysisUncertaintyMutation, EditAnalysisUncertaintyMutationVariables } from '@/graphql/operations/analyses.mutations';
   import { AnalysisUncertaintyType } from '@/types/gql';
@@ -28,31 +30,52 @@
   const { analysis } = toRefs(props);
   let showModal = ref(false);
   let formTitle = ref('');
-  let form = reactive({}) as AnalysisUncertaintyType;
   const formAction = ref(true);
+  const currentUid = ref<string | null>(null);
+
+  const uncertaintySchema = yup.object({
+    instrumentUid: yup.string().trim().required('Instrument is required'),
+    methodUid: yup.string().trim().required('Method is required'),
+    min: yup.number().typeError('Min must be a number').required('Min is required'),
+    max: yup.number().typeError('Max must be a number').required('Max is required'),
+    value: yup.number().typeError('Variance must be a number').required('Variance is required'),
+  });
+
+  const { handleSubmit, resetForm, setValues } = useForm({
+    validationSchema: uncertaintySchema,
+    initialValues: {
+      instrumentUid: '',
+      methodUid: '',
+      min: '',
+      max: '',
+      value: '',
+    },
+  });
+
+  const { value: instrumentUid, errorMessage: instrumentError } = useField<string>('instrumentUid');
+  const { value: methodUid, errorMessage: methodError } = useField<string>('methodUid');
+  const { value: min, errorMessage: minError } = useField<number | string>('min');
+  const { value: max, errorMessage: maxError } = useField<number | string>('max');
+  const { value: variance, errorMessage: varianceError } = useField<number | string>('value');
 
   watch(() => props.analysisUid, (anal, prev) => {
       
   })
 
   setupStore.fetchInstruments();
-  const instruments = computed<IInstrument[]>(() => setupStore.getInstruments)
+  const instruments = computed<InstrumentType[]>(() => setupStore.getInstruments)
 
   setupStore.fetchMethods();
-  const methods = computed<IMethod[]>(() => setupStore.getMethods)
+  const methods = computed<MethodType[]>(() => setupStore.getMethods)
 
-  function addAnalysisUncertainty(): void {
-      const payload = { ...form, analysisUid: analysis?.value?.uid }
+  function addAnalysisUncertainty(payload: { instrumentUid: string; methodUid: string; min: number; max: number; value: number; analysisUid: string }): void {
       withClientMutation<AddAnalysisUncertaintyMutation, AddAnalysisUncertaintyMutationVariables>(AddAnalysisUncertaintyDocument, { payload }, "createAnalysisUncertainty")
       .then((result) => analysisStore.addAnalysisUncertainty(result));
   }
 
-  function editAnalysisUncertainty(): void {
-      const payload: any = { ...form };
-      delete payload['uid']
-      delete payload['__typename']
-
-      withClientMutation<EditAnalysisUncertaintyMutation, EditAnalysisUncertaintyMutationVariables>(EditAnalysisUncertaintyDocument, { uid : form.uid,  payload }, "updateAnalysisUncertainty")
+  function editAnalysisUncertainty(payload: { instrumentUid: string; methodUid: string; min: number; max: number; value: number; analysisUid: string }): void {
+      if (!currentUid.value) return;
+      withClientMutation<EditAnalysisUncertaintyMutation, EditAnalysisUncertaintyMutationVariables>(EditAnalysisUncertaintyDocument, { uid: currentUid.value, payload }, "updateAnalysisUncertainty")
       .then((result) => analysisStore.updateAnalysisUncertainty(result));
   }
 
@@ -61,17 +84,43 @@
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSIS UNCERTAINTY";
       if (create) {
-          Object.assign(form, { min: null, max: null, value: null, instrumentUid: null , methodUid: null });
+          currentUid.value = null;
+          resetForm({
+            values: {
+              instrumentUid: '',
+              methodUid: '',
+              min: '',
+              max: '',
+              value: '',
+            },
+          });
       } else {
-          Object.assign(form, { ...obj });
+          currentUid.value = obj.uid ?? null;
+          setValues({
+            instrumentUid: obj.instrumentUid ?? '',
+            methodUid: obj.methodUid ?? '',
+            min: obj.min ?? '',
+            max: obj.max ?? '',
+            value: obj.value ?? '',
+          });
       }
   }
 
-  function saveForm():void {
-      if (formAction.value === true) addAnalysisUncertainty();
-      if (formAction.value === false) editAnalysisUncertainty();
+  const saveForm = handleSubmit((values) => {
+      const analysisUid = analysis?.value?.uid;
+      if (!analysisUid) return;
+      const payload = {
+        instrumentUid: values.instrumentUid,
+        methodUid: values.methodUid,
+        min: Number(values.min),
+        max: Number(values.max),
+        value: Number(values.value),
+        analysisUid,
+      };
+      if (formAction.value === true) addAnalysisUncertainty(payload);
+      if (formAction.value === false) editAnalysisUncertainty(payload);
       showModal.value = false;
-  }
+  });
 
   const instrumentName = (uid: string): string => {
     const index = instruments?.value?.findIndex(item => item.uid === uid)
@@ -136,67 +185,71 @@
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-6 space-y-6">
+      <form @submit.prevent="saveForm" class="p-6 space-y-6">
         <div class="space-y-4">
           <div class="grid grid-cols-5 gap-4">
             <label class="space-y-2">
               <span class="text-sm font-medium text-muted-foreground">Instrument</span>
               <select 
                 class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="form.instrumentUid"
+                v-model="instrumentUid"
               >
                 <option value="">Select Instrument</option>
                 <option v-for="instrument in instruments" :key="instrument?.uid" :value="instrument.uid">
                   {{ instrument?.name }}
                 </option>
               </select>
+              <p v-if="instrumentError" class="text-sm text-destructive">{{ instrumentError }}</p>
             </label>
             <label class="space-y-2">
               <span class="text-sm font-medium text-muted-foreground">Method</span>
               <select 
                 class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="form.methodUid"
+                v-model="methodUid"
               >
                 <option value="">Select Method</option>
                 <option v-for="method in methods" :key="method?.uid" :value="method.uid">
                   {{ method?.name }}
                 </option>
               </select>
+              <p v-if="methodError" class="text-sm text-destructive">{{ methodError }}</p>
             </label>
             <label class="space-y-2">
               <span class="text-sm font-medium text-muted-foreground">Min</span>
               <input
                 type="number"
                 class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="form.min"
+                v-model="min"
                 placeholder="Value ..."
               />
+              <p v-if="minError" class="text-sm text-destructive">{{ minError }}</p>
             </label>
             <label class="space-y-2">
               <span class="text-sm font-medium text-muted-foreground">Max</span>
               <input
                 type="number"
                 class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="form.max"
+                v-model="max"
                 placeholder="Value ..."
               />
+              <p v-if="maxError" class="text-sm text-destructive">{{ maxError }}</p>
             </label>
             <label class="space-y-2">
               <span class="text-sm font-medium text-muted-foreground">Variance +/-</span>
               <input
                 type="number"
                 class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="form.value"
+                v-model="variance"
                 placeholder="Value ..."
               />
+              <p v-if="varianceError" class="text-sm text-destructive">{{ varianceError }}</p>
             </label>
           </div>
         </div>
 
         <div class="pt-4">
           <button
-            type="button"
-            @click.prevent="saveForm()"
+            type="submit"
             class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
           >
             Save Form

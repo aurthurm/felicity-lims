@@ -19,22 +19,41 @@ query getReflexRuleByUid($uid: String!) {
     uid
     name
     description
-    reflexActions {
+    isActive
+    priority
+    reflexTriggers {
       uid
       level
       description
+      sampleTypeUid
+      posX
+      posY
+      sampleType {
+        uid
+        name
+      }
       analyses {
         uid
         name
-        __typename
+        resultOptions {
+          optionKey
+          value
+        }
       }
-      brains {
+      decisions {
         uid
         description
-        conditions {
+        priority
+        posX
+        posY
+        ruleGroups {
+          uid
           description
           priority
-          criteria {
+          posX
+          posY
+          rules {
+            uid
             analysisUid
             analysis {
               uid
@@ -42,55 +61,67 @@ query getReflexRuleByUid($uid: String!) {
               resultOptions {
                 optionKey
                 value
-                __typename
               }
-              __typename
             }
             operator
             value
-            __typename
+            priority
           }
         }
-        actions {
-          addNew {
-            analysisUid
-            analysis {
-              uid
-              name
-              resultOptions {
-                optionKey
-                value
-                __typename
-              }
-              __typename
-            }
-            count
-            __typename
+        addAnalyses {
+          uid
+          analysisUid
+          analysis {
+            uid
+            name
           }
-          finalise {
-            analysisUid
-            analysis {
-              name
-              resultOptions {
-                optionKey
-                value
-                __typename
-              }
-              __typename
-            }
-            value
-            __typename
-          }
-          __typename
+          count
+          posX
+          posY
         }
-        __typename
+        finalizeAnalyses {
+          uid
+          analysisUid
+          analysis {
+            uid
+            name
+          }
+          value
+          posX
+          posY
+        }
       }
-      createdBy {
-        firstName
-        lastName
-        __typename
-      }
-      __typename
+    }
+    createdBy {
+      uid
+      firstName
+      lastName
+    }
+    createdAt
+    updatedBy {
+      uid
+      firstName
+      lastName
+    }
+    updatedAt
+  }
+}
+
+query getAllReflexTriggers($reflexRuleUid: String) {
+  reflexTriggerAll(reflexRuleUid: $reflexRuleUid) {
+    uid
+    reflexRuleUid
+    level
+    description
+    sampleTypeUid
+    analyses {
+      uid
+      name
+    }
+    decisions {
+      uid
+      description
+      priority
     }
   }
 }

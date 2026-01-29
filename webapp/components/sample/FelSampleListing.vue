@@ -482,7 +482,7 @@ async function unCheckAll() {
   checkUserActionPermissios();
 }
 
-function areAllChecked(): Boolean {
+function areAllChecked(): boolean {
   return samples.value?.every((sample: ExtSampleType) => sample.checked === true);
 }
 

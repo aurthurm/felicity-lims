@@ -252,11 +252,13 @@ class Analysis(BaseEntity):
     department_uid = Column(String, ForeignKey("department.uid"), nullable=True)
     department = relationship("Department", lazy="selectin")
     # precision -> decimal places to report
-    precision = Column(Integer, nullable=True)
+    precision = Column(Integer, nullable=True, default=2)
     required_verifications = Column(Integer, default=1)
     self_verification = Column(Boolean(), default=False)
     hidden = Column(Boolean(), default=False)
     active = Column(Boolean(), default=False)
+    # multiple AnalysisResults allowed for a single Sample
+    allow_multiple_results = Column(Boolean(), default=False)
 
     @property
     def sms_metadata(self) -> dict:
@@ -567,6 +569,7 @@ class Sample(LabScopedEntity, BaseMPTT):
     assigned = Column(Boolean(), default=False)
     priority = Column(Integer, nullable=False, default=0)
     status = Column(String, nullable=False)
+    note = Column(String, nullable=True)
     date_collected = Column(DateTime, nullable=True)
     received_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)
     received_by = relationship(User, foreign_keys=[received_by_uid], lazy="selectin")

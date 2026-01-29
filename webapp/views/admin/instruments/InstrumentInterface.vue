@@ -1,9 +1,11 @@
 <script setup lang="ts">
-  import { ref, reactive, computed, defineAsyncComponent, onMounted } from 'vue';
+  import { ref, computed, defineAsyncComponent, onMounted } from 'vue';
   import { InstrumentInterfaceType, LaboratoryInstrumentType } from '@/types/gql'
   import { AddInstrumentInterfaceDocument, EditInstrumentInterfaceDocument, EditInstrumentInterfaceMutation, EditInstrumentInterfaceMutationVariables } from '@/graphql/operations/instrument.mutations';
   import { useSetupStore } from '@/stores/setup';
   import  useApiUtil  from '@/composables/api_util';
+  import { useField, useForm } from "vee-validate";
+  import { boolean, object, string } from "yup";
 import { GetInstrumentInterfacesDocument } from '@/graphql/operations/instrument.queries';
 import { AddInstrumentInterfaceMutation, AddInstrumentInterfaceMutationVariables, GetInstrumentInterfacesQuery, GetInstrumentInterfacesQueryVariables } from '@/types/gqlops';
   const modal = defineAsyncComponent(
@@ -22,9 +24,44 @@ import { AddInstrumentInterfaceMutation, AddInstrumentInterfaceMutationVariables
   let selectedInterfaceForMapping = ref<InstrumentInterfaceType | null>(null);
   let formTitle = ref('');
   const formAction = ref(true);
+  const currentUid = ref<string | null>(null);
 
   let instrumentInterfaces = ref<InstrumentInterfaceType[]>([]);
-  let instrumemtInterface = reactive({})  as InstrumentInterfaceType;
+  const interfaceExtras = ref({
+    syncUnits: false,
+    driverMapping: null as any,
+  });
+
+  const formSchema = object({
+    laboratoryInstrumentUid: string().required("Laboratory instrument is required"),
+    host: string().nullable(),
+    port: string().nullable(),
+    protocolType: string().nullable(),
+    socketType: string().nullable(),
+    autoReconnect: boolean().nullable(),
+    isActive: boolean().nullable(),
+  });
+
+  const { handleSubmit, errors, resetForm, setValues } = useForm({
+    validationSchema: formSchema,
+    initialValues: {
+      laboratoryInstrumentUid: "",
+      host: "",
+      port: "",
+      protocolType: "",
+      socketType: "",
+      autoReconnect: false,
+      isActive: true,
+    },
+  });
+
+  const { value: laboratoryInstrumentUid } = useField<string>("laboratoryInstrumentUid");
+  const { value: host } = useField<string | null>("host");
+  const { value: port } = useField<string | null>("port");
+  const { value: protocolType } = useField<string | null>("protocolType");
+  const { value: socketType } = useField<string | null>("socketType");
+  const { value: autoReconnect } = useField<boolean | null>("autoReconnect");
+  const { value: isActive } = useField<boolean | null>("isActive");
 
   onMounted(() => {
     setupStore.fetchLaboratoryInstruments();
@@ -37,36 +74,37 @@ import { AddInstrumentInterfaceMutation, AddInstrumentInterfaceMutationVariables
   const instruments = computed(() => setupStore.getInstruments)
   const laboratoryInstruments = computed(() => setupStore.getLaboratoryInstruments)
 
-  function addInstrumentInterface(): void {
+  function addInstrumentInterface(values: Record<string, any>): void {
     const payload = { 
-      laboratoryInstrumentUid: instrumemtInterface.laboratoryInstrumentUid, 
-      host: instrumemtInterface.host, 
-      port: instrumemtInterface.port,
-      protocolType: instrumemtInterface.protocolType,
-      socketType: instrumemtInterface.socketType,
-      syncUnits: instrumemtInterface.syncUnits,
-      driverMapping: instrumemtInterface.driverMapping,
-      isActive: instrumemtInterface.isActive,
+      laboratoryInstrumentUid: values.laboratoryInstrumentUid, 
+      host: values.host || '', 
+      port: values.port || '',
+      protocolType: values.protocolType || '',
+      socketType: values.socketType || '',
+      syncUnits: interfaceExtras.value.syncUnits,
+      driverMapping: interfaceExtras.value.driverMapping,
+      isActive: values.isActive,
     }
-    console.log(payload);
     withClientMutation<AddInstrumentInterfaceMutation, AddInstrumentInterfaceMutationVariables>
     (AddInstrumentInterfaceDocument, { payload }, "createInstrumentInterface")
     .then((result) => instrumentInterfaces.value.push(result));
   }
 
-  function editInstrumentInterface(): void {
-    const payload = { 
-      laboratoryInstrumentUid: instrumemtInterface.laboratoryInstrumentUid, 
-      host: instrumemtInterface.host || '', 
-      port: instrumemtInterface.port || '',
-      protocolType: instrumemtInterface.protocolType || '',
-      socketType: instrumemtInterface.socketType || '',
-      syncUnits: instrumemtInterface.syncUnits,
-      driverMapping: instrumemtInterface.driverMapping as any,
-      isActive: instrumemtInterface.isActive,
+  function editInstrumentInterface(values: Record<string, any>): void {
+    if (!currentUid.value) {
+      return;
     }
-    console.log(instrumemtInterface, payload);
-    withClientMutation<EditInstrumentInterfaceMutation, EditInstrumentInterfaceMutationVariables>(EditInstrumentInterfaceDocument, { uid: instrumemtInterface.uid, payload } ,"updateInstrumentInterface")
+    const payload = { 
+      laboratoryInstrumentUid: values.laboratoryInstrumentUid, 
+      host: values.host || '', 
+      port: values.port || '',
+      protocolType: values.protocolType || '',
+      socketType: values.socketType || '',
+      syncUnits: interfaceExtras.value.syncUnits,
+      driverMapping: interfaceExtras.value.driverMapping as any,
+      isActive: values.isActive,
+    }
+    withClientMutation<EditInstrumentInterfaceMutation, EditInstrumentInterfaceMutationVariables>(EditInstrumentInterfaceDocument, { uid: currentUid.value, payload } ,"updateInstrumentInterface")
     .then((result) => {
       const index = instrumentInterfaces.value.findIndex((instInt) => instInt.uid === result.uid);
       if (index !== -1) {
@@ -80,17 +118,45 @@ import { AddInstrumentInterfaceMutation, AddInstrumentInterfaceMutationVariables
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "INSTRUMENT INTERFACE";
     if (create) {
-      Object.assign(instrumemtInterface, { ...({} as InstrumentInterfaceType) });
+      currentUid.value = null;
+      interfaceExtras.value = {
+        syncUnits: false,
+        driverMapping: null,
+      };
+      resetForm({
+        values: {
+          laboratoryInstrumentUid: "",
+          host: "",
+          port: "",
+          protocolType: "",
+          socketType: "",
+          autoReconnect: false,
+          isActive: true,
+        },
+      });
     } else {
-      Object.assign(instrumemtInterface, { ...obj });
+      currentUid.value = obj.uid ?? null;
+      interfaceExtras.value = {
+        syncUnits: obj.syncUnits ?? false,
+        driverMapping: obj.driverMapping ?? null,
+      };
+      setValues({
+        laboratoryInstrumentUid: obj.laboratoryInstrumentUid ?? "",
+        host: obj.host ?? "",
+        port: obj.port ?? "",
+        protocolType: obj.protocolType ?? "",
+        socketType: obj.socketType ?? "",
+        autoReconnect: obj.autoReconnect ?? false,
+        isActive: obj.isActive ?? true,
+      });
     }
   }
 
-  function saveForm():void {
-    if (formAction.value === true) addInstrumentInterface();
-    if (formAction.value === false) editInstrumentInterface();
+  const saveForm = handleSubmit((values): void => {
+    if (formAction.value === true) addInstrumentInterface(values);
+    if (formAction.value === false) editInstrumentInterface(values);
     showModal.value = false;
-  }
+  });
 
   // Driver Mapping
   function mapDriver(instInt: InstrumentInterfaceType): void {
@@ -194,7 +260,7 @@ import { AddInstrumentInterfaceMutation, AddInstrumentInterfaceMutationVariables
               Instrument
             </label>
             <select 
-              v-model="instrumemtInterface.laboratoryInstrumentUid"
+              v-model="laboratoryInstrumentUid"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <option value="">Select Laboratory Instrument</option>
@@ -202,6 +268,7 @@ import { AddInstrumentInterfaceMutation, AddInstrumentInterfaceMutationVariables
                 {{ instrument?.labName }}
               </option>
             </select>
+            <div class="text-sm text-destructive">{{ errors.laboratoryInstrumentUid }}</div>
           </div>
 
           <div class="space-y-2">
@@ -209,7 +276,7 @@ import { AddInstrumentInterfaceMutation, AddInstrumentInterfaceMutationVariables
               Host
             </label>
             <input
-              v-model="instrumemtInterface.host"
+              v-model="host"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="Host Adress..."
             />
@@ -220,7 +287,7 @@ import { AddInstrumentInterfaceMutation, AddInstrumentInterfaceMutationVariables
               Port
             </label>
             <input
-              v-model="instrumemtInterface.port"
+              v-model="port"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="Port Number..."
             />
@@ -232,7 +299,7 @@ import { AddInstrumentInterfaceMutation, AddInstrumentInterfaceMutationVariables
             </label>
             <select
               id="instrumentType"
-              v-model="instrumemtInterface.protocolType"
+              v-model="protocolType"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <option value="hl7">HL7</option>
@@ -246,7 +313,7 @@ import { AddInstrumentInterfaceMutation, AddInstrumentInterfaceMutationVariables
             </label>
             <select
               id="instrumentType"
-              v-model="instrumemtInterface.socketType"
+              v-model="socketType"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <option value="server">Server</option>
@@ -258,7 +325,7 @@ import { AddInstrumentInterfaceMutation, AddInstrumentInterfaceMutationVariables
             <input 
               type="checkbox" 
               id="autoReconnect"
-              v-model="instrumemtInterface.autoReconnect"
+              v-model="autoReconnect"
               class="h-4 w-4 rounded border-input bg-background text-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             />
             <label for="autoReconnect" class="text-sm font-medium text-muted-foreground">Auto Reconnect</label>
@@ -268,7 +335,7 @@ import { AddInstrumentInterfaceMutation, AddInstrumentInterfaceMutationVariables
             <input 
               type="checkbox" 
               id="isActive"
-              v-model="instrumemtInterface.isActive"
+              v-model="isActive"
               class="h-4 w-4 rounded border-input bg-background text-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             />
             <label for="isActive" class="text-sm font-medium text-muted-foreground">Is Active</label>

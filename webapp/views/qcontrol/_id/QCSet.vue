@@ -126,7 +126,7 @@ function resetAnalysesPermissions(): void {
   }
 }
 
-function areAllChecked(): Boolean {
+function areAllChecked(): boolean {
   const results = getAllAnalysisResults();
   return results?.every((item) => item.checked === true);
 }
@@ -162,7 +162,7 @@ function editResult(result: any): void {
   result.editable = true;
 }
 
-function isEditable(result: AnalysisResultType): Boolean {
+function isEditable(result: AnalysisResultType): boolean {
   if (result?.editable || isNullOrWs(result?.result)) {
     if (
       ["cancelled", "verified", "retracted", "to_be_verified"].includes(result.status!)

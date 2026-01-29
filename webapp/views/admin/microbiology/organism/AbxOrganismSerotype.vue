@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
+import {computed, defineAsyncComponent, onMounted, ref, h} from 'vue';
+import { useForm, useField } from 'vee-validate';
+import * as yup from 'yup';
 import { addListsUnique } from '@/utils';
 import useApiUtil from '@/composables/api_util';
 import { AbxOrganismType, AbxOrganismSerotypeType } from "@/types/gql";
@@ -17,8 +19,36 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as AbxOrganismSerotypeType;
 const formAction = ref<boolean>(true);
+const currentUid = ref<string | null>(null);
+
+const organismSerotypeSchema = yup.object({
+  organism: yup.object().required('Organism is required'),
+});
+
+const { handleSubmit, resetForm, setValues, errors } = useForm({
+  validationSchema: organismSerotypeSchema,
+  initialValues: {
+    organism: null,
+    serotype: '',
+    serogroup: '',
+    subspecies: '',
+    oAntigens: '',
+    hPhase1: '',
+    hPhase2: '',
+    x997Check: '',
+    fate: '',
+  },
+});
+const { value: organism } = useField<AbxOrganismType | null>('organism');
+const { value: serotype } = useField<string>('serotype');
+const { value: serogroup } = useField<string>('serogroup');
+const { value: subspecies } = useField<string>('subspecies');
+const { value: oAntigens } = useField<string>('oAntigens');
+const { value: hPhase1 } = useField<string>('hPhase1');
+const { value: hPhase2 } = useField<string>('hPhase2');
+const { value: x997Check } = useField<string>('x997Check');
+const { value: fate } = useField<string>('fate');
 
 const fetchingOrganismSerotypes = ref<boolean>(false);
 const abxOrganismSerotypes = ref<AbxOrganismSerotypeType[]>([]);
@@ -199,30 +229,42 @@ function showMoreOrganismSerotypes(opts: any): void {
   fetchOrganismSerotypes(abxParams);
 }
 
-const resetOrganismSerotype = () => Object.assign(form, {}) as AbxOrganismSerotypeType;
+const resetOrganismSerotype = () => resetForm();
 
 function FormManager(create: boolean, obj = {} as AbxOrganismSerotypeType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "OrganismSerotype";
   if (create) {
-    Object.assign(form, {} as AbxOrganismSerotypeType);
+    currentUid.value = null;
+    resetForm();
   } else {
-    Object.assign(form, {...obj});
+    currentUid.value = obj.uid ?? null;
+    setValues({
+      organism: obj.organism ?? null,
+      serotype: obj.serotype ?? '',
+      serogroup: obj.serogroup ?? '',
+      subspecies: obj.subspecies ?? '',
+      oAntigens: obj.oAntigens ?? '',
+      hPhase1: obj.hPhase1 ?? '',
+      hPhase2: obj.hPhase2 ?? '',
+      x997Check: obj.x997Check ?? '',
+      fate: obj.fate ?? '',
+    });
   }
 }
 
-function saveForm(): void {
+const saveForm = handleSubmit((formValues) => {
   const payload = {
-    organismUid: form?.organism?.uid!,
-    serotype: form?.serotype,
-    serogroup: form?.serogroup,
-    subspecies: form?.subspecies,
-    oAntigens: form?.oAntigens,
-    hPhase1: form?.hPhase1,
-    hPhase2: form?.hPhase2,
-    x997Check: form?.x997Check,
-    fate: form?.fate,
+    organismUid: formValues.organism?.uid!,
+    serotype: formValues.serotype,
+    serogroup: formValues.serogroup,
+    subspecies: formValues.subspecies,
+    oAntigens: formValues.oAntigens,
+    hPhase1: formValues.hPhase1,
+    hPhase2: formValues.hPhase2,
+    x997Check: formValues.x997Check,
+    fate: formValues.fate,
   }
 
   if (formAction.value === true) {
@@ -235,9 +277,9 @@ function saveForm(): void {
     });
   }
 
-  if (formAction.value === false) {
+  if (formAction.value === false && currentUid.value) {
     withClientMutation<EditAbxOrganismSerotypeMutation, EditAbxOrganismSerotypeMutationVariables>(
-      EditAbxOrganismSerotypeDocument, { uid: form.uid!, payload }, 
+      EditAbxOrganismSerotypeDocument, { uid: currentUid.value, payload }, 
       "updateAbxOrganismSerotype"
     ).then((result: any) => {
       if(result) {
@@ -248,7 +290,7 @@ function saveForm(): void {
   }
 
   showModal.value = false;
-}
+});
 
 </script>
 
@@ -294,7 +336,7 @@ function saveForm(): void {
           <label class="block">
             <span class="text-sm font-medium text-foreground">Organism</span>
             <VueMultiselect
-              v-model="form.organism"
+              v-model="organism"
               :options="abxOrganisms"
               :searchable="true"
               :close-on-select="true"
@@ -303,12 +345,13 @@ function saveForm(): void {
               label="name"
               class="mt-1 multiselect-blue"
             />
+            <p v-if="errors.organism" class="text-sm text-destructive">{{ errors.organism }}</p>
           </label>
           <label class="block">
             <span class="text-sm font-medium text-foreground">Serotype</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              v-model="form.serotype" 
+              v-model="serotype" 
               placeholder="Serotype ..." />
           </label>
         </div>
@@ -318,14 +361,14 @@ function saveForm(): void {
             <span class="text-sm font-medium text-foreground">Serogroup</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              v-model="form.serogroup" 
+              v-model="serogroup" 
               placeholder="Serogroup ..." />
           </label>
           <label class="block">
             <span class="text-sm font-medium text-foreground">Subspecies</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              v-model="form.subspecies" 
+              v-model="subspecies" 
               placeholder="Subspecies ..." />
           </label>
         </div>
@@ -335,14 +378,14 @@ function saveForm(): void {
             <span class="text-sm font-medium text-foreground">O Antigens</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              v-model="form.oAntigens" 
+              v-model="oAntigens" 
               placeholder="O Antigens ..." />
           </label>
           <label class="block">
             <span class="text-sm font-medium text-foreground">H Phase1</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              v-model="form.hPhase1" 
+              v-model="hPhase1" 
               placeholder="H Phase1 ..." />
           </label>
         </div>
@@ -352,14 +395,14 @@ function saveForm(): void {
             <span class="text-sm font-medium text-foreground">H Phase2</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              v-model="form.hPhase2" 
+              v-model="hPhase2" 
               placeholder="H Phase2 ..." />
           </label>
           <label class="block">
             <span class="text-sm font-medium text-foreground">X997 Check</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              v-model="form.x997Check" 
+              v-model="x997Check" 
               placeholder="X997 Check ..." />
           </label>
         </div>
@@ -369,7 +412,7 @@ function saveForm(): void {
             <span class="text-sm font-medium text-foreground">Fate</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              v-model="form.fate" 
+              v-model="fate" 
               placeholder="Fate ..." />
           </label>
         </div>

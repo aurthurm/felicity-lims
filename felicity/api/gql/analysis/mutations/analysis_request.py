@@ -425,9 +425,9 @@ async def create_analysis_request(
         analyses = await AnalysisResultService().get_all(sample_uid=sample.uid)
         await AnalysisResultService().snapshot(analyses)
 
-        # initialise reflex action if exist
-        logger.info("ReflexUtil .... set_reflex_actions ...")
-        await ReflexEngineService().set_reflex_actions(analyses)
+        # initialise reflex triggers if exist
+        logger.info("ReflexUtil .... set_reflex_triggers ...")
+        await ReflexEngineService().set_reflex_triggers(analyses)
 
     # auto_bill=True during sample registration
     await bill_order(analysis_request.uid, auto_bill=True)
@@ -900,7 +900,7 @@ async def derive_analysis_request(
             await SampleService().receive(sample.uid, received_by=felicity_user)
         analyses = await AnalysisResultService().get_all(sample_uid=sample.uid)
         await AnalysisResultService().snapshot(analyses)
-        await ReflexEngineService().set_reflex_actions(analyses)
+        await ReflexEngineService().set_reflex_triggers(analyses)
 
     if not created_sample_uids:
         return OperationError(error="No derived samples were created")
@@ -978,7 +978,7 @@ async def clone_samples(info, samples: List[str]) -> SampleActionResponse:
         # save transaction
         await SampleService().repository.save_transaction(transaction_session)
 
-    await ReflexEngineService().set_reflex_actions(creations)
+    await ReflexEngineService().set_reflex_triggers(creations)
 
     clones = [
         (await SampleService().get(related=["sample_type"], uid=clone.uid))

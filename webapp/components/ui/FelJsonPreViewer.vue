@@ -99,9 +99,7 @@ async function copyToClipboard() {
     setTimeout(() => {
       copied.value = false;
     }, 2000);
-  } catch (err) {
-    console.error('Failed to copy text: ', err);
-  }
+  } catch {}
 }
 
 function renderJson(data: any, container: HTMLElement) {

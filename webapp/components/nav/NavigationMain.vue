@@ -181,7 +181,7 @@ const switchLabNow = () => {
           SwitchActiveLaboratoryDocument, 
           {userUid: authStore.auth?.user?.uid, laboratoryUid: targetLaboratoryUid.value}, 
           'setUserActiveLaboratory'
-    ).then(_ => authStore.logout()).catch(error => console.error).finally(() => {
+    ).then(_ => authStore.logout()).catch(() => undefined).finally(() => {
       showModal.value = false;
       switching.value = false;
     });

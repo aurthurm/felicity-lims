@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted } from "vue";
+import { ref, onMounted } from "vue";
+import { useForm, useField } from 'vee-validate';
+import * as yup from 'yup';
 import { ReflexRuleType } from "@/types/reflex";
 import useApiUtil  from "@/composables/api_util";
 import { useReflexStore } from "@/stores/reflex";
@@ -10,41 +12,63 @@ const reflexStore = useReflexStore();
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>("");
-let form = reactive({}) as ReflexRuleType;
 const formAction = ref<boolean>(true);
+const currentUid = ref<string | null>(null);
+
+const reflexRuleSchema = yup.object({
+  name: yup.string().trim().required('Name is required'),
+});
+
+const { handleSubmit, resetForm, setValues, errors } = useForm({
+  validationSchema: reflexRuleSchema,
+  initialValues: {
+    name: '',
+    description: '',
+  },
+});
+const { value: name } = useField<string>('name');
+const { value: description } = useField<string>('description');
 
 onMounted(async () => {
   reflexStore.fetchAllReflexRules();
 });
-
-function addReflexRule(): void {
-  const payload = { name: form.name, description: form.description };
-  withClientMutation<AddReflexRuleMutation, AddReflexRuleMutationVariables>(AddReflexRuleDocument, { payload }, "createReflexRule").then((payload) =>
-    reflexStore.addReflexRule(payload)
-  );
-}
-
-function editReflexRule(): void {
-  const payload = { name: form.name, description: form.description };
-  withClientMutation<EditReflexRuleMutation, EditReflexRuleMutationVariables>(EditReflexRuleDocument, { uid: form.uid, payload }, "updateReflexRule").then((payload) => reflexStore.updateReflexRule(payload));
-}
 
 function FormManager(create: boolean, obj = {} as ReflexRuleType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + "REFLEX RULE";
   if (create) {
-    Object.assign(form, {} as ReflexRuleType);
+    currentUid.value = null;
+    resetForm();
   } else {
-    Object.assign(form, { ...obj });
+    currentUid.value = obj.uid ?? null;
+    setValues({
+      name: obj.name ?? '',
+      description: obj.description ?? '',
+    });
   }
 }
 
-function saveForm(): void {
-  if (formAction.value === true) addReflexRule();
-  if (formAction.value === false) editReflexRule();
+const saveForm = handleSubmit((formValues) => {
+  const payload = { name: formValues.name, description: formValues.description };
+  if (formAction.value === true) {
+    withClientMutation<AddReflexRuleMutation, AddReflexRuleMutationVariables>(
+      AddReflexRuleDocument,
+      { payload },
+      "createReflexRule"
+    ).then((result) => {
+      reflexStore.addReflexRule(result);
+    });
+  }
+  if (formAction.value === false && currentUid.value) {
+    withClientMutation<EditReflexRuleMutation, EditReflexRuleMutationVariables>(
+      EditReflexRuleDocument,
+      { uid: currentUid.value, payload },
+      "updateReflexRule"
+    ).then((result) => reflexStore.updateReflexRule(result));
+  }
   showModal.value = false;
-}
+});
 </script>
 
 <template>
@@ -101,16 +125,18 @@ function saveForm(): void {
         <div class="grid grid-cols-1 gap-4">
           <label class="block">
             <span class="text-sm font-medium text-foreground">Name</span>
-            <input 
+            <input
+              v-model="name"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              v-model="form.name" 
-              placeholder="Name ..." />
+              placeholder="Name ..."
+            />
+            <p v-if="errors.name" class="text-sm text-destructive">{{ errors.name }}</p>
           </label>
           <label class="block">
             <span class="text-sm font-medium text-foreground">Description</span>
             <textarea
+              v-model="description"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              v-model="form.description"
               placeholder="Description ..."
               rows="3"
             />
@@ -118,7 +144,7 @@ function saveForm(): void {
         </div>
 
         <hr class="border-border"/>
-        
+
         <button
           type="submit"
           class="w-full bg-primary text-primary-foreground rounded-md px-4 py-2 transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"

@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed, defineAsyncComponent } from "vue";
+import { useField, useForm } from "vee-validate";
+import * as yup from "yup";
 import { ProfileType, AnalysisType } from "@/types/gql";
 import {
   AddAnalysisProfileDocument, AddAnalysisProfileMutation, AddAnalysisProfileMutationVariables,
@@ -31,6 +33,7 @@ const tabs = ["analyses-services", "mappings", "billing"];
 let showModal = ref(false);
 let formTitle = ref("");
 const formAction = ref(true);
+const currentUid = ref<string | null>(null);
 
 let analysisProfile = reactive({}) as ProfileType;
 
@@ -41,38 +44,55 @@ analysisStore.fetchAnalysesProfilesAndServices();
 const analysesServices = computed(() => analysisStore.getAnalysesServices);
 const analysesProfiles = computed(() => analysisStore.getAnalysesProfiles);
 
-function addAnalysisProfile(): void {
-  const payload = {
-    name: analysisProfile.name,
-    keyword: analysisProfile.keyword,
-    description: analysisProfile.description,
-    departmentUid: analysisProfile.departmentUid,
-    sampleTypes: analysisProfile.sampleTypes?.map((item) => item.uid),
-    active: analysisProfile.active,
-  };
-  withClientMutation<AddAnalysisProfileMutation, AddAnalysisProfileMutationVariables>(AddAnalysisProfileDocument, { payload }, "createProfile").then((result) =>
-    analysisStore.addAnalysisProfile(result)
-  );
+const profileSchema = yup.object({
+  name: yup.string().trim().required("Profile name is required"),
+  keyword: yup.string().trim().nullable(),
+  description: yup.string().trim().nullable(),
+  departmentUid: yup.string().trim().nullable(),
+  sampleTypes: yup.array().nullable(),
+  active: yup.boolean().default(true),
+});
+
+const { handleSubmit, resetForm, setValues } = useForm({
+  validationSchema: profileSchema,
+  initialValues: {
+    name: "",
+    keyword: "",
+    description: "",
+    departmentUid: "",
+    sampleTypes: [],
+    active: true,
+  },
+});
+
+const { value: name, errorMessage: nameError } = useField<string>("name");
+const { value: keyword, errorMessage: keywordError } = useField<string | null>("keyword");
+const { value: description, errorMessage: descriptionError } = useField<string | null>("description");
+const { value: departmentUid, errorMessage: departmentError } = useField<string | null>("departmentUid");
+const { value: sampleTypesField, errorMessage: sampleTypesError } = useField<any[]>("sampleTypes");
+const { value: active } = useField<boolean>("active");
+
+function addAnalysisProfile(payload: { name: string; keyword: string | null; description: string | null; departmentUid: string | null; sampleTypes: string[]; active: boolean }): void {
+  withClientMutation<AddAnalysisProfileMutation, AddAnalysisProfileMutationVariables>(
+    AddAnalysisProfileDocument,
+    { payload },
+    "createProfile"
+  ).then((result) => analysisStore.addAnalysisProfile(result));
 }
 
-function editAnalysisProfile(): void {
-  const payload = {
-    name: analysisProfile.name,
-    keyword: analysisProfile.keyword,
-    description: analysisProfile.description,
-    departmentUid: analysisProfile.departmentUid,
-    active: analysisProfile.active,
-    services: analysisProfile.analyses?.map((item) => item.uid),
-    sampleTypes: analysisProfile.sampleTypes?.map((item) => item.uid),
-  };
-  withClientMutation<EditAnalysisProfileMutation, EditAnalysisProfileMutationVariables>(EditAnalysisProfileDocument,
-    { uid: analysisProfile.uid, payload },
+function editAnalysisProfile(payload: { name: string; keyword: string | null; description: string | null; departmentUid: string | null; sampleTypes: string[]; active: boolean }): void {
+  if (!currentUid.value) return;
+  const services = analysisProfile.analyses?.map((item) => item.uid);
+  withClientMutation<EditAnalysisProfileMutation, EditAnalysisProfileMutationVariables>(
+    EditAnalysisProfileDocument,
+    { uid: currentUid.value, payload: { ...payload, services } },
     "updateProfile"
   ).then((result) => analysisStore.updateAnalysesProfile(result));
 }
 
 function selectProfile(profile: ProfileType): void {
   Object.assign(analysisProfile, { ...profile });
+  currentUid.value = profile.uid ?? null;
   // get services that fall into this profile
   analysesServices.value?.forEach((item) => {
     item[1].forEach((service: AnalysisType) => {
@@ -96,25 +116,59 @@ function updateProfile(): void {
     });
   });
   analysisProfile.analyses = analyses;
-  editAnalysisProfile();
+  editAnalysisProfile({
+    name: analysisProfile.name ?? "",
+    keyword: analysisProfile.keyword ?? null,
+    description: analysisProfile.description ?? "",
+    departmentUid: analysisProfile.departmentUid ?? null,
+    sampleTypes: analysisProfile.sampleTypes?.map((item) => item.uid) ?? [],
+    active: analysisProfile.active ?? true,
+  });
 }
 
-function FormManager(create: boolean, obj = {} as ProfileType): void {
+function FormManager(create: boolean, obj?: ProfileType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + "ANALYSES PROFILE";
   if (create) {
-    Object.assign(analysisProfile, {} as ProfileType);
+    currentUid.value = null;
+    resetForm({
+      values: {
+        name: "",
+        keyword: "",
+        description: "",
+        departmentUid: "",
+        sampleTypes: [],
+        active: true,
+      },
+    });
   } else {
-    Object.assign(analysisProfile, { ...obj });
+    const source = obj ?? analysisProfile;
+    currentUid.value = source?.uid ?? null;
+    setValues({
+      name: source?.name ?? "",
+      keyword: source?.keyword ?? "",
+      description: source?.description ?? "",
+      departmentUid: source?.departmentUid ?? "",
+      sampleTypes: source?.sampleTypes ?? [],
+      active: source?.active ?? true,
+    });
   }
 }
 
-function saveForm(): void {
-  if (formAction.value === true) addAnalysisProfile();
-  if (formAction.value === false) editAnalysisProfile();
+const saveForm = handleSubmit((values) => {
+  const payload = {
+    name: values.name,
+    keyword: values.keyword ?? null,
+    description: values.description ?? "",
+    departmentUid: values.departmentUid ? values.departmentUid : null,
+    sampleTypes: (values.sampleTypes ?? []).map((item: any) => item.uid),
+    active: values.active,
+  };
+  if (formAction.value === true) addAnalysisProfile(payload);
+  if (formAction.value === false) editAnalysisProfile(payload);
   showModal.value = false;
-}
+});
 
 
 // Mapping
@@ -123,39 +177,43 @@ const mappings = computed(() => analysisStore.profileMapings?.filter(m => m.prof
 let showMappingModal = ref(false);
 let mappingFormTitle = ref("");
 const mappingFormAction = ref(true);
-const mappingForm =  reactive({
-  uid: undefined,
-  profileUid: undefined,
-  codingStandardUid: undefined,
-  name: "",
-  code: "",
-  description: ""
-})
+const mappingUid = ref<string | null>(null);
 
-function addMapping(): void {
-  const payload = {
-    profileUid: analysisProfile?.uid,
-    codingStandardUid: mappingForm.codingStandardUid,
-    name: mappingForm.name,
-    code: mappingForm.code,
-    description: mappingForm.description,
-  };
-  withClientMutation<AddProfileMappingMutation, AddProfileMappingMutationVariables>(AddProfileMappingDocument,
+const mappingSchema = yup.object({
+  codingStandardUid: yup.string().trim().required("Coding standard is required"),
+  name: yup.string().trim().required("Mapping name is required"),
+  code: yup.string().trim().required("Mapping code is required"),
+  description: yup.string().trim().nullable(),
+});
+
+const { handleSubmit: handleMappingSubmit, resetForm: resetMappingForm, setValues: setMappingValues } = useForm({
+  validationSchema: mappingSchema,
+  initialValues: {
+    codingStandardUid: "",
+    name: "",
+    code: "",
+    description: "",
+  },
+});
+
+const { value: codingStandardUid, errorMessage: codingStandardError } = useField<string>("codingStandardUid");
+const { value: mappingName, errorMessage: mappingNameError } = useField<string>("name");
+const { value: mappingCode, errorMessage: mappingCodeError } = useField<string>("code");
+const { value: mappingDescription, errorMessage: mappingDescriptionError } = useField<string | null>("description");
+
+function addMapping(payload: { profileUid: string; codingStandardUid: string; name: string; code: string; description: string | null }): void {
+  withClientMutation<AddProfileMappingMutation, AddProfileMappingMutationVariables>(
+    AddProfileMappingDocument,
     { payload },
     "createProfileMapping"
   ).then((result) => analysisStore.addProfileMapping(result));
 }
 
-function updateMapping(): void {
-  const payload = {
-    profileUid: analysisProfile?.uid,
-    codingStandardUid: mappingForm.codingStandardUid,
-    name: mappingForm.name,
-    code: mappingForm.code,
-    description: mappingForm.description,
-  };
-  withClientMutation<EditProfileMappingMutation, EditProfileMappingMutationVariables>(EditProfileMappingDocument,
-    { uid: mappingForm.uid, payload },
+function updateMapping(payload: { profileUid: string; codingStandardUid: string; name: string; code: string; description: string | null }): void {
+  if (!mappingUid.value) return;
+  withClientMutation<EditProfileMappingMutation, EditProfileMappingMutationVariables>(
+    EditProfileMappingDocument,
+    { uid: mappingUid.value, payload },
     "updateProfileMapping"
   ).then((result) => analysisStore.updateProfileMapping(result));
 }
@@ -165,17 +223,39 @@ function MappingFormManager(create: boolean, obj = {} as any): void {
   showMappingModal.value = true;
   mappingFormTitle.value = (create ? "CREATE" : "EDIT") + " " + "CONCEPT MAPPING";
   if (create) {
-    Object.assign(mappingForm, {} as any);
+    mappingUid.value = null;
+    resetMappingForm({
+      values: {
+        codingStandardUid: "",
+        name: "",
+        code: "",
+        description: "",
+      },
+    });
   } else {
-    Object.assign(mappingForm, { ...obj });
+    mappingUid.value = obj?.uid ?? null;
+    setMappingValues({
+      codingStandardUid: obj?.codingStandardUid ?? "",
+      name: obj?.name ?? "",
+      code: obj?.code ?? "",
+      description: obj?.description ?? "",
+    });
   }
 }
 
-function saveMappingForm(): void {
-  if (mappingFormAction.value === true) addMapping();
-  if (mappingFormAction.value === false) updateMapping();
+const saveMappingForm = handleMappingSubmit((values) => {
+  if (!analysisProfile?.uid) return;
+  const payload = {
+    profileUid: analysisProfile.uid,
+    codingStandardUid: values.codingStandardUid,
+    name: values.name,
+    code: values.code,
+    description: values.description ?? null,
+  };
+  if (mappingFormAction.value === true) addMapping(payload);
+  if (mappingFormAction.value === false) updateMapping(payload);
   showMappingModal.value = false;
-}
+});
 </script>
 
 <template>
@@ -390,27 +470,29 @@ function saveMappingForm(): void {
           <label class="space-y-2">
             <span class="text-sm font-medium text-muted-foreground">Profile Name</span>
             <input
-              v-model="analysisProfile.name"
+              v-model="name"
               type="text"
               class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
               placeholder="Enter profile name"
             />
+            <p v-if="nameError" class="text-sm text-destructive">{{ nameError }}</p>
           </label>
 
           <label class="space-y-2">
             <span class="text-sm font-medium text-muted-foreground">Keyword</span>
             <input
-              v-model="analysisProfile.keyword"
+              v-model="keyword"
               type="text"
               class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
               placeholder="Enter keyword"
             />
+            <p v-if="keywordError" class="text-sm text-destructive">{{ keywordError }}</p>
           </label>
 
           <label class="space-y-2">
             <span class="text-sm font-medium text-muted-foreground">Department</span>
             <select
-              v-model="analysisProfile.departmentUid"
+              v-model="departmentUid"
               class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
             >
               <option value="">Select department</option>
@@ -418,12 +500,13 @@ function saveMappingForm(): void {
                 {{ department.name }}
               </option>
             </select>
+            <p v-if="departmentError" class="text-sm text-destructive">{{ departmentError }}</p>
           </label>
 
           <label class="space-y-2">
             <span class="text-sm font-medium text-muted-foreground">Sample Types</span>
             <VueMultiselect
-              v-model="analysisProfile.sampleTypes"
+              v-model="sampleTypesField"
               :options="sampleTypes"
               :multiple="true"
               track-by="uid"
@@ -431,23 +514,25 @@ function saveMappingForm(): void {
               placeholder="Select sample types"
               class="multiselect-primary"
             />
+            <p v-if="sampleTypesError" class="text-sm text-destructive">{{ sampleTypesError }}</p>
           </label>
 
           <label class="space-y-2">
             <span class="text-sm font-medium text-muted-foreground">Description</span>
             <textarea
-              v-model="analysisProfile.description"
+              v-model="description"
               rows="3"
               class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground resize-none"
               placeholder="Enter profile description"
             ></textarea>
+            <p v-if="descriptionError" class="text-sm text-destructive">{{ descriptionError }}</p>
           </label>
 
           <div class="flex items-center space-x-2">
             <input 
               type="checkbox" 
               id="isActive"
-              v-model="analysisProfile.active"
+              v-model="active"
               class="h-4 w-4 rounded border-input bg-background text-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             />
             <label for="isActive" class="text-sm font-medium text-muted-foreground">Active</label>
@@ -478,7 +563,7 @@ function saveMappingForm(): void {
           <label class="space-y-2">
             <span class="text-sm font-medium text-muted-foreground">Coding Standard</span>
             <select
-              v-model="mappingForm.codingStandardUid"
+              v-model="codingStandardUid"
               class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
             >
               <option value="">Select standard</option>
@@ -486,36 +571,40 @@ function saveMappingForm(): void {
                 {{ standard.name }}
               </option>
             </select>
+            <p v-if="codingStandardError" class="text-sm text-destructive">{{ codingStandardError }}</p>
           </label>
 
           <label class="space-y-2">
             <span class="text-sm font-medium text-muted-foreground">Name</span>
             <input
-              v-model="mappingForm.name"
+              v-model="mappingName"
               type="text"
               class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
               placeholder="Enter mapping name"
             />
+            <p v-if="mappingNameError" class="text-sm text-destructive">{{ mappingNameError }}</p>
           </label>
 
           <label class="space-y-2">
             <span class="text-sm font-medium text-muted-foreground">Code</span>
             <input
-              v-model="mappingForm.code"
+              v-model="mappingCode"
               type="text"
               class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
               placeholder="Enter mapping code"
             />
+            <p v-if="mappingCodeError" class="text-sm text-destructive">{{ mappingCodeError }}</p>
           </label>
 
           <label class="space-y-2">
             <span class="text-sm font-medium text-muted-foreground">Description</span>
             <textarea
-              v-model="mappingForm.description"
+              v-model="mappingDescription"
               rows="3"
               class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground resize-none"
               placeholder="Enter mapping description"
             ></textarea>
+            <p v-if="mappingDescriptionError" class="text-sm text-destructive">{{ mappingDescriptionError }}</p>
           </label>
         </div>
 

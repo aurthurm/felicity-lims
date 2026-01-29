@@ -306,7 +306,6 @@ function setupSessionMonitoring(warningMinutes: number) {
 
     const showSessionWarning = (timeRemaining: number) => {
         // This would typically show a modal or notification
-        console.warn(`Session expires in ${Math.floor(timeRemaining / 60000)} minutes`);
 
         // Could emit a global event here for components to listen to
         window.dispatchEvent(
@@ -371,11 +370,9 @@ function setupAnalytics() {
 function setupBiometricAuth() {
     // Check if WebAuthn is supported
     if (!('credentials' in navigator) || !('create' in navigator.credentials)) {
-        console.warn('Biometric authentication not supported in this browser');
         return;
     }
 
-    console.log('Biometric authentication available');
 
     // Additional biometric setup would go here
     // This is a placeholder for future implementation
@@ -386,7 +383,6 @@ function setupBiometricAuth() {
  */
 function setupErrorHandling(app: App) {
     app.config.errorHandler = (err, instance, info) => {
-        console.error('Global error:', err, info);
 
         // Record error in analytics
         const authStore = useEnhancedAuthStore();

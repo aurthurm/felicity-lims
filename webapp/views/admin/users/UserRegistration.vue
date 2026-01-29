@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { reactive, ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
+import { useField, useForm } from "vee-validate";
+import * as yup from "yup";
 import { useRouter } from "vue-router";
 import { UserType, GroupType, LaboratoryType, OrganizationType } from "@/types/gql";
 import { useUserStore } from "@/stores/user";
 import useApiUtil from "@/composables/api_util";
 import useNotifyToast from "@/composables/alert_toast";
-import { useRealTimeValidation, commonValidationRules } from "@/composables/form_validation";
 import PasswordStrengthIndicator from "@/components/ui/form/PasswordStrengthIndicator.vue";
 
 // Mock GraphQL operations - these would need to be generated from the backend schema
@@ -117,39 +118,58 @@ const organizations = ref<OrganizationType[]>([
 
 // Form state
 const processing = ref(false);
-const formUser = reactive({
-  firstName: "",
-  lastName: "",
-  email: "",
-  userName: "",
-  password: "",
-  passwordConfirm: "",
-  isActive: true,
-  isBlocked: false,
-  groupUid: "",
-  laboratoryUids: [] as string[],
-  activeLaboratoryUid: "",
-});
-
-// Laboratory roles - for future enhancement
 const laboratoryRoles = ref<Record<string, string>>({});
 
-// Form validation
-const validationRules = {
-  ...commonValidationRules,
-  laboratoryUids: {
-    required: true,
-    custom: (value: string[]) => value.length > 0 || "At least one laboratory must be selected"
-  }
-};
+const userSchema = yup.object({
+  firstName: yup.string().trim().required("First name is required"),
+  lastName: yup.string().trim().required("Last name is required"),
+  email: yup.string().trim().email("Enter a valid email").required("Email is required"),
+  userName: yup.string().trim().required("Username is required"),
+  password: yup.string().required("Password is required"),
+  passwordConfirm: yup
+    .string()
+    .oneOf([yup.ref("password")], "Passwords do not match")
+    .required("Confirm your password"),
+  isActive: yup.boolean().default(true),
+  isBlocked: yup.boolean().default(false),
+  groupUid: yup.string().trim().nullable(),
+  laboratoryUids: yup.array().of(yup.string()).min(1, "At least one laboratory must be selected"),
+  activeLaboratoryUid: yup.string().trim().nullable(),
+});
 
-const { isValid: isFormValid, hasError, getError, createFieldValidator } = useRealTimeValidation(
-  formUser,
-  validationRules
-);
+const { handleSubmit, resetForm, meta } = useForm({
+  validationSchema: userSchema,
+  initialValues: {
+    firstName: "",
+    lastName: "",
+    email: "",
+    userName: "",
+    password: "",
+    passwordConfirm: "",
+    isActive: true,
+    isBlocked: false,
+    groupUid: "",
+    laboratoryUids: [] as string[],
+    activeLaboratoryUid: "",
+  },
+});
+
+const { value: firstName, errorMessage: firstNameError } = useField<string>("firstName");
+const { value: lastName, errorMessage: lastNameError } = useField<string>("lastName");
+const { value: email, errorMessage: emailError } = useField<string>("email");
+const { value: userName, errorMessage: userNameError } = useField<string>("userName");
+const { value: password, errorMessage: passwordError } = useField<string>("password");
+const { value: passwordConfirm, errorMessage: passwordConfirmError } = useField<string>("passwordConfirm");
+const { value: isActive } = useField<boolean>("isActive");
+const { value: isBlocked } = useField<boolean>("isBlocked");
+const { value: groupUid } = useField<string | null>("groupUid");
+const { value: laboratoryUids, errorMessage: laboratoryUidsError } = useField<string[]>("laboratoryUids");
+const { value: activeLaboratoryUid, errorMessage: activeLaboratoryUidError } = useField<string | null>("activeLaboratoryUid");
+
+const isFormValid = computed(() => meta.value.valid);
 
 const assignedLaboratories = computed(() => {
-  return laboratories.value.filter(lab => formUser.laboratoryUids.includes(lab.uid));
+  return laboratories.value.filter(lab => laboratoryUids.value.includes(lab.uid));
 });
 
 const getLaboratoryName = (labUid: string) => {
@@ -163,42 +183,35 @@ const getOrganizationName = (orgUid: string) => {
 };
 
 // Methods
-const saveUser = async () => {
-  if (!isFormValid.value) {
-    toastError("Please fill in all required fields correctly");
-    return;
-  }
-
+const saveUser = handleSubmit(async (values) => {
   processing.value = true;
-  
   try {
-    // Step 1: Create the user
     const userResult = await withClientMutation<CreateUserMutation, CreateUserMutationVariables>(
       CreateUserDocument,
-      { 
+      {
         payload: {
-          firstName: formUser.firstName,
-          lastName: formUser.lastName,
-          email: formUser.email,
-          userName: formUser.userName,
-          password: formUser.password,
-          isActive: formUser.isActive,
-          isBlocked: formUser.isBlocked,
-          groupUid: formUser.groupUid || undefined,
-        }
+          firstName: values.firstName,
+          lastName: values.lastName,
+          email: values.email,
+          userName: values.userName,
+          password: values.password,
+          isActive: values.isActive,
+          isBlocked: values.isBlocked,
+          groupUid: values.groupUid || undefined,
+        },
       },
       "createUser"
     );
 
     if (userResult.__typename === "UserType") {
       // Step 2: Assign laboratories if user creation was successful
-      if (formUser.laboratoryUids.length > 0) {
+      if (values.laboratoryUids.length > 0) {
         const assignResult = await withClientMutation<AssignUserToLaboratoriesMutation, AssignUserToLaboratoriesMutationVariables>(
           AssignUserToLaboratoriesDocument,
           {
             userUid: userResult.uid!,
-            laboratoryUids: formUser.laboratoryUids,
-            activeLaboratoryUid: formUser.activeLaboratoryUid || undefined,
+            laboratoryUids: values.laboratoryUids,
+            activeLaboratoryUid: values.activeLaboratoryUid || undefined,
           },
           "assignUserToLaboratories"
         );
@@ -215,27 +228,28 @@ const saveUser = async () => {
       toastError(userResult.error || "Failed to create user");
     }
   } catch (error) {
-    console.error("Error creating user:", error);
     toastError("Failed to create user");
   } finally {
     processing.value = false;
   }
-};
+});
 
 // Reset form
-const resetForm = () => {
-  Object.assign(formUser, {
-    firstName: "",
-    lastName: "",
-    email: "",
-    userName: "",
-    password: "",
-    passwordConfirm: "",
-    isActive: true,
-    isBlocked: false,
-    groupUid: "",
-    laboratoryUids: [],
-    activeLaboratoryUid: "",
+const resetUserForm = () => {
+  resetForm({
+    values: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      userName: "",
+      password: "",
+      passwordConfirm: "",
+      isActive: true,
+      isBlocked: false,
+      groupUid: "",
+      laboratoryUids: [],
+      activeLaboratoryUid: "",
+    },
   });
   laboratoryRoles.value = {};
 };
@@ -248,18 +262,18 @@ const goBack = () => {
 // Handle laboratory selection changes
 const onLaboratorySelectionChange = () => {
   // Reset active laboratory if it's not in selected labs
-  if (formUser.activeLaboratoryUid && !formUser.laboratoryUids.includes(formUser.activeLaboratoryUid)) {
-    formUser.activeLaboratoryUid = "";
+  if (activeLaboratoryUid.value && !laboratoryUids.value.includes(activeLaboratoryUid.value)) {
+    activeLaboratoryUid.value = "";
   }
   
   // Auto-select first lab as active if none selected
-  if (formUser.laboratoryUids.length === 1 && !formUser.activeLaboratoryUid) {
-    formUser.activeLaboratoryUid = formUser.laboratoryUids[0];
+  if (laboratoryUids.value.length === 1 && !activeLaboratoryUid.value) {
+    activeLaboratoryUid.value = laboratoryUids.value[0];
   }
 
   // Clean up laboratory roles for unselected labs
   Object.keys(laboratoryRoles.value).forEach(labUid => {
-    if (!formUser.laboratoryUids.includes(labUid)) {
+    if (!laboratoryUids.value.includes(labUid)) {
       delete laboratoryRoles.value[labUid];
     }
   });
@@ -267,8 +281,8 @@ const onLaboratorySelectionChange = () => {
 
 // Generate username from email
 const generateUsername = () => {
-  if (formUser.email) {
-    formUser.userName = formUser.email.split('@')[0];
+  if (email.value) {
+    userName.value = email.value.split('@')[0];
   }
 };
 
@@ -304,12 +318,13 @@ onMounted(() => {
               First Name *
             </label>
             <input
-              v-model="formUser.firstName"
+              v-model="firstName"
               type="text"
               required
               placeholder="Enter first name..."
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             />
+            <p v-if="firstNameError" class="text-sm text-destructive">{{ firstNameError }}</p>
           </div>
 
           <div class="space-y-2">
@@ -317,12 +332,13 @@ onMounted(() => {
               Last Name *
             </label>
             <input
-              v-model="formUser.lastName"
+              v-model="lastName"
               type="text"
               required
               placeholder="Enter last name..."
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             />
+            <p v-if="lastNameError" class="text-sm text-destructive">{{ lastNameError }}</p>
           </div>
 
           <div class="space-y-2">
@@ -330,13 +346,14 @@ onMounted(() => {
               Email Address *
             </label>
             <input
-              v-model="formUser.email"
+              v-model="email"
               @blur="generateUsername"
               type="email"
               required
               placeholder="Enter email address..."
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             />
+            <p v-if="emailError" class="text-sm text-destructive">{{ emailError }}</p>
           </div>
 
           <div class="space-y-2">
@@ -344,12 +361,13 @@ onMounted(() => {
               Username *
             </label>
             <input
-              v-model="formUser.userName"
+              v-model="userName"
               type="text"
               required
               placeholder="Enter username..."
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             />
+            <p v-if="userNameError" class="text-sm text-destructive">{{ userNameError }}</p>
           </div>
 
           <div class="space-y-2">
@@ -357,18 +375,16 @@ onMounted(() => {
               Password *
             </label>
             <input
-              v-model="formUser.password"
+              v-model="password"
               type="password"
               required
               placeholder="Enter password..."
-              v-bind="createFieldValidator('password')"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              :class="{ 'border-destructive': hasError('password') }"
             />
-            <p v-if="hasError('password')" class="text-sm text-destructive">
-              {{ getError('password') }}
+            <p v-if="passwordError" class="text-sm text-destructive">
+              {{ passwordError }}
             </p>
-            <PasswordStrengthIndicator :password="formUser.password" />
+            <PasswordStrengthIndicator :password="password" />
           </div>
 
           <div class="space-y-2">
@@ -376,15 +392,14 @@ onMounted(() => {
               Confirm Password *
             </label>
             <input
-              v-model="formUser.passwordConfirm"
+              v-model="passwordConfirm"
               type="password"
               required
               placeholder="Confirm password..."
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              :class="{ 'border-destructive': formUser.password && formUser.passwordConfirm && formUser.password !== formUser.passwordConfirm }"
             />
-            <p v-if="formUser.password && formUser.passwordConfirm && formUser.password !== formUser.passwordConfirm" class="text-sm text-destructive">
-              Passwords do not match
+            <p v-if="passwordConfirmError" class="text-sm text-destructive">
+              {{ passwordConfirmError }}
             </p>
           </div>
         </div>
@@ -397,7 +412,7 @@ onMounted(() => {
         <div class="space-y-2">
           <label class="text-sm font-medium text-foreground">Default Group</label>
           <select
-            v-model="formUser.groupUid"
+            v-model="groupUid"
             class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <option value="">Select Default Group (Optional)</option>
@@ -405,6 +420,7 @@ onMounted(() => {
               {{ group.name }}
             </option>
           </select>
+          <p v-if="groupUidError" class="text-sm text-destructive">{{ groupUidError }}</p>
         </div>
       </div>
 
@@ -419,7 +435,7 @@ onMounted(() => {
             <div v-for="lab in laboratories" :key="lab.uid" class="flex items-center space-x-3">
               <input
                 :id="`lab-${lab.uid}`"
-                v-model="formUser.laboratoryUids"
+                v-model="laboratoryUids"
                 :value="lab.uid"
                 @change="onLaboratorySelectionChange"
                 type="checkbox"
@@ -436,16 +452,16 @@ onMounted(() => {
               </label>
             </div>
           </div>
-          <p v-if="formUser.laboratoryUids.length === 0" class="text-sm text-destructive">
-            At least one laboratory must be selected
+          <p v-if="laboratoryUidsError" class="text-sm text-destructive">
+            {{ laboratoryUidsError }}
           </p>
         </div>
 
         <!-- Active Laboratory Selection -->
-        <div v-if="formUser.laboratoryUids.length > 0" class="space-y-2">
+        <div v-if="laboratoryUids.length > 0" class="space-y-2">
           <label class="text-sm font-medium text-foreground">Default Active Laboratory</label>
           <select
-            v-model="formUser.activeLaboratoryUid"
+            v-model="activeLaboratoryUid"
             class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <option value="">Select default laboratory...</option>
@@ -453,13 +469,14 @@ onMounted(() => {
               {{ lab.name }}
             </option>
           </select>
+          <p v-if="activeLaboratoryUidError" class="text-sm text-destructive">{{ activeLaboratoryUidError }}</p>
         </div>
 
         <!-- Laboratory Roles (Future Enhancement) -->
-        <div v-if="formUser.laboratoryUids.length > 0" class="space-y-2">
+        <div v-if="laboratoryUids.length > 0" class="space-y-2">
           <label class="text-sm font-medium text-foreground">Laboratory-Specific Roles (Optional)</label>
           <div class="space-y-3">
-            <div v-for="labUid in formUser.laboratoryUids" :key="labUid" class="flex items-center justify-between p-3 border border-input rounded-md">
+            <div v-for="labUid in laboratoryUids" :key="labUid" class="flex items-center justify-between p-3 border border-input rounded-md">
               <div class="flex-1">
                 <div class="font-medium text-sm">{{ getLaboratoryName(labUid) }}</div>
                 <div class="text-xs text-muted-foreground">Specific role for this laboratory</div>
@@ -485,7 +502,7 @@ onMounted(() => {
         <div class="flex items-center space-x-6">
           <label class="flex items-center space-x-3">
             <input
-              v-model="formUser.isActive"
+              v-model="isActive"
               type="checkbox"
               class="h-4 w-4 text-primary focus:ring-ring border-gray-300 rounded"
             />
@@ -494,7 +511,7 @@ onMounted(() => {
           
           <label class="flex items-center space-x-3">
             <input
-              v-model="formUser.isBlocked"
+              v-model="isBlocked"
               type="checkbox"
               class="h-4 w-4 text-destructive focus:ring-ring border-gray-300 rounded"
             />
@@ -509,7 +526,7 @@ onMounted(() => {
       <div class="flex justify-end space-x-4">
         <button
           type="button"
-          @click="resetForm"
+          @click="resetUserForm"
           :disabled="processing"
           class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
         >

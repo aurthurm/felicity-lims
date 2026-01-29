@@ -102,7 +102,7 @@ async function unCheckAll() {
   resetAnalysesPermissions();
 }
 
-function areAllChecked(): Boolean {
+function areAllChecked(): boolean {
   return analysisResults?.every((item: ExtAnalysisResultType) => item.checked === true) || false;
 }
 
@@ -125,7 +125,7 @@ function editResult(result: any): void {
   result.editable = true;
 }
 
-function isEditable(result: ExtAnalysisResultType): Boolean {
+function isEditable(result: ExtAnalysisResultType): boolean {
   if (!["received", "paired"].includes(sample?.status ?? "")) {
     return false;
   }
@@ -144,7 +144,7 @@ function getResultRowColor(result: any): string {
   switch (result?.status) {
     case "retracted":
       return "bg-muted";
-    case "aproved":
+    case "approved":
       if (result?.reportable === false) {
         return "bg-destructive";
       } else {
@@ -181,7 +181,11 @@ function resetAnalysesPermissions(): void {
   // can submit
   if (
     checked.every(
-      (result: ExtAnalysisResultType) => ["pending"].includes(result.status ?? "") && !isNullOrWs(result.result)
+      (result: ExtAnalysisResultType) =>
+        ["pending"].includes(result.status ?? "") &&
+        !isNullOrWs(result.result) &&
+        !isNullOrWs(result.methodUid) &&
+        !isNullOrWs(result.laboratoryInstrumentUid)
     )
   ) {
     state.can_submit = true;

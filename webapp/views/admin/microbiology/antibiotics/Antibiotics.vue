@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
+import { useForm, useField } from 'vee-validate';
+import * as yup from 'yup';
 import { addListsUnique } from '@/utils';
 import useApiUtil from '@/composables/api_util';
 import { AbxAntibioticType, AbxGuidelineType } from "@/types/gql";
@@ -17,8 +19,105 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as AbxAntibioticType;
 const formAction = ref<boolean>(true);
+const currentUid = ref<string | null>(null);
+
+const antibioticSchema = yup.object({
+  name: yup.string().trim().required('Name is required'),
+  guidelines: yup.array().nullable(),
+  whonetAbxCode: yup.string().trim().nullable(),
+  whoCode: yup.string().trim().nullable(),
+  dinCode: yup.string().trim().nullable(),
+  jacCode: yup.string().trim().nullable(),
+  eucastCode: yup.string().trim().nullable(),
+  userCode: yup.string().trim().nullable(),
+  abxNumber: yup.string().trim().nullable(),
+  potency: yup.string().trim().nullable(),
+  atcCode: yup.string().trim().nullable(),
+  class: yup.string().trim().nullable(),
+  subclass: yup.string().trim().nullable(),
+  profClass: yup.string().trim().nullable(),
+  ciaCategory: yup.string().trim().nullable(),
+  clsiOrder: yup.string().trim().nullable(),
+  eucastOrder: yup.string().trim().nullable(),
+  human: yup.boolean().default(false),
+  veterinary: yup.boolean().default(false),
+  animalGp: yup.string().trim().nullable(),
+  loinccomp: yup.string().trim().nullable(),
+  loincgen: yup.string().trim().nullable(),
+  loincdisk: yup.string().trim().nullable(),
+  loincmic: yup.string().trim().nullable(),
+  loincetest: yup.string().trim().nullable(),
+  loincslow: yup.string().trim().nullable(),
+  loincafb: yup.string().trim().nullable(),
+  loincsbt: yup.string().trim().nullable(),
+  loincmlc: yup.string().trim().nullable(),
+  comments: yup.string().trim().nullable(),
+});
+
+const { handleSubmit, resetForm, setValues, errors } = useForm({
+  validationSchema: antibioticSchema,
+  initialValues: {
+    name: '',
+    guidelines: [],
+    whonetAbxCode: '',
+    whoCode: '',
+    dinCode: '',
+    jacCode: '',
+    eucastCode: '',
+    userCode: '',
+    abxNumber: '',
+    potency: '',
+    atcCode: '',
+    class: '',
+    subclass: '',
+    profClass: '',
+    ciaCategory: '',
+    clsiOrder: '',
+    eucastOrder: '',
+    human: false,
+    veterinary: false,
+    animalGp: '',
+    loinccomp: '',
+    loincgen: '',
+    loincdisk: '',
+    loincmic: '',
+    loincetest: '',
+    loincslow: '',
+    loincafb: '',
+    loincsbt: '',
+    loincmlc: '',
+    comments: '',
+  },
+});
+const { value: name } = useField<string>('name');
+const { value: guidelines } = useField<AbxGuidelineType[]>('guidelines');
+const { value: whonetAbxCode } = useField<string>('whonetAbxCode');
+const { value: whoCode } = useField<string>('whoCode');
+const { value: dinCode } = useField<string>('dinCode');
+const { value: jacCode } = useField<string>('jacCode');
+const { value: eucastCode } = useField<string>('eucastCode');
+const { value: userCode } = useField<string>('userCode');
+const { value: abxNumber } = useField<string>('abxNumber');
+const { value: potency } = useField<string>('potency');
+const { value: atcCode } = useField<string>('atcCode');
+const { value: classValue } = useField<string>('class');
+const { value: subclass } = useField<string>('subclass');
+const { value: profClass } = useField<string>('profClass');
+const { value: ciaCategory } = useField<string>('ciaCategory');
+const { value: human } = useField<boolean>('human');
+const { value: veterinary } = useField<boolean>('veterinary');
+const { value: animalGp } = useField<string>('animalGp');
+const { value: loinccomp } = useField<string>('loinccomp');
+const { value: loincgen } = useField<string>('loincgen');
+const { value: loincdisk } = useField<string>('loincdisk');
+const { value: loincmic } = useField<string>('loincmic');
+const { value: loincetest } = useField<string>('loincetest');
+const { value: loincslow } = useField<string>('loincslow');
+const { value: loincafb } = useField<string>('loincafb');
+const { value: loincsbt } = useField<string>('loincsbt');
+const { value: loincmlc } = useField<string>('loincmlc');
+const { value: comments } = useField<string>('comments');
 
 const fetchingAntibiotics = ref<boolean>(false);
 const antibiotics = ref<AbxAntibioticType[]>([]);
@@ -421,52 +520,85 @@ function showMoreAntibiotics(opts: any): void {
   fetchAntibiotics(abxParams);
 }
 
-const resetAntibiotic = () => Object.assign(form, {}) as AbxAntibioticType;
+const resetAntibiotic = () => resetForm();
 
 function FormManager(create: boolean, obj = {} as AbxAntibioticType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "Antibiotic";
   if (create) {
-    Object.assign(form, {} as AbxAntibioticType);
+    currentUid.value = null;
+    resetForm();
   } else {
-    Object.assign(form, {...obj});
+    currentUid.value = obj.uid ?? null;
+    setValues({
+      name: obj?.name ?? '',
+      guidelines: obj?.guidelines ?? [],
+      whonetAbxCode: obj?.whonetAbxCode ?? '',
+      whoCode: obj?.whoCode ?? '',
+      dinCode: obj?.dinCode ?? '',
+      jacCode: obj?.jacCode ?? '',
+      eucastCode: obj?.eucastCode ?? '',
+      userCode: obj?.userCode ?? '',
+      abxNumber: obj?.abxNumber ?? '',
+      potency: obj?.potency ?? '',
+      atcCode: obj?.atcCode ?? '',
+      class: obj?.class ?? '',
+      subclass: obj?.subclass ?? '',
+      profClass: obj?.profClass ?? '',
+      ciaCategory: obj?.ciaCategory ?? '',
+      clsiOrder: obj?.clsiOrder ?? '',
+      eucastOrder: obj?.eucastOrder ?? '',
+      human: obj?.human ?? false,
+      veterinary: obj?.veterinary ?? false,
+      animalGp: obj?.animalGp ?? '',
+      loinccomp: obj?.loinccomp ?? '',
+      loincgen: obj?.loincgen ?? '',
+      loincdisk: obj?.loincdisk ?? '',
+      loincmic: obj?.loincmic ?? '',
+      loincetest: obj?.loincetest ?? '',
+      loincslow: obj?.loincslow ?? '',
+      loincafb: obj?.loincafb ?? '',
+      loincsbt: obj?.loincsbt ?? '',
+      loincmlc: obj?.loincmlc ?? '',
+      comments: obj?.comments ?? '',
+    });
   }
 }
 
-function saveForm(): void {
+const saveForm = handleSubmit((formValues) => {
   const payload = {
-    name: form?.name,
-    guidelines: form.guidelines?.map(g => g.uid!),
-    whonetAbxCode: form?.whonetAbxCode,
-    whoCode: form?.whoCode,
-    dinCode: form?.dinCode,
-    jacCode: form?.jacCode,
-    eucastCode: form?.eucastCode,
-    userCode: form?.userCode,
-    abxNumber: form?.abxNumber,
-    potency: form?.potency,
-    atcCode: form?.atcCode,
-    class: form?.class,
-    subclass: form?.subclass,
-    profClass: form?.profClass,
-    ciaCategory: form?.ciaCategory,
-    clsiOrder: form?.clsiOrder,
-    eucastOrder: form?.eucastOrder,
-    human: form?.human,
-    veterinary: form?.veterinary,
-    animalGp: form?.animalGp,
-    loinccomp: form?.loinccomp,
-    loincgen: form?.loincgen,
-    loincdisk: form?.loincdisk,
-    loincmic: form?.loincmic,
-    loincetest: form?.loincetest,
-    loincslow: form?.loincslow,
-    loincafb: form?.loincafb,
-    loincsbt: form?.loincsbt,
-    loincmlc: form?.loincmlc,
-    comments: form?.comments,
-  }
+    name: formValues.name,
+    guidelines: (formValues.guidelines ?? []).map((g: AbxGuidelineType) => g.uid!),
+    whonetAbxCode: formValues.whonetAbxCode ?? null,
+    whoCode: formValues.whoCode ?? null,
+    dinCode: formValues.dinCode ?? null,
+    jacCode: formValues.jacCode ?? null,
+    eucastCode: formValues.eucastCode ?? null,
+    userCode: formValues.userCode ?? null,
+    abxNumber: formValues.abxNumber ?? null,
+    potency: formValues.potency ?? null,
+    atcCode: formValues.atcCode ?? null,
+    class: formValues.class ?? null,
+    subclass: formValues.subclass ?? null,
+    profClass: formValues.profClass ?? null,
+    ciaCategory: formValues.ciaCategory ?? null,
+    clsiOrder: formValues.clsiOrder ?? null,
+    eucastOrder: formValues.eucastOrder ?? null,
+    human: formValues.human ?? false,
+    veterinary: formValues.veterinary ?? false,
+    animalGp: formValues.animalGp ?? null,
+    loinccomp: formValues.loinccomp ?? null,
+    loincgen: formValues.loincgen ?? null,
+    loincdisk: formValues.loincdisk ?? null,
+    loincmic: formValues.loincmic ?? null,
+    loincetest: formValues.loincetest ?? null,
+    loincslow: formValues.loincslow ?? null,
+    loincafb: formValues.loincafb ?? null,
+    loincsbt: formValues.loincsbt ?? null,
+    loincmlc: formValues.loincmlc ?? null,
+    comments: formValues.comments ?? null,
+  };
 
   if (formAction.value === true) {
     withClientMutation<AddAbxAntibioticMutation, AddAbxAntibioticMutationVariables>(
@@ -478,9 +610,9 @@ function saveForm(): void {
     });
   }
 
-  if (formAction.value === false) {
+  if (formAction.value === false && currentUid.value) {
     withClientMutation<EditAbxAntibioticMutation, EditAbxAntibioticMutationVariables>(
-      EditAbxAntibioticDocument, { uid: form.uid!, payload }, 
+      EditAbxAntibioticDocument, { uid: currentUid.value, payload }, 
       "updateAbxAntibiotic"
     ).then((result: any) => {
       if(result) {
@@ -491,7 +623,7 @@ function saveForm(): void {
   }
 
   showModal.value = false;
-}
+});
 
 </script>
 
@@ -531,7 +663,7 @@ function saveForm(): void {
     </template>
 
     <template v-slot:body>
-      <form class="space-y-6">
+      <form @submit.prevent="saveForm" class="space-y-6">
         <!-- Basic Information -->
         <div class="space-y-4">
           <h4 class="text-lg font-semibold text-foreground">Basic Information</h4>
@@ -540,14 +672,15 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">Antibiotic Name</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.name"
+                v-model="name"
                 placeholder="Enter antibiotic name"
               />
+              <p v-if="errors.name" class="text-sm text-destructive">{{ errors.name }}</p>
             </label>
             <label class="block col-span-1 space-y-2">
               <span class="text-sm font-medium text-foreground">Guidelines</span>
               <VueMultiselect
-                v-model="form.guidelines"
+                v-model="guidelines"
                 :options="abxGuidelines"
                 :multiple="true"
                 :searchable="true"
@@ -566,7 +699,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">WHONET Code</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.whonetAbxCode"
+                v-model="whonetAbxCode"
                 placeholder="WHONET code"
               />
             </label>
@@ -574,7 +707,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">WHO Code</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.whoCode"
+                v-model="whoCode"
                 placeholder="WHO code"
               />
             </label>
@@ -582,7 +715,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">DIN Code</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.dinCode"
+                v-model="dinCode"
                 placeholder="DIN code"
               />
             </label>
@@ -590,7 +723,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">JAC Code</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.jacCode"
+                v-model="jacCode"
                 placeholder="JAC code"
               />
             </label>
@@ -598,7 +731,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">EUCAST Code</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.eucastCode"
+                v-model="eucastCode"
                 placeholder="EUCAST code"
               />
             </label>
@@ -606,7 +739,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">User Code</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.userCode"
+                v-model="userCode"
                 placeholder="User code"
               />
             </label>
@@ -621,7 +754,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">Class</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.class"
+                v-model="classValue"
                 placeholder="Antibiotic class"
               />
             </label>
@@ -629,7 +762,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">Subclass</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.subclass"
+                v-model="subclass"
                 placeholder="Antibiotic subclass"
               />
             </label>
@@ -637,7 +770,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">Professional Class</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.profClass"
+                v-model="profClass"
                 placeholder="Professional class"
               />
             </label>
@@ -645,7 +778,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">CIA Category</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.ciaCategory"
+                v-model="ciaCategory"
                 placeholder="CIA category"
               />
             </label>
@@ -660,7 +793,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">ABX Number</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.abxNumber"
+                v-model="abxNumber"
                 placeholder="ABX number"
               />
             </label>
@@ -668,7 +801,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">Potency</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.potency"
+                v-model="potency"
                 placeholder="Potency"
               />
             </label>
@@ -676,7 +809,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">ATC Code</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.atcCode"
+                v-model="atcCode"
                 placeholder="ATC code"
               />
             </label>
@@ -691,7 +824,7 @@ function saveForm(): void {
               <input
                 type="checkbox"
                 class="h-4 w-4 rounded border-input text-primary focus:ring-primary"
-                v-model="form.human"
+                v-model="human"
               />
               <span class="text-sm font-medium text-foreground">Human Use</span>
             </div>
@@ -699,7 +832,7 @@ function saveForm(): void {
               <input
                 type="checkbox"
                 class="h-4 w-4 rounded border-input text-primary focus:ring-primary"
-                v-model="form.veterinary"
+                v-model="veterinary"
               />
               <span class="text-sm font-medium text-foreground">Veterinary Use</span>
             </div>
@@ -707,7 +840,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">Animal Group</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.animalGp"
+                v-model="animalGp"
                 placeholder="Animal group"
               />
             </label>
@@ -722,7 +855,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">LOINC Comp</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.loinccomp"
+                v-model="loinccomp"
                 placeholder="LOINC comp"
               />
             </label>
@@ -730,7 +863,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">LOINC Gen</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.loincgen"
+                v-model="loincgen"
                 placeholder="LOINC gen"
               />
             </label>
@@ -738,7 +871,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">LOINC Disk</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.loincdisk"
+                v-model="loincdisk"
                 placeholder="LOINC disk"
               />
             </label>
@@ -746,7 +879,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">LOINC MIC</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.loincmic"
+                v-model="loincmic"
                 placeholder="LOINC MIC"
               />
             </label>
@@ -754,7 +887,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">LOINC E-Test</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.loincetest"
+                v-model="loincetest"
                 placeholder="LOINC E-test"
               />
             </label>
@@ -762,7 +895,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">LOINC Slow</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.loincslow"
+                v-model="loincslow"
                 placeholder="LOINC slow"
               />
             </label>
@@ -770,7 +903,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">LOINC AFB</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.loincafb"
+                v-model="loincafb"
                 placeholder="LOINC AFB"
               />
             </label>
@@ -778,7 +911,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">LOINC SBT</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.loincsbt"
+                v-model="loincsbt"
                 placeholder="LOINC SBT"
               />
             </label>
@@ -786,7 +919,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">LOINC MLC</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.loincmlc"
+                v-model="loincmlc"
                 placeholder="LOINC MLC"
               />
             </label>
@@ -800,7 +933,7 @@ function saveForm(): void {
             <span class="text-sm font-medium text-foreground">Comments</span>
             <textarea
               class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              v-model="form.comments"
+              v-model="comments"
               rows="3"
               placeholder="Additional comments..."
             ></textarea>
@@ -810,8 +943,7 @@ function saveForm(): void {
         <hr class="border-border" />
         
         <button
-          type="button"
-          @click.prevent="saveForm()"
+          type="submit"
           class="inline-flex w-full items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
         >
           Save Antibiotic

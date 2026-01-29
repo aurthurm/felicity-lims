@@ -1,5 +1,7 @@
 <script setup lang="ts">
-  import { ref, reactive, computed, PropType, watch, toRefs, defineAsyncComponent } from 'vue';
+  import { ref, computed, PropType, watch, toRefs, defineAsyncComponent } from 'vue';
+  import { useField, useForm } from "vee-validate";
+  import { object, string } from "yup";
   import { AddMethodDocument, AddMethodMutation, AddMethodMutationVariables,
     EditMethodDocument, EditMethodMutation, EditMethodMutationVariables } from '@/graphql/operations/instrument.mutations';
   import { AnalysisType, InstrumentType, MethodType } from '@/types/gql';
@@ -23,9 +25,36 @@
 
   const { method, analysis  } = toRefs(props);
 
-  const form = reactive({ ...method?.value });
+  const formSchema = object({
+    name: string().required("Method name is required"),
+    keyword: string().required("Keyword is required"),
+    description: string().nullable(),
+  });
+
+  const { handleSubmit, errors, setValues } = useForm({
+    validationSchema: formSchema,
+    initialValues: {
+      name: method?.value?.name ?? "",
+      keyword: method?.value?.keyword ?? "",
+      description: method?.value?.description ?? "",
+    },
+  });
+
+  const { value: name } = useField<string>("name");
+  const { value: keyword } = useField<string>("keyword");
+  const { value: description } = useField<string | null>("description");
 
   watch(() => props.analysisUid, (anal, prev) => {})
+  watch(
+    () => method?.value,
+    (current) => {
+      setValues({
+        name: current?.name ?? "",
+        keyword: current?.keyword ?? "",
+        description: current?.description ?? "",
+      });
+    }
+  );
   
   const emit = defineEmits(['close'])
 
@@ -63,11 +92,11 @@
   // store.dispatch(ActionTypes.FETCH_METHODS);
   // const methods = computed<IMethod[]>(() => store.getters.getMethods) 
 
-  function addMethod(): void {
+  function addMethod(values: { name: string; keyword: string; description?: string | null }): void {
     const payload = { 
-      name: form?.name, 
-      keyword: form?.keyword, 
-      description: form?.description,
+      name: values.name, 
+      keyword: values.keyword, 
+      description: values.description,
       instruments: selectedIntsruments.value?.map((i) => i.uid), 
       analyses: selectedAnalyses.value?.map((i) => i.uid),
     }
@@ -77,25 +106,26 @@
     });
   }
 
-  function editMethod(): void {
+  function editMethod(values: { name: string; keyword: string; description?: string | null }): void {
     const payload = { 
-      name: form?.name, 
-      keyword: form?.keyword, 
-      description: form?.description, 
+      name: values.name, 
+      keyword: values.keyword, 
+      description: values.description, 
       instruments: selectedIntsruments.value?.map((i) => i.uid), 
       analyses: selectedAnalyses.value?.map((i) => i.uid),
     }
-    withClientMutation<EditMethodMutation, EditMethodMutationVariables>(EditMethodDocument, { uid: form?.uid, payload }, "updateMethod")
+    withClientMutation<EditMethodMutation, EditMethodMutationVariables>(EditMethodDocument, { uid: method?.value?.uid, payload }, "updateMethod")
     .then((result) => {
       emit('close');
       setupStore.updateMethod(result)
     });
   }
 
-  function saveForm():void {
-    if (!method?.value?.uid) addMethod();
-    if (method?.value?.uid) editMethod();
-  }
+  const saveForm = handleSubmit((values): void => {
+    const payload = { name: values.name, keyword: values.keyword, description: values.description };
+    if (!method?.value?.uid) addMethod(payload);
+    if (method?.value?.uid) editMethod(payload);
+  });
 
 
 </script>
@@ -111,20 +141,22 @@
             Method Name
           </label>
           <input
-            v-model="form.name"
+            v-model="name"
             class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             placeholder="Enter method name..."
           />
+          <div class="text-sm text-destructive">{{ errors.name }}</div>
         </div>
         <div class="space-y-2">
           <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
             Keyword
           </label>
           <input
-            v-model="form.keyword"
+            v-model="keyword"
             class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             placeholder="Enter keyword..."
           />
+          <div class="text-sm text-destructive">{{ errors.keyword }}</div>
         </div>
       </div>
 
@@ -165,7 +197,7 @@
             Description
           </label>
           <textarea
-            v-model="form.description"
+            v-model="description"
             class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             placeholder="Enter description..."
           />
@@ -183,4 +215,3 @@
     </div>
   </form>
 </template>
-

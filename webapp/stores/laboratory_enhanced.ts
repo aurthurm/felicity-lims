@@ -420,7 +420,6 @@ export const useEnhancedLaboratoryStore = defineStore('enhancedLaboratory', () =
             store.value.errorHistory = store.value.errorHistory.slice(0, 50);
         }
 
-        console.error(`Laboratory Store Error [${context}]:`, error);
     };
 
     const clearErrors = () => {
@@ -1057,9 +1056,7 @@ export const useEnhancedLaboratoryStore = defineStore('enhancedLaboratory', () =
                 timestamp: new Date().toISOString(),
             };
             localStorage.setItem(STORAGE_LABORATORY_KEY, JSON.stringify(storeData));
-        } catch (error) {
-            console.error('Failed to save laboratory store to storage:', error);
-        }
+        } catch {}
     };
 
     const loadFromStorage = () => {
@@ -1084,9 +1081,7 @@ export const useEnhancedLaboratoryStore = defineStore('enhancedLaboratory', () =
                     store.value.sortOrder = storeData.sortOrder;
                 }
             }
-        } catch (error) {
-            console.error('Failed to load laboratory store from storage:', error);
-        }
+        } catch {}
     };
 
     // Initialize store

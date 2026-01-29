@@ -49,6 +49,7 @@ export type EditReflexRuleMutation = (
         | 'uid'
         | 'name'
         | 'description'
+        | 'isActive'
         | 'createdByUid'
         | 'createdAt'
       >
@@ -56,209 +57,307 @@ export type EditReflexRuleMutation = (
    }
 );
 
-export type AddReflexActionMutationVariables = Types.Exact<{
-  payload: Types.ReflexActionInput;
+export type CreateReflexDecisionMutationVariables = Types.Exact<{
+  payload: Types.ReflexDecisionInput;
 }>;
 
 
-export type AddReflexActionMutation = (
+export type CreateReflexDecisionMutation = (
   { __typename?: 'Mutation' }
-  & { createReflexAction:
+  & { createReflexDecision:
     | (
       { __typename: 'OperationError' }
       & Pick<Types.OperationError, 'error' | 'suggestion'>
     )
     | (
-      { __typename: 'ReflexActionType' }
-      & Pick<Types.ReflexActionType, 'uid' | 'description' | 'level'>
+      { __typename?: 'ReflexDecisionType' }
+      & Pick<
+        Types.ReflexDecisionType,
+        | 'uid'
+        | 'reflexTriggerUid'
+        | 'description'
+        | 'priority'
+      >
       & {
-        analyses?: Types.Maybe<Array<(
-          { __typename?: 'AnalysisType' }
-          & Pick<Types.AnalysisType, 'uid' | 'name'>
-        )>>,
-        reflexRule?: Types.Maybe<(
-          { __typename?: 'ReflexRuleType' }
-          & Pick<Types.ReflexRuleType, 'uid' | 'name'>
-        )>,
-      }
-    )
-   }
-);
-
-export type EditReflexActionMutationVariables = Types.Exact<{
-  uid: Types.Scalars['String']['input'];
-  payload: Types.ReflexActionInput;
-}>;
-
-
-export type EditReflexActionMutation = (
-  { __typename?: 'Mutation' }
-  & { updateReflexAction:
-    | (
-      { __typename: 'OperationError' }
-      & Pick<Types.OperationError, 'error' | 'suggestion'>
-    )
-    | (
-      { __typename: 'ReflexActionType' }
-      & Pick<Types.ReflexActionType, 'uid' | 'description' | 'level'>
-      & {
-        analyses?: Types.Maybe<Array<(
-          { __typename?: 'AnalysisType' }
-          & Pick<Types.AnalysisType, 'uid' | 'name'>
-        )>>,
-        reflexRule?: Types.Maybe<(
-          { __typename?: 'ReflexRuleType' }
-          & Pick<Types.ReflexRuleType, 'uid' | 'name'>
-        )>,
-      }
-    )
-   }
-);
-
-export type AddReflexBrainMutationVariables = Types.Exact<{
-  payload: Types.ReflexBrainInput;
-}>;
-
-
-export type AddReflexBrainMutation = (
-  { __typename?: 'Mutation' }
-  & { createReflexBrain:
-    | (
-      { __typename: 'OperationError' }
-      & Pick<Types.OperationError, 'error' | 'suggestion'>
-    )
-    | (
-      { __typename: 'ReflexBrainType' }
-      & Pick<Types.ReflexBrainType, 'uid' | 'description'>
-      & {
-        conditions: Array<(
-          { __typename?: 'ReflexBrainConditionType' }
-          & Pick<Types.ReflexBrainConditionType, 'description' | 'priority'>
-          & { criteria?: Types.Maybe<Array<(
-            { __typename: 'ReflexBrainConditionCriteriaType' }
-            & Pick<Types.ReflexBrainConditionCriteriaType, 'analysisUid' | 'operator' | 'value'>
-            & { analysis?: Types.Maybe<(
-              { __typename: 'AnalysisType' }
-              & Pick<Types.AnalysisType, 'uid' | 'name'>
-              & { resultOptions?: Types.Maybe<Array<(
-                { __typename: 'ResultOptionType' }
-                & Pick<Types.ResultOptionType, 'optionKey' | 'value'>
-              )>> }
-            )> }
+        ruleGroups?: Types.Maybe<Array<(
+          { __typename?: 'ReflexRuleGroupType' }
+          & Pick<Types.ReflexRuleGroupType, 'uid' | 'description' | 'priority'>
+          & { rules?: Types.Maybe<Array<(
+            { __typename?: 'ReflexRuleCriteriaType' }
+            & Pick<
+              Types.ReflexRuleCriteriaType,
+              | 'uid'
+              | 'analysisUid'
+              | 'operator'
+              | 'value'
+              | 'priority'
+            >
           )>> }
-        )>,
-        actions: Array<(
-          { __typename: 'ReflexBrainActionType' }
-          & {
-            addNew?: Types.Maybe<Array<(
-              { __typename: 'ReflexBrainAdditionType' }
-              & Pick<Types.ReflexBrainAdditionType, 'analysisUid' | 'count'>
-              & { analysis?: Types.Maybe<(
-                { __typename: 'AnalysisType' }
-                & Pick<Types.AnalysisType, 'uid' | 'name'>
-                & { resultOptions?: Types.Maybe<Array<(
-                  { __typename: 'ResultOptionType' }
-                  & Pick<Types.ResultOptionType, 'optionKey' | 'value'>
-                )>> }
-              )> }
-            )>>,
-            finalise?: Types.Maybe<Array<(
-              { __typename: 'ReflexBrainFinalType' }
-              & Pick<Types.ReflexBrainFinalType, 'analysisUid' | 'value'>
-              & { analysis?: Types.Maybe<(
-                { __typename: 'AnalysisType' }
-                & Pick<Types.AnalysisType, 'name'>
-                & { resultOptions?: Types.Maybe<Array<(
-                  { __typename: 'ResultOptionType' }
-                  & Pick<Types.ResultOptionType, 'optionKey' | 'value'>
-                )>> }
-              )> }
-            )>>,
-          }
-        )>,
+        )>>,
+        addAnalyses?: Types.Maybe<Array<(
+          { __typename?: 'ReflexAddAnalysisType' }
+          & Pick<Types.ReflexAddAnalysisType, 'uid' | 'analysisUid' | 'count'>
+        )>>,
+        finalizeAnalyses?: Types.Maybe<Array<(
+          { __typename?: 'ReflexFinalizeAnalysisType' }
+          & Pick<Types.ReflexFinalizeAnalysisType, 'uid' | 'analysisUid' | 'value'>
+        )>>,
       }
     )
    }
 );
 
-export type EditReflexBrainMutationVariables = Types.Exact<{
+export type UpdateReflexDecisionMutationVariables = Types.Exact<{
   uid: Types.Scalars['String']['input'];
-  payload: Types.ReflexBrainInput;
+  payload: Types.ReflexDecisionInput;
 }>;
 
 
-export type EditReflexBrainMutation = (
+export type UpdateReflexDecisionMutation = (
   { __typename?: 'Mutation' }
-  & { updateReflexBrain:
+  & { updateReflexDecision:
     | (
       { __typename: 'OperationError' }
       & Pick<Types.OperationError, 'error' | 'suggestion'>
     )
     | (
-      { __typename: 'ReflexBrainType' }
-      & Pick<Types.ReflexBrainType, 'uid' | 'description'>
+      { __typename?: 'ReflexDecisionType' }
+      & Pick<
+        Types.ReflexDecisionType,
+        | 'uid'
+        | 'reflexTriggerUid'
+        | 'description'
+        | 'priority'
+      >
       & {
-        conditions: Array<(
-          { __typename?: 'ReflexBrainConditionType' }
-          & Pick<Types.ReflexBrainConditionType, 'description' | 'priority'>
-          & { criteria?: Types.Maybe<Array<(
-            { __typename: 'ReflexBrainConditionCriteriaType' }
-            & Pick<Types.ReflexBrainConditionCriteriaType, 'analysisUid' | 'operator' | 'value'>
-            & { analysis?: Types.Maybe<(
-              { __typename: 'AnalysisType' }
-              & Pick<Types.AnalysisType, 'uid' | 'name'>
-              & { resultOptions?: Types.Maybe<Array<(
-                { __typename: 'ResultOptionType' }
-                & Pick<Types.ResultOptionType, 'optionKey' | 'value'>
-              )>> }
-            )> }
+        ruleGroups?: Types.Maybe<Array<(
+          { __typename?: 'ReflexRuleGroupType' }
+          & Pick<Types.ReflexRuleGroupType, 'uid' | 'description' | 'priority'>
+          & { rules?: Types.Maybe<Array<(
+            { __typename?: 'ReflexRuleCriteriaType' }
+            & Pick<
+              Types.ReflexRuleCriteriaType,
+              | 'uid'
+              | 'analysisUid'
+              | 'operator'
+              | 'value'
+              | 'priority'
+            >
           )>> }
-        )>,
-        actions: Array<(
-          { __typename: 'ReflexBrainActionType' }
-          & {
-            addNew?: Types.Maybe<Array<(
-              { __typename: 'ReflexBrainAdditionType' }
-              & Pick<Types.ReflexBrainAdditionType, 'analysisUid' | 'count'>
-              & { analysis?: Types.Maybe<(
-                { __typename: 'AnalysisType' }
-                & Pick<Types.AnalysisType, 'uid' | 'name'>
-                & { resultOptions?: Types.Maybe<Array<(
-                  { __typename: 'ResultOptionType' }
-                  & Pick<Types.ResultOptionType, 'optionKey' | 'value'>
-                )>> }
-              )> }
-            )>>,
-            finalise?: Types.Maybe<Array<(
-              { __typename: 'ReflexBrainFinalType' }
-              & Pick<Types.ReflexBrainFinalType, 'analysisUid' | 'value'>
-              & { analysis?: Types.Maybe<(
-                { __typename: 'AnalysisType' }
-                & Pick<Types.AnalysisType, 'name'>
-                & { resultOptions?: Types.Maybe<Array<(
-                  { __typename: 'ResultOptionType' }
-                  & Pick<Types.ResultOptionType, 'optionKey' | 'value'>
-                )>> }
-              )> }
-            )>>,
-          }
-        )>,
+        )>>,
+        addAnalyses?: Types.Maybe<Array<(
+          { __typename?: 'ReflexAddAnalysisType' }
+          & Pick<Types.ReflexAddAnalysisType, 'uid' | 'analysisUid' | 'count'>
+        )>>,
+        finalizeAnalyses?: Types.Maybe<Array<(
+          { __typename?: 'ReflexFinalizeAnalysisType' }
+          & Pick<Types.ReflexFinalizeAnalysisType, 'uid' | 'analysisUid' | 'value'>
+        )>>,
       }
     )
    }
 );
 
-export type DeleteReflexBrainMutationVariables = Types.Exact<{
+export type CreateReflexTriggerMutationVariables = Types.Exact<{
+  payload: Types.ReflexTriggerInput;
+}>;
+
+
+export type CreateReflexTriggerMutation = (
+  { __typename?: 'Mutation' }
+  & { createReflexTrigger:
+    | (
+      { __typename: 'OperationError' }
+      & Pick<Types.OperationError, 'error' | 'suggestion'>
+    )
+    | (
+      { __typename?: 'ReflexTriggerType' }
+      & Pick<
+        Types.ReflexTriggerType,
+        | 'uid'
+        | 'reflexRuleUid'
+        | 'level'
+        | 'description'
+        | 'sampleTypeUid'
+        | 'posX'
+        | 'posY'
+      >
+      & { analyses?: Types.Maybe<Array<(
+        { __typename?: 'AnalysisType' }
+        & Pick<Types.AnalysisType, 'uid' | 'name'>
+      )>> }
+    )
+   }
+);
+
+export type UpdateReflexTriggerMutationVariables = Types.Exact<{
+  uid: Types.Scalars['String']['input'];
+  payload: Types.ReflexTriggerInput;
+}>;
+
+
+export type UpdateReflexTriggerMutation = (
+  { __typename?: 'Mutation' }
+  & { updateReflexTrigger:
+    | (
+      { __typename: 'OperationError' }
+      & Pick<Types.OperationError, 'error' | 'suggestion'>
+    )
+    | (
+      { __typename?: 'ReflexTriggerType' }
+      & Pick<
+        Types.ReflexTriggerType,
+        | 'uid'
+        | 'reflexRuleUid'
+        | 'level'
+        | 'description'
+        | 'sampleTypeUid'
+      >
+      & { analyses?: Types.Maybe<Array<(
+        { __typename?: 'AnalysisType' }
+        & Pick<Types.AnalysisType, 'uid' | 'name'>
+      )>> }
+    )
+   }
+);
+
+export type DeleteReflexTriggerMutationVariables = Types.Exact<{
   uid: Types.Scalars['String']['input'];
 }>;
 
 
-export type DeleteReflexBrainMutation = (
+export type DeleteReflexTriggerMutation = (
   { __typename?: 'Mutation' }
-  & { deleteReflexBrain: (
-    { __typename: 'DeletedItem' }
-    & Pick<Types.DeletedItem, 'uid'>
-  ) }
+  & { deleteReflexTrigger:
+    | (
+      { __typename?: 'DeletedItem' }
+      & Pick<Types.DeletedItem, 'uid'>
+    )
+    | (
+      { __typename: 'OperationError' }
+      & Pick<Types.OperationError, 'error' | 'suggestion'>
+    )
+   }
+);
+
+export type DeleteReflexDecisionMutationVariables = Types.Exact<{
+  uid: Types.Scalars['String']['input'];
+}>;
+
+
+export type DeleteReflexDecisionMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteReflexDecision:
+    | (
+      { __typename?: 'DeletedItem' }
+      & Pick<Types.DeletedItem, 'uid'>
+    )
+    | (
+      { __typename: 'OperationError' }
+      & Pick<Types.OperationError, 'error' | 'suggestion'>
+    )
+   }
+);
+
+export type SaveReflexRuleGraphMutationVariables = Types.Exact<{
+  uid: Types.Scalars['String']['input'];
+  graph: Types.ReflexRuleGraphInput;
+}>;
+
+
+export type SaveReflexRuleGraphMutation = (
+  { __typename?: 'Mutation' }
+  & { saveReflexRuleGraph:
+    | (
+      { __typename: 'OperationError' }
+      & Pick<Types.OperationError, 'error' | 'suggestion'>
+    )
+    | (
+      { __typename?: 'ReflexRuleType' }
+      & Pick<
+        Types.ReflexRuleType,
+        | 'uid'
+        | 'name'
+        | 'description'
+        | 'isActive'
+        | 'priority'
+      >
+      & { reflexTriggers?: Types.Maybe<Array<(
+        { __typename?: 'ReflexTriggerType' }
+        & Pick<
+          Types.ReflexTriggerType,
+          | 'uid'
+          | 'level'
+          | 'description'
+          | 'posX'
+          | 'posY'
+        >
+        & {
+          analyses?: Types.Maybe<Array<(
+            { __typename?: 'AnalysisType' }
+            & Pick<Types.AnalysisType, 'uid' | 'name'>
+          )>>,
+          decisions?: Types.Maybe<Array<(
+            { __typename?: 'ReflexDecisionType' }
+            & Pick<
+              Types.ReflexDecisionType,
+              | 'uid'
+              | 'description'
+              | 'priority'
+              | 'posX'
+              | 'posY'
+            >
+            & {
+              ruleGroups?: Types.Maybe<Array<(
+                { __typename?: 'ReflexRuleGroupType' }
+                & Pick<
+                  Types.ReflexRuleGroupType,
+                  | 'uid'
+                  | 'description'
+                  | 'priority'
+                  | 'posX'
+                  | 'posY'
+                >
+                & { rules?: Types.Maybe<Array<(
+                  { __typename?: 'ReflexRuleCriteriaType' }
+                  & Pick<
+                    Types.ReflexRuleCriteriaType,
+                    | 'uid'
+                    | 'analysisUid'
+                    | 'operator'
+                    | 'value'
+                    | 'priority'
+                  >
+                )>> }
+              )>>,
+              addAnalyses?: Types.Maybe<Array<(
+                { __typename?: 'ReflexAddAnalysisType' }
+                & Pick<
+                  Types.ReflexAddAnalysisType,
+                  | 'uid'
+                  | 'analysisUid'
+                  | 'count'
+                  | 'posX'
+                  | 'posY'
+                >
+              )>>,
+              finalizeAnalyses?: Types.Maybe<Array<(
+                { __typename?: 'ReflexFinalizeAnalysisType' }
+                & Pick<
+                  Types.ReflexFinalizeAnalysisType,
+                  | 'uid'
+                  | 'analysisUid'
+                  | 'value'
+                  | 'posX'
+                  | 'posY'
+                >
+              )>>,
+            }
+          )>>,
+        }
+      )>> }
+    )
+   }
 );
 
 
@@ -292,6 +391,7 @@ export const EditReflexRuleDocument = gql`
       uid
       name
       description
+      isActive
       createdByUid
       createdAt
     }
@@ -306,24 +406,110 @@ export const EditReflexRuleDocument = gql`
 export function useEditReflexRuleMutation() {
   return Urql.useMutation<EditReflexRuleMutation, EditReflexRuleMutationVariables>(EditReflexRuleDocument);
 };
-export const AddReflexActionDocument = gql`
-    mutation AddReflexAction($payload: ReflexActionInput!) {
-  createReflexAction(payload: $payload) {
-    __typename
-    ... on ReflexActionType {
+export const CreateReflexDecisionDocument = gql`
+    mutation createReflexDecision($payload: ReflexDecisionInput!) {
+  createReflexDecision(payload: $payload) {
+    ... on ReflexDecisionType {
       uid
+      reflexTriggerUid
       description
+      priority
+      ruleGroups {
+        uid
+        description
+        priority
+        rules {
+          uid
+          analysisUid
+          operator
+          value
+          priority
+        }
+      }
+      addAnalyses {
+        uid
+        analysisUid
+        count
+      }
+      finalizeAnalyses {
+        uid
+        analysisUid
+        value
+      }
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useCreateReflexDecisionMutation() {
+  return Urql.useMutation<CreateReflexDecisionMutation, CreateReflexDecisionMutationVariables>(CreateReflexDecisionDocument);
+};
+export const UpdateReflexDecisionDocument = gql`
+    mutation updateReflexDecision($uid: String!, $payload: ReflexDecisionInput!) {
+  updateReflexDecision(uid: $uid, payload: $payload) {
+    ... on ReflexDecisionType {
+      uid
+      reflexTriggerUid
+      description
+      priority
+      ruleGroups {
+        uid
+        description
+        priority
+        rules {
+          uid
+          analysisUid
+          operator
+          value
+          priority
+        }
+      }
+      addAnalyses {
+        uid
+        analysisUid
+        count
+      }
+      finalizeAnalyses {
+        uid
+        analysisUid
+        value
+      }
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useUpdateReflexDecisionMutation() {
+  return Urql.useMutation<UpdateReflexDecisionMutation, UpdateReflexDecisionMutationVariables>(UpdateReflexDecisionDocument);
+};
+export const CreateReflexTriggerDocument = gql`
+    mutation createReflexTrigger($payload: ReflexTriggerInput!) {
+  createReflexTrigger(payload: $payload) {
+    ... on ReflexTriggerType {
+      uid
+      reflexRuleUid
       level
+      description
+      sampleTypeUid
+      posX
+      posY
       analyses {
         uid
         name
       }
-      reflexRule {
-        uid
-        name
-      }
     }
     ... on OperationError {
+      __typename
       error
       suggestion
     }
@@ -331,99 +517,25 @@ export const AddReflexActionDocument = gql`
 }
     `;
 
-export function useAddReflexActionMutation() {
-  return Urql.useMutation<AddReflexActionMutation, AddReflexActionMutationVariables>(AddReflexActionDocument);
+export function useCreateReflexTriggerMutation() {
+  return Urql.useMutation<CreateReflexTriggerMutation, CreateReflexTriggerMutationVariables>(CreateReflexTriggerDocument);
 };
-export const EditReflexActionDocument = gql`
-    mutation editReflexAction($uid: String!, $payload: ReflexActionInput!) {
-  updateReflexAction(uid: $uid, payload: $payload) {
-    __typename
-    ... on ReflexActionType {
+export const UpdateReflexTriggerDocument = gql`
+    mutation updateReflexTrigger($uid: String!, $payload: ReflexTriggerInput!) {
+  updateReflexTrigger(uid: $uid, payload: $payload) {
+    ... on ReflexTriggerType {
       uid
-      description
+      reflexRuleUid
       level
+      description
+      sampleTypeUid
       analyses {
         uid
         name
       }
-      reflexRule {
-        uid
-        name
-      }
     }
     ... on OperationError {
-      error
-      suggestion
-    }
-  }
-}
-    `;
-
-export function useEditReflexActionMutation() {
-  return Urql.useMutation<EditReflexActionMutation, EditReflexActionMutationVariables>(EditReflexActionDocument);
-};
-export const AddReflexBrainDocument = gql`
-    mutation AddReflexBrain($payload: ReflexBrainInput!) {
-  createReflexBrain(payload: $payload) {
-    __typename
-    ... on ReflexBrainType {
-      uid
-      description
-      conditions {
-        description
-        priority
-        criteria {
-          analysisUid
-          analysis {
-            uid
-            name
-            resultOptions {
-              optionKey
-              value
-              __typename
-            }
-            __typename
-          }
-          operator
-          value
-          __typename
-        }
-      }
-      actions {
-        addNew {
-          analysisUid
-          analysis {
-            uid
-            name
-            resultOptions {
-              optionKey
-              value
-              __typename
-            }
-            __typename
-          }
-          count
-          __typename
-        }
-        finalise {
-          analysisUid
-          analysis {
-            name
-            resultOptions {
-              optionKey
-              value
-              __typename
-            }
-            __typename
-          }
-          value
-          __typename
-        }
-        __typename
-      }
       __typename
-    }
-    ... on OperationError {
       error
       suggestion
     }
@@ -431,92 +543,110 @@ export const AddReflexBrainDocument = gql`
 }
     `;
 
-export function useAddReflexBrainMutation() {
-  return Urql.useMutation<AddReflexBrainMutation, AddReflexBrainMutationVariables>(AddReflexBrainDocument);
+export function useUpdateReflexTriggerMutation() {
+  return Urql.useMutation<UpdateReflexTriggerMutation, UpdateReflexTriggerMutationVariables>(UpdateReflexTriggerDocument);
 };
-export const EditReflexBrainDocument = gql`
-    mutation editReflexBrain($uid: String!, $payload: ReflexBrainInput!) {
-  updateReflexBrain(uid: $uid, payload: $payload) {
-    __typename
-    ... on ReflexBrainType {
-      uid
-      description
-      conditions {
-        description
-        priority
-        criteria {
-          analysisUid
-          analysis {
-            uid
-            name
-            resultOptions {
-              optionKey
-              value
-              __typename
-            }
-            __typename
-          }
-          operator
-          value
-          __typename
-        }
-      }
-      actions {
-        addNew {
-          analysisUid
-          analysis {
-            uid
-            name
-            resultOptions {
-              optionKey
-              value
-              __typename
-            }
-            __typename
-          }
-          count
-          __typename
-        }
-        finalise {
-          analysisUid
-          analysis {
-            name
-            resultOptions {
-              optionKey
-              value
-              __typename
-            }
-            __typename
-          }
-          value
-          __typename
-        }
-        __typename
-      }
-      __typename
-    }
-    ... on OperationError {
-      error
-      suggestion
-    }
-  }
-}
-    `;
-
-export function useEditReflexBrainMutation() {
-  return Urql.useMutation<EditReflexBrainMutation, EditReflexBrainMutationVariables>(EditReflexBrainDocument);
-};
-export const DeleteReflexBrainDocument = gql`
-    mutation deleteReflexBrain($uid: String!) {
-  deleteReflexBrain(uid: $uid) {
-    __typename
+export const DeleteReflexTriggerDocument = gql`
+    mutation deleteReflexTrigger($uid: String!) {
+  deleteReflexTrigger(uid: $uid) {
     ... on DeletedItem {
       uid
     }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
   }
 }
     `;
 
-export function useDeleteReflexBrainMutation() {
-  return Urql.useMutation<DeleteReflexBrainMutation, DeleteReflexBrainMutationVariables>(DeleteReflexBrainDocument);
+export function useDeleteReflexTriggerMutation() {
+  return Urql.useMutation<DeleteReflexTriggerMutation, DeleteReflexTriggerMutationVariables>(DeleteReflexTriggerDocument);
+};
+export const DeleteReflexDecisionDocument = gql`
+    mutation deleteReflexDecision($uid: String!) {
+  deleteReflexDecision(uid: $uid) {
+    ... on DeletedItem {
+      uid
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useDeleteReflexDecisionMutation() {
+  return Urql.useMutation<DeleteReflexDecisionMutation, DeleteReflexDecisionMutationVariables>(DeleteReflexDecisionDocument);
+};
+export const SaveReflexRuleGraphDocument = gql`
+    mutation saveReflexRuleGraph($uid: String!, $graph: ReflexRuleGraphInput!) {
+  saveReflexRuleGraph(uid: $uid, graph: $graph) {
+    ... on ReflexRuleType {
+      uid
+      name
+      description
+      isActive
+      priority
+      reflexTriggers {
+        uid
+        level
+        description
+        posX
+        posY
+        analyses {
+          uid
+          name
+        }
+        decisions {
+          uid
+          description
+          priority
+          posX
+          posY
+          ruleGroups {
+            uid
+            description
+            priority
+            posX
+            posY
+            rules {
+              uid
+              analysisUid
+              operator
+              value
+              priority
+            }
+          }
+          addAnalyses {
+            uid
+            analysisUid
+            count
+            posX
+            posY
+          }
+          finalizeAnalyses {
+            uid
+            analysisUid
+            value
+            posX
+            posY
+          }
+        }
+      }
+    }
+    ... on OperationError {
+      __typename
+      error
+      suggestion
+    }
+  }
+}
+    `;
+
+export function useSaveReflexRuleGraphMutation() {
+  return Urql.useMutation<SaveReflexRuleGraphMutation, SaveReflexRuleGraphMutationVariables>(SaveReflexRuleGraphDocument);
 };

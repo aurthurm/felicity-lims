@@ -167,7 +167,7 @@ const InventoryListing = defineComponent({
             },
         ]);
 
-        let productParams = reactive({
+        const productParams = reactive({
             first: 50,
             before: '',
             text: '',

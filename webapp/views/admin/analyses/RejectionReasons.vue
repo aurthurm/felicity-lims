@@ -1,5 +1,7 @@
 <script setup lang="ts">
-  import { reactive, computed } from 'vue';
+  import { ref, computed } from 'vue';
+  import { useField, useForm } from 'vee-validate';
+  import * as yup from 'yup';
   import { RejectionReasonType } from '@/types/gql';
   import { AddRejectionReasonDocument, AddRejectionReasonMutation, AddRejectionReasonMutationVariables,
     EditRejectionReasonDocument, EditRejectionReasonMutation, EditRejectionReasonMutationVariables } from '@/graphql/operations/analyses.mutations';
@@ -10,42 +12,57 @@
   const analysisStore = useAnalysisStore()
   const { withClientMutation } = useApiUtil()
 
-  const state = reactive({
-    showModal: false,
-    formTitle: '',
-    form: {} as RejectionReasonType,
-    formAction: false,
-  })
+  const showModal = ref(false);
+  const formTitle = ref('');
+  const formAction = ref(false);
+  const currentUid = ref<string | null>(null);
+
+  const rejectionSchema = yup.object({
+    reason: yup.string().trim().required('Reason is required'),
+  });
+
+  const { handleSubmit, resetForm, setValues } = useForm({
+    validationSchema: rejectionSchema,
+    initialValues: {
+      reason: '',
+    },
+  });
+
+  const { value: reason, errorMessage: reasonError } = useField<string>('reason');
   
   analysisStore.fetchRejectionReasons()
   const rejectionReasons = computed(() => analysisStore.getRejectionReasons)
 
-  function addRejectionReason(): void {
-    withClientMutation<AddRejectionReasonMutation, AddRejectionReasonMutationVariables>(AddRejectionReasonDocument, { reason: state.form.reason }, "createRejectionReason")
+  function addRejectionReason(payload: { reason: string }): void {
+    withClientMutation<AddRejectionReasonMutation, AddRejectionReasonMutationVariables>(AddRejectionReasonDocument, payload, "createRejectionReason")
     .then((result) => analysisStore.addRejectionReason(result));
   }
 
-  function editRejectionReason(): void {
-    withClientMutation<EditRejectionReasonMutation, EditRejectionReasonMutationVariables>(EditRejectionReasonDocument, { uid: state.form.uid, reason: state.form.reason }, "updateRejectionReason")
+  function editRejectionReason(payload: { reason: string }): void {
+    if (!currentUid.value) return;
+    withClientMutation<EditRejectionReasonMutation, EditRejectionReasonMutationVariables>(EditRejectionReasonDocument, { uid: currentUid.value, ...payload }, "updateRejectionReason")
     .then((result) => analysisStore.updateRejectionReason(result));
   }
 
   function FormManager(create: boolean, obj: RejectionReasonType = {} as RejectionReasonType):void {
-    state.formAction = create;
-    state.showModal = true;
-    state.formTitle = (create ? 'CREATE' : 'EDIT') + ' ' + "REJECTION REASON";
+    formAction.value = create;
+    showModal.value = true;
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "REJECTION REASON";
     if (create) {
-      state.form = {} as RejectionReasonType
+      currentUid.value = null;
+      resetForm({ values: { reason: '' } });
     } else {
-      state.form = { ... obj };
+      currentUid.value = obj.uid ?? null;
+      setValues({ reason: obj.reason ?? '' });
     }
   }
 
-  function saveForm():void {
-    if (state.formAction === true) addRejectionReason();
-    if (state.formAction === false) editRejectionReason();
-    state.showModal = false;
-  }
+  const saveForm = handleSubmit((values) => {
+    const payload = { reason: values.reason };
+    if (formAction.value === true) addRejectionReason(payload);
+    if (formAction.value === false) editRejectionReason(payload);
+    showModal.value = false;
+  });
 </script>
 
 <template>
@@ -84,28 +101,28 @@
     </div>
 
     <!-- Rejection Reason Form Modal -->
-  <fel-modal v-if="state.showModal" @close="state.showModal = false">
+  <fel-modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
-      <h3 class="text-lg font-bold text-foreground">{{ state.formTitle }}</h3>
+      <h3 class="text-lg font-bold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-6 space-y-6">
+      <form @submit.prevent="saveForm" class="p-6 space-y-6">
         <div class="space-y-4">
           <label class="space-y-2">
             <span class="text-sm font-medium text-muted-foreground">Rejection Reason</span>
             <input
               class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-              v-model="state.form.reason"
+              v-model="reason"
               placeholder="Reason ..."
             />
+            <p v-if="reasonError" class="text-sm text-destructive">{{ reasonError }}</p>
           </label>
         </div>
 
         <div class="pt-4">
           <button
-            type="button"
-            @click.prevent="saveForm()"
+            type="submit"
             class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
           >
             Save Form
@@ -116,4 +133,3 @@
   </fel-modal>
 
 </template>
-

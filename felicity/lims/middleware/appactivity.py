@@ -24,6 +24,10 @@ class APIActivityLogMiddleware(BaseHTTPMiddleware):
         self.graphql_path = graphql_path
 
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
+        # Skip logging for static assets to avoid binary decoding issues
+        if request.url.path.startswith("/assets/") or request.url.path.endswith((".js", ".css", ".ico", ".png", ".jpg", ".jpeg", ".gif", ".svg", ".woff", ".woff2", ".ttf", ".eot")):
+            return await call_next(request)
+
         # Store request start time
         start_time = time.time()
 
@@ -87,8 +91,19 @@ class APIActivityLogMiddleware(BaseHTTPMiddleware):
                 async for chunk in response.body_iterator:
                     original_response_body += chunk
 
-                if original_response_body:
-                    response_body = original_response_body.decode("utf-8")
+                # Only decode if content type is text-based
+                content_type = response.headers.get("content-type", "")
+                is_text_content = any(
+                    ct in content_type.lower()
+                    for ct in ["application/json", "text/", "application/xml", "application/graphql"]
+                )
+
+                if original_response_body and is_text_content:
+                    try:
+                        response_body = original_response_body.decode("utf-8")
+                    except UnicodeDecodeError:
+                        # If decoding fails, skip response body logging
+                        response_body = None
 
                     # Parse GraphQL response if applicable
                     if is_graphql:

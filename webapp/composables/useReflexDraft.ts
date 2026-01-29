@@ -1,124 +1,81 @@
 import { ref, onBeforeUnmount } from 'vue';
 import type { Node, Edge } from '@vue-flow/core';
 import { useIntervalFn } from '@vueuse/core';
+import { useReflexStore } from '@/stores/reflex';
 
 /**
- * Draft data structure
- */
-interface ReflexDraft {
-  nodes: Node[];
-  edges: Edge[];
-  timestamp: number;
-  version: number;
-}
-
-/**
- * Composable for managing reflex rule drafts with auto-save
+ * Composable for managing reflex rule auto-save with backend persistence
  *
  * Features:
- * - Local storage (immediate save for browser crash recovery)
+ * - Backend persistence (accessible across devices)
  * - Auto-save every 30 seconds
- * - Conflict resolution (uses most recent draft)
- * - Save on page unload
+ * - Saves node positions to database
+ * - Unified save handles both create and update based on UIDs
+ * - Separate publish/unpublish for is_active flag
  *
  * @param ruleUid - The UID of the reflex rule
  *
  * @example
  * const {
- *   saveDraftLocal,
- *   loadDraft,
- *   hasDraft,
+ *   saveDraft,
+ *   saveNow,
  *   lastSaved,
- *   clearDraft,
+ *   isSaving,
  *   startAutoSave,
- *   stopAutoSave
+ *   getTimeSinceLastSave
  * } = useReflexDraft('rule-uid-123');
  *
  * // Start auto-save
  * startAutoSave(() => ({ nodes: nodes.value, edges: edges.value }));
  *
- * // Load existing draft
- * const draft = loadDraft();
- * if (draft) {
- *   nodes.value = draft.nodes;
- *   edges.value = draft.edges;
- * }
+ * // Manual save
+ * await saveNow(nodes.value, edges.value);
  */
 export function useReflexDraft(ruleUid: string) {
-  const DRAFT_KEY = `reflex_draft_${ruleUid}`;
   const AUTO_SAVE_INTERVAL = 30000; // 30 seconds
-  const DRAFT_VERSION = 1;
+  const reflexStore = useReflexStore();
 
   const lastSaved = ref<number | null>(null);
   const isSaving = ref(false);
+  const saveError = ref<string | null>(null);
 
   /**
-   * Save draft to local storage (immediate)
+   * Save graph to backend (saves positions, creates/updates entities)
+   *
+   * Note: This doesn't modify is_active flag - use separate publish method for that
    *
    * @param nodes - Current nodes
    * @param edges - Current edges
+   * @returns Promise that resolves when save is complete
    */
-  const saveDraftLocal = (nodes: Node[], edges: Edge[]) => {
-    try {
-      const draft: ReflexDraft = {
-        nodes: JSON.parse(JSON.stringify(nodes)),
-        edges: JSON.parse(JSON.stringify(edges)),
-        timestamp: Date.now(),
-        version: DRAFT_VERSION,
-      };
-
-      localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
-      lastSaved.value = draft.timestamp;
-    } catch (error) {
-      console.error('Failed to save draft to local storage:', error);
-    }
-  };
-
-  /**
-   * Load draft from local storage
-   *
-   * @returns The draft, or null if none exists
-   */
-  const loadDraft = (): ReflexDraft | null => {
-    try {
-      const draftJson = localStorage.getItem(DRAFT_KEY);
-      if (!draftJson) return null;
-
-      const draft = JSON.parse(draftJson) as ReflexDraft;
-
-      // Validate draft version
-      if (draft.version !== DRAFT_VERSION) {
-        console.warn('Draft version mismatch, ignoring old draft');
-        clearDraft();
-        return null;
-      }
-
-      lastSaved.value = draft.timestamp;
-      return draft;
-    } catch (error) {
-      console.error('Failed to load draft from local storage:', error);
+  const saveDraft = async (
+    nodes: Node[],
+    edges: Edge[],
+    onSaved?: (ruleData: any) => void
+  ): Promise<any> => {
+    if (isSaving.value) {
       return null;
     }
-  };
 
-  /**
-   * Check if a draft exists
-   *
-   * @returns True if a draft exists
-   */
-  const hasDraft = (): boolean => {
-    return localStorage.getItem(DRAFT_KEY) !== null;
-  };
-
-  /**
-   * Clear draft from local storage
-   */
-  const clearDraft = () => {
     try {
-      localStorage.removeItem(DRAFT_KEY);
-      lastSaved.value = null;
+      isSaving.value = true;
+      saveError.value = null;
+
+
+      // The store method will convert nodes/edges to backend entities with positions
+      // It handles both create and update automatically based on UIDs
+      const savedRule = await reflexStore.saveReflexRule(ruleUid, nodes, edges);
+      if (savedRule && onSaved) {
+        onSaved(savedRule);
+      }
+
+      lastSaved.value = Date.now();
+      return savedRule;
     } catch (error) {
-      console.error('Failed to clear draft from local storage:', error);
+      saveError.value = error instanceof Error ? error.message : 'Unknown error';
+      return null;
+    } finally {
+      isSaving.value = false;
     }
   };
 
@@ -128,7 +85,7 @@ export function useReflexDraft(ruleUid: string) {
    * @returns Human-readable time since last save
    */
   const getTimeSinceLastSave = (): string => {
-    if (!lastSaved.value) return 'Never';
+    if (!lastSaved.value) return 'Not saved yet';
 
     const seconds = Math.floor((Date.now() - lastSaved.value) / 1000);
 
@@ -145,19 +102,21 @@ export function useReflexDraft(ruleUid: string) {
    * @param getState - Function to get current state (nodes, edges)
    * @returns Object with pause and resume functions
    */
-  const startAutoSave = (getState: () => { nodes: Node[]; edges: Edge[] }) => {
-    const { pause, resume, isActive } = useIntervalFn(() => {
+  const startAutoSave = (
+    getState: () => { nodes: Node[]; edges: Edge[] },
+    onSaved?: (ruleData: any) => void
+  ) => {
+    const { pause, resume, isActive } = useIntervalFn(async () => {
       if (isSaving.value) return; // Skip if already saving
 
       try {
-        isSaving.value = true;
         const { nodes, edges } = getState();
-        saveDraftLocal(nodes, edges);
-      } catch (error) {
-        console.error('Auto-save failed:', error);
-      } finally {
-        isSaving.value = false;
-      }
+
+        // Only save if there are nodes (avoid saving empty state on load)
+        if (nodes.length > 0) {
+          await saveDraft(nodes, edges, onSaved);
+        }
+      } catch {}
     }, AUTO_SAVE_INTERVAL);
 
     return { pause, resume, isActive };
@@ -166,77 +125,63 @@ export function useReflexDraft(ruleUid: string) {
   /**
    * Save on page unload (browser close/refresh)
    */
-  const setupUnloadHandler = (getState: () => { nodes: Node[]; edges: Edge[] }) => {
-    const handleUnload = () => {
+  const setupUnloadHandler = (
+    getState: () => { nodes: Node[]; edges: Edge[] },
+    onSaved?: (ruleData: any) => void
+  ) => {
+    const handleUnload = async (event: BeforeUnloadEvent) => {
       const { nodes, edges } = getState();
-      saveDraftLocal(nodes, edges);
+
+      if (nodes.length > 0 && !isSaving.value) {
+        // Try to save (may not complete if browser closes immediately)
+        await saveDraft(nodes, edges, onSaved);
+
+        // Show browser warning if there are unsaved changes
+        if (lastSaved.value && Date.now() - lastSaved.value > AUTO_SAVE_INTERVAL) {
+          event.preventDefault();
+          event.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+        }
+      }
     };
 
-    window.addEventListener('beforeunload', handleUnload);
+    window.addEventListener('beforeunload', handleUnload as any);
 
     // Cleanup on component unmount
-    onBeforeUnmount(() => {
-      window.removeEventListener('beforeunload', handleUnload);
+    onBeforeUnmount(async () => {
+      window.removeEventListener('beforeunload', handleUnload as any);
+
       // Final save on unmount
       const { nodes, edges } = getState();
-      saveDraftLocal(nodes, edges);
+      if (nodes.length > 0) {
+        await saveDraft(nodes, edges, onSaved);
+      }
     });
 
     return handleUnload;
   };
 
   /**
-   * Show draft recovery prompt
-   *
-   * @param draft - The draft to show info for
-   * @returns HTML string for prompt
+   * Manually trigger a save (for Save button)
    */
-  const getDraftRecoveryMessage = (draft: ReflexDraft): string => {
-    const timeDiff = getTimeSinceLastSave();
-    const nodeCount = draft.nodes.length;
-    const edgeCount = draft.edges.length;
-
-    return `
-      A draft was found for this reflex rule:
-      - Saved: ${timeDiff}
-      - Nodes: ${nodeCount}
-      - Connections: ${edgeCount}
-
-      Would you like to restore it?
-    `;
+  const saveNow = async (
+    nodes: Node[],
+    edges: Edge[],
+    onSaved?: (ruleData: any) => void
+  ): Promise<any> => {
+    return await saveDraft(nodes, edges, onSaved);
   };
 
   return {
     // State
     lastSaved,
     isSaving,
+    saveError,
 
     // Methods
-    saveDraftLocal,
-    loadDraft,
-    hasDraft,
-    clearDraft,
+    saveDraft,
+    saveNow,
     getTimeSinceLastSave,
     startAutoSave,
     setupUnloadHandler,
-    getDraftRecoveryMessage,
   };
-}
-
-/**
- * Utility to compare two drafts and determine which is newer
- *
- * @param draft1 - First draft
- * @param draft2 - Second draft
- * @returns The newer draft
- */
-export function getMostRecentDraft(
-  draft1: ReflexDraft | null,
-  draft2: ReflexDraft | null
-): ReflexDraft | null {
-  if (!draft1 && !draft2) return null;
-  if (!draft1) return draft2;
-  if (!draft2) return draft1;
-
-  return draft1.timestamp > draft2.timestamp ? draft1 : draft2;
 }

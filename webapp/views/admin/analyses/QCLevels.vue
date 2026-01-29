@@ -1,5 +1,7 @@
 <script setup lang="ts">
-  import { ref, reactive, computed } from 'vue';
+  import { ref, computed } from 'vue';
+  import { useField, useForm } from 'vee-validate';
+  import * as yup from 'yup';
   import { QCLevelType } from '@/types/gql';
   import { AddQcLevelDocument, AddQcLevelMutation, AddQcLevelMutationVariables,
     EditQcLevelDocument, EditQcLevelMutation, EditQcLevelMutationVariables } from '@/graphql/operations/analyses.mutations';
@@ -12,19 +14,33 @@
   
   let showModal = ref(false);
   let formTitle = ref('');
-  let form = reactive({}) as QCLevelType;
   const formAction = ref(true);
+  const currentUid = ref<string | null>(null);
+
+  const qcLevelSchema = yup.object({
+    level: yup.string().trim().required('QC level is required'),
+  });
+
+  const { handleSubmit, resetForm, setValues } = useForm({
+    validationSchema: qcLevelSchema,
+    initialValues: {
+      level: '',
+    },
+  });
+
+  const { value: level, errorMessage: levelError } = useField<string>('level');
 
   analysisStore.fetchQCLevels();
   const qcLevels = computed(() => analysisStore.getQCLevels)
 
-  function addQCLevel(): void {
-    withClientMutation<AddQcLevelMutation, AddQcLevelMutationVariables>(AddQcLevelDocument, { level: form.level }, "createQcLevel")
+  function addQCLevel(payload: { level: string }): void {
+    withClientMutation<AddQcLevelMutation, AddQcLevelMutationVariables>(AddQcLevelDocument, payload, "createQcLevel")
     .then((result) => analysisStore.addQcLevel(result));
   }
 
-  function editQCLevel(): void {
-    withClientMutation<EditQcLevelMutation, EditQcLevelMutationVariables>(EditQcLevelDocument, { uid: form.uid, level: form.level },"updateQcLevel")
+  function editQCLevel(payload: { level: string }): void {
+    if (!currentUid.value) return;
+    withClientMutation<EditQcLevelMutation, EditQcLevelMutationVariables>(EditQcLevelDocument, { uid: currentUid.value, ...payload },"updateQcLevel")
     .then((result) => analysisStore.updateQcLevel(result));
   }
 
@@ -33,17 +49,20 @@
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "QC Level";
     if (create) {
-      Object.assign(form, { ...({} as QCLevelType) });
+      currentUid.value = null;
+      resetForm({ values: { level: '' } });
     } else {
-      Object.assign(form, { ...obj });
+      currentUid.value = obj.uid ?? null;
+      setValues({ level: obj.level ?? '' });
     }
   }
 
-  function saveForm():void {
-    if (formAction.value === true) addQCLevel();
-    if (formAction.value === false) editQCLevel();
+  const saveForm = handleSubmit((values) => {
+    const payload = { level: values.level };
+    if (formAction.value === true) addQCLevel(payload);
+    if (formAction.value === false) editQCLevel(payload);
     showModal.value = false;
-  }
+  });
 </script>
 
 <template>
@@ -91,16 +110,17 @@
         </template>
 
         <template v-slot:body>
-            <form @submit.prevent="saveForm()" class="space-y-4 p-4">
+            <form @submit.prevent="saveForm" class="space-y-4 p-4">
                 <div class="space-y-2">
                     <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                         QC Level
                     </label>
                     <input
-                        v-model="form.level"
+                        v-model="level"
                         class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         placeholder="Enter QC level name..."
                     />
+                    <p v-if="levelError" class="text-sm text-destructive">{{ levelError }}</p>
                 </div>
 
                 <button

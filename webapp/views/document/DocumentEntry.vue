@@ -31,9 +31,7 @@ const toggleSidebar = () => {
 onMounted(async () => {
   try {
     await documentStore.getFolders();
-  } catch (error) {
-    console.error('Error fetching folders:', error);
-  }
+  } catch {}
 });
 </script>
 

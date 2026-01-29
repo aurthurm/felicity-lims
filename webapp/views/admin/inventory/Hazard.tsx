@@ -1,5 +1,7 @@
 import { defineAsyncComponent, defineComponent, toRefs } from 'vue';
-import { ref, reactive, computed } from 'vue';
+import { ref, computed } from 'vue';
+import { useField, useForm } from 'vee-validate';
+import * as yup from 'yup';
 import {
     AddHazardDocument,
     AddHazardMutation,
@@ -18,29 +20,41 @@ const Hazard = defineComponent({
         const inventoryStore = useInventoryStore();
         const { withClientMutation } = useApiUtil();
 
-        let showModal = ref(false);
-        let formTitle = ref('');
-        let form = reactive({} as HazardType);
+        const showModal = ref(false);
+        const formTitle = ref('');
         const formAction = ref(true);
+        const currentUid = ref<string | null>(null);
+
+        const hazardSchema = yup.object({
+            name: yup.string().trim().required('Hazard name is required'),
+            description: yup.string().trim().nullable(),
+        });
+
+        const { handleSubmit, resetForm, setValues } = useForm({
+            validationSchema: hazardSchema,
+            initialValues: {
+                name: '',
+                description: '',
+            },
+        });
+
+        const { value: name, errorMessage: nameError } = useField<string>('name');
+        const { value: description, errorMessage: descriptionError } = useField<string | null>('description');
 
         inventoryStore.fetchHazards();
         const hazards = computed(() => inventoryStore.getHazards);
 
-        function addHazard(): void {
-            const payload = { ...form } as HazardInputType;
+        function addHazard(payload: HazardInputType): void {
             withClientMutation<AddHazardMutation, AddHazardMutationVariables>(AddHazardDocument, { payload }, 'createHazard').then(result =>
                 inventoryStore.addHazard(result)
             );
         }
 
-        function editHazard(): void {
-            const payload = {
-                name: form.name,
-                description: form.description,
-            } as HazardInputType;
+        function editHazard(payload: HazardInputType): void {
+            if (!currentUid.value) return;
             withClientMutation<EditHazardMutation, EditHazardMutationVariables>(
                 EditHazardDocument,
-                { uid: form.uid, payload },
+                { uid: currentUid.value, payload },
                 'updateHazard'
             ).then(result => inventoryStore.updateHazard(result));
         }
@@ -50,20 +64,37 @@ const Hazard = defineComponent({
             formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + 'A HAZARD';
             showModal.value = true;
             if (create) {
-                Object.assign(form, {} as HazardType);
+                currentUid.value = null;
+                resetForm({
+                    values: {
+                        name: '',
+                        description: '',
+                    },
+                });
             } else {
-                Object.assign(form, { ...obj });
+                currentUid.value = obj?.uid ?? null;
+                setValues({
+                    name: obj?.name ?? '',
+                    description: obj?.description ?? '',
+                });
             }
         }
 
-        function saveForm(): void {
-            if (formAction.value === true) addHazard();
-            if (formAction.value === false) editHazard();
+        const saveForm = handleSubmit(values => {
+            const payload = {
+                name: values.name,
+                description: values.description ?? null,
+            } as HazardInputType;
+            if (formAction.value === true) addHazard(payload);
+            if (formAction.value === false) editHazard(payload);
             showModal.value = false;
-        }
+        });
 
         return {
-            form,
+            name,
+            nameError,
+            description,
+            descriptionError,
             FormManager,
             saveForm,
             hazards,
@@ -135,22 +166,28 @@ const Hazard = defineComponent({
                                                 Hazard Name
                                             </label>
                                             <input
-                                                value={this.form.name}
-                                                onChange={e => (this.form.name = e.target.value)}
+                                                value={this.name}
+                                                onChange={e => (this.name = (e.target as HTMLInputElement).value)}
                                                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                 placeholder="Enter hazard name..."
                                             />
+                                            {this.nameError ? (
+                                                <p class="text-sm text-destructive">{this.nameError}</p>
+                                            ) : null}
                                         </div>
                                         <div class="space-y-2">
                                             <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                                                 Description
                                             </label>
                                             <textarea
-                                                value={this.form.description}
-                                                onChange={e => (this.form.description = e.target.value)}
+                                                value={this.description}
+                                                onChange={e => (this.description = (e.target as HTMLTextAreaElement).value)}
                                                 class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                 placeholder="Enter description..."
                                             />
+                                            {this.descriptionError ? (
+                                                <p class="text-sm text-destructive">{this.descriptionError}</p>
+                                            ) : null}
                                         </div>
                                     </div>
                                     <div class="flex justify-end">

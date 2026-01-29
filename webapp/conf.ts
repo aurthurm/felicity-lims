@@ -6,9 +6,6 @@ export const ENCRYPT_AUTH_KEY = import.meta.env.VITE_AUTH_ENCRYPT_KEY || 'felici
 export const REST_BASE_URL = import.meta.env.VITE_BASE_URL || '';
 export const GQL_BASE_URL = `${REST_BASE_URL}/felicity-gql`;
 
-// Third-party licenses
-export const VITE_SYNCFUSION_LICENSE = import.meta.env.VITE_SYNCFUSION_LICENSE || '';
-
 // WebSocket configuration
 export let WS_BASE_URL: string;
 if (REST_BASE_URL?.includes('http')) {

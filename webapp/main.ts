@@ -1,6 +1,6 @@
-import { createApp } from 'vue';
-import { registerLicenses, registerComponents, registerPlugins } from './registry';
-import { library } from '@fortawesome/fontawesome-svg-core';
+import {createApp} from 'vue';
+import {registerComponents, registerPlugins} from './registry';
+import {library} from '@fortawesome/fontawesome-svg-core';
 import {
     faAnchor,
     faArrowDown,
@@ -84,6 +84,8 @@ import 'floating-vue/dist/style.css';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import 'notyf/notyf.min.css';
 import '@vuepic/vue-datepicker/dist/main.css';
+import '@vue-flow/core/dist/style.css';
+import '@vue-flow/core/dist/theme-default.css';
 import '@/index.css';
 import '@/assets/css/style.css';
 import '@/assets/css/ckeditor.css';
@@ -169,7 +171,6 @@ const icons = [
 ];
 library.add(...icons);
 
-registerLicenses();
 const app = createApp(App);
 registerComponents(app);
 registerPlugins(app);

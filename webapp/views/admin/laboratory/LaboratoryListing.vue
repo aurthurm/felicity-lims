@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, reactive, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { LaboratoryCreateInputType, LaboratoryInputType, LaboratoryType, UserType } from "@/types/gql";
 import { useUserStore } from "@/stores/user";
@@ -7,6 +7,8 @@ import { useSetupStore } from "@/stores/setup";
 import useApiUtil from "@/composables/api_util";
 import useNotifyToast from "@/composables/alert_toast";
 import { AddLaboratoryDocument, AddLaboratoryMutation, AddLaboratoryMutationVariables, EditLaboratoryDocument, EditLaboratoryMutation, EditLaboratoryMutationVariables } from "@/graphql/operations/_mutations";
+import { useField, useForm } from "vee-validate";
+import { object, string } from "yup";
 
 
 const { toastSuccess, toastError } = useNotifyToast();
@@ -39,38 +41,67 @@ const getManagerName = (laboratory: LaboratoryType) => {
 // Form Management
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as LaboratoryType;
 const formAction = ref(true);
+const currentUid = ref<string | null>(null);
+
+const formSchema = object({
+  name: string().required("Laboratory name is required"),
+  labManagerUid: string().nullable(),
+  businessPhone: string().nullable(),
+});
+
+const { handleSubmit, errors, resetForm, setValues } = useForm({
+  validationSchema: formSchema,
+  initialValues: {
+    name: "",
+    labManagerUid: null,
+    businessPhone: "",
+  },
+});
+
+const { value: name } = useField<string>("name");
+const { value: labManagerUid } = useField<string | null>("labManagerUid");
+const { value: businessPhone } = useField<string | null>("businessPhone");
 
 function FormManager(create: boolean, obj: any):void {
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "Laboratory";
     if (create) {
-      Object.assign(form, { ...(new Object()) });
+      currentUid.value = null;
+      resetForm({
+        values: {
+          name: "",
+          labManagerUid: null,
+          businessPhone: "",
+        },
+      });
     } else {
-      Object.assign(form, { ...obj });
+      currentUid.value = obj?.uid ?? null;
+      setValues({
+        name: obj?.name ?? "",
+        labManagerUid: obj?.labManagerUid ?? null,
+        businessPhone: obj?.businessPhone ?? "",
+      });
     }
   }
 
-  function saveForm():void {
+  const saveForm = handleSubmit((values): void => {
     if (formAction.value === true) {
-      delete form["uid"];
       withClientMutation<AddLaboratoryMutation, AddLaboratoryMutationVariables>(AddLaboratoryDocument, { payload: {
-        ...form as LaboratoryCreateInputType,
+        ...values as LaboratoryCreateInputType,
         organizationUid: setupStore.getOrganization?.uid!,
       } }, "createLaboratory")
       .then((result) => setupStore.addLaboratory(result));
     } else {
-      const uid = form["uid"]
-      delete form["settings"];
-      delete form["__typename"]
-      delete form["uid"]
-      withClientMutation<EditLaboratoryMutation, EditLaboratoryMutationVariables>(EditLaboratoryDocument, { uid: uid, payload: form },"updateLaboratory")
+      if (!currentUid.value) {
+        return;
+      }
+      withClientMutation<EditLaboratoryMutation, EditLaboratoryMutationVariables>(EditLaboratoryDocument, { uid: currentUid.value, payload: values as LaboratoryInputType },"updateLaboratory")
       .then((result) => setupStore.updateLaboratory(result, true));
     };
     showModal.value = false;
-  }
+  });
 </script>
 
 <template>
@@ -117,23 +148,24 @@ function FormManager(create: boolean, obj: any):void {
       </template>
 
       <template v-slot:body>
-          <form class="space-y-6">
+          <form class="space-y-6" @submit.prevent="saveForm">
               <div class="space-y-2">
                   <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                       Laboratory Name
                   </label>
                   <input
                       class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                      v-model="form.name"
+                      v-model="name"
                       placeholder="Name ..."
                   />
+                  <div class="text-sm text-destructive">{{ errors.name }}</div>
               </div>
               <div class="space-y-2">
                 <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   Lab Manager
                 </label>
                 <select 
-                  v-model="form.labManagerUid"
+                  v-model="labManagerUid"
                   class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <option value="">Select Manager</option>
@@ -148,14 +180,13 @@ function FormManager(create: boolean, obj: any):void {
                   </label>
                   <input
                       class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                      v-model="form.businessPhone"
+                      v-model="businessPhone"
                       placeholder="Business Phone ..."
                   />
               </div>
               <hr class="border-border" />
               <button
-                  type="button"
-                  @click.prevent="saveForm()"
+                  type="submit"
                   class="inline-flex w-full items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
               >
                   Save Form

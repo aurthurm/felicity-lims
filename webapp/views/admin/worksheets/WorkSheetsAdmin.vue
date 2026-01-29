@@ -98,7 +98,7 @@ function editWorksheetTemplate() {
 function generatePreview(wst: WorkSheetTemplateType): ReservedType[] {
   let items: ReservedType[] = [];
   const indexes: number[] = Array.from(
-    { length: wst?.numberOfSamples! + wst?.reserved!?.length },
+    { length: wst?.numberOfSamples! + wst?.reserved?.length },
     (x, i) => i + 1
   );
 

@@ -1,10 +1,12 @@
 <script setup lang="ts">
-  import { ref, reactive, computed, defineAsyncComponent } from 'vue';
+  import { ref, computed, defineAsyncComponent } from 'vue';
   import { useSetupStore } from '@/stores/setup';
   import  useApiUtil  from '@/composables/api_util';
   import { SupplierType } from '@/types/gql'
   import { AddSupplierDocument, AddSupplierMutation, AddSupplierMutationVariables,
     EditSupplierDocument, EditSupplierMutation, EditSupplierMutationVariables } from '@/graphql/operations/instrument.mutations';
+  import { useField, useForm } from "vee-validate";
+  import { object, string } from "yup";
   const modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
   )
@@ -14,40 +16,68 @@
   
   let showModal = ref<boolean>(false);
   let formTitle = ref<string>('');
-  let form = reactive({}) as SupplierTy;
   const formAction = ref<boolean>(true);
+  const currentUid = ref<string | null>(null);
+
+  const formSchema = object({
+    name: string().required("Name is required"),
+    description: string().nullable(),
+  });
+
+  const { handleSubmit, errors, resetForm, setValues } = useForm({
+    validationSchema: formSchema,
+    initialValues: {
+      name: "",
+      description: "",
+    },
+  });
+
+  const { value: name } = useField<string>("name");
+  const { value: description } = useField<string | null>("description");
 
   setupStore.fetchSuppliers();
   const suppliers = computed(() => setupStore.getSuppliers)
 
-  function addSupplier(): void {
-    const payload = { name: form.name, description: form.description }
+  function addSupplier(payload: { name: string; description?: string | null }): void {
     withClientMutation<AddSupplierMutation, AddSupplierMutationVariables>(AddSupplierDocument, { payload }, "createSupplier")
     .then((result) => setupStore.addSupplier(result));
   }
 
-  function editSupplier(): void {
-    const payload = { name: form.name, description: form.description }
-    withClientMutation<EditSupplierMutation, EditSupplierMutationVariables>(EditSupplierDocument, { uid: form.uid, payload }, "updateSupplier")
+  function editSupplier(payload: { name: string; description?: string | null }): void {
+    if (!currentUid.value) {
+      return;
+    }
+    withClientMutation<EditSupplierMutation, EditSupplierMutationVariables>(EditSupplierDocument, { uid: currentUid.value, payload }, "updateSupplier")
     .then((result) => setupStore.updateSupplier(result));
   }
 
-  function FormManager(create: boolean, obj = {} as SupplierTy ):void {
+  function FormManager(create: boolean, obj = {} as SupplierType ):void {
     formAction.value = create;
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "SUPPLIER";
     if (create) {
-      Object.assign(form, {} as SupplierTy );
+      currentUid.value = null;
+      resetForm({
+        values: {
+          name: "",
+          description: "",
+        },
+      });
     } else {
-      Object.assign(form, { ...obj });
+      currentUid.value = obj.uid ?? null;
+      setValues({
+        name: obj.name ?? "",
+        description: obj.description ?? "",
+      });
     }
   }
 
-  function saveForm():void {
-    if (formAction.value === true) addSupplier();
-    if (formAction.value === false) editSupplier();
+  const saveForm = handleSubmit((values): void => {
+    const payload = { name: values.name, description: values.description };
+    if (formAction.value === true) addSupplier(payload);
+    if (formAction.value === false) editSupplier(payload);
     showModal.value = false;
-  }
+  });
 </script>
 
 <template>
@@ -99,17 +129,18 @@
               Name
             </label>
             <input
-              v-model="form.name"
+              v-model="name"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="Enter supplier name..."
             />
+            <div class="text-sm text-destructive">{{ errors.name }}</div>
           </div>
           <div class="space-y-2">
             <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
               Description
             </label>
             <textarea
-              v-model="form.description"
+              v-model="description"
               class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="Enter supplier description..."
             />

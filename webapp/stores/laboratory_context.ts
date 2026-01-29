@@ -148,9 +148,7 @@ export const useLaboratoryContextStore = defineStore('laboratoryContext', () => 
                 timestamp: new Date().toISOString(),
             };
             localStorage.setItem(CONTEXT_STORAGE_KEY, JSON.stringify(contextData));
-        } catch (error) {
-            console.error('Failed to save laboratory context to storage:', error);
-        }
+        } catch {}
     };
 
     // Load context from local storage
@@ -172,18 +170,14 @@ export const useLaboratoryContextStore = defineStore('laboratoryContext', () => 
                     context.value.lastSwitchTime = new Date(contextData.lastSwitchTime);
                 }
             }
-        } catch (error) {
-            console.error('Failed to load laboratory context from storage:', error);
-        }
+        } catch {}
     };
 
     // Save context history
     const saveContextHistory = () => {
         try {
             localStorage.setItem(CONTEXT_HISTORY_KEY, JSON.stringify(context.value.contextHistory));
-        } catch (error) {
-            console.error('Failed to save context history:', error);
-        }
+        } catch {}
     };
 
     // Load context history
@@ -197,9 +191,7 @@ export const useLaboratoryContextStore = defineStore('laboratoryContext', () => 
                     switchTime: new Date(item.switchTime),
                 }));
             }
-        } catch (error) {
-            console.error('Failed to load context history:', error);
-        }
+        } catch {}
     };
 
     // Add to context history
@@ -293,7 +285,6 @@ export const useLaboratoryContextStore = defineStore('laboratoryContext', () => 
                 return false;
             }
         } catch (error) {
-            console.error('Error switching laboratory context:', error);
             toastError('Failed to switch laboratory context');
             return false;
         } finally {
@@ -344,7 +335,6 @@ export const useLaboratoryContextStore = defineStore('laboratoryContext', () => 
 
             return false;
         } catch (error) {
-            console.error('Error refreshing laboratories:', error);
             return false;
         }
     };

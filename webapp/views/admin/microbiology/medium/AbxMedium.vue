@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref} from 'vue';
+import { onMounted, ref} from 'vue';
+import { useForm, useField } from 'vee-validate';
+import * as yup from 'yup';
 
 import useApiUtil from '@/composables/api_util';
 import {AbxMediumType} from "@/types/gql";
@@ -17,8 +19,23 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as AbxMediumType;
 const formAction = ref<boolean>(true);
+const currentUid = ref<string | null>(null);
+
+const mediumSchema = yup.object({
+  name: yup.string().trim().required('Name is required'),
+  description: yup.string().trim().nullable(),
+});
+
+const { handleSubmit, resetForm, setValues, errors } = useForm({
+  validationSchema: mediumSchema,
+  initialValues: {
+    name: '',
+    description: '',
+  },
+});
+const { value: name } = useField<string>('name');
+const { value: description } = useField<string>('description');
 
 const abxMediums = ref<AbxMediumType[]>([]);
 
@@ -37,17 +54,22 @@ function FormManager(create: boolean, obj = {} as AbxMediumType): void {
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "Abx Medium";
   if (create) {
-    Object.assign(form, {} as AbxMediumType);
+    currentUid.value = null;
+    resetForm();
   } else {
-    Object.assign(form, {...obj});
+    currentUid.value = obj.uid ?? null;
+    setValues({
+      name: obj.name ?? '',
+      description: obj.description ?? '',
+    });
   }
 }
 
-function saveForm(): void {
+const saveForm = handleSubmit((formValues) => {
   const payload = {
-    name: form.name,
-    description: form.description,
-  }
+    name: formValues.name,
+    description: formValues.description ?? null,
+  };
 
   if (formAction.value === true) {
     withClientMutation<AddAbxMediumMutation, AddAbxMediumMutationVariables>(
@@ -59,9 +81,9 @@ function saveForm(): void {
     });
   }
 
-  if (formAction.value === false) {
+  if (formAction.value === false && currentUid.value) {
     withClientMutation<EditAbxMediumMutation, EditAbxMediumMutationVariables>(EditAbxMediumDocument, {
-      uid: form.uid!,
+      uid: currentUid.value,
       payload
     }, "updateAbxMedium")
         .then((result) => {
@@ -77,7 +99,7 @@ function saveForm(): void {
   }
 
   showModal.value = false;
-}
+});
 
 </script>
 
@@ -128,17 +150,19 @@ function saveForm(): void {
             <span class="text-sm font-medium text-foreground">Name</span>
             <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.name"
+                v-model="name"
                 placeholder="Name ..."
             />
+            <p v-if="errors.name" class="text-sm text-destructive">{{ errors.name }}</p>
           </label>
           <label class="block">
             <span class="text-sm font-medium text-foreground">Description</span>
             <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.description"
+                v-model="description"
                 placeholder="Begin typing ..."
             />
+            <p v-if="errors.description" class="text-sm text-destructive">{{ errors.description }}</p>
           </label>
         </div>
         <hr class="border-border"/>

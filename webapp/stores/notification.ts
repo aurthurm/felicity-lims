@@ -22,7 +22,6 @@ export const useNotificationStore = defineStore('notification', {
 
         addNotification(notification: INotificationType): void {
             if (!notification) {
-                console.error('Invalid notification payload');
                 return;
             }
 
@@ -32,7 +31,6 @@ export const useNotificationStore = defineStore('notification', {
 
         removeNotification(uid: string): void {
             if (!uid) {
-                console.error('Invalid notification uid');
                 return;
             }
 

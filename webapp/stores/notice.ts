@@ -51,7 +51,6 @@ export const useNoticeStore = defineStore('notice', {
                         .sort((a, b) => (a.expiry > b.expiry ? 1 : -1));
                 } else {
                     this.notices = [];
-                    console.error('Expected array of notices but got:', payload);
                 }
             } catch (error) {
                 if (error instanceof Error) {

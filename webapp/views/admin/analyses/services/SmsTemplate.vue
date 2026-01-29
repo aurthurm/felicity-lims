@@ -1,5 +1,7 @@
 <script setup lang="ts">
-  import { ref, reactive, toRefs, watch, onMounted } from 'vue';
+  import { ref, toRefs, watch, onMounted } from 'vue';
+  import { useField, useForm } from 'vee-validate';
+  import * as yup from 'yup';
   import { AddSmsTemplateDocument, AddSmsTemplateMutation, AddSmsTemplateMutationVariables,
     EditSmsTemplateDocument, EditSmsTemplateMutation, EditSmsTemplateMutationVariables,
     DeleteSmsTemplateDocument, DeleteSmsTemplateMutation, DeleteSmsTemplateMutationVariables } from '@/graphql/operations/sms-template.mutations';
@@ -27,13 +29,43 @@ import { GetSmsTemplatesByTargetDocument } from '@/graphql/operations/sms-templa
   const { targetType, targetUid } = toRefs(props);
   let showModal = ref(false);
   let formTitle = ref('');
-  let form = reactive({
-    targetType: targetType.value,
-    targetUid: targetUid.value,
-  }) as SmsTemplateType;
   const formAction = ref(true);
+  const currentUid = ref<string | null>(null);
   const showWildcards = ref(false);
 
+  const templateSchema = yup.object({
+    name: yup.string().trim().required('Template name is required'),
+    description: yup.string().trim().nullable(),
+    template: yup.string().trim().required('Template body is required'),
+    specificationTrigger: yup.string().trim().required('Trigger is required'),
+    audience: yup.string().trim().required('Audience is required'),
+    isActive: yup.boolean().default(true),
+    targetType: yup.string().trim().required(),
+    targetUid: yup.string().trim().required(),
+  });
+
+  const { handleSubmit, resetForm, setValues } = useForm({
+    validationSchema: templateSchema,
+    initialValues: {
+      name: '',
+      description: '',
+      template: '',
+      specificationTrigger: SmsTrigger.AnyAbnormal,
+      audience: SmsAudience.Patient,
+      isActive: true,
+      targetType: targetType.value,
+      targetUid: targetUid.value,
+    },
+  });
+
+  const { value: name, errorMessage: nameError } = useField<string>('name');
+  const { value: description, errorMessage: descriptionError } = useField<string | null>('description');
+  const { value: templateField, errorMessage: templateError } = useField<string>('template');
+  const { value: specificationTrigger, errorMessage: triggerError } = useField<string>('specificationTrigger');
+  const { value: audience, errorMessage: audienceError } = useField<string>('audience');
+  const { value: isActive } = useField<boolean>('isActive');
+  const { value: targetTypeField } = useField<string>('targetType');
+  const { value: targetUidField } = useField<string>('targetUid');
 
   // SMS Trigger options
   const triggerOptions = [
@@ -74,7 +106,9 @@ import { GetSmsTemplatesByTargetDocument } from '@/graphql/operations/sms-templa
   ];
 
   const templates = ref<SmsTemplateType[]>([]);
-  watch(() => props.targetUid, (anal, prev) => {
+  watch(() => props.targetUid, () => {
+      targetTypeField.value = targetType.value;
+      targetUidField.value = targetUid.value;
       getSmsTemplates();
   })
 
@@ -88,20 +122,16 @@ import { GetSmsTemplatesByTargetDocument } from '@/graphql/operations/sms-templa
     .then((result) => templates.value = (result as SmsTemplateType[]) || []);
   }
 
-  function addSmsTemplate(): void {
-      const payload = { ...form } as SmsTemplateInputType;
+  function addSmsTemplate(payload: SmsTemplateInputType): void {
       withClientMutation<AddSmsTemplateMutation, AddSmsTemplateMutationVariables>(AddSmsTemplateDocument, { payload }, "createSmsTemplate")
       .then((result) => templates.value.push(result));
   }
 
-  function editSmsTemplate(): void {
-      const payload: any = { ...form };
-      delete payload['uid']
-      delete payload['__typename']
-
-      withClientMutation<EditSmsTemplateMutation, EditSmsTemplateMutationVariables>(EditSmsTemplateDocument, { uid : form.uid,  payload }, "updateSmsTemplate")
+  function editSmsTemplate(payload: SmsTemplateInputType): void {
+      if (!currentUid.value) return;
+      withClientMutation<EditSmsTemplateMutation, EditSmsTemplateMutationVariables>(EditSmsTemplateDocument, { uid: currentUid.value, payload }, "updateSmsTemplate")
       .then((result) => {
-        const index = templates.value.findIndex(t => t.uid === form.uid);
+        const index = templates.value.findIndex(t => t.uid === currentUid.value);
         if (index !== -1) {
           templates.value[index] = result;
         }
@@ -125,34 +155,57 @@ import { GetSmsTemplatesByTargetDocument } from '@/graphql/operations/sms-templa
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "SMS TEMPLATE";
       if (create) {
-          Object.assign(form, { 
-              name: '', 
-              template: '', 
+          currentUid.value = null;
+          resetForm({
+            values: {
+              name: '',
+              template: '',
               description: '',
               targetType: targetType.value,
               targetUid: targetUid.value,
               specificationTrigger: SmsTrigger.AnyAbnormal,
               audience: SmsAudience.Patient,
-              isActive: true
+              isActive: true,
+            },
           });
       } else {
-          Object.assign(form, { ...obj, targetType: targetType.value, targetUid: targetUid.value });
+          currentUid.value = obj.uid ?? null;
+          setValues({
+            name: obj.name ?? '',
+            template: obj.template ?? '',
+            description: obj.description ?? '',
+            targetType: targetType.value,
+            targetUid: targetUid.value,
+            specificationTrigger: obj.specificationTrigger ?? SmsTrigger.AnyAbnormal,
+            audience: obj.audience ?? SmsAudience.Patient,
+            isActive: obj.isActive ?? true,
+          });
       }
   }
 
-  function saveForm():void {
-      if (formAction.value === true) addSmsTemplate();
-      if (formAction.value === false) editSmsTemplate();
+  const saveForm = handleSubmit((values) => {
+      const payload = {
+        name: values.name,
+        template: values.template,
+        description: values.description ?? null,
+        targetType: values.targetType,
+        targetUid: values.targetUid,
+        specificationTrigger: values.specificationTrigger,
+        audience: values.audience,
+        isActive: values.isActive,
+      } as SmsTemplateInputType;
+      if (formAction.value === true) addSmsTemplate(payload);
+      if (formAction.value === false) editSmsTemplate(payload);
       showModal.value = false;
-  }
+  });
 
   function insertVariable(variable: string): void {
-    if (typeof form.template !== 'string') form.template = '';
     const textarea = document.getElementById('template-input') as HTMLTextAreaElement;
+    if (typeof templateField.value !== 'string') templateField.value = '';
     if (textarea) {
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;
-      form.template = form.template.substring(0, start) + variable + form.template.substring(end);
+      templateField.value = templateField.value.substring(0, start) + variable + templateField.value.substring(end);
       
       // Set cursor position after the inserted variable
       setTimeout(() => {
@@ -160,7 +213,7 @@ import { GetSmsTemplatesByTargetDocument } from '@/graphql/operations/sms-templa
         textarea.selectionStart = textarea.selectionEnd = start + variable.length;
       }, 0);
     } else {
-      form.template += variable;
+      templateField.value += variable;
     }
   }
 
@@ -232,7 +285,7 @@ import { GetSmsTemplatesByTargetDocument } from '@/graphql/operations/sms-templa
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-6 space-y-6">
+      <form @submit.prevent="saveForm" class="p-6 space-y-6">
         <div class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <label class="space-y-2">
@@ -240,18 +293,20 @@ import { GetSmsTemplatesByTargetDocument } from '@/graphql/operations/sms-templa
               <input
                 type="text"
                 class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="form.name"
+                v-model="name"
                 placeholder="Enter template name..."
               />
+              <p v-if="nameError" class="text-sm text-destructive">{{ nameError }}</p>
             </label>
             <label class="space-y-2">
               <span class="text-sm font-medium text-muted-foreground">Description</span>
               <input
                 type="text"
                 class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="form.description"
+                v-model="description"
                 placeholder="Enter description..."
               />
+              <p v-if="descriptionError" class="text-sm text-destructive">{{ descriptionError }}</p>
             </label>
           </div>
 
@@ -260,29 +315,31 @@ import { GetSmsTemplatesByTargetDocument } from '@/graphql/operations/sms-templa
               <span class="text-sm font-medium text-muted-foreground">Trigger Condition</span>
               <select 
                 class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="form.specificationTrigger"
+                v-model="specificationTrigger"
               >
                 <option v-for="option in triggerOptions" :key="option.value" :value="option.value">
                   {{ option.label }}
                 </option>
               </select>
+              <p v-if="triggerError" class="text-sm text-destructive">{{ triggerError }}</p>
             </label>
             <label class="space-y-2">
               <span class="text-sm font-medium text-muted-foreground">Audience</span>
               <select 
                 class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="form.audience"
+                v-model="audience"
               >
                 <option v-for="option in audienceOptions" :key="option.value" :value="option.value">
                   {{ option.label }}
                 </option>
               </select>
+              <p v-if="audienceError" class="text-sm text-destructive">{{ audienceError }}</p>
             </label>
             <label class="space-y-2">
               <span class="text-sm font-medium text-muted-foreground">Status</span>
               <select 
                 class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="form.isActive"
+                v-model="isActive"
               >
                 <option :value="true">Active</option>
                 <option :value="false">Inactive</option>
@@ -304,9 +361,10 @@ import { GetSmsTemplatesByTargetDocument } from '@/graphql/operations/sms-templa
             <textarea
               id="template-input"
               class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring min-h-[100px]"
-              v-model="form.template"
+              v-model="templateField"
               placeholder="Enter SMS template with variables e.g., Hello {patient_name}, your {analysis_name} result is {result}..."
             ></textarea>
+            <p v-if="templateError" class="text-sm text-destructive">{{ templateError }}</p>
           </div>
 
           <!-- Wildcard Variables Panel -->
@@ -333,8 +391,7 @@ import { GetSmsTemplatesByTargetDocument } from '@/graphql/operations/sms-templa
 
         <div class="pt-4 flex gap-2">
           <button
-            type="button"
-            @click.prevent="saveForm()"
+            type="submit"
             class="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
           >
             Save Template

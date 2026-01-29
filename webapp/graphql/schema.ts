@@ -3931,9 +3931,9 @@ export type Mutation = {
   createQcSet: QcSetResponse;
   createQcTemplate: QcTemplateResponse;
   createReferralLaboratory: ReferralLaboratoryResponse;
-  createReflexAction: ReflexActionResponse;
-  createReflexBrain: ReflexBrainResponse;
+  createReflexDecision: ReflexDecisionResponse;
   createReflexRule: ReflexRuleResponse;
+  createReflexTrigger: ReflexTriggerResponse;
   createRejectionReason: RejectionReasonResponse;
   createResultOption: ResultOptionResponse;
   createSampleRelationship: SampleRelationshipResponse;
@@ -3980,7 +3980,8 @@ export type Mutation = {
   deleteGrindStamp: DeleteResponse;
   deleteMessage: DeleteResponse;
   deleteNotice: DeleteResponse;
-  deleteReflexBrain: DeletedItem;
+  deleteReflexDecision: DeleteResponse;
+  deleteReflexTrigger: DeleteResponse;
   deleteSmsTemplate: OperationErrorDeletedItem;
   deleteStockOrder: StockOrderResponse;
   deleteThread: DeleteResponse;
@@ -4009,6 +4010,7 @@ export type Mutation = {
   retractAnalysisResults: AnalysisResultResponse;
   samplesApplyTemplate: ResultedSampleActionResponse;
   saveAbxOrganismResult: AbxOrganismResultType;
+  saveReflexRuleGraph: ReflexRuleResponse;
   sendMessage: MessageResponse;
   setUserActiveLaboratory: UserResponse;
   shipmentManageSamples: ShipmentResponse;
@@ -4101,9 +4103,9 @@ export type Mutation = {
   updateQcLevel: QcLevelResponse;
   updateQcTemplate: QcTemplateResponse;
   updateReferralLaboratory: ReferralLaboratoryResponse;
-  updateReflexAction: ReflexActionResponse;
-  updateReflexBrain: ReflexBrainResponse;
+  updateReflexDecision: ReflexDecisionResponse;
   updateReflexRule: ReflexRuleResponse;
+  updateReflexTrigger: ReflexTriggerResponse;
   updateRejectionReason: RejectionReasonResponse;
   updateResultOption: ResultOptionResponse;
   updateSampleType: SampleTypeResponse;
@@ -4605,18 +4607,18 @@ export type MutationCreateReferralLaboratoryArgs = {
 };
 
 
-export type MutationCreateReflexActionArgs = {
-  payload: ReflexActionInput;
-};
-
-
-export type MutationCreateReflexBrainArgs = {
-  payload: ReflexBrainInput;
+export type MutationCreateReflexDecisionArgs = {
+  payload: ReflexDecisionInput;
 };
 
 
 export type MutationCreateReflexRuleArgs = {
   payload: ReflexRuleInput;
+};
+
+
+export type MutationCreateReflexTriggerArgs = {
+  payload: ReflexTriggerInput;
 };
 
 
@@ -4862,7 +4864,12 @@ export type MutationDeleteNoticeArgs = {
 };
 
 
-export type MutationDeleteReflexBrainArgs = {
+export type MutationDeleteReflexDecisionArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteReflexTriggerArgs = {
   uid: Scalars['String']['input'];
 };
 
@@ -5014,6 +5021,12 @@ export type MutationSamplesApplyTemplateArgs = {
 
 export type MutationSaveAbxOrganismResultArgs = {
   organismUid: Scalars['String']['input'];
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationSaveReflexRuleGraphArgs = {
+  graph: ReflexRuleGraphInput;
   uid: Scalars['String']['input'];
 };
 
@@ -5568,20 +5581,20 @@ export type MutationUpdateReferralLaboratoryArgs = {
 };
 
 
-export type MutationUpdateReflexActionArgs = {
-  payload: ReflexActionInput;
-  uid: Scalars['String']['input'];
-};
-
-
-export type MutationUpdateReflexBrainArgs = {
-  payload: ReflexBrainInput;
+export type MutationUpdateReflexDecisionArgs = {
+  payload: ReflexDecisionInput;
   uid: Scalars['String']['input'];
 };
 
 
 export type MutationUpdateReflexRuleArgs = {
   payload: ReflexRuleInput;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateReflexTriggerArgs = {
+  payload: ReflexTriggerInput;
   uid: Scalars['String']['input'];
 };
 
@@ -6654,8 +6667,11 @@ export type Query = {
   referralLaboratoryAll: Array<ReferralLaboratoryType>;
   referralLaboratoryByCode: ReferralLaboratoryType;
   referralLaboratoryByUid: ReferralLaboratoryType;
+  reflexDecisionByUid?: Maybe<ReflexDecisionType>;
   reflexRuleAll: ReflexRuleCursorPage;
   reflexRuleByUid?: Maybe<ReflexRuleType>;
+  reflexTriggerAll: Array<ReflexTriggerType>;
+  reflexTriggerByUid?: Maybe<ReflexTriggerType>;
   rejectionReasonByUid: RejectionReasonType;
   rejectionReasonsAll: Array<RejectionReasonType>;
   resultMutationByResultUid?: Maybe<ResultMutationType>;
@@ -7954,6 +7970,11 @@ export type QueryReferralLaboratoryByUidArgs = {
 };
 
 
+export type QueryReflexDecisionByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
 export type QueryReflexRuleAllArgs = {
   afterCursor?: InputMaybe<Scalars['String']['input']>;
   beforeCursor?: InputMaybe<Scalars['String']['input']>;
@@ -7964,6 +7985,16 @@ export type QueryReflexRuleAllArgs = {
 
 
 export type QueryReflexRuleByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryReflexTriggerAllArgs = {
+  reflexRuleUid?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryReflexTriggerByUidArgs = {
   uid: Scalars['String']['input'];
 };
 
@@ -8413,156 +8444,121 @@ export type ReferralLaboratoryType = {
   username?: Maybe<Scalars['String']['output']>;
 };
 
-export type ReflexActionInput = {
-  analyses: Array<Scalars['String']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  level: Scalars['Int']['input'];
-  reflexRuleUid: Scalars['String']['input'];
-  sampleTypeUid?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type ReflexActionResponse = OperationError | ReflexActionType;
-
-export type ReflexActionType = {
-  __typename?: 'ReflexActionType';
-  analyses?: Maybe<Array<AnalysisType>>;
-  brains?: Maybe<Array<ReflexBrainType>>;
-  createdAt?: Maybe<Scalars['String']['output']>;
-  createdBy?: Maybe<UserType>;
-  createdByUid?: Maybe<Scalars['String']['output']>;
-  description: Scalars['String']['output'];
-  laboratory?: Maybe<LaboratoryType>;
-  laboratoryUid?: Maybe<Scalars['String']['output']>;
-  level: Scalars['Int']['output'];
-  reflexRule?: Maybe<ReflexRuleType>;
-  reflexRuleUid: Scalars['String']['output'];
-  sampleType?: Maybe<SampleTypeTyp>;
-  sampleTypeUid?: Maybe<Scalars['String']['output']>;
-  uid: Scalars['String']['output'];
-  updatedAt?: Maybe<Scalars['String']['output']>;
-  updatedBy?: Maybe<UserType>;
-  updatedByUid?: Maybe<Scalars['String']['output']>;
-};
-
-export type ReflexAddNewInput = {
+export type ReflexAddAnalysisInput = {
   analysisUid: Scalars['String']['input'];
-  count: Scalars['Int']['input'];
+  count?: Scalars['Int']['input'];
+  posX?: InputMaybe<Scalars['Float']['input']>;
+  posY?: InputMaybe<Scalars['Float']['input']>;
 };
 
-export type ReflexBrainActionInput = {
-  addNew?: InputMaybe<Array<ReflexAddNewInput>>;
-  finalise?: InputMaybe<Array<ReflexFinalInput>>;
-};
-
-export type ReflexBrainActionType = {
-  __typename?: 'ReflexBrainActionType';
-  addNew?: Maybe<Array<ReflexBrainAdditionType>>;
-  createdAt?: Maybe<Scalars['String']['output']>;
-  createdBy?: Maybe<UserType>;
-  createdByUid?: Maybe<Scalars['String']['output']>;
-  description: Scalars['String']['output'];
-  finalise?: Maybe<Array<ReflexBrainFinalType>>;
-  laboratory?: Maybe<LaboratoryType>;
-  laboratoryUid?: Maybe<Scalars['String']['output']>;
-  priority: Scalars['Int']['output'];
-  reflexBrain?: Maybe<ReflexBrainType>;
-  reflexBrainUid: Scalars['String']['output'];
-  uid: Scalars['String']['output'];
-  updatedAt?: Maybe<Scalars['String']['output']>;
-  updatedBy?: Maybe<UserType>;
-  updatedByUid?: Maybe<Scalars['String']['output']>;
-};
-
-export type ReflexBrainAdditionType = {
-  __typename?: 'ReflexBrainAdditionType';
+export type ReflexAddAnalysisType = {
+  __typename?: 'ReflexAddAnalysisType';
   analysis?: Maybe<AnalysisType>;
   analysisUid: Scalars['String']['output'];
   count: Scalars['Int']['output'];
-  laboratory?: Maybe<LaboratoryType>;
-  laboratoryUid?: Maybe<Scalars['String']['output']>;
-  reflexBrainAction?: Maybe<ReflexBrainActionType>;
-  reflexBrainActionUid: Scalars['String']['output'];
-};
-
-export type ReflexBrainConditionCriteriaType = {
-  __typename?: 'ReflexBrainConditionCriteriaType';
-  analysis?: Maybe<AnalysisType>;
-  analysisUid: Scalars['String']['output'];
-  laboratory?: Maybe<LaboratoryType>;
-  laboratoryUid?: Maybe<Scalars['String']['output']>;
-  operator: Scalars['String']['output'];
-  reflexBrainCondition?: Maybe<ReflexBrainConditionType>;
-  reflexBrainConditionUid: Scalars['String']['output'];
-  value: Scalars['String']['output'];
-};
-
-export type ReflexBrainConditionInput = {
-  criteria?: InputMaybe<Array<ReflexBrainCriteriaInput>>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  priority?: InputMaybe<Scalars['Int']['input']>;
-};
-
-export type ReflexBrainConditionType = {
-  __typename?: 'ReflexBrainConditionType';
-  criteria?: Maybe<Array<ReflexBrainConditionCriteriaType>>;
-  description?: Maybe<Scalars['String']['output']>;
-  laboratory?: Maybe<LaboratoryType>;
-  laboratoryUid?: Maybe<Scalars['String']['output']>;
-  priority: Scalars['Int']['output'];
-  reflexBrain: ReflexBrainType;
-  reflexBrainUid: Scalars['String']['output'];
-  uid: Scalars['String']['output'];
-};
-
-export type ReflexBrainCriteriaInput = {
-  analysisUid: Scalars['String']['input'];
-  operator: Scalars['String']['input'];
-  value: Scalars['String']['input'];
-};
-
-export type ReflexBrainFinalType = {
-  __typename?: 'ReflexBrainFinalType';
-  analysis?: Maybe<AnalysisType>;
-  analysisUid: Scalars['String']['output'];
-  laboratory?: Maybe<LaboratoryType>;
-  laboratoryUid?: Maybe<Scalars['String']['output']>;
-  reflexBrainAction?: Maybe<ReflexBrainActionType>;
-  reflexBrainActionUid: Scalars['String']['output'];
-  value: Scalars['String']['output'];
-};
-
-export type ReflexBrainInput = {
-  actions?: InputMaybe<Array<ReflexBrainActionInput>>;
-  conditions?: InputMaybe<Array<ReflexBrainConditionInput>>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  priority?: InputMaybe<Scalars['Int']['input']>;
-  reflexActionUid: Scalars['String']['input'];
-};
-
-export type ReflexBrainResponse = OperationError | ReflexBrainType;
-
-export type ReflexBrainType = {
-  __typename?: 'ReflexBrainType';
-  actions: Array<ReflexBrainActionType>;
-  conditions: Array<ReflexBrainConditionType>;
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
-  description: Scalars['String']['output'];
   laboratory?: Maybe<LaboratoryType>;
   laboratoryUid?: Maybe<Scalars['String']['output']>;
-  priority: Scalars['Int']['output'];
-  reflexAction?: Maybe<ReflexBrainType>;
-  reflexActionUid: Scalars['String']['output'];
+  posX?: Maybe<Scalars['Float']['output']>;
+  posY?: Maybe<Scalars['Float']['output']>;
+  reflexDecision?: Maybe<ReflexDecisionType>;
+  reflexDecisionUid: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
   updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
-export type ReflexFinalInput = {
+export type ReflexDecisionInput = {
+  addAnalyses?: InputMaybe<Array<ReflexAddAnalysisInput>>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  finalizeAnalyses?: InputMaybe<Array<ReflexFinalizeAnalysisInput>>;
+  posX?: InputMaybe<Scalars['Float']['input']>;
+  posY?: InputMaybe<Scalars['Float']['input']>;
+  priority?: Scalars['Int']['input'];
+  reflexTriggerUid: Scalars['String']['input'];
+  ruleGroups?: InputMaybe<Array<ReflexRuleGroupInput>>;
+};
+
+/** Response for reflex decision mutations */
+export type ReflexDecisionResponse = OperationError | ReflexDecisionType;
+
+export type ReflexDecisionType = {
+  __typename?: 'ReflexDecisionType';
+  addAnalyses?: Maybe<Array<ReflexAddAnalysisType>>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  finalizeAnalyses?: Maybe<Array<ReflexFinalizeAnalysisType>>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
+  posX?: Maybe<Scalars['Float']['output']>;
+  posY?: Maybe<Scalars['Float']['output']>;
+  priority: Scalars['Int']['output'];
+  reflexTrigger?: Maybe<ReflexTriggerType>;
+  reflexTriggerUid: Scalars['String']['output'];
+  ruleGroups?: Maybe<Array<ReflexRuleGroupType>>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type ReflexFinalizeAnalysisInput = {
   analysisUid: Scalars['String']['input'];
+  posX?: InputMaybe<Scalars['Float']['input']>;
+  posY?: InputMaybe<Scalars['Float']['input']>;
   value: Scalars['String']['input'];
+};
+
+export type ReflexFinalizeAnalysisType = {
+  __typename?: 'ReflexFinalizeAnalysisType';
+  analysis?: Maybe<AnalysisType>;
+  analysisUid: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
+  posX?: Maybe<Scalars['Float']['output']>;
+  posY?: Maybe<Scalars['Float']['output']>;
+  reflexDecision?: Maybe<ReflexDecisionType>;
+  reflexDecisionUid: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  value: Scalars['String']['output'];
+};
+
+export type ReflexRuleCriteriaInput = {
+  analysisUid: Scalars['String']['input'];
+  operator: Scalars['String']['input'];
+  priority?: Scalars['Int']['input'];
+  value: Scalars['String']['input'];
+};
+
+export type ReflexRuleCriteriaType = {
+  __typename?: 'ReflexRuleCriteriaType';
+  analysis?: Maybe<AnalysisType>;
+  analysisUid: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
+  operator: Scalars['String']['output'];
+  priority: Scalars['Int']['output'];
+  reflexRuleGroup?: Maybe<ReflexRuleGroupType>;
+  reflexRuleGroupUid: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  value: Scalars['String']['output'];
 };
 
 export type ReflexRuleCursorPage = {
@@ -8579,8 +8575,57 @@ export type ReflexRuleEdge = {
   node: ReflexRuleType;
 };
 
+export type ReflexRuleGraphEdge = {
+  source: Scalars['String']['input'];
+  sourceHandle?: InputMaybe<Scalars['String']['input']>;
+  target: Scalars['String']['input'];
+  targetHandle?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type ReflexRuleGraphInput = {
+  edges: Array<ReflexRuleGraphEdge>;
+  nodes: Array<ReflexRuleGraphNode>;
+};
+
+export type ReflexRuleGraphNode = {
+  data: Scalars['JSON']['input'];
+  id: Scalars['String']['input'];
+  positionX: Scalars['Float']['input'];
+  positionY: Scalars['Float']['input'];
+  type: Scalars['String']['input'];
+};
+
+export type ReflexRuleGroupInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  posX?: InputMaybe<Scalars['Float']['input']>;
+  posY?: InputMaybe<Scalars['Float']['input']>;
+  priority?: Scalars['Int']['input'];
+  rules?: InputMaybe<Array<ReflexRuleCriteriaInput>>;
+};
+
+export type ReflexRuleGroupType = {
+  __typename?: 'ReflexRuleGroupType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
+  posX?: Maybe<Scalars['Float']['output']>;
+  posY?: Maybe<Scalars['Float']['output']>;
+  priority: Scalars['Int']['output'];
+  reflexDecision?: Maybe<ReflexDecisionType>;
+  reflexDecisionUid: Scalars['String']['output'];
+  rules?: Maybe<Array<ReflexRuleCriteriaType>>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
 export type ReflexRuleInput = {
   description?: InputMaybe<Scalars['String']['input']>;
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
   name: Scalars['String']['input'];
 };
 
@@ -8597,7 +8642,43 @@ export type ReflexRuleType = {
   laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   priority: Scalars['Int']['output'];
-  reflexActions?: Maybe<Array<ReflexActionType>>;
+  reflexTriggers?: Maybe<Array<ReflexTriggerType>>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type ReflexTriggerInput = {
+  analyses?: InputMaybe<Array<Scalars['String']['input']>>;
+  description: Scalars['String']['input'];
+  level?: Scalars['Int']['input'];
+  posX?: InputMaybe<Scalars['Float']['input']>;
+  posY?: InputMaybe<Scalars['Float']['input']>;
+  reflexRuleUid: Scalars['String']['input'];
+  sampleTypeUid?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Response for reflex trigger mutations */
+export type ReflexTriggerResponse = OperationError | ReflexTriggerType;
+
+export type ReflexTriggerType = {
+  __typename?: 'ReflexTriggerType';
+  analyses?: Maybe<Array<AnalysisType>>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  decisions?: Maybe<Array<ReflexDecisionType>>;
+  description: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
+  level: Scalars['Int']['output'];
+  posX?: Maybe<Scalars['Float']['output']>;
+  posY?: Maybe<Scalars['Float']['output']>;
+  reflexRule?: Maybe<ReflexRuleType>;
+  reflexRuleUid: Scalars['String']['output'];
+  sampleType?: Maybe<SampleTypeTyp>;
+  sampleTypeUid?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -8761,7 +8842,7 @@ export type SampleGenealogyNode = {
 
 export type SampleListingType = {
   __typename?: 'SampleListingType';
-  message?: Maybe<Scalars['String']['output']>;
+  message: Scalars['String']['output'];
   samples: Array<SampleType>;
 };
 
@@ -9552,11 +9633,11 @@ export type StockUnitType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
-  description: Scalars['String']['output'];
+  description?: Maybe<Scalars['String']['output']>;
   laboratory?: Maybe<LaboratoryType>;
   laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
-  synonyms: Scalars['String']['output'];
+  synonyms?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -10358,16 +10439,15 @@ export type GraphCacheKeysConfig = {
   QCSetWithSamples?: (data: WithTypename<QcSetWithSamples>) => null | string,
   QCTemplateType?: (data: WithTypename<QcTemplateType>) => null | string,
   ReferralLaboratoryType?: (data: WithTypename<ReferralLaboratoryType>) => null | string,
-  ReflexActionType?: (data: WithTypename<ReflexActionType>) => null | string,
-  ReflexBrainActionType?: (data: WithTypename<ReflexBrainActionType>) => null | string,
-  ReflexBrainAdditionType?: (data: WithTypename<ReflexBrainAdditionType>) => null | string,
-  ReflexBrainConditionCriteriaType?: (data: WithTypename<ReflexBrainConditionCriteriaType>) => null | string,
-  ReflexBrainConditionType?: (data: WithTypename<ReflexBrainConditionType>) => null | string,
-  ReflexBrainFinalType?: (data: WithTypename<ReflexBrainFinalType>) => null | string,
-  ReflexBrainType?: (data: WithTypename<ReflexBrainType>) => null | string,
+  ReflexAddAnalysisType?: (data: WithTypename<ReflexAddAnalysisType>) => null | string,
+  ReflexDecisionType?: (data: WithTypename<ReflexDecisionType>) => null | string,
+  ReflexFinalizeAnalysisType?: (data: WithTypename<ReflexFinalizeAnalysisType>) => null | string,
+  ReflexRuleCriteriaType?: (data: WithTypename<ReflexRuleCriteriaType>) => null | string,
   ReflexRuleCursorPage?: (data: WithTypename<ReflexRuleCursorPage>) => null | string,
   ReflexRuleEdge?: (data: WithTypename<ReflexRuleEdge>) => null | string,
+  ReflexRuleGroupType?: (data: WithTypename<ReflexRuleGroupType>) => null | string,
   ReflexRuleType?: (data: WithTypename<ReflexRuleType>) => null | string,
+  ReflexTriggerType?: (data: WithTypename<ReflexTriggerType>) => null | string,
   RejectionReasonType?: (data: WithTypename<RejectionReasonType>) => null | string,
   ReportImpressType?: (data: WithTypename<ReportImpressType>) => null | string,
   ReportMetaType?: (data: WithTypename<ReportMetaType>) => null | string,
@@ -10694,8 +10774,11 @@ export type GraphCacheResolvers = {
     referralLaboratoryAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<ReferralLaboratoryType> | string>>,
     referralLaboratoryByCode?: GraphCacheResolver<WithTypename<Query>, QueryReferralLaboratoryByCodeArgs, WithTypename<ReferralLaboratoryType> | string>,
     referralLaboratoryByUid?: GraphCacheResolver<WithTypename<Query>, QueryReferralLaboratoryByUidArgs, WithTypename<ReferralLaboratoryType> | string>,
+    reflexDecisionByUid?: GraphCacheResolver<WithTypename<Query>, QueryReflexDecisionByUidArgs, WithTypename<ReflexDecisionType> | string>,
     reflexRuleAll?: GraphCacheResolver<WithTypename<Query>, QueryReflexRuleAllArgs, WithTypename<ReflexRuleCursorPage> | string>,
     reflexRuleByUid?: GraphCacheResolver<WithTypename<Query>, QueryReflexRuleByUidArgs, WithTypename<ReflexRuleType> | string>,
+    reflexTriggerAll?: GraphCacheResolver<WithTypename<Query>, QueryReflexTriggerAllArgs, Array<WithTypename<ReflexTriggerType> | string>>,
+    reflexTriggerByUid?: GraphCacheResolver<WithTypename<Query>, QueryReflexTriggerByUidArgs, WithTypename<ReflexTriggerType> | string>,
     rejectionReasonByUid?: GraphCacheResolver<WithTypename<Query>, QueryRejectionReasonByUidArgs, WithTypename<RejectionReasonType> | string>,
     rejectionReasonsAll?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<RejectionReasonType> | string>>,
     resultMutationByResultUid?: GraphCacheResolver<WithTypename<Query>, QueryResultMutationByResultUidArgs, WithTypename<ResultMutationType> | string>,
@@ -13349,96 +13432,79 @@ export type GraphCacheResolvers = {
     url?: GraphCacheResolver<WithTypename<ReferralLaboratoryType>, Record<string, never>, Scalars['String'] | string>,
     username?: GraphCacheResolver<WithTypename<ReferralLaboratoryType>, Record<string, never>, Scalars['String'] | string>
   },
-  ReflexActionType?: {
-    analyses?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, Array<WithTypename<AnalysisType> | string>>,
-    brains?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, Array<WithTypename<ReflexBrainType> | string>>,
-    createdAt?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, Scalars['String'] | string>,
-    createdBy?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, WithTypename<UserType> | string>,
-    createdByUid?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, Scalars['String'] | string>,
-    description?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, Scalars['String'] | string>,
-    laboratory?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
-    laboratoryUid?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, Scalars['String'] | string>,
-    level?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, Scalars['Int'] | string>,
-    reflexRule?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, WithTypename<ReflexRuleType> | string>,
-    reflexRuleUid?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, Scalars['String'] | string>,
-    sampleType?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, WithTypename<SampleTypeTyp> | string>,
-    sampleTypeUid?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, Scalars['String'] | string>,
-    uid?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, Scalars['String'] | string>,
-    updatedAt?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, Scalars['String'] | string>,
-    updatedBy?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, WithTypename<UserType> | string>,
-    updatedByUid?: GraphCacheResolver<WithTypename<ReflexActionType>, Record<string, never>, Scalars['String'] | string>
+  ReflexAddAnalysisType?: {
+    analysis?: GraphCacheResolver<WithTypename<ReflexAddAnalysisType>, Record<string, never>, WithTypename<AnalysisType> | string>,
+    analysisUid?: GraphCacheResolver<WithTypename<ReflexAddAnalysisType>, Record<string, never>, Scalars['String'] | string>,
+    count?: GraphCacheResolver<WithTypename<ReflexAddAnalysisType>, Record<string, never>, Scalars['Int'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<ReflexAddAnalysisType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<ReflexAddAnalysisType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<ReflexAddAnalysisType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ReflexAddAnalysisType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ReflexAddAnalysisType>, Record<string, never>, Scalars['String'] | string>,
+    posX?: GraphCacheResolver<WithTypename<ReflexAddAnalysisType>, Record<string, never>, Scalars['Float'] | string>,
+    posY?: GraphCacheResolver<WithTypename<ReflexAddAnalysisType>, Record<string, never>, Scalars['Float'] | string>,
+    reflexDecision?: GraphCacheResolver<WithTypename<ReflexAddAnalysisType>, Record<string, never>, WithTypename<ReflexDecisionType> | string>,
+    reflexDecisionUid?: GraphCacheResolver<WithTypename<ReflexAddAnalysisType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<ReflexAddAnalysisType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<ReflexAddAnalysisType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<ReflexAddAnalysisType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<ReflexAddAnalysisType>, Record<string, never>, Scalars['String'] | string>
   },
-  ReflexBrainActionType?: {
-    addNew?: GraphCacheResolver<WithTypename<ReflexBrainActionType>, Record<string, never>, Array<WithTypename<ReflexBrainAdditionType> | string>>,
-    createdAt?: GraphCacheResolver<WithTypename<ReflexBrainActionType>, Record<string, never>, Scalars['String'] | string>,
-    createdBy?: GraphCacheResolver<WithTypename<ReflexBrainActionType>, Record<string, never>, WithTypename<UserType> | string>,
-    createdByUid?: GraphCacheResolver<WithTypename<ReflexBrainActionType>, Record<string, never>, Scalars['String'] | string>,
-    description?: GraphCacheResolver<WithTypename<ReflexBrainActionType>, Record<string, never>, Scalars['String'] | string>,
-    finalise?: GraphCacheResolver<WithTypename<ReflexBrainActionType>, Record<string, never>, Array<WithTypename<ReflexBrainFinalType> | string>>,
-    laboratory?: GraphCacheResolver<WithTypename<ReflexBrainActionType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
-    laboratoryUid?: GraphCacheResolver<WithTypename<ReflexBrainActionType>, Record<string, never>, Scalars['String'] | string>,
-    priority?: GraphCacheResolver<WithTypename<ReflexBrainActionType>, Record<string, never>, Scalars['Int'] | string>,
-    reflexBrain?: GraphCacheResolver<WithTypename<ReflexBrainActionType>, Record<string, never>, WithTypename<ReflexBrainType> | string>,
-    reflexBrainUid?: GraphCacheResolver<WithTypename<ReflexBrainActionType>, Record<string, never>, Scalars['String'] | string>,
-    uid?: GraphCacheResolver<WithTypename<ReflexBrainActionType>, Record<string, never>, Scalars['String'] | string>,
-    updatedAt?: GraphCacheResolver<WithTypename<ReflexBrainActionType>, Record<string, never>, Scalars['String'] | string>,
-    updatedBy?: GraphCacheResolver<WithTypename<ReflexBrainActionType>, Record<string, never>, WithTypename<UserType> | string>,
-    updatedByUid?: GraphCacheResolver<WithTypename<ReflexBrainActionType>, Record<string, never>, Scalars['String'] | string>
+  ReflexDecisionType?: {
+    addAnalyses?: GraphCacheResolver<WithTypename<ReflexDecisionType>, Record<string, never>, Array<WithTypename<ReflexAddAnalysisType> | string>>,
+    createdAt?: GraphCacheResolver<WithTypename<ReflexDecisionType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<ReflexDecisionType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<ReflexDecisionType>, Record<string, never>, Scalars['String'] | string>,
+    description?: GraphCacheResolver<WithTypename<ReflexDecisionType>, Record<string, never>, Scalars['String'] | string>,
+    finalizeAnalyses?: GraphCacheResolver<WithTypename<ReflexDecisionType>, Record<string, never>, Array<WithTypename<ReflexFinalizeAnalysisType> | string>>,
+    laboratory?: GraphCacheResolver<WithTypename<ReflexDecisionType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ReflexDecisionType>, Record<string, never>, Scalars['String'] | string>,
+    posX?: GraphCacheResolver<WithTypename<ReflexDecisionType>, Record<string, never>, Scalars['Float'] | string>,
+    posY?: GraphCacheResolver<WithTypename<ReflexDecisionType>, Record<string, never>, Scalars['Float'] | string>,
+    priority?: GraphCacheResolver<WithTypename<ReflexDecisionType>, Record<string, never>, Scalars['Int'] | string>,
+    reflexTrigger?: GraphCacheResolver<WithTypename<ReflexDecisionType>, Record<string, never>, WithTypename<ReflexTriggerType> | string>,
+    reflexTriggerUid?: GraphCacheResolver<WithTypename<ReflexDecisionType>, Record<string, never>, Scalars['String'] | string>,
+    ruleGroups?: GraphCacheResolver<WithTypename<ReflexDecisionType>, Record<string, never>, Array<WithTypename<ReflexRuleGroupType> | string>>,
+    uid?: GraphCacheResolver<WithTypename<ReflexDecisionType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<ReflexDecisionType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<ReflexDecisionType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<ReflexDecisionType>, Record<string, never>, Scalars['String'] | string>
   },
-  ReflexBrainAdditionType?: {
-    analysis?: GraphCacheResolver<WithTypename<ReflexBrainAdditionType>, Record<string, never>, WithTypename<AnalysisType> | string>,
-    analysisUid?: GraphCacheResolver<WithTypename<ReflexBrainAdditionType>, Record<string, never>, Scalars['String'] | string>,
-    count?: GraphCacheResolver<WithTypename<ReflexBrainAdditionType>, Record<string, never>, Scalars['Int'] | string>,
-    laboratory?: GraphCacheResolver<WithTypename<ReflexBrainAdditionType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
-    laboratoryUid?: GraphCacheResolver<WithTypename<ReflexBrainAdditionType>, Record<string, never>, Scalars['String'] | string>,
-    reflexBrainAction?: GraphCacheResolver<WithTypename<ReflexBrainAdditionType>, Record<string, never>, WithTypename<ReflexBrainActionType> | string>,
-    reflexBrainActionUid?: GraphCacheResolver<WithTypename<ReflexBrainAdditionType>, Record<string, never>, Scalars['String'] | string>
+  ReflexFinalizeAnalysisType?: {
+    analysis?: GraphCacheResolver<WithTypename<ReflexFinalizeAnalysisType>, Record<string, never>, WithTypename<AnalysisType> | string>,
+    analysisUid?: GraphCacheResolver<WithTypename<ReflexFinalizeAnalysisType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<ReflexFinalizeAnalysisType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<ReflexFinalizeAnalysisType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<ReflexFinalizeAnalysisType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ReflexFinalizeAnalysisType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ReflexFinalizeAnalysisType>, Record<string, never>, Scalars['String'] | string>,
+    posX?: GraphCacheResolver<WithTypename<ReflexFinalizeAnalysisType>, Record<string, never>, Scalars['Float'] | string>,
+    posY?: GraphCacheResolver<WithTypename<ReflexFinalizeAnalysisType>, Record<string, never>, Scalars['Float'] | string>,
+    reflexDecision?: GraphCacheResolver<WithTypename<ReflexFinalizeAnalysisType>, Record<string, never>, WithTypename<ReflexDecisionType> | string>,
+    reflexDecisionUid?: GraphCacheResolver<WithTypename<ReflexFinalizeAnalysisType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<ReflexFinalizeAnalysisType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<ReflexFinalizeAnalysisType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<ReflexFinalizeAnalysisType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<ReflexFinalizeAnalysisType>, Record<string, never>, Scalars['String'] | string>,
+    value?: GraphCacheResolver<WithTypename<ReflexFinalizeAnalysisType>, Record<string, never>, Scalars['String'] | string>
   },
-  ReflexBrainConditionCriteriaType?: {
-    analysis?: GraphCacheResolver<WithTypename<ReflexBrainConditionCriteriaType>, Record<string, never>, WithTypename<AnalysisType> | string>,
-    analysisUid?: GraphCacheResolver<WithTypename<ReflexBrainConditionCriteriaType>, Record<string, never>, Scalars['String'] | string>,
-    laboratory?: GraphCacheResolver<WithTypename<ReflexBrainConditionCriteriaType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
-    laboratoryUid?: GraphCacheResolver<WithTypename<ReflexBrainConditionCriteriaType>, Record<string, never>, Scalars['String'] | string>,
-    operator?: GraphCacheResolver<WithTypename<ReflexBrainConditionCriteriaType>, Record<string, never>, Scalars['String'] | string>,
-    reflexBrainCondition?: GraphCacheResolver<WithTypename<ReflexBrainConditionCriteriaType>, Record<string, never>, WithTypename<ReflexBrainConditionType> | string>,
-    reflexBrainConditionUid?: GraphCacheResolver<WithTypename<ReflexBrainConditionCriteriaType>, Record<string, never>, Scalars['String'] | string>,
-    value?: GraphCacheResolver<WithTypename<ReflexBrainConditionCriteriaType>, Record<string, never>, Scalars['String'] | string>
-  },
-  ReflexBrainConditionType?: {
-    criteria?: GraphCacheResolver<WithTypename<ReflexBrainConditionType>, Record<string, never>, Array<WithTypename<ReflexBrainConditionCriteriaType> | string>>,
-    description?: GraphCacheResolver<WithTypename<ReflexBrainConditionType>, Record<string, never>, Scalars['String'] | string>,
-    laboratory?: GraphCacheResolver<WithTypename<ReflexBrainConditionType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
-    laboratoryUid?: GraphCacheResolver<WithTypename<ReflexBrainConditionType>, Record<string, never>, Scalars['String'] | string>,
-    priority?: GraphCacheResolver<WithTypename<ReflexBrainConditionType>, Record<string, never>, Scalars['Int'] | string>,
-    reflexBrain?: GraphCacheResolver<WithTypename<ReflexBrainConditionType>, Record<string, never>, WithTypename<ReflexBrainType> | string>,
-    reflexBrainUid?: GraphCacheResolver<WithTypename<ReflexBrainConditionType>, Record<string, never>, Scalars['String'] | string>,
-    uid?: GraphCacheResolver<WithTypename<ReflexBrainConditionType>, Record<string, never>, Scalars['String'] | string>
-  },
-  ReflexBrainFinalType?: {
-    analysis?: GraphCacheResolver<WithTypename<ReflexBrainFinalType>, Record<string, never>, WithTypename<AnalysisType> | string>,
-    analysisUid?: GraphCacheResolver<WithTypename<ReflexBrainFinalType>, Record<string, never>, Scalars['String'] | string>,
-    laboratory?: GraphCacheResolver<WithTypename<ReflexBrainFinalType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
-    laboratoryUid?: GraphCacheResolver<WithTypename<ReflexBrainFinalType>, Record<string, never>, Scalars['String'] | string>,
-    reflexBrainAction?: GraphCacheResolver<WithTypename<ReflexBrainFinalType>, Record<string, never>, WithTypename<ReflexBrainActionType> | string>,
-    reflexBrainActionUid?: GraphCacheResolver<WithTypename<ReflexBrainFinalType>, Record<string, never>, Scalars['String'] | string>,
-    value?: GraphCacheResolver<WithTypename<ReflexBrainFinalType>, Record<string, never>, Scalars['String'] | string>
-  },
-  ReflexBrainType?: {
-    actions?: GraphCacheResolver<WithTypename<ReflexBrainType>, Record<string, never>, Array<WithTypename<ReflexBrainActionType> | string>>,
-    conditions?: GraphCacheResolver<WithTypename<ReflexBrainType>, Record<string, never>, Array<WithTypename<ReflexBrainConditionType> | string>>,
-    createdAt?: GraphCacheResolver<WithTypename<ReflexBrainType>, Record<string, never>, Scalars['String'] | string>,
-    createdBy?: GraphCacheResolver<WithTypename<ReflexBrainType>, Record<string, never>, WithTypename<UserType> | string>,
-    createdByUid?: GraphCacheResolver<WithTypename<ReflexBrainType>, Record<string, never>, Scalars['String'] | string>,
-    description?: GraphCacheResolver<WithTypename<ReflexBrainType>, Record<string, never>, Scalars['String'] | string>,
-    laboratory?: GraphCacheResolver<WithTypename<ReflexBrainType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
-    laboratoryUid?: GraphCacheResolver<WithTypename<ReflexBrainType>, Record<string, never>, Scalars['String'] | string>,
-    priority?: GraphCacheResolver<WithTypename<ReflexBrainType>, Record<string, never>, Scalars['Int'] | string>,
-    reflexAction?: GraphCacheResolver<WithTypename<ReflexBrainType>, Record<string, never>, WithTypename<ReflexBrainType> | string>,
-    reflexActionUid?: GraphCacheResolver<WithTypename<ReflexBrainType>, Record<string, never>, Scalars['String'] | string>,
-    uid?: GraphCacheResolver<WithTypename<ReflexBrainType>, Record<string, never>, Scalars['String'] | string>,
-    updatedAt?: GraphCacheResolver<WithTypename<ReflexBrainType>, Record<string, never>, Scalars['String'] | string>,
-    updatedBy?: GraphCacheResolver<WithTypename<ReflexBrainType>, Record<string, never>, WithTypename<UserType> | string>,
-    updatedByUid?: GraphCacheResolver<WithTypename<ReflexBrainType>, Record<string, never>, Scalars['String'] | string>
+  ReflexRuleCriteriaType?: {
+    analysis?: GraphCacheResolver<WithTypename<ReflexRuleCriteriaType>, Record<string, never>, WithTypename<AnalysisType> | string>,
+    analysisUid?: GraphCacheResolver<WithTypename<ReflexRuleCriteriaType>, Record<string, never>, Scalars['String'] | string>,
+    createdAt?: GraphCacheResolver<WithTypename<ReflexRuleCriteriaType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<ReflexRuleCriteriaType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<ReflexRuleCriteriaType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ReflexRuleCriteriaType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ReflexRuleCriteriaType>, Record<string, never>, Scalars['String'] | string>,
+    operator?: GraphCacheResolver<WithTypename<ReflexRuleCriteriaType>, Record<string, never>, Scalars['String'] | string>,
+    priority?: GraphCacheResolver<WithTypename<ReflexRuleCriteriaType>, Record<string, never>, Scalars['Int'] | string>,
+    reflexRuleGroup?: GraphCacheResolver<WithTypename<ReflexRuleCriteriaType>, Record<string, never>, WithTypename<ReflexRuleGroupType> | string>,
+    reflexRuleGroupUid?: GraphCacheResolver<WithTypename<ReflexRuleCriteriaType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<ReflexRuleCriteriaType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<ReflexRuleCriteriaType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<ReflexRuleCriteriaType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<ReflexRuleCriteriaType>, Record<string, never>, Scalars['String'] | string>,
+    value?: GraphCacheResolver<WithTypename<ReflexRuleCriteriaType>, Record<string, never>, Scalars['String'] | string>
   },
   ReflexRuleCursorPage?: {
     edges?: GraphCacheResolver<WithTypename<ReflexRuleCursorPage>, Record<string, never>, Array<WithTypename<ReflexRuleEdge> | string>>,
@@ -13450,6 +13516,24 @@ export type GraphCacheResolvers = {
     cursor?: GraphCacheResolver<WithTypename<ReflexRuleEdge>, Record<string, never>, Scalars['String'] | string>,
     node?: GraphCacheResolver<WithTypename<ReflexRuleEdge>, Record<string, never>, WithTypename<ReflexRuleType> | string>
   },
+  ReflexRuleGroupType?: {
+    createdAt?: GraphCacheResolver<WithTypename<ReflexRuleGroupType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<ReflexRuleGroupType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<ReflexRuleGroupType>, Record<string, never>, Scalars['String'] | string>,
+    description?: GraphCacheResolver<WithTypename<ReflexRuleGroupType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ReflexRuleGroupType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ReflexRuleGroupType>, Record<string, never>, Scalars['String'] | string>,
+    posX?: GraphCacheResolver<WithTypename<ReflexRuleGroupType>, Record<string, never>, Scalars['Float'] | string>,
+    posY?: GraphCacheResolver<WithTypename<ReflexRuleGroupType>, Record<string, never>, Scalars['Float'] | string>,
+    priority?: GraphCacheResolver<WithTypename<ReflexRuleGroupType>, Record<string, never>, Scalars['Int'] | string>,
+    reflexDecision?: GraphCacheResolver<WithTypename<ReflexRuleGroupType>, Record<string, never>, WithTypename<ReflexDecisionType> | string>,
+    reflexDecisionUid?: GraphCacheResolver<WithTypename<ReflexRuleGroupType>, Record<string, never>, Scalars['String'] | string>,
+    rules?: GraphCacheResolver<WithTypename<ReflexRuleGroupType>, Record<string, never>, Array<WithTypename<ReflexRuleCriteriaType> | string>>,
+    uid?: GraphCacheResolver<WithTypename<ReflexRuleGroupType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<ReflexRuleGroupType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<ReflexRuleGroupType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<ReflexRuleGroupType>, Record<string, never>, Scalars['String'] | string>
+  },
   ReflexRuleType?: {
     createdAt?: GraphCacheResolver<WithTypename<ReflexRuleType>, Record<string, never>, Scalars['String'] | string>,
     createdBy?: GraphCacheResolver<WithTypename<ReflexRuleType>, Record<string, never>, WithTypename<UserType> | string>,
@@ -13460,11 +13544,32 @@ export type GraphCacheResolvers = {
     laboratoryUid?: GraphCacheResolver<WithTypename<ReflexRuleType>, Record<string, never>, Scalars['String'] | string>,
     name?: GraphCacheResolver<WithTypename<ReflexRuleType>, Record<string, never>, Scalars['String'] | string>,
     priority?: GraphCacheResolver<WithTypename<ReflexRuleType>, Record<string, never>, Scalars['Int'] | string>,
-    reflexActions?: GraphCacheResolver<WithTypename<ReflexRuleType>, Record<string, never>, Array<WithTypename<ReflexActionType> | string>>,
+    reflexTriggers?: GraphCacheResolver<WithTypename<ReflexRuleType>, Record<string, never>, Array<WithTypename<ReflexTriggerType> | string>>,
     uid?: GraphCacheResolver<WithTypename<ReflexRuleType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<ReflexRuleType>, Record<string, never>, Scalars['String'] | string>,
     updatedBy?: GraphCacheResolver<WithTypename<ReflexRuleType>, Record<string, never>, WithTypename<UserType> | string>,
     updatedByUid?: GraphCacheResolver<WithTypename<ReflexRuleType>, Record<string, never>, Scalars['String'] | string>
+  },
+  ReflexTriggerType?: {
+    analyses?: GraphCacheResolver<WithTypename<ReflexTriggerType>, Record<string, never>, Array<WithTypename<AnalysisType> | string>>,
+    createdAt?: GraphCacheResolver<WithTypename<ReflexTriggerType>, Record<string, never>, Scalars['String'] | string>,
+    createdBy?: GraphCacheResolver<WithTypename<ReflexTriggerType>, Record<string, never>, WithTypename<UserType> | string>,
+    createdByUid?: GraphCacheResolver<WithTypename<ReflexTriggerType>, Record<string, never>, Scalars['String'] | string>,
+    decisions?: GraphCacheResolver<WithTypename<ReflexTriggerType>, Record<string, never>, Array<WithTypename<ReflexDecisionType> | string>>,
+    description?: GraphCacheResolver<WithTypename<ReflexTriggerType>, Record<string, never>, Scalars['String'] | string>,
+    laboratory?: GraphCacheResolver<WithTypename<ReflexTriggerType>, Record<string, never>, WithTypename<LaboratoryType> | string>,
+    laboratoryUid?: GraphCacheResolver<WithTypename<ReflexTriggerType>, Record<string, never>, Scalars['String'] | string>,
+    level?: GraphCacheResolver<WithTypename<ReflexTriggerType>, Record<string, never>, Scalars['Int'] | string>,
+    posX?: GraphCacheResolver<WithTypename<ReflexTriggerType>, Record<string, never>, Scalars['Float'] | string>,
+    posY?: GraphCacheResolver<WithTypename<ReflexTriggerType>, Record<string, never>, Scalars['Float'] | string>,
+    reflexRule?: GraphCacheResolver<WithTypename<ReflexTriggerType>, Record<string, never>, WithTypename<ReflexRuleType> | string>,
+    reflexRuleUid?: GraphCacheResolver<WithTypename<ReflexTriggerType>, Record<string, never>, Scalars['String'] | string>,
+    sampleType?: GraphCacheResolver<WithTypename<ReflexTriggerType>, Record<string, never>, WithTypename<SampleTypeTyp> | string>,
+    sampleTypeUid?: GraphCacheResolver<WithTypename<ReflexTriggerType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<ReflexTriggerType>, Record<string, never>, Scalars['String'] | string>,
+    updatedAt?: GraphCacheResolver<WithTypename<ReflexTriggerType>, Record<string, never>, Scalars['String'] | string>,
+    updatedBy?: GraphCacheResolver<WithTypename<ReflexTriggerType>, Record<string, never>, WithTypename<UserType> | string>,
+    updatedByUid?: GraphCacheResolver<WithTypename<ReflexTriggerType>, Record<string, never>, Scalars['String'] | string>
   },
   RejectionReasonType?: {
     createdAt?: GraphCacheResolver<WithTypename<RejectionReasonType>, Record<string, never>, Scalars['String'] | string>,
@@ -14597,9 +14702,9 @@ export type GraphCacheOptimisticUpdaters = {
   createQcSet?: GraphCacheOptimisticMutationResolver<MutationCreateQcSetArgs, WithTypename<QcSetResponse>>,
   createQcTemplate?: GraphCacheOptimisticMutationResolver<MutationCreateQcTemplateArgs, WithTypename<QcTemplateResponse>>,
   createReferralLaboratory?: GraphCacheOptimisticMutationResolver<MutationCreateReferralLaboratoryArgs, WithTypename<ReferralLaboratoryResponse>>,
-  createReflexAction?: GraphCacheOptimisticMutationResolver<MutationCreateReflexActionArgs, WithTypename<ReflexActionResponse>>,
-  createReflexBrain?: GraphCacheOptimisticMutationResolver<MutationCreateReflexBrainArgs, WithTypename<ReflexBrainResponse>>,
+  createReflexDecision?: GraphCacheOptimisticMutationResolver<MutationCreateReflexDecisionArgs, WithTypename<ReflexDecisionResponse>>,
   createReflexRule?: GraphCacheOptimisticMutationResolver<MutationCreateReflexRuleArgs, WithTypename<ReflexRuleResponse>>,
+  createReflexTrigger?: GraphCacheOptimisticMutationResolver<MutationCreateReflexTriggerArgs, WithTypename<ReflexTriggerResponse>>,
   createRejectionReason?: GraphCacheOptimisticMutationResolver<MutationCreateRejectionReasonArgs, WithTypename<RejectionReasonResponse>>,
   createResultOption?: GraphCacheOptimisticMutationResolver<MutationCreateResultOptionArgs, WithTypename<ResultOptionResponse>>,
   createSampleRelationship?: GraphCacheOptimisticMutationResolver<MutationCreateSampleRelationshipArgs, WithTypename<SampleRelationshipResponse>>,
@@ -14646,7 +14751,8 @@ export type GraphCacheOptimisticUpdaters = {
   deleteGrindStamp?: GraphCacheOptimisticMutationResolver<MutationDeleteGrindStampArgs, WithTypename<DeleteResponse>>,
   deleteMessage?: GraphCacheOptimisticMutationResolver<MutationDeleteMessageArgs, WithTypename<DeleteResponse>>,
   deleteNotice?: GraphCacheOptimisticMutationResolver<MutationDeleteNoticeArgs, WithTypename<DeleteResponse>>,
-  deleteReflexBrain?: GraphCacheOptimisticMutationResolver<MutationDeleteReflexBrainArgs, WithTypename<DeletedItem>>,
+  deleteReflexDecision?: GraphCacheOptimisticMutationResolver<MutationDeleteReflexDecisionArgs, WithTypename<DeleteResponse>>,
+  deleteReflexTrigger?: GraphCacheOptimisticMutationResolver<MutationDeleteReflexTriggerArgs, WithTypename<DeleteResponse>>,
   deleteSmsTemplate?: GraphCacheOptimisticMutationResolver<MutationDeleteSmsTemplateArgs, WithTypename<OperationErrorDeletedItem>>,
   deleteStockOrder?: GraphCacheOptimisticMutationResolver<MutationDeleteStockOrderArgs, WithTypename<StockOrderResponse>>,
   deleteThread?: GraphCacheOptimisticMutationResolver<MutationDeleteThreadArgs, WithTypename<DeleteResponse>>,
@@ -14675,6 +14781,7 @@ export type GraphCacheOptimisticUpdaters = {
   retractAnalysisResults?: GraphCacheOptimisticMutationResolver<MutationRetractAnalysisResultsArgs, WithTypename<AnalysisResultResponse>>,
   samplesApplyTemplate?: GraphCacheOptimisticMutationResolver<MutationSamplesApplyTemplateArgs, WithTypename<ResultedSampleActionResponse>>,
   saveAbxOrganismResult?: GraphCacheOptimisticMutationResolver<MutationSaveAbxOrganismResultArgs, WithTypename<AbxOrganismResultType>>,
+  saveReflexRuleGraph?: GraphCacheOptimisticMutationResolver<MutationSaveReflexRuleGraphArgs, WithTypename<ReflexRuleResponse>>,
   sendMessage?: GraphCacheOptimisticMutationResolver<MutationSendMessageArgs, WithTypename<MessageResponse>>,
   setUserActiveLaboratory?: GraphCacheOptimisticMutationResolver<MutationSetUserActiveLaboratoryArgs, WithTypename<UserResponse>>,
   shipmentManageSamples?: GraphCacheOptimisticMutationResolver<MutationShipmentManageSamplesArgs, WithTypename<ShipmentResponse>>,
@@ -14767,9 +14874,9 @@ export type GraphCacheOptimisticUpdaters = {
   updateQcLevel?: GraphCacheOptimisticMutationResolver<MutationUpdateQcLevelArgs, WithTypename<QcLevelResponse>>,
   updateQcTemplate?: GraphCacheOptimisticMutationResolver<MutationUpdateQcTemplateArgs, WithTypename<QcTemplateResponse>>,
   updateReferralLaboratory?: GraphCacheOptimisticMutationResolver<MutationUpdateReferralLaboratoryArgs, WithTypename<ReferralLaboratoryResponse>>,
-  updateReflexAction?: GraphCacheOptimisticMutationResolver<MutationUpdateReflexActionArgs, WithTypename<ReflexActionResponse>>,
-  updateReflexBrain?: GraphCacheOptimisticMutationResolver<MutationUpdateReflexBrainArgs, WithTypename<ReflexBrainResponse>>,
+  updateReflexDecision?: GraphCacheOptimisticMutationResolver<MutationUpdateReflexDecisionArgs, WithTypename<ReflexDecisionResponse>>,
   updateReflexRule?: GraphCacheOptimisticMutationResolver<MutationUpdateReflexRuleArgs, WithTypename<ReflexRuleResponse>>,
+  updateReflexTrigger?: GraphCacheOptimisticMutationResolver<MutationUpdateReflexTriggerArgs, WithTypename<ReflexTriggerResponse>>,
   updateRejectionReason?: GraphCacheOptimisticMutationResolver<MutationUpdateRejectionReasonArgs, WithTypename<RejectionReasonResponse>>,
   updateResultOption?: GraphCacheOptimisticMutationResolver<MutationUpdateResultOptionArgs, WithTypename<ResultOptionResponse>>,
   updateSampleType?: GraphCacheOptimisticMutationResolver<MutationUpdateSampleTypeArgs, WithTypename<SampleTypeResponse>>,
@@ -15049,8 +15156,11 @@ export type GraphCacheUpdaters = {
     referralLaboratoryAll?: GraphCacheUpdateResolver<{ referralLaboratoryAll: Array<WithTypename<ReferralLaboratoryType>> }, Record<string, never>>,
     referralLaboratoryByCode?: GraphCacheUpdateResolver<{ referralLaboratoryByCode: WithTypename<ReferralLaboratoryType> }, QueryReferralLaboratoryByCodeArgs>,
     referralLaboratoryByUid?: GraphCacheUpdateResolver<{ referralLaboratoryByUid: WithTypename<ReferralLaboratoryType> }, QueryReferralLaboratoryByUidArgs>,
+    reflexDecisionByUid?: GraphCacheUpdateResolver<{ reflexDecisionByUid: Maybe<WithTypename<ReflexDecisionType>> }, QueryReflexDecisionByUidArgs>,
     reflexRuleAll?: GraphCacheUpdateResolver<{ reflexRuleAll: WithTypename<ReflexRuleCursorPage> }, QueryReflexRuleAllArgs>,
     reflexRuleByUid?: GraphCacheUpdateResolver<{ reflexRuleByUid: Maybe<WithTypename<ReflexRuleType>> }, QueryReflexRuleByUidArgs>,
+    reflexTriggerAll?: GraphCacheUpdateResolver<{ reflexTriggerAll: Array<WithTypename<ReflexTriggerType>> }, QueryReflexTriggerAllArgs>,
+    reflexTriggerByUid?: GraphCacheUpdateResolver<{ reflexTriggerByUid: Maybe<WithTypename<ReflexTriggerType>> }, QueryReflexTriggerByUidArgs>,
     rejectionReasonByUid?: GraphCacheUpdateResolver<{ rejectionReasonByUid: WithTypename<RejectionReasonType> }, QueryRejectionReasonByUidArgs>,
     rejectionReasonsAll?: GraphCacheUpdateResolver<{ rejectionReasonsAll: Array<WithTypename<RejectionReasonType>> }, Record<string, never>>,
     resultMutationByResultUid?: GraphCacheUpdateResolver<{ resultMutationByResultUid: Maybe<WithTypename<ResultMutationType>> }, QueryResultMutationByResultUidArgs>,
@@ -15223,9 +15333,9 @@ export type GraphCacheUpdaters = {
     createQcSet?: GraphCacheUpdateResolver<{ createQcSet: WithTypename<QcSetResponse> }, MutationCreateQcSetArgs>,
     createQcTemplate?: GraphCacheUpdateResolver<{ createQcTemplate: WithTypename<QcTemplateResponse> }, MutationCreateQcTemplateArgs>,
     createReferralLaboratory?: GraphCacheUpdateResolver<{ createReferralLaboratory: WithTypename<ReferralLaboratoryResponse> }, MutationCreateReferralLaboratoryArgs>,
-    createReflexAction?: GraphCacheUpdateResolver<{ createReflexAction: WithTypename<ReflexActionResponse> }, MutationCreateReflexActionArgs>,
-    createReflexBrain?: GraphCacheUpdateResolver<{ createReflexBrain: WithTypename<ReflexBrainResponse> }, MutationCreateReflexBrainArgs>,
+    createReflexDecision?: GraphCacheUpdateResolver<{ createReflexDecision: WithTypename<ReflexDecisionResponse> }, MutationCreateReflexDecisionArgs>,
     createReflexRule?: GraphCacheUpdateResolver<{ createReflexRule: WithTypename<ReflexRuleResponse> }, MutationCreateReflexRuleArgs>,
+    createReflexTrigger?: GraphCacheUpdateResolver<{ createReflexTrigger: WithTypename<ReflexTriggerResponse> }, MutationCreateReflexTriggerArgs>,
     createRejectionReason?: GraphCacheUpdateResolver<{ createRejectionReason: WithTypename<RejectionReasonResponse> }, MutationCreateRejectionReasonArgs>,
     createResultOption?: GraphCacheUpdateResolver<{ createResultOption: WithTypename<ResultOptionResponse> }, MutationCreateResultOptionArgs>,
     createSampleRelationship?: GraphCacheUpdateResolver<{ createSampleRelationship: WithTypename<SampleRelationshipResponse> }, MutationCreateSampleRelationshipArgs>,
@@ -15272,7 +15382,8 @@ export type GraphCacheUpdaters = {
     deleteGrindStamp?: GraphCacheUpdateResolver<{ deleteGrindStamp: WithTypename<DeleteResponse> }, MutationDeleteGrindStampArgs>,
     deleteMessage?: GraphCacheUpdateResolver<{ deleteMessage: WithTypename<DeleteResponse> }, MutationDeleteMessageArgs>,
     deleteNotice?: GraphCacheUpdateResolver<{ deleteNotice: WithTypename<DeleteResponse> }, MutationDeleteNoticeArgs>,
-    deleteReflexBrain?: GraphCacheUpdateResolver<{ deleteReflexBrain: WithTypename<DeletedItem> }, MutationDeleteReflexBrainArgs>,
+    deleteReflexDecision?: GraphCacheUpdateResolver<{ deleteReflexDecision: WithTypename<DeleteResponse> }, MutationDeleteReflexDecisionArgs>,
+    deleteReflexTrigger?: GraphCacheUpdateResolver<{ deleteReflexTrigger: WithTypename<DeleteResponse> }, MutationDeleteReflexTriggerArgs>,
     deleteSmsTemplate?: GraphCacheUpdateResolver<{ deleteSmsTemplate: WithTypename<OperationErrorDeletedItem> }, MutationDeleteSmsTemplateArgs>,
     deleteStockOrder?: GraphCacheUpdateResolver<{ deleteStockOrder: WithTypename<StockOrderResponse> }, MutationDeleteStockOrderArgs>,
     deleteThread?: GraphCacheUpdateResolver<{ deleteThread: WithTypename<DeleteResponse> }, MutationDeleteThreadArgs>,
@@ -15301,6 +15412,7 @@ export type GraphCacheUpdaters = {
     retractAnalysisResults?: GraphCacheUpdateResolver<{ retractAnalysisResults: WithTypename<AnalysisResultResponse> }, MutationRetractAnalysisResultsArgs>,
     samplesApplyTemplate?: GraphCacheUpdateResolver<{ samplesApplyTemplate: WithTypename<ResultedSampleActionResponse> }, MutationSamplesApplyTemplateArgs>,
     saveAbxOrganismResult?: GraphCacheUpdateResolver<{ saveAbxOrganismResult: WithTypename<AbxOrganismResultType> }, MutationSaveAbxOrganismResultArgs>,
+    saveReflexRuleGraph?: GraphCacheUpdateResolver<{ saveReflexRuleGraph: WithTypename<ReflexRuleResponse> }, MutationSaveReflexRuleGraphArgs>,
     sendMessage?: GraphCacheUpdateResolver<{ sendMessage: WithTypename<MessageResponse> }, MutationSendMessageArgs>,
     setUserActiveLaboratory?: GraphCacheUpdateResolver<{ setUserActiveLaboratory: WithTypename<UserResponse> }, MutationSetUserActiveLaboratoryArgs>,
     shipmentManageSamples?: GraphCacheUpdateResolver<{ shipmentManageSamples: WithTypename<ShipmentResponse> }, MutationShipmentManageSamplesArgs>,
@@ -15393,9 +15505,9 @@ export type GraphCacheUpdaters = {
     updateQcLevel?: GraphCacheUpdateResolver<{ updateQcLevel: WithTypename<QcLevelResponse> }, MutationUpdateQcLevelArgs>,
     updateQcTemplate?: GraphCacheUpdateResolver<{ updateQcTemplate: WithTypename<QcTemplateResponse> }, MutationUpdateQcTemplateArgs>,
     updateReferralLaboratory?: GraphCacheUpdateResolver<{ updateReferralLaboratory: WithTypename<ReferralLaboratoryResponse> }, MutationUpdateReferralLaboratoryArgs>,
-    updateReflexAction?: GraphCacheUpdateResolver<{ updateReflexAction: WithTypename<ReflexActionResponse> }, MutationUpdateReflexActionArgs>,
-    updateReflexBrain?: GraphCacheUpdateResolver<{ updateReflexBrain: WithTypename<ReflexBrainResponse> }, MutationUpdateReflexBrainArgs>,
+    updateReflexDecision?: GraphCacheUpdateResolver<{ updateReflexDecision: WithTypename<ReflexDecisionResponse> }, MutationUpdateReflexDecisionArgs>,
     updateReflexRule?: GraphCacheUpdateResolver<{ updateReflexRule: WithTypename<ReflexRuleResponse> }, MutationUpdateReflexRuleArgs>,
+    updateReflexTrigger?: GraphCacheUpdateResolver<{ updateReflexTrigger: WithTypename<ReflexTriggerResponse> }, MutationUpdateReflexTriggerArgs>,
     updateRejectionReason?: GraphCacheUpdateResolver<{ updateRejectionReason: WithTypename<RejectionReasonResponse> }, MutationUpdateRejectionReasonArgs>,
     updateResultOption?: GraphCacheUpdateResolver<{ updateResultOption: WithTypename<ResultOptionResponse> }, MutationUpdateResultOptionArgs>,
     updateSampleType?: GraphCacheUpdateResolver<{ updateSampleType: WithTypename<SampleTypeResponse> }, MutationUpdateSampleTypeArgs>,
@@ -18008,96 +18120,79 @@ export type GraphCacheUpdaters = {
     url?: GraphCacheUpdateResolver<Maybe<WithTypename<ReferralLaboratoryType>>, Record<string, never>>,
     username?: GraphCacheUpdateResolver<Maybe<WithTypename<ReferralLaboratoryType>>, Record<string, never>>
   },
-  ReflexActionType?: {
-    analyses?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>,
-    brains?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>,
-    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>,
-    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>,
-    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>,
-    description?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>,
-    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>,
-    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>,
-    level?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>,
-    reflexRule?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>,
-    reflexRuleUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>,
-    sampleType?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>,
-    sampleTypeUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>,
-    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>,
-    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>,
-    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>,
-    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexActionType>>, Record<string, never>>
+  ReflexAddAnalysisType?: {
+    analysis?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexAddAnalysisType>>, Record<string, never>>,
+    analysisUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexAddAnalysisType>>, Record<string, never>>,
+    count?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexAddAnalysisType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexAddAnalysisType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexAddAnalysisType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexAddAnalysisType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexAddAnalysisType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexAddAnalysisType>>, Record<string, never>>,
+    posX?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexAddAnalysisType>>, Record<string, never>>,
+    posY?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexAddAnalysisType>>, Record<string, never>>,
+    reflexDecision?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexAddAnalysisType>>, Record<string, never>>,
+    reflexDecisionUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexAddAnalysisType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexAddAnalysisType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexAddAnalysisType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexAddAnalysisType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexAddAnalysisType>>, Record<string, never>>
   },
-  ReflexBrainActionType?: {
-    addNew?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainActionType>>, Record<string, never>>,
-    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainActionType>>, Record<string, never>>,
-    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainActionType>>, Record<string, never>>,
-    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainActionType>>, Record<string, never>>,
-    description?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainActionType>>, Record<string, never>>,
-    finalise?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainActionType>>, Record<string, never>>,
-    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainActionType>>, Record<string, never>>,
-    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainActionType>>, Record<string, never>>,
-    priority?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainActionType>>, Record<string, never>>,
-    reflexBrain?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainActionType>>, Record<string, never>>,
-    reflexBrainUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainActionType>>, Record<string, never>>,
-    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainActionType>>, Record<string, never>>,
-    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainActionType>>, Record<string, never>>,
-    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainActionType>>, Record<string, never>>,
-    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainActionType>>, Record<string, never>>
+  ReflexDecisionType?: {
+    addAnalyses?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexDecisionType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexDecisionType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexDecisionType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexDecisionType>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexDecisionType>>, Record<string, never>>,
+    finalizeAnalyses?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexDecisionType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexDecisionType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexDecisionType>>, Record<string, never>>,
+    posX?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexDecisionType>>, Record<string, never>>,
+    posY?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexDecisionType>>, Record<string, never>>,
+    priority?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexDecisionType>>, Record<string, never>>,
+    reflexTrigger?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexDecisionType>>, Record<string, never>>,
+    reflexTriggerUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexDecisionType>>, Record<string, never>>,
+    ruleGroups?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexDecisionType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexDecisionType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexDecisionType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexDecisionType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexDecisionType>>, Record<string, never>>
   },
-  ReflexBrainAdditionType?: {
-    analysis?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainAdditionType>>, Record<string, never>>,
-    analysisUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainAdditionType>>, Record<string, never>>,
-    count?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainAdditionType>>, Record<string, never>>,
-    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainAdditionType>>, Record<string, never>>,
-    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainAdditionType>>, Record<string, never>>,
-    reflexBrainAction?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainAdditionType>>, Record<string, never>>,
-    reflexBrainActionUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainAdditionType>>, Record<string, never>>
+  ReflexFinalizeAnalysisType?: {
+    analysis?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexFinalizeAnalysisType>>, Record<string, never>>,
+    analysisUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexFinalizeAnalysisType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexFinalizeAnalysisType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexFinalizeAnalysisType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexFinalizeAnalysisType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexFinalizeAnalysisType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexFinalizeAnalysisType>>, Record<string, never>>,
+    posX?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexFinalizeAnalysisType>>, Record<string, never>>,
+    posY?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexFinalizeAnalysisType>>, Record<string, never>>,
+    reflexDecision?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexFinalizeAnalysisType>>, Record<string, never>>,
+    reflexDecisionUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexFinalizeAnalysisType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexFinalizeAnalysisType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexFinalizeAnalysisType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexFinalizeAnalysisType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexFinalizeAnalysisType>>, Record<string, never>>,
+    value?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexFinalizeAnalysisType>>, Record<string, never>>
   },
-  ReflexBrainConditionCriteriaType?: {
-    analysis?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionCriteriaType>>, Record<string, never>>,
-    analysisUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionCriteriaType>>, Record<string, never>>,
-    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionCriteriaType>>, Record<string, never>>,
-    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionCriteriaType>>, Record<string, never>>,
-    operator?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionCriteriaType>>, Record<string, never>>,
-    reflexBrainCondition?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionCriteriaType>>, Record<string, never>>,
-    reflexBrainConditionUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionCriteriaType>>, Record<string, never>>,
-    value?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionCriteriaType>>, Record<string, never>>
-  },
-  ReflexBrainConditionType?: {
-    criteria?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionType>>, Record<string, never>>,
-    description?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionType>>, Record<string, never>>,
-    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionType>>, Record<string, never>>,
-    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionType>>, Record<string, never>>,
-    priority?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionType>>, Record<string, never>>,
-    reflexBrain?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionType>>, Record<string, never>>,
-    reflexBrainUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionType>>, Record<string, never>>,
-    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainConditionType>>, Record<string, never>>
-  },
-  ReflexBrainFinalType?: {
-    analysis?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainFinalType>>, Record<string, never>>,
-    analysisUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainFinalType>>, Record<string, never>>,
-    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainFinalType>>, Record<string, never>>,
-    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainFinalType>>, Record<string, never>>,
-    reflexBrainAction?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainFinalType>>, Record<string, never>>,
-    reflexBrainActionUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainFinalType>>, Record<string, never>>,
-    value?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainFinalType>>, Record<string, never>>
-  },
-  ReflexBrainType?: {
-    actions?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainType>>, Record<string, never>>,
-    conditions?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainType>>, Record<string, never>>,
-    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainType>>, Record<string, never>>,
-    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainType>>, Record<string, never>>,
-    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainType>>, Record<string, never>>,
-    description?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainType>>, Record<string, never>>,
-    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainType>>, Record<string, never>>,
-    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainType>>, Record<string, never>>,
-    priority?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainType>>, Record<string, never>>,
-    reflexAction?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainType>>, Record<string, never>>,
-    reflexActionUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainType>>, Record<string, never>>,
-    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainType>>, Record<string, never>>,
-    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainType>>, Record<string, never>>,
-    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainType>>, Record<string, never>>,
-    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexBrainType>>, Record<string, never>>
+  ReflexRuleCriteriaType?: {
+    analysis?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleCriteriaType>>, Record<string, never>>,
+    analysisUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleCriteriaType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleCriteriaType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleCriteriaType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleCriteriaType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleCriteriaType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleCriteriaType>>, Record<string, never>>,
+    operator?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleCriteriaType>>, Record<string, never>>,
+    priority?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleCriteriaType>>, Record<string, never>>,
+    reflexRuleGroup?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleCriteriaType>>, Record<string, never>>,
+    reflexRuleGroupUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleCriteriaType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleCriteriaType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleCriteriaType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleCriteriaType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleCriteriaType>>, Record<string, never>>,
+    value?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleCriteriaType>>, Record<string, never>>
   },
   ReflexRuleCursorPage?: {
     edges?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleCursorPage>>, Record<string, never>>,
@@ -18109,6 +18204,24 @@ export type GraphCacheUpdaters = {
     cursor?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleEdge>>, Record<string, never>>,
     node?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleEdge>>, Record<string, never>>
   },
+  ReflexRuleGroupType?: {
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleGroupType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleGroupType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleGroupType>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleGroupType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleGroupType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleGroupType>>, Record<string, never>>,
+    posX?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleGroupType>>, Record<string, never>>,
+    posY?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleGroupType>>, Record<string, never>>,
+    priority?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleGroupType>>, Record<string, never>>,
+    reflexDecision?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleGroupType>>, Record<string, never>>,
+    reflexDecisionUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleGroupType>>, Record<string, never>>,
+    rules?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleGroupType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleGroupType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleGroupType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleGroupType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleGroupType>>, Record<string, never>>
+  },
   ReflexRuleType?: {
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleType>>, Record<string, never>>,
     createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleType>>, Record<string, never>>,
@@ -18119,11 +18232,32 @@ export type GraphCacheUpdaters = {
     laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleType>>, Record<string, never>>,
     name?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleType>>, Record<string, never>>,
     priority?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleType>>, Record<string, never>>,
-    reflexActions?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleType>>, Record<string, never>>,
+    reflexTriggers?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleType>>, Record<string, never>>,
     updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleType>>, Record<string, never>>,
     updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexRuleType>>, Record<string, never>>
+  },
+  ReflexTriggerType?: {
+    analyses?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexTriggerType>>, Record<string, never>>,
+    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexTriggerType>>, Record<string, never>>,
+    createdBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexTriggerType>>, Record<string, never>>,
+    createdByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexTriggerType>>, Record<string, never>>,
+    decisions?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexTriggerType>>, Record<string, never>>,
+    description?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexTriggerType>>, Record<string, never>>,
+    laboratory?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexTriggerType>>, Record<string, never>>,
+    laboratoryUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexTriggerType>>, Record<string, never>>,
+    level?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexTriggerType>>, Record<string, never>>,
+    posX?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexTriggerType>>, Record<string, never>>,
+    posY?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexTriggerType>>, Record<string, never>>,
+    reflexRule?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexTriggerType>>, Record<string, never>>,
+    reflexRuleUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexTriggerType>>, Record<string, never>>,
+    sampleType?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexTriggerType>>, Record<string, never>>,
+    sampleTypeUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexTriggerType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexTriggerType>>, Record<string, never>>,
+    updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexTriggerType>>, Record<string, never>>,
+    updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexTriggerType>>, Record<string, never>>,
+    updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<ReflexTriggerType>>, Record<string, never>>
   },
   RejectionReasonType?: {
     createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<RejectionReasonType>>, Record<string, never>>,

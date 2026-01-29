@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref} from 'vue';
+import { onMounted, ref} from 'vue';
+import { useForm, useField } from 'vee-validate';
+import * as yup from 'yup';
 
 import useApiUtil from '@/composables/api_util';
 import { AbxKingdomType } from "@/types/gql";
@@ -21,8 +23,20 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as AbxKingdomType;
 const formAction = ref<boolean>(true);
+const currentUid = ref<string | null>(null);
+
+const kingdomSchema = yup.object({
+  name: yup.string().trim().required('Name is required'),
+});
+
+const { handleSubmit, resetForm, setValues, errors } = useForm({
+  validationSchema: kingdomSchema,
+  initialValues: {
+    name: '',
+  },
+});
+const { value: name } = useField<string>('name');
 
 const abxKingdoms = ref<AbxKingdomType[]>([]);
 
@@ -41,16 +55,20 @@ function FormManager(create: boolean, obj = {} as AbxKingdomType): void {
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "kingdom";
   if (create) {
-    Object.assign(form, {} as AbxKingdomType);
+    currentUid.value = null;
+    resetForm();
   } else {
-    Object.assign(form, {...obj});
+    currentUid.value = obj.uid ?? null;
+    setValues({
+      name: obj.name ?? '',
+    });
   }
 }
 
-function saveForm(): void {
+const saveForm = handleSubmit((formValues) => {
   const payload = {
-    name: form.name,
-  }
+    name: formValues.name,
+  };
 
   if (formAction.value === true) {
     withClientMutation<AddAbxKingdomMutation, AddAbxKingdomMutationVariables>(
@@ -62,9 +80,9 @@ function saveForm(): void {
     });
   }
 
-  if (formAction.value === false) {
+  if (formAction.value === false && currentUid.value) {
     withClientMutation<EditAbxKingdomMutation, EditAbxKingdomMutationVariables>(EditAbxKingdomDocument, {
-      uid: form.uid!,
+      uid: currentUid.value,
       payload
     }, "updateAbxKingdom")
         .then((result) => {
@@ -80,7 +98,7 @@ function saveForm(): void {
   }
 
   showModal.value = false;
-}
+});
 
 </script>
 
@@ -131,8 +149,9 @@ function saveForm(): void {
             <span class="text-sm font-medium text-foreground">Kingdom Name</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              v-model="form.name" 
+              v-model="name" 
               placeholder="Name ..." />
+            <p v-if="errors.name" class="text-sm text-destructive">{{ errors.name }}</p>
           </label>
         </div>
 

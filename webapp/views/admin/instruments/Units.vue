@@ -1,5 +1,7 @@
 <script setup lang="ts">
-  import { ref, reactive, computed, defineAsyncComponent } from 'vue';
+  import { ref, computed, defineAsyncComponent } from 'vue';
+  import { useField, useForm } from 'vee-validate';
+  import * as yup from 'yup';
   import { UnitType } from '@/types/gql'
   import { AddUnitDocument, AddUnitMutation, AddUnitMutationVariables,
     EditUnitDocument, EditUnitMutation, EditUnitMutationVariables } from '@/graphql/operations/instrument.mutations';
@@ -19,17 +21,32 @@
   setupStore.fetchUnits();    
   const units = computed(() => setupStore.getUnits);
 
-  let unit = reactive({}) as UnitType;
+  const unitSchema = yup.object({
+    name: yup.string().trim().required('Name is required'),
+    description: yup.string().trim().nullable(),
+  });
 
-  function addUnit(): void {
-    const payload = { name: unit.name, description: unit.description }
+  const { handleSubmit, resetForm, setValues } = useForm({
+    validationSchema: unitSchema,
+    initialValues: {
+      name: '',
+      description: '',
+    },
+  });
+
+  const { value: name, errorMessage: nameError } = useField<string>('name');
+  const { value: description, errorMessage: descriptionError } = useField<string | null>('description');
+
+  const currentUid = ref<string | null>(null);
+
+  function addUnit(payload: { name: string; description: string | null }): void {
     withClientMutation<AddUnitMutation, AddUnitMutationVariables>(AddUnitDocument, { payload }, "createUnit")
     .then((result) => setupStore.addUnit(result));
   }
 
-  function editUnit(): void {
-    const payload = { name: unit.name, description: unit.description }
-    withClientMutation<EditUnitMutation, EditUnitMutationVariables>(EditUnitDocument, { uid: unit.uid, payload }, "updateUnit")
+  function editUnit(payload: { name: string; description: string | null }): void {
+    if (!currentUid.value) return;
+    withClientMutation<EditUnitMutation, EditUnitMutationVariables>(EditUnitDocument, { uid: currentUid.value, payload }, "updateUnit")
     .then((result) => setupStore.updateUnit(result));
   }
 
@@ -38,17 +55,31 @@
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "UNIT";
     if (create) {
-      Object.assign(unit, { ...({} as UnitType) });
+      currentUid.value = null;
+      resetForm({
+        values: {
+          name: '',
+          description: '',
+        },
+      });
     } else {
-      Object.assign(unit, { ...obj });
+      currentUid.value = obj.uid ?? null;
+      setValues({
+        name: obj.name ?? '',
+        description: obj.description ?? '',
+      });
     }
   }
 
-  function saveForm():void {
-    if (formAction.value === true) addUnit();
-    if (formAction.value === false) editUnit();
+  const saveForm = handleSubmit((values) => {
+    const payload = {
+      name: values.name,
+      description: values.description ?? null,
+    };
+    if (formAction.value === true) addUnit(payload);
+    if (formAction.value === false) editUnit(payload);
     showModal.value = false;
-  }
+  });
   
 </script>
 
@@ -101,20 +132,22 @@
               Name
             </label>
             <input
-              v-model="unit.name"
+              v-model="name"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="Enter unit name..."
             />
+            <p v-if="nameError" class="text-sm text-destructive">{{ nameError }}</p>
           </div>
-          <div class="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              v-model="unit.description"
-              class="h-4 w-4 rounded border-input bg-background text-primary focus:ring-primary"
-            />
+          <div class="space-y-2">
             <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Is SI Unit
+              Description
             </label>
+            <input
+              v-model="description"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              placeholder="Enter description..."
+            />
+            <p v-if="descriptionError" class="text-sm text-destructive">{{ descriptionError }}</p>
           </div>
         </div>
         <div class="flex justify-end">
@@ -129,4 +162,3 @@
     </template>
   </fel-modal>
 </template>
-

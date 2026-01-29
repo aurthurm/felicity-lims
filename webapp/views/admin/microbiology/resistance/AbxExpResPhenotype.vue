@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
+import { useForm, useField } from 'vee-validate';
+import * as yup from 'yup';
 import { addListsUnique } from '@/utils';
 import useApiUtil from '@/composables/api_util';
 import { AbxExpResPhenotypeType, AbxGuidelineType } from "@/types/gql";
@@ -17,8 +19,46 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as AbxExpResPhenotypeType;
 const formAction = ref<boolean>(true);
+const currentUid = ref<string | null>(null);
+
+const expResPhenotypeSchema = yup.object({
+  guideline: yup.object().required('Guideline is required'),
+  referenceTable: yup.string().trim().required('Reference table is required'),
+  organismCode: yup.string().trim().required('Organism code is required'),
+  organismCodeType: yup.string().trim().required('Organism code type is required'),
+  exceptionOrganismCode: yup.string().trim().required('Exception organism code is required'),
+  exceptionOrganismCodeType: yup.string().trim().required('Exception organism code type is required'),
+  abxCode: yup.string().trim().required('Abx code is required'),
+  abxCodeType: yup.string().trim().required('Abx code type is required'),
+  antibioticExceptions: yup.string().trim().required('Antibiotic exceptions are required'),
+});
+
+const { handleSubmit, resetForm, setValues, errors } = useForm({
+  validationSchema: expResPhenotypeSchema,
+  initialValues: {
+    guideline: null,
+    referenceTable: '',
+    organismCode: '',
+    organismCodeType: '',
+    exceptionOrganismCode: '',
+    exceptionOrganismCodeType: '',
+    abxCode: '',
+    abxCodeType: '',
+    antibioticExceptions: '',
+    comments: '',
+  },
+});
+const { value: guideline } = useField<AbxGuidelineType | null>('guideline');
+const { value: referenceTable } = useField<string>('referenceTable');
+const { value: organismCode } = useField<string>('organismCode');
+const { value: organismCodeType } = useField<string>('organismCodeType');
+const { value: exceptionOrganismCode } = useField<string>('exceptionOrganismCode');
+const { value: exceptionOrganismCodeType } = useField<string>('exceptionOrganismCodeType');
+const { value: abxCode } = useField<string>('abxCode');
+const { value: abxCodeType } = useField<string>('abxCodeType');
+const { value: antibioticExceptions } = useField<string>('antibioticExceptions');
+const { value: comments } = useField<string>('comments');
 
 const fetchingExpResPhenotypes = ref<boolean>(false);
 const abxExptResPhenotypes = ref<AbxExpResPhenotypeType[]>([]);
@@ -198,31 +238,44 @@ function showMoreExpResPhenotypes(opts: any): void {
   fetchExpResPhenotypes(abxParams);
 }
 
-const resetExpResPhenotype = () => Object.assign(form, {}) as AbxExpResPhenotypeType;
+const resetExpResPhenotype = () => resetForm();
 
 function FormManager(create: boolean, obj = {} as AbxExpResPhenotypeType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "ExpResPhenotype";
   if (create) {
-    Object.assign(form, {} as AbxExpResPhenotypeType);
+    currentUid.value = null;
+    resetForm();
   } else {
-    Object.assign(form, {...obj});
+    currentUid.value = obj.uid ?? null;
+    setValues({
+      guideline: obj.guideline ?? null,
+      referenceTable: obj.referenceTable ?? '',
+      organismCode: obj.organismCode ?? '',
+      organismCodeType: obj.organismCodeType ?? '',
+      exceptionOrganismCode: obj.exceptionOrganismCode ?? '',
+      exceptionOrganismCodeType: obj.exceptionOrganismCodeType ?? '',
+      abxCode: obj.abxCode ?? '',
+      abxCodeType: obj.abxCodeType ?? '',
+      antibioticExceptions: obj.antibioticExceptions ?? '',
+      comments: obj.comments ?? '',
+    });
   }
 }
 
-function saveForm(): void {
+const saveForm = handleSubmit((formValues) => {
   const payload = {
-    guidelineUid: form.guideline?.uid!,
-    referenceTable: form.referenceTable,
-    organismCode: form.organismCode,
-    organismCodeType: form.organismCodeType,
-    exceptionOrganismCode: form.exceptionOrganismCode,
-    exceptionOrganismCodeType: form.exceptionOrganismCodeType,
-    abxCode: form.abxCode,
-    abxCodeType: form.abxCodeType,
-    antibioticExceptions: form.antibioticExceptions,
-    comments: form.comments,
+    guidelineUid: formValues.guideline?.uid!,
+    referenceTable: formValues.referenceTable,
+    organismCode: formValues.organismCode,
+    organismCodeType: formValues.organismCodeType,
+    exceptionOrganismCode: formValues.exceptionOrganismCode,
+    exceptionOrganismCodeType: formValues.exceptionOrganismCodeType,
+    abxCode: formValues.abxCode,
+    abxCodeType: formValues.abxCodeType,
+    antibioticExceptions: formValues.antibioticExceptions,
+    comments: formValues.comments,
   }
 
   if (formAction.value === true) {
@@ -235,9 +288,9 @@ function saveForm(): void {
     });
   }
 
-  if (formAction.value === false) {
+  if (formAction.value === false && currentUid.value) {
     withClientMutation<EditAbxExpResPhenotypeMutation, EditAbxExpResPhenotypeMutationVariables>(
-      EditAbxExpResPhenotypeDocument, { uid: form.uid!, payload }, 
+      EditAbxExpResPhenotypeDocument, { uid: currentUid.value, payload }, 
       "updateAbxExpResPhenotype"
     ).then((result: any) => {
       if(result) {
@@ -248,7 +301,7 @@ function saveForm(): void {
   }
 
   showModal.value = false;
-}
+});
 
 </script>
 
@@ -286,12 +339,12 @@ function saveForm(): void {
     </template>
 
     <template v-slot:body>
-      <form class="space-y-6">
+      <form @submit.prevent="saveForm" class="space-y-6">
         <div class="grid grid-cols-2 gap-6">
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Guideline</span>
             <VueMultiselect
-              v-model="form.guideline"
+              v-model="guideline"
               :options="abxGuidelines"
               :searchable="true"
               :close-on-select="true"
@@ -300,13 +353,15 @@ function saveForm(): void {
               label="name"
               class="multiselect-blue"
             />
+            <p v-if="errors.guideline" class="text-sm text-destructive">{{ errors.guideline }}</p>
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Reference Table</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-              v-model="form.referenceTable" 
+              v-model="referenceTable" 
               placeholder="Reference Table ..." />
+            <p v-if="errors.referenceTable" class="text-sm text-destructive">{{ errors.referenceTable }}</p>
           </label>
         </div>
 
@@ -315,15 +370,17 @@ function saveForm(): void {
             <span class="text-sm font-medium text-foreground">Organism Code</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-              v-model="form.organismCode" 
+              v-model="organismCode" 
               placeholder="Organism Code ..." />
+            <p v-if="errors.organismCode" class="text-sm text-destructive">{{ errors.organismCode }}</p>
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Organism Code Type</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-              v-model="form.organismCodeType" 
+              v-model="organismCodeType" 
               placeholder="Organism Code Type ..." />
+            <p v-if="errors.organismCodeType" class="text-sm text-destructive">{{ errors.organismCodeType }}</p>
           </label>
         </div>
 
@@ -332,15 +389,17 @@ function saveForm(): void {
             <span class="text-sm font-medium text-foreground">Exception Organism Code</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-              v-model="form.exceptionOrganismCode" 
+              v-model="exceptionOrganismCode" 
               placeholder="Exception Organism Code ..." />
+            <p v-if="errors.exceptionOrganismCode" class="text-sm text-destructive">{{ errors.exceptionOrganismCode }}</p>
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Exception Organism Code Type</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-              v-model="form.exceptionOrganismCodeType" 
+              v-model="exceptionOrganismCodeType" 
               placeholder="Exception Organism Code Type ..." />
+            <p v-if="errors.exceptionOrganismCodeType" class="text-sm text-destructive">{{ errors.exceptionOrganismCodeType }}</p>
           </label>
         </div>
 
@@ -349,15 +408,17 @@ function saveForm(): void {
             <span class="text-sm font-medium text-foreground">Abx Code</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-              v-model="form.abxCode" 
+              v-model="abxCode" 
               placeholder="Abx Code ..." />
+            <p v-if="errors.abxCode" class="text-sm text-destructive">{{ errors.abxCode }}</p>
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Abx Code Type</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-              v-model="form.abxCodeType" 
+              v-model="abxCodeType" 
               placeholder="Abx Code Type ..." />
+            <p v-if="errors.abxCodeType" class="text-sm text-destructive">{{ errors.abxCodeType }}</p>
           </label>
         </div>
 
@@ -366,22 +427,22 @@ function saveForm(): void {
             <span class="text-sm font-medium text-foreground">Antibiotic Exceptions</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-              v-model="form.antibioticExceptions" 
+              v-model="antibioticExceptions" 
               placeholder="Antibiotic Exceptions ..." />
+            <p v-if="errors.antibioticExceptions" class="text-sm text-destructive">{{ errors.antibioticExceptions }}</p>
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Comments</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-              v-model="form.comments" 
+              v-model="comments" 
               placeholder="Comments ..." />
           </label>
         </div>
 
         <hr class="border-border" />
         <button 
-          type="button" 
-          @click.prevent="saveForm()"
+          type="submit"
           class="inline-flex w-full items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
           Save Form
         </button>

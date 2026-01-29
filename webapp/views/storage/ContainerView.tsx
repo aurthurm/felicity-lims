@@ -10,7 +10,7 @@ const ContainerView = defineComponent({
     setup(props, ctx) {
         const storageStore = useStorageStore();
 
-        let currentTab = ref('column-view');
+        const currentTab = ref('column-view');
 
         const tabs = computed(() => {
             const cont = storageStore.getStorageContainer;

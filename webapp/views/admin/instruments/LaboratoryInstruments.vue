@@ -1,10 +1,12 @@
 <script setup lang="ts">
-  import { ref, reactive, computed, defineAsyncComponent } from 'vue';
+  import { ref, computed, defineAsyncComponent } from 'vue';
   import { LaboratoryInstrumentType } from '@/types/gql'
   import { AddLaboratoryInstrumentDocument, AddLaboratoryInstrumentMutation, AddLaboratoryInstrumentMutationVariables,
     EditLaboratoryInstrumentDocument, EditLaboratoryInstrumentMutation, EditLaboratoryInstrumentMutationVariables } from '@/graphql/operations/instrument.mutations';
   import { useSetupStore } from '@/stores/setup';
   import  useApiUtil  from '@/composables/api_util';
+  import { useField, useForm } from "vee-validate";
+  import { object, string } from "yup";
   const modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
   )
@@ -15,35 +17,62 @@
   let showModal = ref(false);
   let formTitle = ref('');
   const formAction = ref(true);
+  const currentUid = ref<string | null>(null);
 
-  let instrument = reactive({})  as LaboratoryInstrumentType;
+  const formSchema = object({
+    instrumentUid: string().required("Instrument is required"),
+    labName: string().required("Lab name/ID is required"),
+    serialNumber: string().nullable(),
+    dateCommissioned: string().nullable(),
+    dateDecommissioned: string().nullable(),
+  });
+
+  const { handleSubmit, errors, resetForm, setValues } = useForm({
+    validationSchema: formSchema,
+    initialValues: {
+      instrumentUid: "",
+      labName: "",
+      serialNumber: "",
+      dateCommissioned: "",
+      dateDecommissioned: "",
+    },
+  });
+
+  const { value: instrumentUid } = useField<string>("instrumentUid");
+  const { value: labName } = useField<string>("labName");
+  const { value: serialNumber } = useField<string | null>("serialNumber");
+  const { value: dateCommissioned } = useField<string | null>("dateCommissioned");
+  const { value: dateDecommissioned } = useField<string | null>("dateDecommissioned");
 
   setupStore.fetchInstruments();    
   setupStore.fetchLaboratoryInstruments();   
   const instruments = computed(() => setupStore.getInstruments)
   const laboratoryInstruments = computed(() => setupStore.getLaboratoryInstruments)
 
-  function addLabInstrument(): void {
+  function addLabInstrument(values: Record<string, any>): void {
     const payload = { 
-      labName: instrument.labName, 
-      serialNumber: instrument.serialNumber, 
-      dateCommissioned: instrument.dateCommissioned,
-      dateDecommissioned: instrument.dateDecommissioned,
-      instrumentUid: instrument.instrumentUid,
+      labName: values.labName, 
+      serialNumber: values.serialNumber, 
+      dateCommissioned: values.dateCommissioned,
+      dateDecommissioned: values.dateDecommissioned,
+      instrumentUid: values.instrumentUid,
     }
     withClientMutation<AddLaboratoryInstrumentMutation, AddLaboratoryInstrumentMutationVariables>(AddLaboratoryInstrumentDocument, { payload }, "createLaboratoryInstrument")
     .then((result) => setupStore.addLaboratoryInstrument(result));
   }
 
-  function editLabInstrument(): void {
-    const payload = { 
-      labName: instrument.labName, 
-      serialNumber: instrument.serialNumber, 
-      dateCommissioned: instrument.dateCommissioned,
-      dateDecommissioned: instrument.dateDecommissioned,
-      instrumentUid: instrument.instrumentUid,
+  function editLabInstrument(values: Record<string, any>): void {
+    if (!currentUid.value) {
+      return;
     }
-    withClientMutation<EditLaboratoryInstrumentMutation, EditLaboratoryInstrumentMutationVariables>(EditLaboratoryInstrumentDocument, { uid: instrument.uid, payload },"updateLaboratoryInstrument")
+    const payload = { 
+      labName: values.labName, 
+      serialNumber: values.serialNumber, 
+      dateCommissioned: values.dateCommissioned,
+      dateDecommissioned: values.dateDecommissioned,
+      instrumentUid: values.instrumentUid,
+    }
+    withClientMutation<EditLaboratoryInstrumentMutation, EditLaboratoryInstrumentMutationVariables>(EditLaboratoryInstrumentDocument, { uid: currentUid.value, payload },"updateLaboratoryInstrument")
     .then((result) => setupStore.updateLaboratoryInstrument(result));
   }
 
@@ -52,17 +81,33 @@
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "LABORATORY INSTRUMENT";
     if (create) {
-      Object.assign(instrument, { ...({} as LaboratoryInstrumentType) });
+      currentUid.value = null;
+      resetForm({
+        values: {
+          instrumentUid: "",
+          labName: "",
+          serialNumber: "",
+          dateCommissioned: "",
+          dateDecommissioned: "",
+        },
+      });
     } else {
-      Object.assign(instrument, { ...obj });
+      currentUid.value = obj.uid ?? null;
+      setValues({
+        instrumentUid: obj.instrumentUid ?? "",
+        labName: obj.labName ?? "",
+        serialNumber: obj.serialNumber ?? "",
+        dateCommissioned: obj.dateCommissioned ?? "",
+        dateDecommissioned: obj.dateDecommissioned ?? "",
+      });
     }
   }
 
-  function saveForm():void {
-    if (formAction.value === true) addLabInstrument();
-    if (formAction.value === false) editLabInstrument();
+  const saveForm = handleSubmit((values): void => {
+    if (formAction.value === true) addLabInstrument(values);
+    if (formAction.value === false) editLabInstrument(values);
     showModal.value = false;
-  }
+  });
 </script>
 
 <template>
@@ -120,7 +165,7 @@
               Instrument
             </label>
             <select 
-              v-model="instrument.instrumentUid"
+              v-model="instrumentUid"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <option value="">Select Instrument</option>
@@ -128,6 +173,7 @@
                 {{ instrument?.name }}
               </option>
             </select>
+            <div class="text-sm text-destructive">{{ errors.instrumentUid }}</div>
           </div>
 
           <div class="space-y-2">
@@ -135,10 +181,11 @@
               Laboratory Name/ID
             </label>
             <input
-              v-model="instrument.labName"
+              v-model="labName"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="Enter lab name or ID..."
             />
+            <div class="text-sm text-destructive">{{ errors.labName }}</div>
           </div>
 
           <div class="space-y-2">
@@ -146,7 +193,7 @@
               Serial Number
             </label>
             <input
-              v-model="instrument.serialNumber"
+              v-model="serialNumber"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="Enter serial number..."
             />
@@ -158,7 +205,7 @@
             </label>
             <input
               type="date"
-              v-model="instrument.dateCommissioned"
+              v-model="dateCommissioned"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             />
           </div>
@@ -169,7 +216,7 @@
             </label>
             <input
               type="date"
-              v-model="instrument.dateDecommissioned"
+              v-model="dateDecommissioned"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             />
           </div>

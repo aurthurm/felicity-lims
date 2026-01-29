@@ -11,7 +11,6 @@ const ContainerColumn = defineComponent({
     render() {
         const slotSample = (slotIndex: number) => {
             if (!this.container?.samples) {
-                console.log('Samples not found in container');
                 return null;
             }
             const idx = this.container?.samples?.findIndex(sample => sample.storageSlotIndex === slotIndex);

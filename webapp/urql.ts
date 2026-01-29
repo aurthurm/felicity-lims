@@ -14,7 +14,6 @@ const subscriptionClient = new SubscriptionClient(WS_BASE_URL, {
     lazy: true,
     connectionParams: () => {
         const authData = getAuthData();
-        console.log('WebSocket connectionParams called with token:', authData?.token ? 'present' : 'missing');
         return {
             'X-Request-ID': generateRequestId(),
             ...(authData?.token && {
@@ -31,7 +30,6 @@ const wsClient = createWSClient({
     url: WS_BASE_URL,
     connectionParams: () => {
         const authData = getAuthData();
-        console.log('WebSocket connectionParams called with token:', authData?.token ? 'present' : 'missing');
         return {
             'X-Request-ID': generateRequestId(),
             ...(authData?.token && {

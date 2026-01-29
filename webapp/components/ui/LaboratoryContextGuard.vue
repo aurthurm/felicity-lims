@@ -81,7 +81,7 @@ const validateContext = async () => {
           (isAuth) => {
             if (isAuth) {
               unwatch();
-              resolve(void 0);
+              resolve();
             }
           },
           { immediate: true }
@@ -90,7 +90,7 @@ const validateContext = async () => {
         // Timeout after 5 seconds
         setTimeout(() => {
           unwatch();
-          resolve(void 0);
+          resolve();
         }, 5000);
       });
     }
@@ -109,7 +109,7 @@ const validateContext = async () => {
           (lab) => {
             if (lab) {
               unwatch();
-              resolve(void 0);
+              resolve();
             }
           },
           { immediate: true }
@@ -118,7 +118,7 @@ const validateContext = async () => {
         // Timeout after 10 seconds
         setTimeout(() => {
           unwatch();
-          resolve(void 0);
+          resolve();
         }, 10000);
       });
     }
@@ -135,7 +135,6 @@ const validateContext = async () => {
     }
 
   } catch (error) {
-    console.error('Context validation error:', error);
     validationError.value = 'Context validation failed';
   } finally {
     isValidating.value = false;

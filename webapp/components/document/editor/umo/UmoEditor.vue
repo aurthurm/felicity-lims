@@ -27,7 +27,6 @@ const saveMessage = ref('');
 const umoOptions = ref({});
 onMounted(async () => {
   editorReady.value = false;
-  console.log(props.document)
   localStorage.setItem('umo-editor:demo:locale', "en-US")
   localStorage.setItem('umo-editor:default:locale', "en-US")
   umoOptions.value = {
@@ -56,7 +55,6 @@ const eventOptions = {
   },
   async onFileUpload(file) {
     if (!file) throw new Error('No File Here')
-    console.log('onUpload', file)
     await new Promise((resolve) => setTimeout(resolve, 3000))
     return {
       id: new Date().getTime().toString(),
@@ -105,12 +103,15 @@ const goBack = () => router.back();
     </header>
     
     <!-- Editor -->
-    <umo-editor 
-      v-bind="umoOptions" 
+    <div
       v-if="editorReady"
       class="flex-1"
       aria-label="Document editor"
-    />
+    >
+      <umo-editor 
+        v-bind="umoOptions"
+      />
+    </div>
 
   </div>
 </template>

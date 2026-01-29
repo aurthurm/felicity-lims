@@ -100,7 +100,6 @@ export default function useFormUtils<T extends Record<string, any>>(options: For
             state.value.errors = errors;
             return Object.keys(errors).length === 0;
         } catch (error) {
-            console.error('Validation error:', error);
             return false;
         }
     };

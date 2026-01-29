@@ -1,10 +1,12 @@
 <script setup lang="ts">
-  import { ref, reactive, computed, defineAsyncComponent } from 'vue';
+  import { ref, computed, defineAsyncComponent } from 'vue';
   import { SampleTypeTyp } from '@/types/gql'
   import { AddSampleTypeDocument, AddSampleTypeMutation, AddSampleTypeMutationVariables,
     EditSampleTypeDocument, EditSampleTypeMutation, EditSampleTypeMutationVariables } from '@/graphql/operations/analyses.mutations';
   import { useSampleStore } from '@/stores/sample';
   import  useApiUtil  from '@/composables/api_util';
+  import { useField, useForm } from "vee-validate";
+  import { boolean, object, string } from "yup";
   const modal = defineAsyncComponent(
   () => import("@/components/ui/FelModal.vue")
 )
@@ -14,8 +16,30 @@
   
   let showModal = ref<boolean>(false);
   let formTitle = ref<string>('');
-  let form = reactive({}) as SampleTypeTyp;
   const formAction = ref<boolean>(true);
+  const currentUid = ref<string | null>(null);
+
+  const formSchema = object({
+    name: string().required("Sample type name is required"),
+    abbr: string().required("Prefix is required"),
+    description: string().nullable(),
+    active: boolean().nullable(),
+  });
+
+  const { handleSubmit, errors, resetForm, setValues } = useForm({
+    validationSchema: formSchema,
+    initialValues: {
+      name: "",
+      abbr: "",
+      description: "",
+      active: true,
+    },
+  });
+
+  const { value: name } = useField<string>("name");
+  const { value: abbr } = useField<string>("abbr");
+  const { value: description } = useField<string | null>("description");
+  const { value: active } = useField<boolean | null>("active");
 
   sampleStore.fetchSampleTypes();
   const sampleTypes = computed(() => sampleStore.getSampleTypes)
@@ -25,14 +49,33 @@
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "SAMPLE TYPE";
     if (create) {
-      Object.assign(form, {} as SampleTypeTyp);
+      currentUid.value = null;
+      resetForm({
+        values: {
+          name: "",
+          abbr: "",
+          description: "",
+          active: true,
+        },
+      });
     } else {
-      Object.assign(form, { ...obj });
+      currentUid.value = obj.uid ?? null;
+      setValues({
+        name: obj.name ?? "",
+        abbr: obj.abbr ?? "",
+        description: obj.description ?? "",
+        active: obj.active ?? true,
+      });
     }
   }
 
-  function saveForm():void {
-    const payload = { name: form.name, abbr: form.abbr, description: form.description, active: form.active}
+  const saveForm = handleSubmit((values): void => {
+    const payload = {
+      name: values.name,
+      abbr: values.abbr,
+      description: values.description,
+      active: values.active,
+    };
 
     if (formAction.value === true) {
       withClientMutation<AddSampleTypeMutation, AddSampleTypeMutationVariables>(AddSampleTypeDocument, { payload }, "createSampleType")
@@ -40,12 +83,15 @@
     };
 
     if (formAction.value === false) {
-      withClientMutation<EditSampleTypeMutation, EditSampleTypeMutationVariables>(EditSampleTypeDocument, { uid: form.uid, payload }, "updateSampleType")
+      if (!currentUid.value) {
+        return;
+      }
+      withClientMutation<EditSampleTypeMutation, EditSampleTypeMutationVariables>(EditSampleTypeDocument, { uid: currentUid.value, payload }, "updateSampleType")
       .then((result) => sampleStore.updateSampleType(result));
     };
 
     showModal.value = false;
-  }
+  });
 
 </script>
 
@@ -107,23 +153,25 @@
             <span class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Sample Type Name</span>
             <input
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              v-model="form.name"
+              v-model="name"
               placeholder="Name ..."
             />
+            <div class="text-sm text-destructive">{{ errors.name }}</div>
           </label>
           <label class="block">
             <span class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Prefix</span>
             <input
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              v-model="form.abbr"
+              v-model="abbr"
               placeholder="Prefix ..."
             />
+            <div class="text-sm text-destructive">{{ errors.abbr }}</div>
           </label>
           <label class="block">
             <span class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Description</span>
             <textarea
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              v-model="form.description"
+              v-model="description"
               placeholder="Description ..."
               rows="3"
             />
@@ -135,7 +183,7 @@
                 type="checkbox" 
                 name="toggle" 
                 id="toggle" 
-                v-model="form.active"
+                v-model="active"
                 class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-background border-4 appearance-none cursor-pointer outline-none transition-colors duration-200"
               />
               <label for="toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-muted cursor-pointer transition-colors duration-200"></label>

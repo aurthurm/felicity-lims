@@ -209,7 +209,6 @@ export const laboratoryParameterGuard = async (to: RouteLocationNormalized, from
             try {
                 await contextStore.switchLaboratory(laboratoryUid);
             } catch (error) {
-                console.error('Failed to switch laboratory:', error);
                 next({
                     path: '/select-laboratory',
                     query: { error: 'switch_failed' },

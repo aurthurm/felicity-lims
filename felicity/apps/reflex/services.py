@@ -3,6 +3,7 @@ from operator import gt, lt, eq, ge, le, ne
 from typing import List, Optional
 
 from cachetools import TTLCache
+from sqlalchemy.exc import IntegrityError
 
 from felicity.apps.abstract.service import BaseService
 from felicity.apps.analysis.entities.analysis import Analysis, Sample
@@ -12,41 +13,19 @@ from felicity.apps.analysis.schemas import AnalysisResultCreate, AnalysisResultU
 from felicity.apps.analysis.services.result import AnalysisResultService
 from felicity.apps.reflex.entities import (
     ReflexRule,
-    ReflexBrainAddition,
-    ReflexBrainFinal,
-    ReflexBrain,
-    ReflexAction,
-    ReflexBrainCondition,
-    ReflexBrainConditionCriteria,
-    ReflexBrainAction,
+    ReflexTrigger,
+    ReflexDecision,
+    ReflexRuleGroup,
+    ReflexRuleCriteria, ReflexDecisionExecution,
 )
 from felicity.apps.reflex.repository import (
-    ReflexActionRepository,
-    ReflexBrainAdditionRepository,
-    ReflexBrainFinalRepository,
-    ReflexBrainRepository,
-    ReflexRuleRepository,
-    ReflexBrainConditionRepository,
-    ReflexBrainActionRepository,
-    ReflexBrainConditionCriteriaRepository,
+    ReflexRuleRepository, ReflexTriggerRepository, ReflexDecisionRepository, ReflexRuleGroupRepository,
+    ReflexRuleCriteriaRepository, ReflexAddAnalysisRepository, ReflexFinalizeAnalysisRepository,
+    ReflexDecisionExecutionRepository,
 )
 from felicity.apps.reflex.schemas import (
-    ReflexActionCreate,
-    ReflexActionUpdate,
-    ReflexBrainAdditionCreate,
-    ReflexBrainAdditionUpdate,
-    ReflexBrainCreate,
-    ReflexBrainFinalCreate,
-    ReflexBrainFinalUpdate,
-    ReflexBrainUpdate,
     ReflexRuleCreate,
-    ReflexRuleUpdate,
-    ReflexBrainConditionCreate,
-    ReflexBrainConditionUpdate,
-    ReflexBrainConditionCriteriaCreate,
-    ReflexBrainConditionCriteriaUpdate,
-    ReflexBrainActionCreate,
-    ReflexBrainActionUpdate,
+    ReflexRuleUpdate, ReflexDecisionExecutionCreate,
 )
 from felicity.core.dtz import timenow_dt
 
@@ -63,7 +42,10 @@ OPERAND_FUNCTIONS = {
 }
 
 # Cache for storing reflex actions
-reflex_action_cache = TTLCache(maxsize=1000, ttl=3600)  # 1 hour TTL
+reflex_trigger_cache = TTLCache(maxsize=1000, ttl=3600)  # 1 hour TTL
+REFLEX_EXECUTION_RUNNING = "running"
+REFLEX_EXECUTION_COMPLETED = "completed"
+REFLEX_EXECUTION_FAILED = "failed"
 
 
 def is_number(value) -> bool:
@@ -71,7 +53,7 @@ def is_number(value) -> bool:
     try:
         float(value)
         return True
-    except ValueError:
+    except (TypeError, ValueError):
         return False
 
 
@@ -80,114 +62,115 @@ class ReflexRuleService(BaseService[ReflexRule, ReflexRuleCreate, ReflexRuleUpda
         super().__init__(ReflexRuleRepository())
 
 
-class ReflexBrainAdditionService(
-    BaseService[
-        ReflexBrainAddition, ReflexBrainAdditionCreate, ReflexBrainAdditionUpdate
-    ]
-):
+class ReflexTriggerService(BaseService):
+    """Service for ReflexTrigger V2 entities (replaces ReflexTriggerService)"""
+
     def __init__(self):
-        super().__init__(ReflexBrainAdditionRepository())
+        super().__init__(ReflexTriggerRepository())
 
 
-class ReflexBrainFinalService(
-    BaseService[ReflexBrainFinal, ReflexBrainFinalCreate, ReflexBrainFinalUpdate]
-):
+class ReflexDecisionService(BaseService):
+    """Service for ReflexDecision V2 entities (replaces ReflexDecisionService)"""
+
     def __init__(self):
-        super().__init__(ReflexBrainFinalRepository())
+        super().__init__(ReflexDecisionRepository())
 
 
-class ReflexBrainActionService(
-    BaseService[ReflexBrainAction, ReflexBrainActionCreate, ReflexBrainActionUpdate]
-):
+class ReflexRuleGroupService(BaseService):
+    """Service for ReflexRuleGroup V2 entities (replaces ReflexDecisionConditionService)"""
+
     def __init__(self):
-        super().__init__(ReflexBrainActionRepository())
+        super().__init__(ReflexRuleGroupRepository())
 
 
-class ReflexBrainConditionService(
-    BaseService[
-        ReflexBrainCondition, ReflexBrainConditionCreate, ReflexBrainConditionUpdate
-    ]
-):
+class ReflexRuleCriteriaService(BaseService):
+    """Service for ReflexRuleCriteria V2 entities (replaces ReflexDecisionConditionCriteriaService)"""
+
     def __init__(self):
-        super().__init__(ReflexBrainConditionRepository())
+        super().__init__(ReflexRuleCriteriaRepository())
 
 
-class ReflexBrainConditionCriteriaService(
-    BaseService[
-        ReflexBrainConditionCriteria,
-        ReflexBrainConditionCriteriaCreate,
-        ReflexBrainConditionCriteriaUpdate,
-    ]
-):
+class ReflexAddAnalysisService(BaseService):
+    """Service for ReflexAddAnalysis V2 entities (replaces ReflexDecisionAdditionService)"""
+
     def __init__(self):
-        super().__init__(ReflexBrainConditionCriteriaRepository())
+        super().__init__(ReflexAddAnalysisRepository())
 
 
-class ReflexBrainService(
-    BaseService[ReflexBrain, ReflexBrainCreate, ReflexBrainUpdate]
-):
+class ReflexFinalizeAnalysisService(BaseService):
+    """Service for ReflexFinalizeAnalysis"""
+
     def __init__(self):
-        super().__init__(ReflexBrainRepository())
+        super().__init__(ReflexFinalizeAnalysisRepository())
 
 
-class ReflexActionService(
-    BaseService[ReflexAction, ReflexActionCreate, ReflexActionUpdate]
-):
+class ReflexDecisionExecutionService(BaseService):
+    """Service for ReflexDecisionExecution"""
+
     def __init__(self):
-        super().__init__(ReflexActionRepository())
+        super().__init__(ReflexDecisionExecutionRepository())
 
 
 class ReflexEngineService:
     """
     Service class for handling reflex testing logic in a clinical laboratory setting.
 
-    This class manages the process of applying reflex rules to analysis results,
-    determining when additional tests are needed, and executing those tests.
+    V2 version using:
+    - ReflexTrigger.decisions
+    - ReflexDecision.rule_groups (conditions) + add_analyses / finalize_analyses (actions)
     """
 
     def __init__(self):
         self.analysis_result_service = AnalysisResultService()
-        self.reflex_action_service = ReflexActionService()
+        self.reflex_trigger_service = ReflexTriggerService()
+        # Keep your existing execution service name/class if already defined
+        self.reflex_decision_execution_service = ReflexDecisionExecutionService()
         self._results_pool: list[AnalysisResult] | None = None
-        self._reflex_action: ReflexAction | None = None
+        self._results_by_analysis: dict[str, AnalysisResult] | None = None
+        self._reflex_trigger: ReflexTrigger | None = None
         self.user = None
         self.analysis_result: AnalysisResult | None = None
         self.sample: Sample | None = None
         self.analysis: Analysis | None = None
 
     @classmethod
-    async def set_reflex_actions(cls, analysis_results: List[AnalysisResult]) -> None:
+    async def set_reflex_triggers(cls, analysis_results: List[AnalysisResult]) -> None:
         """
         Prepare analysis results for reflex testing by setting initial reflex level to 1.
-
-        :param analysis_results: List of analysis results to prepare for reflex testing
         """
         for result in analysis_results:
-            logger.info(f"Setting reflex actions for: {result} with level 1")
-            action = await cls.get_reflex_action(
+            logger.info(f"Setting reflex trigger for: {result} with level 1")
+            trigger = await cls.get_reflex_trigger(
                 analysis_uid=result.analysis_uid, level=1
             )
-            if action:
+            if trigger:
                 result.reflex_level = 1
                 await AnalysisResultService().save(result)
-                logger.info(f"Reflex actions set for {result}")
+                logger.info(f"Reflex trigger set for {result}")
 
     @staticmethod
-    # @cached(cache=reflex_action_cache)
-    async def get_reflex_action(
-        analysis_uid: str, level: int
-    ) -> Optional[ReflexAction]:
+    # @cached(cache=reflex_trigger_cache)
+    async def get_reflex_trigger(
+            analysis_uid: str,
+            level: int,
+    ) -> Optional[ReflexTrigger]:
         """
-        Get reflex action with caching to improve performance.
+        Get reflex trigger with caching to improve performance.
 
         :param analysis_uid: UID of the analysis
         :param level: Reflex level
-        :return: ReflexAction if found, None otherwise
+        :return: ReflexTrigger if found, None otherwise
         """
         filters = {"analyses___uid": analysis_uid, "level": level}
-        logger.info(f"Reflex actions searching with: {filters}")
-        return await ReflexActionService().get(
-            **filters, related=["brains.conditions.criteria", "brains.actions"]
+        logger.info(f"Reflex trigger searching with: {filters}")
+        # Load decisions + rule groups + rules + actions
+        return await ReflexTriggerService().get(
+            **filters,
+            related=[
+                "decisions.rule_groups.rules",
+                "decisions.add_analyses.analysis",
+                "decisions.finalize_analyses.analysis",
+            ],
         )
 
     async def do_reflex(self, analysis_result: AnalysisResult, user) -> None:
@@ -196,237 +179,286 @@ class ReflexEngineService:
         """
         self.user = user
         self.analysis_result = analysis_result
-        self.sample: Sample = analysis_result.sample
-        self.analysis: Analysis = analysis_result.analysis
+        self.sample = analysis_result.sample
+        self.analysis = analysis_result.analysis
+        self._results_pool = None
+        self._results_by_analysis = None
 
         if not isinstance(self.analysis_result.reflex_level, int):
             logger.info(
-                f"No reflex level set for analysis result: {self.analysis_result.uid}. Skipping reflex."
+                f"No reflex level set for analysis result: {self.analysis_result.uid}. "
+                f"Skipping reflex."
             )
             return
 
         logger.info(
-            f"Starting reflex for level: {self.analysis_result.reflex_level} on SampleId {self.sample.sample_id}"
+            f"Starting reflex for level: {self.analysis_result.reflex_level} "
+            f"on SampleId {self.sample.sample_id}"
         )
 
-        action = await self.get_reflex_action(
-            self.analysis.uid, self.analysis_result.reflex_level
+        trigger = await self.get_reflex_trigger(
+            self.analysis.uid,
+            self.analysis_result.reflex_level,
         )
-        if not action:
-            logger.info(f"No reflex action found for analysis: {self.analysis.name}")
+        if not trigger:
+            logger.info(f"No reflex trigger found for analysis: {self.analysis.name}")
             return
 
-        self._reflex_action = action
-        logger.info(f"Reflex action found for analysis: {self.analysis.name}")
-        logger.info(f"Reflex action description: {action.description}")
+        self._reflex_trigger = trigger
+        logger.info(f"Reflex trigger found for analysis: {self.analysis.name}")
+        logger.info(f"Reflex trigger description: {trigger.description}")
 
-        logger.info(f"Processing {len(self._reflex_action.brains)} Reflex Brains")
-        for index, brain in enumerate(self._reflex_action.brains, 1):
+        decisions = sorted(trigger.decisions or [], key=lambda d: d.priority)
+        logger.info(f"Processing {len(decisions)} Reflex Decisions")
+
+        for index, decision in enumerate(decisions, 1):
             logger.info(
-                f"Processing Reflex Brain {index}/{len(self._reflex_action.brains)}"
+                f"Processing Reflex Decision {index}/{len(decisions)} "
+                f"(uid={decision.uid}, priority={decision.priority})"
             )
-            await self.decide(brain)
+            await self.decide(decision)
 
     @staticmethod
     def can_decide(results_pool: list[AnalysisResult]) -> bool:
         """
         Check if all results in consideration are approved and a decision can be made.
-
-        :param results_pool: List of analysis results to check
-        :return: True if all results are approved, False otherwise
         """
         return bool(results_pool) and all(
             r.status == ResultState.APPROVED for r in results_pool
         )
 
-    async def decide(self, brain: ReflexBrain) -> None:
+    async def decide(self, decision: ReflexDecision) -> None:
         """
-        Make a decision based on the reflex brain and execute actions if criteria are met.
-
-        :param brain: ReflexBrain object containing decision criteria and actions
+        Make a decision based on the reflex decision and execute actions if criteria are met.
         """
-        logger.info(f"Making reflex decision for brain: {brain}")
-        logger.info(f"ReflexBrain description: {brain.description}")
+        logger.info(f"Making reflex decision for decision: {decision.uid}")
+        logger.info(f"ReflexDecision description: {decision.description}")
 
-        if not brain.conditions:
-            logger.warning("No conditions found for brain. -- skipping decision.")
-            return
-
-        if not brain.actions:
-            logger.warning("No actions found for brain. -- skipping decision.")
-            return
-
-        results_pool = await self.get_results_pool(brain.conditions)
-        if not self.can_decide(results_pool):
-            logger.info(
-                f"Decision cannot be made. Aborting reflex: {[r.status for r in results_pool]}"
+        rule_groups = decision.rule_groups or []
+        if not rule_groups:
+            logger.warning(
+                "No rule groups found for decision. -- skipping decision."
             )
             return
 
-        # 1. Evaluate conditions
+        if not (decision.add_analyses or decision.finalize_analyses):
+            logger.warning(
+                "No actions (add_analyses/finalize_analyses) found for decision. "
+                "-- skipping decision."
+            )
+            return
+
+        results_pool = await self.get_results_pool(rule_groups)
+        if not self.can_decide(results_pool):
+            logger.info(
+                f"Decision cannot be made. Aborting reflex: "
+                f"{[r.status for r in results_pool]}"
+            )
+            return
+
+        # 1. Evaluate rule groups (OR over groups, AND inside each group)
         can_action = await self.evaluate(
-            conditions=brain.conditions, results_pool=results_pool
+            rule_groups=rule_groups,
+            results_pool=results_pool,
         )
         if not can_action:
             logger.info(
-                "Evaluations do not meet the criteria for brain: Cannot execute actions"
+                "Evaluations do not meet the criteria for decision: "
+                "Cannot execute actions"
             )
             return
 
-        # 2. If brain criteria expectations are met then take action
-        logger.info("Brain criteria met. Executing matching actions.")
-        await self.apply_actions(brain.actions, results_pool)
+        # 2. If criteria expectations are met then take action
+        logger.info("Decision criteria met. Executing matching actions.")
+        execution = await self._acquire_decision_execution(decision)
+        if not execution:
+            logger.info(
+                "Reflex decision already executed for sample. "
+                "Skipping duplicate actions."
+            )
+            return
+
+        try:
+            await self.apply_actions(decision, results_pool)
+            await self.reflex_decision_execution_service.update(
+                execution.uid, {"status": REFLEX_EXECUTION_COMPLETED}
+            )
+        except Exception:
+            await self.reflex_decision_execution_service.update(
+                execution.uid, {"status": REFLEX_EXECUTION_FAILED}
+            )
+            raise
 
     async def evaluate(
-        self, conditions: list[ReflexBrainCondition], results_pool: List[AnalysisResult]
+            self,
+            rule_groups: list[ReflexRuleGroup],
+            results_pool: List[AnalysisResult],
     ) -> bool:
         """
-        Evaluate conditions for decision-making.
+        Evaluate rule groups for decision-making.
 
-        :param conditions: List of ReflexBrainCondition for this decision
-        :param results_pool: List of analysis results to use in evaluation
-        :return: Boolean result of the evaluation
+        - AND inside each group (all rules must pass).
+        - OR across groups (at least one group must pass).
         """
+        evaluations: list[bool] = []
 
-        evaluations = []
-        # 1st evaluate AND: All criteria within a condition
-        for condition in conditions:
-            evaluations.append(await self._eval_condition(condition, results_pool))
+        # First: evaluate AND logic inside each group
+        for group in rule_groups:
+            evaluations.append(
+                await self._eval_rule_group(group, results_pool)
+            )
 
-        # 2nd evaluate OR: at least one condition must be met :: any()
+        # Second: OR logic across groups: at least one group must be met
         return any(evaluations)
 
     @staticmethod
-    async def _eval_condition(
-        condition: ReflexBrainCondition, results_pool: List[AnalysisResult]
+    async def _eval_rule_group(
+            rule_group: ReflexRuleGroup,
+            results_pool: List[AnalysisResult],
     ) -> bool:
         """
-        Evaluate a single condition against the results pool.
+        Evaluate a single rule group against the results pool.
 
-        :param condition: ReflexBrainCondition to evaluate
-        :param results_pool: List of analysis results to use in evaluation
-        Returns:
-            Boolean result of the evaluation
+        - All rules in the group must be satisfied (AND).
         """
-        logger.info(f"Evaluating condition: {condition.description}")
+        logger.info(
+            f"Evaluating rule group: {rule_group.description} "
+            f"(uid={rule_group.uid})"
+        )
 
-        # limit results to those relevant to conditions under evaluation
-        _condition_analyses = [criteria.analysis_uid for criteria in condition.criteria]
+        rules = rule_group.rules or []
+        if not rules:
+            logger.info("Rule group has no rules; cannot evaluate.")
+            return False
+
+        # Limit results to those relevant to rules under evaluation
+        _group_analyses = [rule.analysis_uid for rule in rules]
         relevant_pool = [
             result
             for result in results_pool
-            if result.analysis_uid in _condition_analyses
+            if result.analysis_uid in _group_analyses
         ]
 
         if not relevant_pool:
-            logger.info("No relevant results pool was found for this condition.")
+            logger.info("No relevant results pool was found for this rule group.")
             return False
 
-        # Perform comparison based on criteria :ALl criteria must pass
         evaluations: list[bool] = []
-        for criteria in condition.criteria:
-            # find all matching analyses results
+
+        # AND: all rules in this group must pass
+        for rule in rules:
             matches = [
                 result
                 for result in relevant_pool
-                if result.analysis_uid == criteria.analysis_uid
+                if result.analysis_uid == rule.analysis_uid
             ]
+
             if not matches:
                 logger.info(
-                    f"Criteria analyses not found in relevant result pool: {criteria.analysis_uid}"
+                    f"Rule analysis not found in relevant result pool: "
+                    f"{rule.analysis_uid}"
                 )
                 return False
 
-            # Get the comparison function based on the operator
-            comparison_func = OPERAND_FUNCTIONS.get(criteria.operator)
+            comparison_func = OPERAND_FUNCTIONS.get(rule.operator)
             if comparison_func is None:
-                logger.error(f"Unsupported operator: {criteria.operator}")
+                logger.error(f"Unsupported operator: {rule.operator}")
                 return False
 
-            # Perform the comparison for each matching result
             successful_hits = 0
             for match in matches:
                 match_value = match.result
-                criteria_value = criteria.value
+                criteria_value = rule.value
 
                 all_numbers = [is_number(match_value), is_number(criteria_value)]
 
-                # if one is numer and another is string
-                # not all(all_numbers): Checks if not both values are numbers (i.e., at least one is not a number).
-                # any(all_numbers): Checks if at least one of the values is a number.
+                # One numeric, one string → cannot compare safely
                 if not all(all_numbers) and any(all_numbers):
                     logger.warning(
-                        f"Cannot compare number and string: {match_value} {criteria.operator}, {criteria_value}"
+                        f"Cannot compare number and string: "
+                        f"{match_value} {rule.operator} {criteria_value}"
                     )
                     continue
-                    # return False
 
-                # Determine if the values are numeric or strings
+                # Numeric comparison
                 if all(all_numbers):
-                    # Convert both to float for numeric comparison
                     match_value = float(match_value)
                     criteria_value = float(criteria_value)
                 else:
-                    # Compare as strings: check that the operator is =
-                    if not (criteria.operator == "="):
+                    # String comparison: only allow eq/neq
+                    if rule.operator not in ("eq", "neq"):
                         logger.error(
-                            f"Incorrect operator for string matching: {criteria.operator}"
+                            "Incorrect operator for string matching: %s",
+                            rule.operator,
                         )
                         continue
 
                 try:
-                    # Append the result of the comparison (True or False)
-                    evaluations.append(comparison_func(match_value, criteria_value))
+                    evaluations.append(
+                        comparison_func(match_value, criteria_value)
+                    )
                     successful_hits += 1
                 except ValueError as e:
                     logger.error(f"Error comparing results: {e}")
                     return False
 
             if successful_hits == 0:
-                # All matched results had some issues during comparison
-                # No need to proceed further since a criteria has already failed
-                logger.info("No evaluations matches were found during evaluation")
+                logger.info(
+                    "No evaluation matches were found for rule in this group"
+                )
                 return False
 
             if successful_hits > 1:
                 logger.warning(
-                    f"More than one successful match for criteria: {criteria.analysis_uid}"
+                    f"More than one successful match for rule: "
+                    f"{rule.analysis_uid}"
                 )
 
         if not evaluations:
-            logger.info("No evaluations matches were found during evaluation")
+            logger.info(
+                "No evaluations matches were found during rule group evaluation"
+            )
             return False
 
-        # AND: all criteria must be met
+        # AND: all rules must be met
         return all(evaluations)
 
     async def apply_actions(
-        self, actions: list[ReflexBrainAction], results_pool: List[AnalysisResult]
+            self,
+            decision: ReflexDecision,
+            results_pool: List[AnalysisResult],
     ) -> None:
         """
-        Execute actions for a matching reflex brain.
+        Execute actions for a matching reflex decision.
 
-        :param actions: ReflexBrainAction object containing actions to execute
-        :param results_pool: List of analysis results
+        Actions are defined directly on the decision:
+        - decision.add_analyses → create new AnalysisResult(s)
+        - decision.finalize_analyses → create + finalize with value
         """
-        logger.info("Executing actions for matching brain.")
+        logger.info(
+            f"Executing actions for matching decision uid={decision.uid} "
+            f"(add_analyses={len(decision.add_analyses or [])}, "
+            f"finalize_analyses={len(decision.finalize_analyses or [])})"
+        )
 
-        for action in actions:
-            # Add new Analyses
-            for addition in action.add_new:
-                logger.info(
-                    f"Adding {addition.count} instance(s) of analysis: {addition.analysis_uid}"
-                )
-                for _ in range(addition.count):
-                    await self.create_analyte_for(addition.analysis_uid)
+        # Add new Analyses
+        for addition in decision.add_analyses or []:
+            logger.info(
+                f"Adding {addition.count} instance(s) of analysis: "
+                f"{addition.analysis_uid}"
+            )
+            for _ in range(addition.count):
+                await self.create_analyte_for(addition.analysis_uid)
 
-            # Finalise Analyses
-            logger.info(f"Finalizing {len(action.finalise)} analyses")
-            for final in action.finalise:
-                logger.info(
-                    f"Finalizing analysis {final.analysis.uid} with value: {final.value}"
-                )
-                await self.create_final_for(final.analysis.uid, final.value)
+        # Finalise Analyses
+        logger.info(
+            f"Finalizing {len(decision.finalize_analyses or [])} analyses"
+        )
+        for final in decision.finalize_analyses or []:
+            logger.info(
+                f"Finalizing analysis {final.analysis.uid} with value: {final.value}"
+            )
+            await self.create_final_for(final.analysis.uid, final.value)
 
         # Clean up: hide reports for results that were used in this decision
         logger.info("Hiding reports for used results")
@@ -436,45 +468,70 @@ class ReflexEngineService:
                 await self.analysis_result_service.hide_report(r.uid)
 
     async def get_results_pool(
-        self, conditions: list[ReflexBrainCondition]
+            self,
+            rule_groups: list[ReflexRuleGroup],
     ) -> List[AnalysisResult]:
         """
-        Get a pool of relevant analysis results for the given conditions.
+        Get a pool of relevant analysis results for the given rule groups.
 
-        :param conditions: List of ReflexBrainCondition to filter results for all criteria
+        :param rule_groups: List of ReflexRuleGroup to filter results for all rules
         :return: List of relevant AnalysisResult objects
         """
-        criteria = []
-        for condition in conditions:
-            criteria = criteria + condition.criteria
+        rules: list[ReflexRuleCriteria] = []
+        for group in rule_groups:
+            rules.extend(group.rules or [])
 
-        total_criteria = len(criteria)
-        criteria_anals = set(cr.analysis_uid for cr in criteria)
+        criteria_anals = set(rule.analysis_uid for rule in rules)
         logger.info(f"Criteria analyses: {criteria_anals}")
 
-        if self._results_pool is None:
-            # Fetch all results for the sample if not already cached
+        if self._results_by_analysis is None:
             results: List[AnalysisResult] = await self.analysis_result_service.get_all(
-                sample_uid=self.sample.uid, related=["analysis"]
+                sample_uid=self.sample.uid,
+                related=["analysis"],
             )
-            # Filter results based on criteria -- limits to relevant analysis results
-            self._results_pool = [
-                result for result in results if result.analysis_uid in criteria_anals
-            ]
+            results.sort(key=lambda x: x.created_at, reverse=True)
+            self._results_by_analysis = {}
+            for result in results:
+                if result.analysis_uid not in self._results_by_analysis:
+                    self._results_by_analysis[result.analysis_uid] = result
+
+        self._results_pool = [
+            self._results_by_analysis[analysis_uid]
+            for analysis_uid in criteria_anals
+            if analysis_uid in self._results_by_analysis
+        ]
 
         logger.info(
-            f"Entire (relevant) results pool: {[(r.analysis.name, r.result) for r in self._results_pool]}"
+            "Entire (relevant) results pool: %s",
+            [(r.analysis.name, r.result) for r in self._results_pool],
         )
-        # Sort results by creation date (newest first) and return the required number
-        self._results_pool.sort(key=lambda x: x.created_at, reverse=True)
-        return self._results_pool[:total_criteria]
+        return self._results_pool
+
+    async def _acquire_decision_execution(
+            self,
+            decision: ReflexDecision,
+    ) -> ReflexDecisionExecution | None:
+        """
+        Attempt to create a reflex execution record to guarantee idempotency.
+
+        Returns:
+            ReflexDecisionExecution when acquired, otherwise None if already executed.
+        """
+        if not decision.uid:
+            return None
+        payload = ReflexDecisionExecutionCreate(
+            sample_uid=self.sample.uid,
+            reflex_decision_uid=decision.uid,  # keep field name as in your current schema
+            status=REFLEX_EXECUTION_RUNNING,
+        )
+        try:
+            return await self.reflex_decision_execution_service.create(payload)
+        except IntegrityError:
+            return None
 
     async def create_analyte_for(self, analysis_uid: str) -> AnalysisResult:
         """
         Create a new analyte (analysis result) for a given analysis.
-
-        :param analysis_uid: UID of the analysis to create a new result for
-        :return: Newly created AnalysisResult
         """
         logger.info(f"Creating analyte for: {analysis_uid}")
 
@@ -496,10 +553,6 @@ class ReflexEngineService:
     async def create_final_for(self, analysis_uid: str, value: str) -> AnalysisResult:
         """
         Create a final analysis result for a given analysis and value.
-
-        :param analysis_uid: UID of the analysis to create a final result for
-        :param value: Final result value
-        :return: Newly created AnalysisResult
         """
         logger.info(f"Creating final result for: {analysis_uid} with value: {value}")
         retest = await self.create_analyte_for(analysis_uid)

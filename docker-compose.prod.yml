@@ -195,16 +195,3 @@ services:
       # Ensure databases are up before DbGate tries to connect
       - felicity-postgres
       - felicity-mongo
-
-  word-processor-server:
-    image: syncfusion/word-processor-server:latest # Pinning image version
-    restart: unless-stopped
-    env_file:
-      - .env # Load PostgreSQL credentials from .env file
-    environment:
-      # Syncfusion license key (should ideally be in .env for production)
-      SYNCFUSION_LICENSE_KEY: ${SYNCFUSION_LICENSE} # Sourced from .env
-    ports:
-      - '127.0.0.1:9998:80' # Expose Word Processor Server on localhost port 9998
-    networks:
-      - felicitynet # Connect to the custom network

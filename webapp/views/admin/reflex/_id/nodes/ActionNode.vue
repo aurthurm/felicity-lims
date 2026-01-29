@@ -175,6 +175,7 @@ const actionDetail = computed(() => {
 </template>
 
 <style scoped>
+@import "tailwindcss";
 .action-node {
   @apply border-2 rounded-lg shadow-md;
   @apply px-4 py-3 min-w-[220px] max-w-[280px];

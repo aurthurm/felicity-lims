@@ -123,7 +123,7 @@ function editResult(result: any): void {
   result.editable = true;
 }
 
-function isEditable(result: AnalysisResultType): Boolean {
+function isEditable(result: AnalysisResultType): boolean {
   if (result.status !== "pending") {
     return false;
   }
@@ -203,7 +203,14 @@ function checkUserActionPermissios(): void {
   };
 
   // can submit
-  if (checked.every((result: AnalysisResultType) => result.status === "pending")) {
+  if (
+    checked.every(
+      (result: AnalysisResultType) =>
+        result.status === "pending" &&
+        !isNullOrWs(result.methodUid) &&
+        !isNullOrWs(result.laboratoryInstrumentUid)
+    )
+  ) {
     can_submit.value = true;
     can_unassign.value = true;
   }
@@ -284,7 +291,7 @@ const printBarCodes = async () => {
         </FButton>
         <FButton 
           v-show="can_unassign && shield.hasRights(shield.actions.UNASSIGN, shield.objects.ANALYSIS)" 
-          @click="unassignResults()" 
+          @click="unAssignSamples()" 
           :loading="unassigning"
           variant="secondary"
           size="sm"

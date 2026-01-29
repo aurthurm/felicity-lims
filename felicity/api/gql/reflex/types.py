@@ -13,7 +13,7 @@ class ReflexRuleType:
     uid: str
     name: str
     description: str
-    reflex_actions: Optional[List["ReflexActionType"]] = None
+    reflex_triggers: Optional[List["ReflexTriggerType"]] = None
     is_active: bool
     priority: int
     laboratory_uid: str | None = None
@@ -43,60 +43,82 @@ class ReflexRuleCursorPage:
 
 
 @strawberry.type
-class ReflexBrainAdditionType:
+class ReflexRuleCriteriaType:
+    """Individual rule criteria"""
+    uid: str
+    reflex_rule_group_uid: str
+    reflex_rule_group: Optional["ReflexRuleGroupType"] = None
     analysis_uid: str
-    analysis: AnalysisType | None = None
-    reflex_brain_action_uid: str
-    reflex_brain_action: Optional["ReflexBrainActionType"] = None
-    count: int
-    laboratory_uid: str | None = None
-    laboratory: LaboratoryType | None = None
-
-
-@strawberry.type
-class ReflexBrainConditionCriteriaType:
-    analysis_uid: str
-    analysis: AnalysisType | None = None
-    reflex_brain_condition_uid: str
-    reflex_brain_condition: Optional["ReflexBrainConditionType"] = None
+    analysis: Optional[AnalysisType] = None
     operator: str
     value: str
+    priority: int
     laboratory_uid: str | None = None
     laboratory: LaboratoryType | None = None
+    #
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
 
 
 @strawberry.type
-class ReflexBrainFinalType:
+class ReflexRuleGroupType:
+    """Rule group with OR logic"""
+    uid: str
+    reflex_decision_uid: str
+    reflex_decision: Optional["ReflexDecisionType"] = None
+    description: str | None = None
+    priority: int
+    rules: Optional[List[ReflexRuleCriteriaType]] = None
+    pos_x: float | None = None
+    pos_y: float | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
+    #
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
+
+
+@strawberry.type
+class ReflexAddAnalysisType:
+    """Add analysis action"""
+    uid: str
+    reflex_decision_uid: str
+    reflex_decision: Optional["ReflexDecisionType"] = None
     analysis_uid: str
-    analysis: AnalysisType | None = None
-    reflex_brain_action_uid: str
-    reflex_brain_action: Optional["ReflexBrainActionType"] = None
+    analysis: Optional[AnalysisType] = None
+    count: int
+    pos_x: float | None = None
+    pos_y: float | None = None
+    laboratory_uid: str | None = None
+    laboratory: LaboratoryType | None = None
+    #
+    created_by_uid: str | None = None
+    created_by: UserType | None = None
+    created_at: str | None = None
+    updated_by_uid: str | None = None
+    updated_by: UserType | None = None
+    updated_at: str | None = None
+
+
+@strawberry.type
+class ReflexFinalizeAnalysisType:
+    """Finalize analysis action"""
+    uid: str
+    reflex_decision_uid: str
+    reflex_decision: Optional["ReflexDecisionType"] = None
+    analysis_uid: str
+    analysis: Optional[AnalysisType] = None
     value: str
-    laboratory_uid: str | None = None
-    laboratory: LaboratoryType | None = None
-
-
-@strawberry.type
-class ReflexBrainConditionType:
-    uid: str
-    reflex_brain_uid: str
-    reflex_brain: "ReflexBrainType"
-    description: str | None
-    criteria: list["ReflexBrainConditionCriteriaType"] | None
-    priority: int
-    laboratory_uid: str | None = None
-    laboratory: LaboratoryType | None = None
-
-
-@strawberry.type
-class ReflexBrainType:
-    reflex_action_uid: str
-    reflex_action: Optional["ReflexBrainType"] = None
-    actions: list["ReflexBrainActionType"]
-    conditions: list["ReflexBrainConditionType"]
-    uid: str
-    description: str
-    priority: int
+    pos_x: float | None = None
+    pos_y: float | None = None
     laboratory_uid: str | None = None
     laboratory: LaboratoryType | None = None
     #
@@ -109,14 +131,18 @@ class ReflexBrainType:
 
 
 @strawberry.type
-class ReflexBrainActionType:
-    reflex_brain_uid: str
-    reflex_brain: Optional["ReflexBrainType"] = None
+class ReflexDecisionType:
+    """Decision node"""
     uid: str
-    description: str
-    add_new: Optional[List[ReflexBrainAdditionType]] = None
-    finalise: Optional[List[ReflexBrainFinalType]] = None
+    reflex_trigger_uid: str
+    reflex_trigger: Optional["ReflexTriggerType"] = None
+    description: str | None = None
     priority: int
+    rule_groups: Optional[List[ReflexRuleGroupType]] = None
+    add_analyses: Optional[List[ReflexAddAnalysisType]] = None
+    finalize_analyses: Optional[List[ReflexFinalizeAnalysisType]] = None
+    pos_x: float | None = None
+    pos_y: float | None = None
     laboratory_uid: str | None = None
     laboratory: LaboratoryType | None = None
     #
@@ -129,16 +155,19 @@ class ReflexBrainActionType:
 
 
 @strawberry.type
-class ReflexActionType:
+class ReflexTriggerType:
+    """Trigger node"""
     uid: str
-    level: int
-    description: str
-    analyses: Optional[List[AnalysisType]] = None
-    sample_type_uid: str | None = None
-    sample_type: Optional[SampleTypeTyp] = None
     reflex_rule_uid: str
     reflex_rule: Optional[ReflexRuleType] = None
-    brains: Optional[List[ReflexBrainType]] = None
+    level: int
+    description: str
+    sample_type_uid: str | None = None
+    sample_type: Optional[SampleTypeTyp] = None
+    analyses: Optional[List[AnalysisType]] = None
+    decisions: Optional[List[ReflexDecisionType]] = None
+    pos_x: float | None = None
+    pos_y: float | None = None
     laboratory_uid: str | None = None
     laboratory: LaboratoryType | None = None
     #

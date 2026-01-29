@@ -1,5 +1,7 @@
 import { defineAsyncComponent, defineComponent, toRefs } from 'vue';
-import { ref, reactive, computed } from 'vue';
+import { ref, computed } from 'vue';
+import { useField, useForm } from 'vee-validate';
+import * as yup from 'yup';
 import {
     AddStockCategoryDocument,
     AddStockCategoryMutation,
@@ -18,16 +20,31 @@ const StockCategory = defineComponent({
         const inventoryStore = useInventoryStore();
         const { withClientMutation } = useApiUtil();
 
-        let showModal = ref(false);
-        let formTitle = ref('');
-        let form = reactive({} as StockCategoryType);
+        const showModal = ref(false);
+        const formTitle = ref('');
         const formAction = ref(true);
+        const currentUid = ref<string | null>(null);
+
+        const categorySchema = yup.object({
+            name: yup.string().trim().required('Category name is required'),
+            description: yup.string().trim().nullable(),
+        });
+
+        const { handleSubmit, resetForm, setValues } = useForm({
+            validationSchema: categorySchema,
+            initialValues: {
+                name: '',
+                description: '',
+            },
+        });
+
+        const { value: name, errorMessage: nameError } = useField<string>('name');
+        const { value: description, errorMessage: descriptionError } = useField<string | null>('description');
 
         inventoryStore.fetchCategories();
         const stockCategories = computed(() => inventoryStore.getCategories);
 
-        function addStockCategory(): void {
-            const payload = { ...form } as StockCategoryInputType;
+        function addStockCategory(payload: StockCategoryInputType): void {
             withClientMutation<AddStockCategoryMutation, AddStockCategoryMutationVariables>(
                 AddStockCategoryDocument,
                 { payload },
@@ -35,14 +52,11 @@ const StockCategory = defineComponent({
             ).then(result => inventoryStore.addCategory(result));
         }
 
-        function editStockCategory(): void {
-            const payload = {
-                name: form.name,
-                description: form.description,
-            } as StockCategoryInputType;
+        function editStockCategory(payload: StockCategoryInputType): void {
+            if (!currentUid.value) return;
             withClientMutation<EditStockCategoryMutation, EditStockCategoryMutationVariables>(
                 EditStockCategoryDocument,
-                { uid: form.uid, payload },
+                { uid: currentUid.value, payload },
                 'updateStockCategory'
             ).then(result => inventoryStore.updateCategory(result));
         }
@@ -52,20 +66,37 @@ const StockCategory = defineComponent({
             formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + 'STOCK CATEGORY';
             showModal.value = true;
             if (create) {
-                Object.assign(form, {} as StockCategoryType);
+                currentUid.value = null;
+                resetForm({
+                    values: {
+                        name: '',
+                        description: '',
+                    },
+                });
             } else {
-                Object.assign(form, { ...obj });
+                currentUid.value = obj?.uid ?? null;
+                setValues({
+                    name: obj?.name ?? '',
+                    description: obj?.description ?? '',
+                });
             }
         }
 
-        function saveForm(): void {
-            if (formAction.value === true) addStockCategory();
-            if (formAction.value === false) editStockCategory();
+        const saveForm = handleSubmit(values => {
+            const payload = {
+                name: values.name,
+                description: values.description ?? null,
+            } as StockCategoryInputType;
+            if (formAction.value === true) addStockCategory(payload);
+            if (formAction.value === false) editStockCategory(payload);
             showModal.value = false;
-        }
+        });
 
         return {
-            form,
+            name,
+            nameError,
+            description,
+            descriptionError,
             FormManager,
             saveForm,
             stockCategories,
@@ -137,22 +168,28 @@ const StockCategory = defineComponent({
                                                 Category Name
                                             </label>
                                             <input
-                                                value={this.form.name}
-                                                onChange={e => (this.form.name = e.target.value)}
+                                                value={this.name}
+                                                onChange={e => (this.name = (e.target as HTMLInputElement).value)}
                                                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                 placeholder="Enter category name..."
                                             />
+                                            {this.nameError ? (
+                                                <p class="text-sm text-destructive">{this.nameError}</p>
+                                            ) : null}
                                         </div>
                                         <div class="space-y-2">
                                             <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                                                 Description
                                             </label>
                                             <textarea
-                                                value={this.form.description}
-                                                onChange={e => (this.form.description = e.target.value)}
+                                                value={this.description}
+                                                onChange={e => (this.description = (e.target as HTMLTextAreaElement).value)}
                                                 class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                 placeholder="Enter description..."
                                             />
+                                            {this.descriptionError ? (
+                                                <p class="text-sm text-destructive">{this.descriptionError}</p>
+                                            ) : null}
                                         </div>
                                     </div>
                                     <div class="flex justify-end">

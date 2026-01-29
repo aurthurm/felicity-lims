@@ -41,6 +41,7 @@ class AnalysisResult(LabScopedEntity, BaseMPTT):
     method = relationship("Method", lazy="selectin")
     # HIPAA: Encrypt test results as they constitute Protected Health Information (PHI)
     result = Column(EncryptedPHI(1000), nullable=True)
+    note = Column(String, nullable=True)
     analyst_uid = Column(String, ForeignKey("user.uid"), nullable=True)
     analyst = relationship("User", foreign_keys=[analyst_uid], lazy="selectin")
     submitted_by_uid = Column(String, ForeignKey("user.uid"), nullable=True)

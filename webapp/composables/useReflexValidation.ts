@@ -419,12 +419,31 @@ export function useReflexValidation(config?: Partial<ValidationConfig>) {
       const targetType = targetNode.type as NodeType;
 
       // Validate connection rules
+      // Decision uses handle-based routing to prevent ambiguity
       const validConnections: Record<NodeType, NodeType[]> = {
-        trigger: ['decision'],
-        decision: ['rule', 'action'],
-        rule: ['rule', 'action'], // Rules can chain (AND logic)
-        action: [], // Actions have no outgoing connections
+        trigger: ['decision'], // Entry point must connect to Decision
+        decision: ['rule', 'action'], // Routes via handles: 'rules' → Rule, 'actions' → Action
+        rule: ['rule'], // Rules can chain for AND logic
+        action: [], // Actions are terminal nodes (no outgoing connections)
       };
+
+      // Decision nodes require specific handle connections
+      if (sourceType === 'decision') {
+        const sourceHandle = edge.sourceHandle;
+        const validHandleConnection =
+          (sourceHandle === 'rules' && targetType === 'rule') ||
+          (sourceHandle === 'actions' && targetType === 'action');
+        if (!validHandleConnection) {
+          issues.push({
+            edgeId: edge.id,
+            type: 'error',
+            severity: 'high',
+            message: `Decision '${sourceHandle}' handle must connect to ${sourceHandle === 'rules' ? 'Rule' : 'Action'} node`,
+            code: 'CONNECTION_INVALID_HANDLE',
+          });
+        }
+        continue;
+      }
 
       if (!validConnections[sourceType]?.includes(targetType)) {
         issues.push({

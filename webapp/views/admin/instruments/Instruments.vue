@@ -1,11 +1,13 @@
 <script setup lang="ts">
-  import { ref, reactive, computed, defineAsyncComponent } from 'vue';
+  import { ref, computed, defineAsyncComponent } from 'vue';
   import { InstrumentInputType, InstrumentType } from '@/types/gql'
   import { AddInstrumentDocument, AddInstrumentMutation, AddInstrumentMutationVariables,
     EditInstrumentDocument, EditInstrumentMutation, EditInstrumentMutationVariables } from '@/graphql/operations/instrument.mutations';
   import { useUserStore } from '@/stores/user';
   import { useSetupStore } from '@/stores/setup';
   import  useApiUtil  from '@/composables/api_util';
+  import { useField, useForm } from "vee-validate";
+  import { object, string } from "yup";
   const modal = defineAsyncComponent(
     () => import('@/components/ui/FelModal.vue')
   )
@@ -21,8 +23,35 @@
   let showModal = ref(false);
   let formTitle = ref('');
   const formAction = ref(true);
+  const currentUid = ref<string | null>(null);
 
-  let instrument = reactive({})  as InstrumentType;
+  const formSchema = object({
+    name: string().required("Name is required"),
+    keyword: string().required("Keyword is required"),
+    description: string().nullable(),
+    instrumentTypeUid: string().nullable(),
+    manufacturerUid: string().nullable(),
+    supplierUid: string().nullable(),
+  });
+
+  const { handleSubmit, errors, resetForm, setValues } = useForm({
+    validationSchema: formSchema,
+    initialValues: {
+      name: "",
+      keyword: "",
+      description: "",
+      instrumentTypeUid: null,
+      manufacturerUid: null,
+      supplierUid: null,
+    },
+  });
+
+  const { value: name } = useField<string>("name");
+  const { value: keyword } = useField<string>("keyword");
+  const { value: description } = useField<string | null>("description");
+  const { value: instrumentTypeUid } = useField<string | null>("instrumentTypeUid");
+  const { value: manufacturerUid } = useField<string | null>("manufacturerUid");
+  const { value: supplierUid } = useField<string | null>("supplierUid");
 
   setupStore.fetchInstrumentTypes();    
   const instrumentTypes = computed(() => setupStore.getInstrumentTypes)
@@ -36,29 +65,32 @@
   setupStore.fetchSuppliers();    
   const suppliers = computed(() => setupStore.getSuppliers)
 
-  function addInstrument(): void {
+  function addInstrument(values: InstrumentInputType): void {
     const payload = { 
-      name: instrument.name!, 
-      keyword: instrument.keyword!, 
-      description: instrument.description,
-      instrumentTypeUid: instrument.instrumentTypeUid,
-      manufacturerUid: instrument.manufacturerUid,
-      supplierUid: instrument.supplierUid,
+      name: values.name!, 
+      keyword: values.keyword!, 
+      description: values.description,
+      instrumentTypeUid: values.instrumentTypeUid,
+      manufacturerUid: values.manufacturerUid,
+      supplierUid: values.supplierUid,
     }
     withClientMutation<AddInstrumentMutation, AddInstrumentMutationVariables>(AddInstrumentDocument, { payload }, "createInstrument")
     .then((result) => setupStore.addInstrument(result));
   }
 
-  function editInstrument(): void {
-    const payload = { 
-      name: instrument.name!, 
-      keyword: instrument.keyword!, 
-      description: instrument.description,
-      instrumentTypeUid: instrument.instrumentTypeUid,
-      manufacturerUid: instrument.manufacturerUid,
-      supplierUid: instrument.supplierUid,
+  function editInstrument(values: InstrumentInputType): void {
+    if (!currentUid.value) {
+      return;
     }
-    withClientMutation<EditInstrumentMutation, EditInstrumentMutationVariables>(EditInstrumentDocument, { uid: instrument.uid, payload },"updateInstrument")
+    const payload = { 
+      name: values.name!, 
+      keyword: values.keyword!, 
+      description: values.description,
+      instrumentTypeUid: values.instrumentTypeUid,
+      manufacturerUid: values.manufacturerUid,
+      supplierUid: values.supplierUid,
+    }
+    withClientMutation<EditInstrumentMutation, EditInstrumentMutationVariables>(EditInstrumentDocument, { uid: currentUid.value, payload },"updateInstrument")
     .then((result) => setupStore.updateInstrument(result));
   }
 
@@ -67,17 +99,35 @@
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES INSTRUMENT";
     if (create) {
-      Object.assign(instrument, { ...({} as InstrumentType) });
+      currentUid.value = null;
+      resetForm({
+        values: {
+          name: "",
+          keyword: "",
+          description: "",
+          instrumentTypeUid: null,
+          manufacturerUid: null,
+          supplierUid: null,
+        },
+      });
     } else {
-      Object.assign(instrument, { ...obj });
+      currentUid.value = obj.uid ?? null;
+      setValues({
+        name: obj.name ?? "",
+        keyword: obj.keyword ?? "",
+        description: obj.description ?? "",
+        instrumentTypeUid: obj.instrumentTypeUid ?? null,
+        manufacturerUid: obj.manufacturerUid ?? null,
+        supplierUid: obj.supplierUid ?? null,
+      });
     }
   }
 
-  function saveForm():void {
-    if (formAction.value === true) addInstrument();
-    if (formAction.value === false) editInstrument();
+  const saveForm = handleSubmit((values): void => {
+    if (formAction.value === true) addInstrument(values as InstrumentInputType);
+    if (formAction.value === false) editInstrument(values as InstrumentInputType);
     showModal.value = false;
-  }
+  });
 </script>
 
 <template>
@@ -119,9 +169,9 @@
   </div>
 
   <!-- Instrument Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false"> :title="formTitle">
+  <fel-modal v-if="showModal" @close="showModal = false" :title="formTitle">
     <template v-slot:body>
-      <form @submit.prevent="saveForm()" class="space-y-6">
+      <form @submit.prevent="saveForm" class="space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="space-y-2 md:col-span-2">
             <label for="name" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
@@ -129,11 +179,12 @@
             </label>
             <input
               id="name"
-              v-model="instrument.name"
+              v-model="name"
               type="text"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="Enter instrument name"
             />
+            <div class="text-sm text-destructive">{{ errors.name }}</div>
           </div>
           
           <div class="space-y-2">
@@ -142,11 +193,12 @@
             </label>
             <input
               id="keyword"
-              v-model="instrument.keyword"
+              v-model="keyword"
               type="text"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="Enter keyword"
             />
+            <div class="text-sm text-destructive">{{ errors.keyword }}</div>
           </div>
           
           <div class="space-y-2">
@@ -155,7 +207,7 @@
             </label>
             <select
               id="instrumentType"
-              v-model="instrument.instrumentTypeUid"
+              v-model="instrumentTypeUid"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <option value="">Select instrument type</option>
@@ -175,7 +227,7 @@
             </label>
             <select
               id="manufacturer"
-              v-model="instrument.manufacturerUid"
+              v-model="manufacturerUid"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <option value="">Select manufacturer</option>
@@ -195,7 +247,7 @@
             </label>
             <select
               id="supplier"
-              v-model="instrument.supplierUid"
+              v-model="supplierUid"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <option value="">Select supplier</option>
@@ -215,7 +267,7 @@
             </label>
             <textarea
               id="description"
-              v-model="instrument.description"
+              v-model="description"
               rows="3"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="Enter description"

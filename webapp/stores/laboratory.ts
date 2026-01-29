@@ -236,7 +236,6 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
             store.value.errorHistory = store.value.errorHistory.slice(0, 20);
         }
 
-        console.error(`Laboratory Store Error [${context}]:`, error);
     };
 
     const clearErrors = () => {
@@ -814,9 +813,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                 timestamp: new Date().toISOString(),
             };
             localStorage.setItem(STORAGE_LABORATORY_KEY, JSON.stringify(storeData));
-        } catch (error) {
-            console.error('Failed to save laboratory store to storage:', error);
-        }
+        } catch {}
     };
 
     const saveContextToStorage = () => {
@@ -828,9 +825,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                 timestamp: new Date().toISOString(),
             };
             localStorage.setItem(STORAGE_CONTEXT_KEY, JSON.stringify(contextData));
-        } catch (error) {
-            console.error('Failed to save laboratory context to storage:', error);
-        }
+        } catch {}
     };
 
     const loadFromStorage = () => {
@@ -852,9 +847,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                     store.value.sortOrder = storeData.sortOrder;
                 }
             }
-        } catch (error) {
-            console.error('Failed to load laboratory store from storage:', error);
-        }
+        } catch {}
     };
 
     const loadContextFromStorage = () => {
@@ -873,9 +866,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                     }));
                 }
             }
-        } catch (error) {
-            console.error('Failed to load laboratory context from storage:', error);
-        }
+        } catch {}
     };
 
     // Initialize store

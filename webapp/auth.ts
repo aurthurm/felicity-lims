@@ -12,7 +12,6 @@ const authToStorage = async (data: AuthenticatedData): Promise<void> => {
         const crypted = await encrypter(data, ENCRYPT_AUTH_KEY);
         localStorage.setItem(STORAGE_AUTH_KEY, crypted);
     } catch (error) {
-        console.error('Failed to store authentication data:', error);
         throw new Error('Authentication storage failed');
     }
 };
@@ -25,7 +24,6 @@ const authFromStorage = async (): Promise<AuthenticatedData> => {
     try {
         return await decrypter(localStorage.getItem(STORAGE_AUTH_KEY) || '', ENCRYPT_AUTH_KEY);
     } catch (error) {
-        console.error('Failed to retrieve authentication data:', error);
         throw new Error('Authentication storage failed');
     }
 };
@@ -38,7 +36,6 @@ const authFromStorageSync = (): AuthenticatedData => {
     try {
         return decrypterSync(localStorage.getItem(STORAGE_AUTH_KEY) || '', ENCRYPT_AUTH_KEY);
     } catch (error) {
-        console.error('Failed to retrieve authentication data synchronously:', error);
         throw new Error('Authentication storage failed');
     }
 };
@@ -60,7 +57,6 @@ const isAuthExpired = (): boolean => {
     //     if (!auth.expiresAt) return true;
     //     return Date.now() >= auth.expiresAt;
     // } catch (error) {
-    //     console.error('Failed to check authentication expiration:', error);
     //     return true;
     // }
     return false;
@@ -74,7 +70,6 @@ const getAuthData = (): AuthenticatedData => {
     try {
         return authFromStorageSync();
     } catch (error) {
-        console.error('Failed to get current user:', error);
         throw new Error('Authentication storage failed');
     }
 };

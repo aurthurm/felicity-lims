@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
+import { useForm, useField } from 'vee-validate';
+import * as yup from 'yup';
 import { addListsUnique } from '@/utils';
 import useApiUtil from '@/composables/api_util';
 import { AbxQCRangeType, AbxGuidelineType, AbxMediumType } from "@/types/gql";
@@ -20,8 +22,56 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as AbxQCRangeType;
 const formAction = ref<boolean>(true);
+const currentUid = ref<string | null>(null);
+
+const qcRangeSchema = yup.object({
+  guideline: yup.object().required('Guideline is required'),
+  year: yup.number().typeError('Year is required').required('Year is required'),
+  strain: yup.string().trim().required('Strain is required'),
+  referenceTable: yup.string().trim().required('Reference table is required'),
+  whonetOrgCode: yup.string().trim().required('Whonet org code is required'),
+  antibiotic: yup.string().trim().required('Antibiotic is required'),
+  abxTest: yup.string().trim().required('Abx test is required'),
+  whonetAbxCode: yup.string().trim().required('Whonet abx code is required'),
+  method: yup.string().trim().required('Method is required'),
+  medium: yup.object().nullable(),
+  minimum: yup.string().trim().nullable(),
+  maximum: yup.string().trim().nullable(),
+  comments: yup.string().trim().nullable(),
+});
+
+const { handleSubmit, resetForm, setValues, errors } = useForm({
+  validationSchema: qcRangeSchema,
+  initialValues: {
+    guideline: null,
+    year: '',
+    strain: '',
+    referenceTable: '',
+    whonetOrgCode: '',
+    antibiotic: '',
+    abxTest: '',
+    whonetAbxCode: '',
+    method: '',
+    medium: null,
+    minimum: '',
+    maximum: '',
+    comments: '',
+  },
+});
+const { value: guideline } = useField<AbxGuidelineType | null>('guideline');
+const { value: year } = useField<number | string>('year');
+const { value: strain } = useField<string>('strain');
+const { value: referenceTable } = useField<string>('referenceTable');
+const { value: whonetOrgCode } = useField<string>('whonetOrgCode');
+const { value: antibiotic } = useField<string>('antibiotic');
+const { value: abxTest } = useField<string>('abxTest');
+const { value: whonetAbxCode } = useField<string>('whonetAbxCode');
+const { value: method } = useField<string>('method');
+const { value: medium } = useField<AbxMediumType | null>('medium');
+const { value: minimum } = useField<string>('minimum');
+const { value: maximum } = useField<string>('maximum');
+const { value: comments } = useField<string>('comments');
 
 const fetchingQcRanges = ref<boolean>(false);
 const qcRanges = ref<AbxQCRangeType[]>([]);
@@ -223,34 +273,50 @@ function showMoreQcRanges(opts: any): void {
   fetchQcRanges(abxParams);
 }
 
-const resetQcRange = () => Object.assign(form, {}) as AbxQCRangeType;
+const resetQcRange = () => resetForm();
 
 function FormManager(create: boolean, obj = {} as AbxQCRangeType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "QcRange";
   if (create) {
-    Object.assign(form, {} as AbxQCRangeType);
+    currentUid.value = null;
+    resetForm();
   } else {
-    Object.assign(form, {...obj});
+    currentUid.value = obj.uid ?? null;
+    setValues({
+      guideline: obj.guideline ?? null,
+      year: obj.year ?? '',
+      strain: obj.strain ?? '',
+      referenceTable: obj.referenceTable ?? '',
+      whonetOrgCode: obj.whonetOrgCode ?? '',
+      antibiotic: obj.antibiotic ?? '',
+      abxTest: obj.abxTest ?? '',
+      whonetAbxCode: obj.whonetAbxCode ?? '',
+      method: obj.method ?? '',
+      medium: obj.medium ?? null,
+      minimum: obj.minimum ?? '',
+      maximum: obj.maximum ?? '',
+      comments: obj.comments ?? '',
+    });
   }
 }
 
-function saveForm(): void {
+const saveForm = handleSubmit((formValues) => {
   const payload = {
-    guidelineUid: form.guideline?.uid!,
-    year: form.year,
-    strain: form.strain,
-    referenceTable: form.referenceTable,
-    whonetOrgCode: form.whonetOrgCode,
-    antibiotic: form.antibiotic,
-    abxTest: form.abxTest,
-    whonetAbxCode: form.whonetAbxCode,
-    method: form.method,
-    medium: form.medium,
-    minimum: form.minimum,
-    maximum: form.maximum,
-  }
+    guidelineUid: formValues.guideline?.uid!,
+    year: Number(formValues.year),
+    strain: formValues.strain,
+    referenceTable: formValues.referenceTable,
+    whonetOrgCode: formValues.whonetOrgCode,
+    antibiotic: formValues.antibiotic,
+    abxTest: formValues.abxTest,
+    whonetAbxCode: formValues.whonetAbxCode,
+    method: formValues.method,
+    mediumUid: formValues.medium?.uid ?? null,
+    minimum: formValues.minimum ?? null,
+    maximum: formValues.maximum ?? null,
+  };
 
   if (formAction.value === true) {
     withClientMutation<AddAbxQcRangeMutation, AddAbxQcRangeMutationVariables>(
@@ -262,9 +328,9 @@ function saveForm(): void {
     });
   }
 
-  if (formAction.value === false) {
+  if (formAction.value === false && currentUid.value) {
     withClientMutation<EditAbxQcRangeMutation, EditAbxQcRangeMutationVariables>(
-      EditAbxQcRangeDocument, { uid: form.uid!, payload }, 
+      EditAbxQcRangeDocument, { uid: currentUid.value, payload }, 
       "updateAbxQcRange"
     ).then((result: any) => {
       if(result) {
@@ -275,7 +341,7 @@ function saveForm(): void {
   }
 
   showModal.value = false;
-}
+});
 
 </script>
 
@@ -322,7 +388,7 @@ function saveForm(): void {
             <label class="block">
               <span class="text-sm font-medium text-foreground">Guidelines</span>
               <VueMultiselect
-              v-model="form.guidelines"
+              v-model="guideline"
               :options="abxGuidelines"
               :searchable="true"
               label="name"
@@ -330,15 +396,17 @@ function saveForm(): void {
               >
               <!-- track-by="uid" -->
               </VueMultiselect>
+              <p v-if="errors.guideline" class="text-sm text-destructive">{{ errors.guideline }}</p>
             </label>
             <label class="block">
               <span class="text-sm font-medium text-foreground">Year</span>
               <input
                 type="number"
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.year"
+                v-model.number="year"
                 placeholder="Enter year"
               />
+              <p v-if="errors.year" class="text-sm text-destructive">{{ errors.year }}</p>
             </label>
           </div>
         </div>
@@ -350,62 +418,69 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">Strain</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.strain"
+                v-model="strain"
                 placeholder="Strain"
               />
+              <p v-if="errors.strain" class="text-sm text-destructive">{{ errors.strain }}</p>
             </label>
             <label class="block">
               <span class="text-sm font-medium text-foreground">Reference Table</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.referenceTable"
+                v-model="referenceTable"
                 placeholder="Reference Table"
               />
+              <p v-if="errors.referenceTable" class="text-sm text-destructive">{{ errors.referenceTable }}</p>
             </label>
             <label class="block">
               <span class="text-sm font-medium text-foreground">Whonet Org Code</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.whonetOrgCode"
+                v-model="whonetOrgCode"
                 placeholder="Whonet Org Code"
               />
+              <p v-if="errors.whonetOrgCode" class="text-sm text-destructive">{{ errors.whonetOrgCode }}</p>
             </label>
             <label class="block">
               <span class="text-sm font-medium text-foreground">Antibiotic</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.antibiotic"
+                v-model="antibiotic"
                 placeholder="Antibiotic"
               />
+              <p v-if="errors.antibiotic" class="text-sm text-destructive">{{ errors.antibiotic }}</p>
             </label>
             <label class="block">
               <span class="text-sm font-medium text-foreground">Abx Test</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.abxTest"
+                v-model="abxTest"
                 placeholder="Abx Test"
               />
+              <p v-if="errors.abxTest" class="text-sm text-destructive">{{ errors.abxTest }}</p>
             </label>
             <label class="block">
               <span class="text-sm font-medium text-foreground">Whonet Abx Code</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.whonetAbxCode"
+                v-model="whonetAbxCode"
                 placeholder="Whonet Abx Code"
               />
+              <p v-if="errors.whonetAbxCode" class="text-sm text-destructive">{{ errors.whonetAbxCode }}</p>
             </label>
             <label class="block">
               <span class="text-sm font-medium text-foreground">Method</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.method"
+                v-model="method"
                 placeholder="Method"
               />
+              <p v-if="errors.method" class="text-sm text-destructive">{{ errors.method }}</p>
             </label>
             <label class="block">
               <span class="text-sm font-medium text-foreground">Medium</span>
               <VueMultiselect
-              v-model="form.medium"
+              v-model="medium"
               :options="abxMediums"
               :searchable="true"
               label="name"
@@ -417,7 +492,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">Minimum</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.minimum"
+                v-model="minimum"
                 placeholder="Minimum"
               />
             </label>
@@ -425,7 +500,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">Maximum</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.maximum"
+                v-model="maximum"
                 placeholder="Maximum"
               />
             </label>
@@ -438,7 +513,7 @@ function saveForm(): void {
             <span class="text-sm font-medium text-foreground">Comments</span>
             <textarea
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              v-model="form.comments"
+              v-model="comments"
               rows="3"
               placeholder="Additional comments..."
             ></textarea>

@@ -67,7 +67,6 @@ export function useUserValidation() {
 
             return null;
         } catch (error) {
-            console.error('Error validating user data:', error);
             return null;
         } finally {
             validating.value = false;

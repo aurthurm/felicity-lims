@@ -130,7 +130,7 @@ const InventoryOrders = defineComponent({
             },
         ]);
 
-        let stockOrderParams = reactive({
+        const stockOrderParams = reactive({
             first: 50,
             before: '',
             text: '',

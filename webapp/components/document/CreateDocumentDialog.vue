@@ -82,9 +82,7 @@ async function handleCreateDocument() {
       const document = response as DocumentType;
       store.addDocument(document);
     }
-  } catch (error) {
-    console.error('Failed to create document:', error);
-  } finally {
+  } catch {} finally {
     closeDialog();
   }
 }

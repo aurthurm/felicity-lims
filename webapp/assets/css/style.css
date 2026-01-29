@@ -5,6 +5,70 @@
 @source "public/**/*.html";
 @source "index.html";
 
+:root{
+    --umo-primary-color: #3480f9;
+    --umo-color-white: #fff;
+    --umo-color-black: #000;
+    --umo-warning-color: #f6913e;
+    --umo-error-color: #ef3f35;
+    --umo-container-background: #f4f5f7;
+    --umo-button-hover-background: #f1f3f5;
+    --umo-text-selection-background: #94cfff;
+    --umo-font-family: helvetica neue, helvetica, pingfang sc, hiragino sans gb, microsoft yahei, simsun, sans-serif;
+    --umo-font-size: 14px;
+    --umo-font-size-small: 12px;
+    --umo-text-color: rgb(51, 54, 57);
+    --umo-text-color-light: rgba(0, 0, 0, 0.5);
+    --umo-text-color-disabled: #a7abac;
+    --umo-border-color: rgba(0, 0, 0, 0.08);
+    --umo-border-color-dark: #ddd;
+    --umo-border-color-light: rgba(0, 0, 0, .05);
+    --umo-shadow: 0 3px 14px 2px rgba(0, 0, 0, 0.03), 0 8px 10px 1px rgba(0, 0, 0, 4%), 0 5px 5px -3px rgba(0, 0, 0, 8%);
+    --umo-radius: 3px;
+    --umo-radius-medium: 5px;
+    --umo-popup-content-padding: 12px;
+    --umo-popup-max-height: max(60vh, 180px);
+    --umo-tooltip-content-padding: 6px 10px;
+    --umo-mask-color: transparent;
+    --umo-content-placeholder-color: #999;
+    --umo-content-text-color: #333;
+    --umo-content-node-border: #e7e7e7;
+    --umo-content-node-radius: var(--umo-radius);
+    --umo-content-node-bottom: 0.75em;
+    --umo-content-node-selected-background: #f5f8fc;
+    --umo-content-table-border-color: #333;
+    --umo-content-table-thead-background: #f1f3f5;
+    --umo-content-table-selected-background: rgba(200, 200, 255, 0.4);
+    --umo-content-line-number-color: #e7e8ea;
+    --umo-content-search-result-background: #fefc7ef2;
+    --umo-content-search-result-current-background: #0dff00c3;
+    --umo-content-invisible-break-color: rgb(78, 139, 252);
+    --umo-content-code-color: var(--umo-primary-color);
+    --umo-content-code-background: #f1f3f5;
+    --umo-content-code-family: Consolas, Monaco, Andale Mono, Ubuntu Mono,monospace;
+    --umo-scrollbar-size: 4px;
+    --umo-scrollbar-thumb-color: rgba(0, 0, 0, 0.2);
+    --umo-scrollbar-thumb-hover-color: rgba(0, 0, 0, 0.35);
+}
+
+html[theme-mode='dark']{
+    --umo-color-white: #17171a;
+    --umo-color-black: #fff;
+    --umo-warning-color: rgb(207, 110, 45);
+    --umo-error-color: rgb(198, 71, 81);
+    --umo-container-background: #2a2b2d;
+    --umo-button-hover-background: #2c2c2c;
+    --umo-text-color: #ddd;
+    --umo-text-color-light: #bbb;
+    --umo-text-color-disabled: #999;
+    --umo-border-color: rgba(255, 255, 255, 0.15);
+    --umo-border-color-dark: rgba(255, 255, 255, 0.2);
+    --umo-border-color-light: rgba(255, 255, 255, 0.08);
+    --umo-content-text-color: #000;
+    --umo-scrollbar-thumb-color: rgba(255, 255, 255, 0.3);
+    --umo-scrollbar-thumb-hover-color: rgba(255, 255, 255, 0.45);
+}
+
 @theme {
     --color-background: hsl(var(--background) / <alpha-value>);
     --color-foreground: hsl(var(--foreground) / <alpha-value>);
@@ -434,3 +498,4 @@
         padding-bottom: 4px;
     }
 }
+

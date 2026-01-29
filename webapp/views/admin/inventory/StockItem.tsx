@@ -1,5 +1,7 @@
 import { defineAsyncComponent, defineComponent } from 'vue';
-import { ref, reactive, computed } from 'vue';
+import { ref, computed } from 'vue';
+import { useField, useForm } from 'vee-validate';
+import * as yup from 'yup';
 import {
     AddStockItemDocument,
     AddStockItemMutation,
@@ -19,12 +21,40 @@ const StockItem = defineComponent({
         const inventoryStore = useInventoryStore();
         const { withClientMutation } = useApiUtil();
 
-        let showModal = ref(false);
-        let formTitle = ref('');
-        let form = reactive({} as StockItemType);
+        const showModal = ref(false);
+        const formTitle = ref('');
         const formAction = ref(true);
+        const currentUid = ref<string | null>(null);
 
-        let itemParams = reactive({
+        const stockItemSchema = yup.object({
+            name: yup.string().trim().required('Stock item name is required'),
+            description: yup.string().trim().nullable(),
+            hazardUid: yup.string().trim().nullable(),
+            categoryUid: yup.string().trim().nullable(),
+            minimumLevel: yup.number().nullable(),
+            maximumLevel: yup.number().nullable(),
+        });
+
+        const { handleSubmit, resetForm, setValues } = useForm({
+            validationSchema: stockItemSchema,
+            initialValues: {
+                name: '',
+                description: '',
+                hazardUid: '',
+                categoryUid: '',
+                minimumLevel: '',
+                maximumLevel: '',
+            },
+        });
+
+        const { value: name, errorMessage: nameError } = useField<string>('name');
+        const { value: description, errorMessage: descriptionError } = useField<string | null>('description');
+        const { value: hazardUid, errorMessage: hazardError } = useField<string | null>('hazardUid');
+        const { value: categoryUid, errorMessage: categoryError } = useField<string | null>('categoryUid');
+        const { value: minimumLevel, errorMessage: minimumError } = useField<number | string>('minimumLevel');
+        const { value: maximumLevel, errorMessage: maximumError } = useField<number | string>('maximumLevel');
+
+        const itemParams = reactive({
             first: 50,
             after: '',
             text: '',
@@ -37,8 +67,7 @@ const StockItem = defineComponent({
         const hazards = computed(() => inventoryStore.getHazards);
         const categories = computed(() => inventoryStore.getCategories);
 
-        function addStockItem(): void {
-            const payload = { ...form } as StockItemInputType;
+        function addStockItem(payload: StockItemInputType): void {
             withClientMutation<AddStockItemMutation, AddStockItemMutationVariables>(
                 AddStockItemDocument,
                 { payload },
@@ -46,16 +75,11 @@ const StockItem = defineComponent({
             ).then(result => inventoryStore.addItem(result as StockItemType));
         }
 
-        function editStockItem(): void {
-            const payload = {
-                name: form.name,
-                description: form.description,
-                hazardUid: form.hazardUid,
-                categoryUid: form.categoryUid,
-            } as StockItemInputType;
+        function editStockItem(payload: StockItemInputType): void {
+            if (!currentUid.value) return;
             withClientMutation<EditStockItemMutation, EditStockItemMutationVariables>(
                 EditStockItemDocument,
-                { uid: form.uid, payload },
+                { uid: currentUid.value, payload },
                 'updateStockItem'
             ).then(result => inventoryStore.updateItem(result as StockItemType));
         }
@@ -65,28 +89,65 @@ const StockItem = defineComponent({
             formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + 'STOCK ITEM';
             showModal.value = true;
             if (create) {
-                Object.assign(form, {} as StockItemType);
+                currentUid.value = null;
+                resetForm({
+                    values: {
+                        name: '',
+                        description: '',
+                        hazardUid: '',
+                        categoryUid: '',
+                        minimumLevel: '',
+                        maximumLevel: '',
+                    },
+                });
             } else {
-                Object.assign(form, { ...obj });
+                currentUid.value = obj?.uid ?? null;
+                setValues({
+                    name: obj?.name ?? '',
+                    description: obj?.description ?? '',
+                    hazardUid: obj?.hazardUid ?? '',
+                    categoryUid: obj?.categoryUid ?? '',
+                    minimumLevel: obj?.minimumLevel ?? '',
+                    maximumLevel: obj?.maximumLevel ?? '',
+                });
             }
         }
 
-        function saveForm(): void {
-            if (formAction.value === true) addStockItem();
-            if (formAction.value === false) editStockItem();
+        const saveForm = handleSubmit(values => {
+            const payload = {
+                name: values.name,
+                description: values.description ?? null,
+                hazardUid: values.hazardUid ? values.hazardUid : null,
+                categoryUid: values.categoryUid ? values.categoryUid : null,
+                minimumLevel: values.minimumLevel === '' ? null : Number(values.minimumLevel),
+                maximumLevel: values.maximumLevel === '' ? null : Number(values.maximumLevel),
+            } as StockItemInputType;
+            if (formAction.value === true) addStockItem(payload);
+            if (formAction.value === false) editStockItem(payload);
             showModal.value = false;
-        }
+        });
 
         // Stock Item Detail
-        let openDrawer = ref(false);
-        let stockItem = ref<StockItemType>();
+        const openDrawer = ref(false);
+        const stockItem = ref<StockItemType>();
         const viewStockItem = (item: StockItemType) => {
             stockItem.value = item;
             openDrawer.value = true;
         };
 
         return {
-            form,
+            name,
+            nameError,
+            description,
+            descriptionError,
+            hazardUid,
+            hazardError,
+            categoryUid,
+            categoryError,
+            minimumLevel,
+            minimumError,
+            maximumLevel,
+            maximumError,
             FormManager,
             saveForm,
             stockItems,
@@ -186,11 +247,14 @@ const StockItem = defineComponent({
                                                 Stock Item Name
                                             </label>
                                             <input
-                                                value={this.form.name}
-                                                onChange={e => (this.form.name = e.target.value)}
+                                                value={this.name}
+                                                onChange={e => (this.name = (e.target as HTMLInputElement).value)}
                                                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                 placeholder="Enter item name..."
                                             />
+                                            {this.nameError ? (
+                                                <p class="text-sm text-destructive">{this.nameError}</p>
+                                            ) : null}
                                         </div>
                                         <div class="grid grid-cols-2 gap-4">
                                             <div class="space-y-2">
@@ -199,12 +263,15 @@ const StockItem = defineComponent({
                                                 </label>
                                                 <input
                                                     type="number"
-                                                    value={this.form.minimumLevel}
-                                                    onChange={e => (this.form.minimumLevel = Number(e.target.value))}
+                                                    value={this.minimumLevel}
+                                                    onChange={e => (this.minimumLevel = (e.target as HTMLInputElement).value)}
                                                     class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                     min="0"
                                                     placeholder="0"
                                                 />
+                                                {this.minimumError ? (
+                                                    <p class="text-sm text-destructive">{this.minimumError}</p>
+                                                ) : null}
                                             </div>
                                             <div class="space-y-2">
                                                 <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
@@ -212,12 +279,15 @@ const StockItem = defineComponent({
                                                 </label>
                                                 <input
                                                     type="number"
-                                                    value={this.form.maximumLevel}
-                                                    onChange={e => (this.form.maximumLevel = Number(e.target.value))}
+                                                    value={this.maximumLevel}
+                                                    onChange={e => (this.maximumLevel = (e.target as HTMLInputElement).value)}
                                                     class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                     min="0"
                                                     placeholder="0"
                                                 />
+                                                {this.maximumError ? (
+                                                    <p class="text-sm text-destructive">{this.maximumError}</p>
+                                                ) : null}
                                             </div>
                                         </div>
                                         <div class="space-y-2">
@@ -225,11 +295,14 @@ const StockItem = defineComponent({
                                                 Description
                                             </label>
                                             <textarea
-                                                value={this.form.description}
-                                                onChange={e => (this.form.description = e.target.value)}
+                                                value={this.description}
+                                                onChange={e => (this.description = (e.target as HTMLTextAreaElement).value)}
                                                 class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                 placeholder="Enter description..."
                                             />
+                                            {this.descriptionError ? (
+                                                <p class="text-sm text-destructive">{this.descriptionError}</p>
+                                            ) : null}
                                         </div>
                                         <div class="grid grid-cols-2 gap-4">
                                             <div class="space-y-2">
@@ -238,8 +311,8 @@ const StockItem = defineComponent({
                                                 </label>
                                                 <select
                                                     title="Hazard"
-                                                    value={this.form.hazardUid}
-                                                    onChange={e => (this.form.hazardUid = e.target.value)}
+                                                    value={this.hazardUid}
+                                                    onChange={e => (this.hazardUid = (e.target as HTMLSelectElement).value)}
                                                     class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                 >
                                                     <option value="">Select a hazard...</option>
@@ -249,6 +322,9 @@ const StockItem = defineComponent({
                                                         </option>
                                                     ))}
                                                 </select>
+                                                {this.hazardError ? (
+                                                    <p class="text-sm text-destructive">{this.hazardError}</p>
+                                                ) : null}
                                             </div>
                                             <div class="space-y-2">
                                                 <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
@@ -256,8 +332,8 @@ const StockItem = defineComponent({
                                                 </label>
                                                 <select
                                                     title="Category"
-                                                    value={this.form.categoryUid}
-                                                    onChange={e => (this.form.categoryUid = e.target.value)}
+                                                    value={this.categoryUid}
+                                                    onChange={e => (this.categoryUid = (e.target as HTMLSelectElement).value)}
                                                     class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                 >
                                                     <option value="">Select a category...</option>
@@ -267,6 +343,9 @@ const StockItem = defineComponent({
                                                         </option>
                                                     ))}
                                                 </select>
+                                                {this.categoryError ? (
+                                                    <p class="text-sm text-destructive">{this.categoryError}</p>
+                                                ) : null}
                                             </div>
                                         </div>
                                     </div>

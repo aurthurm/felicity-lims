@@ -1,5 +1,7 @@
 <script setup lang="ts">
-  import { ref,reactive, computed, defineAsyncComponent } from 'vue';
+  import { ref, reactive, computed, defineAsyncComponent } from 'vue';
+  import { useField, useForm } from 'vee-validate';
+  import * as yup from 'yup';
   import { useUserStore } from '@/stores/user';
   import  useApiUtil  from '@/composables/api_util';
   import { AddGroupDocument, AddGroupMutation, AddGroupMutationVariables, EditGroupDocument, EditGroupMutation, EditGroupMutationVariables, UpdateGroupsAndPermissionsDocument, UpdateGroupsAndPermissionsMutation, UpdateGroupsAndPermissionsMutationVariables, } from '@/graphql/operations/_mutations';
@@ -48,6 +50,23 @@
   let formTitle = ref('');
   const formAction = ref(true);
   let userGroup = reactive({}) as GroupType;
+  const currentUid = ref<string | null>(null);
+
+  const groupSchema = yup.object({
+    name: yup.string().trim().required('Group name is required'),
+    pages: yup.array().of(yup.string()).nullable(),
+  });
+
+  const { handleSubmit, resetForm, setValues } = useForm({
+    validationSchema: groupSchema,
+    initialValues: {
+      name: '',
+      pages: [],
+    },
+  });
+
+  const { value: name, errorMessage: nameError } = useField<string>('name');
+  const { value: pagesField, errorMessage: pagesError } = useField<string[]>('pages');
 
   function selectGroup(group: GroupType): void {
     const pgs = group.pages as string;
@@ -72,16 +91,27 @@
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES PROFILE";
     if (create) {
-      Object.assign(userGroup, { name: "", pages: [] } as GroupType);
+      currentUid.value = null;
+      resetForm({
+        values: {
+          name: "",
+          pages: [],
+        },
+      });
     } else {
-      Object.assign(userGroup, { ...obj });
+      currentUid.value = obj.uid ?? null;
+      setValues({
+        name: obj.name ?? "",
+        pages: (obj.pages as unknown as string[]) ?? [],
+      });
     }
   }
 
-  function saveForm():void {
-    const payload = { ...userGroup }
-    const pgs = payload["pages"] as string[];
-    payload['pages'] = pgs.join(',')
+  const saveForm = handleSubmit((values) => {
+    const payload = {
+      name: values.name,
+      pages: (values.pages ?? []).join(','),
+    };
 
     if (formAction.value === true) {
       withClientMutation<AddGroupMutation, AddGroupMutationVariables>(AddGroupDocument, {  payload }, "createGroup")
@@ -89,14 +119,17 @@
     }
 
     if (formAction.value === false) {
-      withClientMutation<EditGroupMutation, EditGroupMutationVariables>(EditGroupDocument, {  uid: userGroup?.uid, payload: {
+      if (!currentUid.value) {
+        return;
+      }
+      withClientMutation<EditGroupMutation, EditGroupMutationVariables>(EditGroupDocument, {  uid: currentUid.value, payload: {
         name: payload["name"],
         pages: payload["pages"],
       } }, "updateGroup").then((result) => userStore.updateGroup(result));
     };
     showModal.value = false;
   
-  }
+  });
 
   //
   const groupBy = (xs, key):Map<any, any> => {
@@ -170,17 +203,18 @@
               Group Name
             </label>
             <input
-              v-model="userGroup.name"
+              v-model="name"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="Enter group name..."
             />
+            <p v-if="nameError" class="text-sm text-destructive">{{ nameError }}</p>
           </div>
           <div class="space-y-2">
             <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
               Pages
             </label>
             <select 
-              v-model="userGroup.pages"
+              v-model="pagesField"
               multiple
               :size="pages.length"
               class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
@@ -194,6 +228,7 @@
                 {{ page }}
               </option>
             </select>
+            <p v-if="pagesError" class="text-sm text-destructive">{{ pagesError }}</p>
           </div>
         </div>
         <div class="flex justify-end">

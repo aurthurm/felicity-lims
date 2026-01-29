@@ -26,7 +26,6 @@ export const useStreamStore = defineStore('stream', {
     actions: {
         addStream(payload: ActivityStreamType): void {
             if (!payload?.actionObjectType || !payload?.actionObject) {
-                console.error('Invalid stream payload:', payload);
                 return;
             }
 
@@ -52,11 +51,8 @@ export const useStreamStore = defineStore('stream', {
                         wsStore.updateWorksheetResultsStatus([payload.actionObject]);
                         break;
                     default:
-                        console.warn('Unknown action object type:', payload.actionObjectType);
                 }
-            } catch (error) {
-                console.error('Error processing stream payload:', error);
-            }
+            } catch {}
         },
 
         subscribeToActivityStream(): () => void {
@@ -67,7 +63,6 @@ export const useStreamStore = defineStore('stream', {
                 ),
                 subscribe(result => {
                     if (result.error) {
-                        console.error('Stream subscription error:', result.error);
                         return;
                     }
 

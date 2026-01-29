@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import {defineAsyncComponent, onMounted, reactive, ref} from 'vue';
+import {defineAsyncComponent, onMounted, ref} from 'vue';
+import { useField, useForm } from 'vee-validate';
+import * as yup from 'yup';
 
 import useApiUtil from '@/composables/api_util';
 import {AbxGuidelineType} from "@/types/gql";
@@ -25,8 +27,27 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as AbxGuidelineType;
 const formAction = ref<boolean>(true);
+const currentUid = ref<string | null>(null);
+
+const guidelineSchema = yup.object({
+  name: yup.string().trim().required('Name is required'),
+  code: yup.string().trim().required('Code is required'),
+  description: yup.string().trim().nullable(),
+});
+
+const { handleSubmit, resetForm, setValues } = useForm({
+  validationSchema: guidelineSchema,
+  initialValues: {
+    name: '',
+    code: '',
+    description: '',
+  },
+});
+
+const { value: name, errorMessage: nameError } = useField<string>('name');
+const { value: code, errorMessage: codeError } = useField<string>('code');
+const { value: description, errorMessage: descriptionError } = useField<string | null>('description');
 
 const abxGuidelines = ref<AbxGuidelineType[]>([]);
 
@@ -45,32 +66,44 @@ function FormManager(create: boolean, obj = {} as AbxGuidelineType): void {
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "Abx Guideline";
   if (create) {
-    Object.assign(form, {} as IAbxGuideline);
+    currentUid.value = null;
+    resetForm({
+      values: {
+        name: '',
+        code: '',
+        description: '',
+      },
+    });
   } else {
-    Object.assign(form, {...obj});
+    currentUid.value = obj.uid ?? null;
+    setValues({
+      name: obj.name ?? '',
+      code: obj.code ?? '',
+      description: obj.description ?? '',
+    });
   }
 }
 
-function saveForm(): void {
+const saveForm = handleSubmit((values) => {
   const payload = {
-    name: form.name,
-    code: form.code,
-    description: form.description,
-  }
+    name: values.name,
+    code: values.code,
+    description: values.description ?? null,
+  };
 
   if (formAction.value === true) {
     withClientMutation<AddAbxGuidelineMutation, AddAbxGuidelineMutationVariables>(
         AddAbxGuidelineDocument, {payload}, "createAbxGuideline"
     ).then((result) => {
       if (result) {
-        abxGuidelines.value.unshift(result as IAbxGuideline);
+        abxGuidelines.value.unshift(result as AbxGuidelineType);
       }
     });
   }
 
-  if (formAction.value === false) {
+  if (formAction.value === false && currentUid.value) {
     withClientMutation<EditAbxGuidelineMutation, EditAbxGuidelineMutationVariables>(EditAbxGuidelineDocument, {
-      uid: form.uid!,
+      uid: currentUid.value,
       payload
     }, "updateAbxGuideline")
         .then((result) => {
@@ -79,14 +112,14 @@ function saveForm(): void {
             if (idx > -1) {
               abxGuidelines.value = [
                 ...abxGuidelines.value.map((item, index) => index === idx ? result : item),
-              ] as IAbxGuideline[];
+              ] as AbxGuidelineType[];
             }
           }
         });
   }
 
   showModal.value = false;
-}
+});
 
 </script>
 
@@ -144,32 +177,35 @@ function saveForm(): void {
             <label for="name" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Name</label>
             <input 
               id="name"
-              v-model="form.name"
+              v-model="name"
               type="text"
               class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
               required
             />
+            <p v-if="nameError" class="text-sm text-destructive">{{ nameError }}</p>
           </div>
 
           <div class="space-y-2">
             <label for="description" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Description</label>
             <textarea 
               id="description"
-              v-model="form.description"
+              v-model="description"
               class="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
               rows="3"
             ></textarea>
+            <p v-if="descriptionError" class="text-sm text-destructive">{{ descriptionError }}</p>
           </div>
 
           <div class="space-y-2">
             <label for="code" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Code</label>
             <input 
               id="code"
-              v-model="form.code"
+              v-model="code"
               type="text"
               class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
               required
             />
+            <p v-if="codeError" class="text-sm text-destructive">{{ codeError }}</p>
           </div>
 
           <div class="flex justify-end space-x-2">

@@ -195,7 +195,6 @@ async function handleParse() {
   try {
     withClientMutation<ParseAnalyserMessageMutation, ParseAnalyserMessageMutationVariables>(ParseAnalyserMessageDocument, { message: rawInput.value } ,"parseAnalyserMessage")
     .then((result) => {
-      console.log(result);
       if (result && result.message) {
         parsedSeparators.value = result.seperators as any;
         parsedMessage.value = result.message as any;
@@ -218,7 +217,6 @@ async function handleParse() {
       }
     });
   } catch (err) {
-    console.error('Parse error:', err);
     parseError.value = 'Failed to parse message';
     parsedMessage.value = null;
     parsedSeparators.value = null;
@@ -397,7 +395,6 @@ function applyMappings() {
   withClientMutation<ExtractAnalyserMessageMutation, ExtractAnalyserMessageMutationVariables>(
     ExtractAnalyserMessageDocument, { message: rawInput.value, driver: JSON.stringify(driverMapping.value) } ,"extractAnalyserMessage")
     .then((result) => {
-      console.log(result);
       if (result && result.message) {
         extractedData.value = result.message as any;
         parseError.value = '';

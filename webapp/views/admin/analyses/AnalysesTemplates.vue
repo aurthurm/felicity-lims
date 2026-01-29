@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from "vue";
+import { useField, useForm } from "vee-validate";
+import * as yup from "yup";
 import { AnalysisTemplateType, AnalysisType } from "@/types/gql";
 import {
   AddAnalysisTemplateDocument, AddAnalysisTemplateMutation, AddAnalysisTemplateMutationVariables,
@@ -20,6 +22,7 @@ const tabs = ["analyses-services"];
 let showModal = ref(false);
 let formTitle = ref("");
 const formAction = ref(true);
+const currentUid = ref<string | null>(null);
 
 let analysisTemplate = reactive({}) as AnalysisTemplateType;
 
@@ -31,33 +34,49 @@ analysisStore.fetchAnalysesTemplates()
 const analysesServices = computed(() => analysisStore.getAnalysesServices);
 const analysesTemplates = computed(() => analysisStore.getAnalysesTemplates);
 
-function addAnalysisTemplate(): void {
-  const payload = {
-    name: analysisTemplate.name,
-    description: analysisTemplate.description,
-    departmentUid: analysisTemplate.departmentUid,
-  };
-  withClientMutation<AddAnalysisTemplateMutation, AddAnalysisTemplateMutationVariables>(AddAnalysisTemplateDocument, { payload }, "createAnalysisTemplate").then((result) =>
-    analysisStore.addAnalysisTemplate(result)
-  );
+const templateSchema = yup.object({
+  name: yup.string().trim().required("Template name is required"),
+  description: yup.string().trim().nullable(),
+  departmentUid: yup.string().trim().nullable(),
+  active: yup.boolean().default(true),
+});
+
+const { handleSubmit, resetForm, setValues } = useForm({
+  validationSchema: templateSchema,
+  initialValues: {
+    name: "",
+    description: "",
+    departmentUid: "",
+    active: true,
+  },
+});
+
+const { value: name, errorMessage: nameError } = useField<string>("name");
+const { value: description, errorMessage: descriptionError } = useField<string | null>("description");
+const { value: departmentUid, errorMessage: departmentError } = useField<string | null>("departmentUid");
+const { value: active } = useField<boolean>("active");
+
+function addAnalysisTemplate(payload: { name: string; description: string | null; departmentUid: string | null; active: boolean }): void {
+  withClientMutation<AddAnalysisTemplateMutation, AddAnalysisTemplateMutationVariables>(
+    AddAnalysisTemplateDocument,
+    { payload },
+    "createAnalysisTemplate"
+  ).then((result) => analysisStore.addAnalysisTemplate(result));
 }
 
-function editAnalysisTemplate(): void {
-  const payload = {
-    name: analysisTemplate.name,
-    description: analysisTemplate.description,
-    departmentUid: analysisTemplate.departmentUid,
-    active: analysisTemplate.active,
-    services: analysisTemplate.analyses?.map((item) => item.uid),
-  };
-  withClientMutation<EditAnalysisTemplateMutation, EditAnalysisTemplateMutationVariables>(EditAnalysisTemplateDocument,
-    { uid: analysisTemplate.uid, payload },
+function editAnalysisTemplate(payload: { name: string; description: string | null; departmentUid: string | null; active: boolean }): void {
+  if (!currentUid.value) return;
+  const services = analysisTemplate.analyses?.map((item) => item.uid);
+  withClientMutation<EditAnalysisTemplateMutation, EditAnalysisTemplateMutationVariables>(
+    EditAnalysisTemplateDocument,
+    { uid: currentUid.value, payload: { ...payload, services } },
     "updateAnalysisTemplate"
   ).then((result) => analysisStore.updateAnalysesTemplate(result));
 }
 
 function select(template: AnalysisTemplateType): void {
   Object.assign(analysisTemplate, { ...template });
+  currentUid.value = template.uid ?? null;
   // get services that fall into this template
   analysesServices.value?.forEach((item) => {
     item[1].forEach((service: AnalysisType) => {
@@ -79,25 +98,51 @@ function updateTemplate(): void {
     });
   });
   analysisTemplate.analyses = analyses;
-  editAnalysisTemplate();
+  editAnalysisTemplate({
+    name: analysisTemplate.name ?? "",
+    description: analysisTemplate.description ?? null,
+    departmentUid: analysisTemplate.departmentUid ?? null,
+    active: analysisTemplate.active ?? true,
+  });
 }
 
-function FormManager(create: boolean, obj = {} as AnalysisTemplateType): void {
+function FormManager(create: boolean, obj?: AnalysisTemplateType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + "ANALYSES TEMPLATE";
   if (create) {
-    Object.assign(analysisTemplate, {} as AnalysisTemplateType);
+    currentUid.value = null;
+    resetForm({
+      values: {
+        name: "",
+        description: "",
+        departmentUid: "",
+        active: true,
+      },
+    });
   } else {
-    Object.assign(analysisTemplate, { ...obj });
+    const source = obj ?? analysisTemplate;
+    currentUid.value = source?.uid ?? null;
+    setValues({
+      name: source?.name ?? "",
+      description: source?.description ?? "",
+      departmentUid: source?.departmentUid ?? "",
+      active: source?.active ?? true,
+    });
   }
 }
 
-function saveForm(): void {
-  if (formAction.value === true) addAnalysisTemplate();
-  if (formAction.value === false) editAnalysisTemplate();
+const saveForm = handleSubmit((values) => {
+  const payload = {
+    name: values.name,
+    description: values.description ?? null,
+    departmentUid: values.departmentUid ? values.departmentUid : null,
+    active: values.active,
+  };
+  if (formAction.value === true) addAnalysisTemplate(payload);
+  if (formAction.value === false) editAnalysisTemplate(payload);
   showModal.value = false;
-}
+});
 
 </script>
 
@@ -154,7 +199,7 @@ function saveForm(): void {
               </div>
               <div class="flex items-center space-x-2">
                 <button
-                  @click="FormManager(false)"
+                  @click="FormManager(false, analysisTemplate)"
                   class="inline-flex items-center justify-center h-9 w-9 rounded-md border border-input bg-background text-foreground hover:bg-accent hover:text-accent-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
                 >
                   <svg class="w-4 h-4" viewBox="0 0 20 20">
@@ -278,17 +323,18 @@ function saveForm(): void {
           <label class="space-y-2">
             <span class="text-sm font-medium text-muted-foreground">Template Name</span>
             <input
-              v-model="analysisTemplate.name"
+              v-model="name"
               type="text"
               class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
               placeholder="Enter template name"
             />
+            <p v-if="nameError" class="text-sm text-destructive">{{ nameError }}</p>
           </label>
 
           <label class="space-y-2">
             <span class="text-sm font-medium text-muted-foreground">Department</span>
             <select
-              v-model="analysisTemplate.departmentUid"
+              v-model="departmentUid"
               class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
             >
               <option value="">Select department</option>
@@ -296,16 +342,18 @@ function saveForm(): void {
                 {{ department.name }}
               </option>
             </select>
+            <p v-if="departmentError" class="text-sm text-destructive">{{ departmentError }}</p>
           </label>
 
           <label class="space-y-2">
             <span class="text-sm font-medium text-muted-foreground">Description</span>
             <textarea
-              v-model="analysisTemplate.description"
+              v-model="description"
               rows="3"
               class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground resize-none"
               placeholder="Enter template description"
             ></textarea>
+            <p v-if="descriptionError" class="text-sm text-destructive">{{ descriptionError }}</p>
           </label>
         </div>
 

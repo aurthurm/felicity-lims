@@ -111,7 +111,7 @@ const adminRoutes = [
             {
                 path: ':uid',
                 name: 'reflex-detail',
-                component: () => import('@/views/admin/reflex/_id/Reflex.vue'),
+                component: () => import('@/views/admin/reflex/_id/ReflexEditor.vue'),
                 meta: {
                     requiresAuth: true,
                 },

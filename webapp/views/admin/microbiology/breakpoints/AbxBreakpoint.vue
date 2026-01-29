@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
+import { useForm, useField } from 'vee-validate';
+import * as yup from 'yup';
 import { addListsUnique } from '@/utils';
 import useApiUtil from '@/composables/api_util';
-import { AbxBreakpointType, AbxBreakpointTypeType, AbxGuidelineType, AbxHostType, AbxSiteOfInfectionType, AbxTestMethodType } from "@/types/gql";
-import { GetAbxBreakpointAllDocument, GetAbxBreakpointAllQuery, GetAbxBreakpointAllQueryVariables, GetAbxBreakpointTypeAllDocument, GetAbxBreakpointTypeAllQuery, GetAbxBreakpointTypeAllQueryVariables, GetAbxGuidelinesAllDocument, GetAbxGuidelinesAllQuery, GetAbxGuidelinesAllQueryVariables, GetAbxHostAllDocument, GetAbxHostAllQuery, GetAbxHostAllQueryVariables, GetAbxSiteOfInfectionAllDocument, GetAbxSiteOfInfectionAllQuery, GetAbxSiteOfInfectionAllQueryVariables, GetAbxTestMethodAllDocument, GetAbxTestMethodAllQuery, GetAbxTestMethodAllQueryVariables } from "@/graphql/operations/microbiology.queries";
+import { AbxBreakpointType, AbxBreakpointTypeType, AbxGuidelineYearType, AbxHostType, AbxSiteOfInfectionType, AbxTestMethodType } from "@/types/gql";
+import { GetAbxBreakpointAllDocument, GetAbxBreakpointAllQuery, GetAbxBreakpointAllQueryVariables, GetAbxBreakpointTypeAllDocument, GetAbxBreakpointTypeAllQuery, GetAbxBreakpointTypeAllQueryVariables, GetAbxGuidelineYearAllDocument, GetAbxGuidelineYearAllQuery, GetAbxGuidelineYearAllQueryVariables, GetAbxHostAllDocument, GetAbxHostAllQuery, GetAbxHostAllQueryVariables, GetAbxSiteOfInfectionAllDocument, GetAbxSiteOfInfectionAllQuery, GetAbxSiteOfInfectionAllQueryVariables, GetAbxTestMethodAllDocument, GetAbxTestMethodAllQuery, GetAbxTestMethodAllQueryVariables } from "@/graphql/operations/microbiology.queries";
 import { AddAbxBreakpointMutation, AddAbxBreakpointMutationVariables, AddAbxBreakpointDocument, EditAbxBreakpointMutation, EditAbxBreakpointMutationVariables, EditAbxBreakpointDocument } from '@/graphql/operations/microbiology.mutations';
 
 const DataTable = defineAsyncComponent(
@@ -17,13 +19,62 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as AbxBreakpointType;
 const formAction = ref<boolean>(true);
+const currentUid = ref<string | null>(null);
+
+const breakpointSchema = yup.object({
+  guideline: yup.object().required('Guideline year is required'),
+  testMethod: yup.object().required('Test method is required'),
+  breakpointType: yup.object().required('Breakpoint type is required'),
+  organismCode: yup.string().trim().required('Organism code is required'),
+  organismCodeType: yup.string().trim().required('Organism code type is required'),
+});
+
+const { handleSubmit, resetForm, setValues, errors } = useForm({
+  validationSchema: breakpointSchema,
+  initialValues: {
+    guideline: null,
+    year: null,
+    testMethod: null,
+    potency: '',
+    organismCode: '',
+    organismCodeType: '',
+    breakpointType: null,
+    host: null,
+    siteOfInfection: null,
+    referenceTable: '',
+    referenceSequence: '',
+    whonetAbxCode: '',
+    comments: '',
+    r: '',
+    i: '',
+    sdd: '',
+    s: '',
+    ecvEcoff: '',
+    ecvEcoffTentative: '',
+  },
+});
+const { value: guideline } = useField<AbxGuidelineYearType | null>('guideline');
+const { value: year } = useField<number | null>('year');
+const { value: testMethod } = useField<AbxTestMethodType | null>('testMethod');
+const { value: potency } = useField<string>('potency');
+const { value: organismCode } = useField<string>('organismCode');
+const { value: organismCodeType } = useField<string>('organismCodeType');
+const { value: breakpointType } = useField<AbxBreakpointTypeType | null>('breakpointType');
+const { value: host } = useField<AbxHostType | null>('host');
+const { value: siteOfInfection } = useField<AbxSiteOfInfectionType | null>('siteOfInfection');
+const { value: whonetAbxCode } = useField<string>('whonetAbxCode');
+const { value: r } = useField<string>('r');
+const { value: i } = useField<string>('i');
+const { value: sdd } = useField<string>('sdd');
+const { value: s } = useField<string>('s');
+const { value: ecvEcoff } = useField<string>('ecvEcoff');
+const { value: ecvEcoffTentative } = useField<string>('ecvEcoffTentative');
 
 const fetchingBreakpoints = ref<boolean>(false);
 const antibiotics = ref<AbxBreakpointType[]>([]);
 
-const abxGuidelines = ref<AbxGuidelineType[]>([]);
+const abxGuidelines = ref<AbxGuidelineYearType[]>([]);
 const abxHosts = ref<AbxHostType[]>([]);
 const abxBreakpointTypes = ref<AbxBreakpointTypeType[]>([]);
 const abxSiteOfInfections = ref<AbxSiteOfInfectionType[]>([]);
@@ -224,11 +275,11 @@ function fetchBreakpoints(params){
 };
 
 onMounted(() =>  {
-    withClientQuery<GetAbxGuidelinesAllQuery, GetAbxGuidelinesAllQueryVariables>(
-        GetAbxGuidelinesAllDocument, {}, "abxGuidelinesAll"
+    withClientQuery<GetAbxGuidelineYearAllQuery, GetAbxGuidelineYearAllQueryVariables>(
+        GetAbxGuidelineYearAllDocument, {}, "abxGuidelineYearAll"
     ).then((result) => {
       if (result) {
-        abxGuidelines.value = result as AbxGuidelineType[]
+        abxGuidelines.value = result as AbxGuidelineYearType[]
       }
     })
     fetchBreakpoints(abxParams);
@@ -279,40 +330,62 @@ function showMoreBreakpoints(opts: any): void {
   fetchBreakpoints(abxParams);
 }
 
-const resetBreakpoint = () => Object.assign(form, {}) as AbxBreakpointType;
+const resetBreakpoint = () => resetForm();
 
 function FormManager(create: boolean, obj = {} as AbxBreakpointType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "Breakpoint";
   if (create) {
-    Object.assign(form, {} as AbxBreakpointType);
+    currentUid.value = null;
+    resetForm();
   } else {
-    Object.assign(form, {...obj});
+    currentUid.value = obj.uid ?? null;
+    setValues({
+      guideline: abxGuidelines.value.find(item => item.uid === obj.guidelineYearUid) ?? obj.guidelineYear ?? null,
+      year: (obj as AbxBreakpointType & { year?: number | null }).year ?? obj.guidelineYear?.year ?? null,
+      testMethod: abxTestMethods.value.find(item => item.uid === obj.testMethodUid) ?? obj.testMethod ?? null,
+      potency: obj.potency ?? '',
+      organismCode: obj.organismCode ?? '',
+      organismCodeType: obj.organismCodeType ?? '',
+      breakpointType: abxBreakpointTypes.value.find(item => item.uid === obj.breakpointTypeUid) ?? obj.breakpointType ?? null,
+      host: abxHosts.value.find(item => item.uid === obj.hostUid) ?? obj.host ?? null,
+      siteOfInfection: abxSiteOfInfections.value.find(item => item.uid === obj.siteOfInfectionUid) ?? obj.siteOfInfection ?? null,
+      referenceTable: obj.referenceTable ?? '',
+      referenceSequence: obj.referenceSequence ?? '',
+      whonetAbxCode: obj.whonetAbxCode ?? '',
+      comments: obj.comments ?? '',
+      r: obj.r ?? '',
+      i: obj.i ?? '',
+      sdd: obj.sdd ?? '',
+      s: obj.s ?? '',
+      ecvEcoff: obj.ecvEcoff ?? '',
+      ecvEcoffTentative: obj.ecvEcoffTentative ?? '',
+    });
   }
 }
 
-function saveForm(): void {
+const saveForm = handleSubmit((formValues) => {
   const payload = {
-    guidelineUid: form.guidelineUid,
-    year: form.year,
-    testMethod: form.testMethod,
-    potency: form.potency,
-    organismCode: form.organismCode,
-    organismCodeType: form.organismCodeType,
-    breakpointTypeUid: form.breakpointTypeUid,
-    hostUid: form.hostUid,
-    siteOfInfectionUid: form.siteOfInfectionUid,
-    referenceTable: form.referenceTable,
-    referenceSequence: form.referenceSequence,
-    whonetAbxCode: form.whonetAbxCode,
-    comments: form.comments,
-    r: form.r,
-    i: form.i,
-    sdd: form.sdd,
-    s: form.s,
-    ecvEcoff: form.ecvEcoff,
-    ecvEcoffTentative: form.ecvEcoffTentative,
+    guidelineUid: formValues.guideline?.uid,
+    year: formValues.year,
+    testMethod: formValues.testMethod?.uid ?? '',
+    potency: formValues.potency,
+    organismCode: formValues.organismCode,
+    organismCodeType: formValues.organismCodeType,
+    breakpointTypeUid: formValues.breakpointType?.uid ?? '',
+    hostUid: formValues.host?.uid,
+    siteOfInfectionUid: formValues.siteOfInfection?.uid,
+    referenceTable: formValues.referenceTable,
+    referenceSequence: formValues.referenceSequence,
+    whonetAbxCode: formValues.whonetAbxCode,
+    comments: formValues.comments,
+    r: formValues.r,
+    i: formValues.i,
+    sdd: formValues.sdd,
+    s: formValues.s,
+    ecvEcoff: formValues.ecvEcoff,
+    ecvEcoffTentative: formValues.ecvEcoffTentative,
   }
 
   if (formAction.value === true) {
@@ -325,9 +398,9 @@ function saveForm(): void {
     });
   }
 
-  if (formAction.value === false) {
+  if (formAction.value === false && currentUid.value) {
     withClientMutation<EditAbxBreakpointMutation, EditAbxBreakpointMutationVariables>(
-      EditAbxBreakpointDocument, { uid: form.uid!, payload }, 
+      EditAbxBreakpointDocument, { uid: currentUid.value, payload }, 
       "updateAbxBreakpoint"
     ).then((result: any) => {
       if(result) {
@@ -338,7 +411,7 @@ function saveForm(): void {
   }
 
   showModal.value = false;
-}
+});
 
 </script>
 
@@ -386,19 +459,20 @@ function saveForm(): void {
             <label class="block">
               <span class="text-sm font-medium text-foreground">Guidelines</span>
               <VueMultiselect
-                v-model="form.guidelines"
+                v-model="guideline"
                 :options="abxGuidelines"
                 :searchable="true"
-                label="name"
+                label="code"
                 class="mt-1 multiselect-blue"
               >
               </VueMultiselect>
+              <p v-if="errors.guideline" class="text-sm text-destructive">{{ errors.guideline }}</p>
             </label>
             <label class="block">
               <span class="text-sm font-medium text-foreground">Year</span>
               <input type="number"
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.year"
+                v-model.number="year"
                 placeholder="Year"
               />
             </label>
@@ -412,19 +486,20 @@ function saveForm(): void {
             <label class="block">
               <span class="text-sm font-medium text-foreground">Test Method</span>
               <VueMultiselect
-                v-model="form.testMethod"
+                v-model="testMethod"
                 :options="abxTestMethods"
                 :searchable="true"
                 label="name"
                 class="mt-1 multiselect-blue"
               >
               </VueMultiselect>
+              <p v-if="errors.testMethod" class="text-sm text-destructive">{{ errors.testMethod }}</p>
             </label>
             <label class="block">
               <span class="text-sm font-medium text-foreground">Potency</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.potency"
+                v-model="potency"
                 placeholder="Potency"
               />
             </label>
@@ -432,31 +507,67 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">Organism Code</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.organismCode"
+                v-model="organismCode"
                 placeholder="Organism Code"
               />
+              <p v-if="errors.organismCode" class="text-sm text-destructive">{{ errors.organismCode }}</p>
             </label>
             <label class="block">
               <span class="text-sm font-medium text-foreground">Organism Code Type</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.organismCodeType"
+                v-model="organismCodeType"
                 placeholder="Organism Code Type"
               />
+              <p v-if="errors.organismCodeType" class="text-sm text-destructive">{{ errors.organismCodeType }}</p>
+            </label>
+            <label class="block">
+              <span class="text-sm font-medium text-foreground">Breakpoint Type</span>
+              <VueMultiselect
+                v-model="breakpointType"
+                :options="abxBreakpointTypes"
+                :searchable="true"
+                label="name"
+                class="mt-1 multiselect-blue"
+              >
+              </VueMultiselect>
+              <p v-if="errors.breakpointType" class="text-sm text-destructive">{{ errors.breakpointType }}</p>
             </label>
             <label class="block">
               <span class="text-sm font-medium text-foreground">Whonet AbxCode</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.whonetAbxCode"
+                v-model="whonetAbxCode"
                 placeholder="Whonet AbxCode"
               />
+            </label>
+            <label class="block">
+              <span class="text-sm font-medium text-foreground">Host</span>
+              <VueMultiselect
+                v-model="host"
+                :options="abxHosts"
+                :searchable="true"
+                label="name"
+                class="mt-1 multiselect-blue"
+              >
+              </VueMultiselect>
+            </label>
+            <label class="block">
+              <span class="text-sm font-medium text-foreground">Site of Infection</span>
+              <VueMultiselect
+                v-model="siteOfInfection"
+                :options="abxSiteOfInfections"
+                :searchable="true"
+                label="name"
+                class="mt-1 multiselect-blue"
+              >
+              </VueMultiselect>
             </label>
             <label class="block">
               <span class="text-sm font-medium text-foreground">R</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.r"
+                v-model="r"
                 placeholder="R"
               />
             </label>
@@ -464,7 +575,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">I</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.i"
+                v-model="i"
                 placeholder="I"
               />
             </label>
@@ -472,7 +583,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">SDD</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.sdd"
+                v-model="sdd"
                 placeholder="SDD"
               />
             </label>
@@ -480,7 +591,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">S</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.s"
+                v-model="s"
                 placeholder="S"
               />
             </label>
@@ -488,7 +599,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">EcvEcoff</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.ecvEcoff"
+                v-model="ecvEcoff"
                 placeholder="EcvEcoff"
               />
             </label>
@@ -496,7 +607,7 @@ function saveForm(): void {
               <span class="text-sm font-medium text-foreground">EcvEcoff Tentative</span>
               <input
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="form.ecvEcoffTentative"
+                v-model="ecvEcoffTentative"
                 placeholder="EcvEcoff Tentative"
               />
             </label>

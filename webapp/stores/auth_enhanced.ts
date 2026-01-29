@@ -373,7 +373,6 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
                 await router.push('/auth/login');
             }
         } catch (error) {
-            console.error('Logout error:', error);
             reset(); // Force reset even if analytics fail
         } finally {
             auth.value.performanceMetrics.authenticationTime = performance.now() - startTime;
@@ -383,12 +382,10 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
     // Enhanced token management
     const refreshToken = async (): Promise<boolean> => {
         if (!auth.value.refresh) {
-            console.error('No refresh token available');
             return false;
         }
 
         if (auth.value.processing) {
-            console.warn('Token refresh already in progress');
             return false;
         }
 
@@ -403,7 +400,6 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
             );
 
             if (!res) {
-                console.warn('Token refresh returned no data');
                 return false;
             }
 
@@ -412,7 +408,6 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
 
             return true;
         } catch (err) {
-            console.error('Token refresh failed:', err);
             await recordSecurityEvent('token_refresh', { success: false, error: String(err) }, 'medium');
 
             // If refresh fails, logout user
@@ -432,7 +427,6 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
 
             const decodedToken: any = jwtDecode(auth.value.token);
             if (!decodedToken || !decodedToken.exp) {
-                console.error('Invalid token format');
                 return;
             }
 
@@ -445,17 +439,13 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
             const timeout = Math.max(0, timeUntilExpiry - refreshTime);
 
             if (timeout <= 0) {
-                console.warn('Token is expired or about to expire, refreshing immediately');
                 refreshToken();
                 return;
             }
 
-            console.log(`Setting refresh token timer for ${new Date(now.getTime() + timeout).toLocaleTimeString()}`);
 
             auth.value.refreshTokenTimeout = setTimeout(refreshToken, timeout);
-        } catch (error) {
-            console.error('Failed to start refresh token timer:', error);
-        }
+        } catch {}
     };
 
     // Enhanced authentication
@@ -512,7 +502,6 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
                 'medium'
             );
 
-            console.error('Authentication failed:', err);
             return false;
         } finally {
             auth.value.processing = false;
@@ -523,7 +512,6 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
     // Multi-tenant laboratory context management
     const switchActiveLaboratory = async (laboratoryUid: string): Promise<boolean> => {
         if (auth.value.laboratoryContext.switchingInProgress) {
-            console.warn('Laboratory switch already in progress');
             return false;
         }
 
@@ -590,7 +578,6 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
 
             return true;
         } catch (err) {
-            console.error('Laboratory switch failed:', err);
             auth.value.lastError = String(err);
 
             await recordSecurityEvent(
@@ -729,17 +716,13 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
     const saveUserPreferences = () => {
         try {
             localStorage.setItem(STORAGE_PREFERENCES_KEY, JSON.stringify(auth.value.userPreferences));
-        } catch (error) {
-            console.error('Failed to save user preferences:', error);
-        }
+        } catch {}
     };
 
     const saveSecuritySettings = () => {
         try {
             localStorage.setItem(STORAGE_SECURITY_KEY, JSON.stringify(auth.value.securitySettings));
-        } catch (error) {
-            console.error('Failed to save security settings:', error);
-        }
+        } catch {}
     };
 
     const loadUserPreferences = () => {
@@ -750,7 +733,6 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
                 auth.value.userPreferences = { ...defaultPreferences, ...preferences };
             }
         } catch (error) {
-            console.error('Failed to load user preferences:', error);
             auth.value.userPreferences = { ...defaultPreferences };
         }
     };
@@ -763,7 +745,6 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
                 auth.value.securitySettings = { ...defaultSecuritySettings, ...settings };
             }
         } catch (error) {
-            console.error('Failed to load security settings:', error);
             auth.value.securitySettings = { ...defaultSecuritySettings };
         }
     };
@@ -792,7 +773,6 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
 
         // Trigger alerts for high severity events
         if (severity === 'high') {
-            console.warn('High severity security event:', event);
         }
     };
 
@@ -804,9 +784,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
     const saveAnalytics = () => {
         try {
             localStorage.setItem(STORAGE_ANALYTICS_KEY, JSON.stringify(auth.value.analytics));
-        } catch (error) {
-            console.error('Failed to save analytics:', error);
-        }
+        } catch {}
     };
 
     const loadAnalytics = () => {
@@ -817,7 +795,6 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
                 auth.value.analytics = { ...defaultAnalytics, ...analytics };
             }
         } catch (error) {
-            console.error('Failed to load analytics:', error);
             auth.value.analytics = { ...defaultAnalytics };
         }
     };
@@ -851,7 +828,6 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
                 reset();
             }
         } catch (error) {
-            console.error('Failed to initialize auth from storage:', error);
             reset();
         }
     };
@@ -873,7 +849,6 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
                 updateFrequentLaboratories();
             }
         } catch (error) {
-            console.error('Failed to persist auth data:', error);
             reset();
         }
     };
@@ -922,7 +897,6 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
             setReceivedResetToken(true);
             await recordSecurityEvent('password_reset_request', { email }, 'medium');
         } catch (err) {
-            console.error('Password reset request failed:', err);
             auth.value.lastError = String(err);
         } finally {
             auth.value.processing = false;
@@ -943,7 +917,6 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
                 username: res?.username,
             };
         } catch (err) {
-            console.error('Token validation failed:', err);
             auth.value.lastError = String(err);
         } finally {
             auth.value.processing = false;
@@ -952,7 +925,6 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
 
     const resetPassword = async (password: string, passwordc: string) => {
         if (!auth.value?.resetData?.username) {
-            console.error('No username found for password reset');
             return;
         }
 
@@ -975,7 +947,6 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
             auth.value.securitySettings.lastPasswordChange = new Date();
             saveSecuritySettings();
         } catch (err) {
-            console.error('Password reset failed:', err);
             auth.value.lastError = String(err);
         } finally {
             auth.value.processing = false;
@@ -994,7 +965,6 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
                     authToStorage(authValue as AuthenticatedData);
                     updateSessionActivity();
                 } catch (error) {
-                    console.error('Failed to persist auth state:', error);
                     reset();
                 }
             }

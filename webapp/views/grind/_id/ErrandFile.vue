@@ -125,9 +125,7 @@ const downloadFile = (file: GrindMediaType) => {
         URL.revokeObjectURL(url);
       }, 0);
     });
-  } catch (error) {
-    console.error('Error downloading file:', error);
-  }
+  } catch {}
 };
 
 // Handle file selection

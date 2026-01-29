@@ -1,5 +1,7 @@
 <script setup lang="ts">
-  import { ref, reactive, computed, defineAsyncComponent } from 'vue';
+  import { ref, computed, defineAsyncComponent } from 'vue';
+  import { useField, useForm } from "vee-validate";
+  import { object, string } from "yup";
   import { AddDepartmentDocument, AddDepartmentMutation, AddDepartmentMutationVariables,
     EditDepartmentDocument, EditDepartmentMutation, EditDepartmentMutationVariables } from '@/graphql/operations/_mutations';
   import { DepartmentType } from '@/types/gql';
@@ -12,8 +14,21 @@
   
   let showModal = ref<boolean>(false);
   let formTitle = ref<string>('');
-  let form = reactive({}) as DepartmentType;
   const formAction = ref(true);
+  const currentUid = ref<string | null>(null);
+
+  const formSchema = object({
+    name: string().required("Department name is required"),
+  });
+
+  const { handleSubmit, errors, resetForm, setValues } = useForm({
+    validationSchema: formSchema,
+    initialValues: {
+      name: "",
+    },
+  });
+
+  const { value: name } = useField<string>("name");
 
   setupStore.fetchDepartments({})
   const departments = computed(() => setupStore.getDepartments)
@@ -23,22 +38,27 @@
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "Department";
     if (create) {
-      Object.assign(form, { ...(new Object()) });
+      currentUid.value = null;
+      resetForm({ values: { name: "" } });
     } else {
-      Object.assign(form, { ...obj });
+      currentUid.value = obj?.uid ?? null;
+      setValues({ name: obj?.name ?? "" });
     }
   }
 
-  function saveForm():void {
+  const saveForm = handleSubmit((values): void => {
     if (formAction.value === true) {
-      withClientMutation<AddDepartmentMutation, AddDepartmentMutationVariables>(AddDepartmentDocument, { payload: { name: form.name } }, "createDepartment")
+      withClientMutation<AddDepartmentMutation, AddDepartmentMutationVariables>(AddDepartmentDocument, { payload: { name: values.name } }, "createDepartment")
       .then((result) => setupStore.addDepartment(result));
     } else {
-      withClientMutation<EditDepartmentMutation, EditDepartmentMutationVariables>(EditDepartmentDocument, { uid: form.uid, payload: { name: form.name }},"updateDepartment")
+      if (!currentUid.value) {
+        return;
+      }
+      withClientMutation<EditDepartmentMutation, EditDepartmentMutationVariables>(EditDepartmentDocument, { uid: currentUid.value, payload: { name: values.name }},"updateDepartment")
       .then((result) => setupStore.updateDepartment(result));
     };
     showModal.value = false;
-  }
+  });
 
 </script>
 
@@ -80,21 +100,21 @@
         </template>
 
         <template v-slot:body>
-            <form class="space-y-6">
+            <form class="space-y-6" @submit.prevent="saveForm">
                 <div class="space-y-2">
                     <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                         Department Name
                     </label>
                     <input
                         class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                        v-model="form.name"
+                        v-model="name"
                         placeholder="Name ..."
                     />
+                    <div class="text-sm text-destructive">{{ errors.name }}</div>
                 </div>
                 <hr class="border-border" />
                 <button
-                    type="button"
-                    @click.prevent="saveForm()"
+                    type="submit"
                     class="inline-flex w-full items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
                 >
                     Save Form

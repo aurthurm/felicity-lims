@@ -3954,11 +3954,12 @@ type Mutation {
   deleteNotice(uid: String!): DeleteResponse! @isAuthenticated @hasPermission
   createReflexRule(payload: ReflexRuleInput!): ReflexRuleResponse!
   updateReflexRule(uid: String!, payload: ReflexRuleInput!): ReflexRuleResponse!
-  createReflexAction(payload: ReflexActionInput!): ReflexActionResponse!
-  updateReflexAction(uid: String!, payload: ReflexActionInput!): ReflexActionResponse!
-  createReflexBrain(payload: ReflexBrainInput!): ReflexBrainResponse!
-  updateReflexBrain(uid: String!, payload: ReflexBrainInput!): ReflexBrainResponse!
-  deleteReflexBrain(uid: String!): DeletedItem!
+  createReflexTrigger(payload: ReflexTriggerInput!): ReflexTriggerResponse!
+  createReflexDecision(payload: ReflexDecisionInput!): ReflexDecisionResponse!
+  updateReflexDecision(uid: String!, payload: ReflexDecisionInput!): ReflexDecisionResponse!
+  updateReflexTrigger(uid: String!, payload: ReflexTriggerInput!): ReflexTriggerResponse!
+  deleteReflexTrigger(uid: String!): DeleteResponse!
+  deleteReflexDecision(uid: String!): DeleteResponse!
   createStoreRoom(payload: StoreRoomInputType!): StoreRoomResponse! @isAuthenticated @hasPermission
   updateStoreRoom(uid: String!, payload: StoreRoomInputType!): StoreRoomResponse! @isAuthenticated @hasPermission
   createStorageLocation(payload: StorageLocationInputType!): StorageLocationResponse! @isAuthenticated @hasPermission
@@ -4873,6 +4874,9 @@ type Query {
   sampleLaggards: LaggardStatistics! @isAuthenticated @hasPermission
   reflexRuleAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): ReflexRuleCursorPage!
   reflexRuleByUid(uid: String!): ReflexRuleType
+  reflexTriggerAll(reflexRuleUid: String = null): [ReflexTriggerType!]!
+  reflexTriggerByUid(uid: String!): ReflexTriggerType
+  reflexDecisionByUid(uid: String!): ReflexDecisionType
   storeRoomAll: [StoreRoomType!]! @isAuthenticated @hasPermission
   storeRoomByUid(uid: String!): StoreRoomType @isAuthenticated @hasPermission
   storageLocations(storeRoomUid: String!): [StorageLocationType!]! @isAuthenticated @hasPermission
@@ -5097,27 +5101,18 @@ type ReferralLaboratoryType {
   updatedAt: String
 }
 
-input ReflexActionInput {
-  level: Int!
-  description: String = ""
-  analyses: [String!]!
-  reflexRuleUid: String!
-  sampleTypeUid: String = null
+input ReflexAddAnalysisInput {
+  analysisUid: String!
+  count: Int! = 1
 }
 
-""""""
-union ReflexActionResponse = ReflexActionType | OperationError
-
-type ReflexActionType {
+type ReflexAddAnalysisType {
   uid: String!
-  level: Int!
-  description: String!
-  analyses: [AnalysisType!]
-  sampleTypeUid: String
-  sampleType: SampleTypeTyp
-  reflexRuleUid: String!
-  reflexRule: ReflexRuleType
-  brains: [ReflexBrainType!]
+  reflexDecisionUid: String!
+  reflexDecision: ReflexDecisionType
+  analysisUid: String!
+  analysis: AnalysisType
+  count: Int!
   laboratoryUid: String
   laboratory: LaboratoryType
   createdByUid: String
@@ -5128,107 +5123,27 @@ type ReflexActionType {
   updatedAt: String
 }
 
-input ReflexAddNewInput {
-  analysisUid: String!
-  count: Int!
+input ReflexDecisionInput {
+  reflexTriggerUid: String!
+  description: String = null
+  priority: Int! = 0
+  ruleGroups: [ReflexRuleGroupInput!] = null
+  addAnalyses: [ReflexAddAnalysisInput!] = null
+  finalizeAnalyses: [ReflexFinalizeAnalysisInput!] = null
 }
 
-input ReflexBrainActionInput {
-  addNew: [ReflexAddNewInput!] = null
-  finalise: [ReflexFinalInput!] = null
-}
+"""Response for reflex decision mutations"""
+union ReflexDecisionResponse = ReflexDecisionType | OperationError
 
-type ReflexBrainActionType {
-  reflexBrainUid: String!
-  reflexBrain: ReflexBrainType
+type ReflexDecisionType {
   uid: String!
-  description: String!
-  addNew: [ReflexBrainAdditionType!]
-  finalise: [ReflexBrainFinalType!]
-  priority: Int!
-  laboratoryUid: String
-  laboratory: LaboratoryType
-  createdByUid: String
-  createdBy: UserType
-  createdAt: String
-  updatedByUid: String
-  updatedBy: UserType
-  updatedAt: String
-}
-
-type ReflexBrainAdditionType {
-  analysisUid: String!
-  analysis: AnalysisType
-  reflexBrainActionUid: String!
-  reflexBrainAction: ReflexBrainActionType
-  count: Int!
-  laboratoryUid: String
-  laboratory: LaboratoryType
-}
-
-type ReflexBrainConditionCriteriaType {
-  analysisUid: String!
-  analysis: AnalysisType
-  reflexBrainConditionUid: String!
-  reflexBrainCondition: ReflexBrainConditionType
-  operator: String!
-  value: String!
-  laboratoryUid: String
-  laboratory: LaboratoryType
-}
-
-input ReflexBrainConditionInput {
-  description: String = ""
-  priority: Int = 0
-  criteria: [ReflexBrainCriteriaInput!] = null
-}
-
-type ReflexBrainConditionType {
-  uid: String!
-  reflexBrainUid: String!
-  reflexBrain: ReflexBrainType!
+  reflexTriggerUid: String!
+  reflexTrigger: ReflexTriggerType
   description: String
-  criteria: [ReflexBrainConditionCriteriaType!]
   priority: Int!
-  laboratoryUid: String
-  laboratory: LaboratoryType
-}
-
-input ReflexBrainCriteriaInput {
-  analysisUid: String!
-  operator: String!
-  value: String!
-}
-
-type ReflexBrainFinalType {
-  analysisUid: String!
-  analysis: AnalysisType
-  reflexBrainActionUid: String!
-  reflexBrainAction: ReflexBrainActionType
-  value: String!
-  laboratoryUid: String
-  laboratory: LaboratoryType
-}
-
-input ReflexBrainInput {
-  reflexActionUid: String!
-  description: String = ""
-  priority: Int = 0
-  conditions: [ReflexBrainConditionInput!] = null
-  actions: [ReflexBrainActionInput!] = null
-}
-
-""""""
-union ReflexBrainResponse = ReflexBrainType | OperationError
-
-type ReflexBrainType {
-  reflexActionUid: String!
-  reflexAction: ReflexBrainType
-  actions: [ReflexBrainActionType!]!
-  conditions: [ReflexBrainConditionType!]!
-  uid: String!
-  description: String!
-  priority: Int!
+  ruleGroups: [ReflexRuleGroupType!]
+  addAnalyses: [ReflexAddAnalysisType!]
+  finalizeAnalyses: [ReflexFinalizeAnalysisType!]
   laboratoryUid: String
   laboratory: LaboratoryType
   createdByUid: String
@@ -5239,9 +5154,52 @@ type ReflexBrainType {
   updatedAt: String
 }
 
-input ReflexFinalInput {
+input ReflexFinalizeAnalysisInput {
   analysisUid: String!
   value: String!
+}
+
+type ReflexFinalizeAnalysisType {
+  uid: String!
+  reflexDecisionUid: String!
+  reflexDecision: ReflexDecisionType
+  analysisUid: String!
+  analysis: AnalysisType
+  value: String!
+  laboratoryUid: String
+  laboratory: LaboratoryType
+  createdByUid: String
+  createdBy: UserType
+  createdAt: String
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: String
+}
+
+input ReflexRuleCriteriaInput {
+  analysisUid: String!
+  operator: String!
+  value: String!
+  priority: Int! = 0
+}
+
+type ReflexRuleCriteriaType {
+  uid: String!
+  reflexRuleGroupUid: String!
+  reflexRuleGroup: ReflexRuleGroupType
+  analysisUid: String!
+  analysis: AnalysisType
+  operator: String!
+  value: String!
+  priority: Int!
+  laboratoryUid: String
+  laboratory: LaboratoryType
+  createdByUid: String
+  createdBy: UserType
+  createdAt: String
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: String
 }
 
 type ReflexRuleCursorPage {
@@ -5256,6 +5214,29 @@ type ReflexRuleEdge {
   node: ReflexRuleType!
 }
 
+input ReflexRuleGroupInput {
+  description: String = null
+  priority: Int! = 0
+  rules: [ReflexRuleCriteriaInput!] = null
+}
+
+type ReflexRuleGroupType {
+  uid: String!
+  reflexDecisionUid: String!
+  reflexDecision: ReflexDecisionType
+  description: String
+  priority: Int!
+  rules: [ReflexRuleCriteriaType!]
+  laboratoryUid: String
+  laboratory: LaboratoryType
+  createdByUid: String
+  createdBy: UserType
+  createdAt: String
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: String
+}
+
 input ReflexRuleInput {
   name: String!
   description: String = ""
@@ -5268,9 +5249,40 @@ type ReflexRuleType {
   uid: String!
   name: String!
   description: String!
-  reflexActions: [ReflexActionType!]
+  reflexTriggers: [ReflexTriggerType!]
   isActive: Boolean!
   priority: Int!
+  laboratoryUid: String
+  laboratory: LaboratoryType
+  createdByUid: String
+  createdBy: UserType
+  createdAt: String
+  updatedByUid: String
+  updatedBy: UserType
+  updatedAt: String
+}
+
+input ReflexTriggerInput {
+  reflexRuleUid: String!
+  level: Int! = 1
+  description: String!
+  sampleTypeUid: String = null
+  analyses: [String!] = null
+}
+
+"""Response for reflex trigger mutations"""
+union ReflexTriggerResponse = ReflexTriggerType | OperationError
+
+type ReflexTriggerType {
+  uid: String!
+  reflexRuleUid: String!
+  reflexRule: ReflexRuleType
+  level: Int!
+  description: String!
+  sampleTypeUid: String
+  sampleType: SampleTypeTyp
+  analyses: [AnalysisType!]
+  decisions: [ReflexDecisionType!]
   laboratoryUid: String
   laboratory: LaboratoryType
   createdByUid: String
@@ -5429,7 +5441,7 @@ type SampleGenealogyNode {
 
 type SampleListingType {
   samples: [SampleType!]!
-  message: String
+  message: String!
 }
 
 union SampleParentLinkResponse = SampleType | OperationError

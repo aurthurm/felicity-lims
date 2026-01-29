@@ -1,5 +1,7 @@
 <script setup lang="ts">
-  import { computed, ref, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
+  import { computed, ref, toRefs, watch, defineAsyncComponent } from 'vue';
+  import { useField, useForm } from 'vee-validate';
+  import * as yup from 'yup';
   import { AddAnalysisCorrectionFactorDocument, AddAnalysisCorrectionFactorMutation, AddAnalysisCorrectionFactorMutationVariables,
     EditAnalysisCorrectionFactorDocument, EditAnalysisCorrectionFactorMutation, EditAnalysisCorrectionFactorMutationVariables } from '@/graphql/operations/analyses.mutations';
   import { AnalysisCorrectionFactorType, InstrumentType, MethodType } from '@/types/gql';
@@ -30,8 +32,30 @@
   const { analysis } = toRefs(props);
   let showModal = ref(false);
   let formTitle = ref('');
-  let form = reactive({}) as AnalysisCorrectionFactorType;
   const formAction = ref(true);
+  const currentUid = ref<string | null>(null);
+
+  const correctionSchema = yup.object({
+    instrumentUid: yup.string().trim().required('Instrument is required'),
+    methodUid: yup.string().trim().required('Method is required'),
+    factor: yup
+      .number()
+      .typeError('Factor must be a number')
+      .required('Factor is required'),
+  });
+
+  const { handleSubmit, resetForm, setValues } = useForm({
+    validationSchema: correctionSchema,
+    initialValues: {
+      instrumentUid: '',
+      methodUid: '',
+      factor: '',
+    },
+  });
+
+  const { value: instrumentUid, errorMessage: instrumentError } = useField<string>('instrumentUid');
+  const { value: methodUid, errorMessage: methodError } = useField<string>('methodUid');
+  const { value: factor, errorMessage: factorError } = useField<number | string>('factor');
 
   watch(() => props.analysisUid, (anal, prev) => {
       
@@ -43,18 +67,14 @@
   setupStore.fetchMethods()
   const methods = computed<MethodType[]>(() => setupStore.getMethods)
 
-  function addAnalysisCorrectionFactor(): void {
-      const payload = { ...form, analysisUid: analysis?.value?.uid }
+  function addAnalysisCorrectionFactor(payload: { instrumentUid: string; methodUid: string; factor: number; analysisUid: string }): void {
       withClientMutation<AddAnalysisCorrectionFactorMutation, AddAnalysisCorrectionFactorMutationVariables>(AddAnalysisCorrectionFactorDocument, { payload }, "createAnalysisCorrectionFactor")
       .then((result) => analysisStore.AddAnalysisCorrectionFactor(result));
   }
 
-  function editAnalysisCorrectionFactor(): void {
-      const payload: any = { ...form };
-      delete payload['uid']
-      delete payload['__typename']
-
-      withClientMutation<EditAnalysisCorrectionFactorMutation, EditAnalysisCorrectionFactorMutationVariables>(EditAnalysisCorrectionFactorDocument, { uid : form.uid,  payload }, "updateAnalysisCorrectionFactor")
+  function editAnalysisCorrectionFactor(payload: { instrumentUid: string; methodUid: string; factor: number; analysisUid: string }): void {
+      if (!currentUid.value) return;
+      withClientMutation<EditAnalysisCorrectionFactorMutation, EditAnalysisCorrectionFactorMutationVariables>(EditAnalysisCorrectionFactorDocument, { uid: currentUid.value, payload }, "updateAnalysisCorrectionFactor")
       .then((result) => analysisStore.updateAnalysisCorrectionFactor(result));
   }
 
@@ -63,17 +83,37 @@
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSIS CORRECTION FACTOR";
       if (create) {
-          Object.assign(form, { factor: null, instrumentUid: null , methodUid: null });
+          currentUid.value = null;
+          resetForm({
+            values: {
+              instrumentUid: '',
+              methodUid: '',
+              factor: '',
+            },
+          });
       } else {
-          Object.assign(form, { ...obj });
+          currentUid.value = obj.uid ?? null;
+          setValues({
+            instrumentUid: obj.instrumentUid ?? '',
+            methodUid: obj.methodUid ?? '',
+            factor: obj.factor ?? '',
+          });
       }
   }
 
-  function saveForm():void {
-      if (formAction.value === true) addAnalysisCorrectionFactor();
-      if (formAction.value === false) editAnalysisCorrectionFactor();
+  const saveForm = handleSubmit((values) => {
+      const analysisUid = analysis?.value?.uid;
+      if (!analysisUid) return;
+      const payload = {
+        instrumentUid: values.instrumentUid,
+        methodUid: values.methodUid,
+        factor: Number(values.factor),
+        analysisUid,
+      };
+      if (formAction.value === true) addAnalysisCorrectionFactor(payload);
+      if (formAction.value === false) editAnalysisCorrectionFactor(payload);
       showModal.value = false;
-  }
+  });
 
   const instrumentName = (uid: string): string => {
     const index = instruments?.value?.findIndex(item => item.uid === uid)
@@ -135,49 +175,51 @@
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-6 space-y-6">
+      <form @submit.prevent="saveForm" class="p-6 space-y-6">
         <div class="space-y-4">
           <div class="grid grid-cols-3 gap-4">
             <label class="space-y-2">
               <span class="text-sm font-medium text-muted-foreground">Instrument</span>
               <select 
                 class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="form.instrumentUid"
+                v-model="instrumentUid"
               >
                 <option value="">Select Instrument</option>
                 <option v-for="instrument in instruments" :key="instrument?.uid" :value="instrument.uid">
                   {{ instrument?.name }}
                 </option>
               </select>
+              <p v-if="instrumentError" class="text-sm text-destructive">{{ instrumentError }}</p>
             </label>
             <label class="space-y-2">
               <span class="text-sm font-medium text-muted-foreground">Method</span>
               <select 
                 class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="form.methodUid"
+                v-model="methodUid"
               >
                 <option value="">Select Method</option>
                 <option v-for="method in methods" :key="method?.uid" :value="method.uid">
                   {{ method?.name }}
                 </option>
               </select>
+              <p v-if="methodError" class="text-sm text-destructive">{{ methodError }}</p>
             </label>
             <label class="space-y-2">
               <span class="text-sm font-medium text-muted-foreground">Factor</span>
               <input
                 type="number"
                 class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="form.factor"
+                v-model="factor"
                 placeholder="Factor ..."
               />
+              <p v-if="factorError" class="text-sm text-destructive">{{ factorError }}</p>
             </label>
           </div>
         </div>
 
         <div class="pt-4">
           <button
-            type="button"
-            @click.prevent="saveForm()"
+            type="submit"
             class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
           >
             Save Form

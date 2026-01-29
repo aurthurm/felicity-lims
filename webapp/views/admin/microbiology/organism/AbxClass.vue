@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import {defineAsyncComponent, onMounted, reactive, ref} from 'vue';
+import {defineAsyncComponent, onMounted, ref} from 'vue';
+import { useForm, useField } from 'vee-validate';
+import * as yup from 'yup';
 
 import useApiUtil from '@/composables/api_util';
 import { AbxClassType, AbxPhylumType } from "@/types/gql";
@@ -27,8 +29,23 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as AbxClassType;
 const formAction = ref<boolean>(true);
+const currentUid = ref<string | null>(null);
+
+const classSchema = yup.object({
+  name: yup.string().trim().required('Name is required'),
+  phylum: yup.object().required('Phylum is required'),
+});
+
+const { handleSubmit, resetForm, setValues, errors } = useForm({
+  validationSchema: classSchema,
+  initialValues: {
+    name: '',
+    phylum: null,
+  },
+});
+const { value: name } = useField<string>('name');
+const { value: phylum } = useField<AbxPhylumType | null>('phylum');
 
 const abxClasss = ref<AbxClassType[]>([]);
 const abxPhylums = ref<AbxPhylumType[]>([]);
@@ -55,17 +72,22 @@ function FormManager(create: boolean, obj = {} as AbxClassType): void {
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "Class";
   if (create) {
-    Object.assign(form, {} as AbxClassType);
+    currentUid.value = null;
+    resetForm();
   } else {
-    Object.assign(form, {...obj});
+    currentUid.value = obj.uid ?? null;
+    setValues({
+      name: obj.name ?? '',
+      phylum: obj.phylum ?? null,
+    });
   }
 }
 
-function saveForm(): void {
+const saveForm = handleSubmit((formValues) => {
   const payload = {
-    name: form.name,
-    phylumUid: form?.phylum?.uid
-  }
+    name: formValues.name,
+    phylumUid: formValues.phylum?.uid
+  };
 
   if (formAction.value === true) {
     withClientMutation<AddAbxClassMutation, AddAbxClassMutationVariables>(
@@ -77,9 +99,9 @@ function saveForm(): void {
     });
   }
 
-  if (formAction.value === false) {
+  if (formAction.value === false && currentUid.value) {
     withClientMutation<EditAbxClassMutation, EditAbxClassMutationVariables>(EditAbxClassDocument, {
-      uid: form.uid!,
+      uid: currentUid.value,
       payload
     }, "updateAbxClass")
         .then((result) => {
@@ -95,7 +117,7 @@ function saveForm(): void {
   }
 
   showModal.value = false;
-}
+});
 
 </script>
 
@@ -148,19 +170,21 @@ function saveForm(): void {
             <span class="text-sm font-medium text-foreground">Class Name</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              v-model="form.name" 
+              v-model="name" 
               placeholder="Name ..." />
+            <p v-if="errors.name" class="text-sm text-destructive">{{ errors.name }}</p>
           </label>
           <label class="block">
             <span class="text-sm font-medium text-foreground">Phylum</span>
             <VueMultiselect
-              v-model="form.phylum"
+              v-model="phylum"
               :options="abxPhylums"
               :multiple="false"
               :searchable="true"
               label="name"
               class="mt-1 multiselect-blue"
             />
+            <p v-if="errors.phylum" class="text-sm text-destructive">{{ errors.phylum }}</p>
           </label>
         </div>
 

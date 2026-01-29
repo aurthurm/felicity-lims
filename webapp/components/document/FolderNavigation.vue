@@ -132,9 +132,7 @@ async function handleAddFolder() {
         }
       }
     }
-  } catch (error) {
-    console.error('Failed to create folder:', error);
-  } finally {
+  } catch {} finally {
     // Reset form and close dialog
     closeAddFolderDialog();
   }

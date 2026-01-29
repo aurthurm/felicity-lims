@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { reactive, ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
+import { useField, useForm } from "vee-validate";
+import * as yup from "yup";
 import { useRouter } from "vue-router";
 import { UserType, GroupType, LaboratoryType, OrganizationType } from "@/types/gql";
 import { useUserStore } from "@/stores/user";
@@ -217,52 +219,89 @@ const totalSteps = 4;
 const processing = ref(false);
 const createdUser = ref<UserType | null>(null);
 
-// Form state
-const formUser = reactive({
-  // Step 1: Basic Information
-  firstName: "",
-  lastName: "",
-  email: "",
-  phoneNumber: "",
-  employeeId: "",
-  
-  // Step 2: Account Details
-  userName: "",
-  password: "",
-  passwordConfirm: "",
-  generatePassword: false,
-  
-  // Step 3: Professional Information
-  jobTitle: "",
-  department: "",
-  
-  // Step 4: Laboratory Access & Permissions
-  groupUid: "",
-  laboratoryUids: [] as string[],
-  activeLaboratoryUid: "",
-  
-  // Status
-  isActive: true,
-  isBlocked: false,
-  
-  // Profile Picture
-  profilePicture: "",
-  
-  // Notification preferences
-  sendWelcomeEmail: true,
-  includeCredentials: false,
+const userSchema = yup.object({
+  firstName: yup.string().trim().required("First name is required"),
+  lastName: yup.string().trim().required("Last name is required"),
+  email: yup.string().trim().email("Enter a valid email").required("Email is required"),
+  phoneNumber: yup.string().trim().nullable(),
+  employeeId: yup.string().trim().nullable(),
+  userName: yup.string().trim().required("Username is required"),
+  generatePassword: yup.boolean().default(false),
+  password: yup.string().when("generatePassword", {
+    is: true,
+    then: schema => schema.nullable(),
+    otherwise: schema =>
+      schema
+        .required("Password is required")
+        .min(8, "Password must be at least 8 characters")
+        .matches(/[A-Z]/, "Password must include an uppercase letter")
+        .matches(/[a-z]/, "Password must include a lowercase letter")
+        .matches(/\d/, "Password must include a number"),
+  }),
+  passwordConfirm: yup.string().when("generatePassword", {
+    is: true,
+    then: schema => schema.nullable(),
+    otherwise: schema =>
+      schema
+        .oneOf([yup.ref("password")], "Passwords do not match")
+        .required("Confirm password is required"),
+  }),
+  jobTitle: yup.string().trim().nullable(),
+  department: yup.string().trim().nullable(),
+  groupUid: yup.string().trim().nullable(),
+  laboratoryUids: yup.array().of(yup.string()).min(1, "At least one laboratory must be selected"),
+  activeLaboratoryUid: yup.string().trim().nullable(),
+  isActive: yup.boolean().default(true),
+  isBlocked: yup.boolean().default(false),
+  profilePicture: yup.string().trim().nullable(),
+  sendWelcomeEmail: yup.boolean().default(true),
+  includeCredentials: yup.boolean().default(false),
 });
 
-// Validation state
-const validationErrors = reactive({
-  firstName: "",
-  lastName: "",
-  email: "",
-  userName: "",
-  password: "",
-  passwordConfirm: "",
-  laboratoryUids: "",
+const { handleSubmit, resetForm, setValues } = useForm({
+  validationSchema: userSchema,
+  initialValues: {
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    employeeId: "",
+    userName: "",
+    password: "",
+    passwordConfirm: "",
+    generatePassword: false,
+    jobTitle: "",
+    department: "",
+    groupUid: "",
+    laboratoryUids: [] as string[],
+    activeLaboratoryUid: "",
+    isActive: true,
+    isBlocked: false,
+    profilePicture: "",
+    sendWelcomeEmail: true,
+    includeCredentials: false,
+  },
 });
+
+const { value: firstName, errorMessage: firstNameError } = useField<string>("firstName");
+const { value: lastName, errorMessage: lastNameError } = useField<string>("lastName");
+const { value: email, errorMessage: emailError } = useField<string>("email");
+const { value: phoneNumber } = useField<string | null>("phoneNumber");
+const { value: employeeId } = useField<string | null>("employeeId");
+const { value: userName, errorMessage: userNameError } = useField<string>("userName");
+const { value: password, errorMessage: passwordError } = useField<string>("password");
+const { value: passwordConfirm, errorMessage: passwordConfirmError } = useField<string>("passwordConfirm");
+const { value: generatePassword } = useField<boolean>("generatePassword");
+const { value: jobTitle } = useField<string | null>("jobTitle");
+const { value: department } = useField<string | null>("department");
+const { value: groupUid } = useField<string | null>("groupUid");
+const { value: laboratoryUids, errorMessage: laboratoryUidsError } = useField<string[]>("laboratoryUids");
+const { value: activeLaboratoryUid, errorMessage: activeLaboratoryUidError } = useField<string | null>("activeLaboratoryUid");
+const { value: isActive } = useField<boolean>("isActive");
+const { value: isBlocked } = useField<boolean>("isBlocked");
+const { value: profilePicture } = useField<string | null>("profilePicture");
+const { value: sendWelcomeEmail } = useField<boolean>("sendWelcomeEmail");
+const { value: includeCredentials } = useField<boolean>("includeCredentials");
 
 // File upload
 const profilePictureFile = ref<File | null>(null);
@@ -289,37 +328,43 @@ const stepTitles = computed(() => [
 const isStepValid = computed(() => {
   switch (currentStep.value) {
     case 1:
-      return formUser.firstName.trim() && 
-             formUser.lastName.trim() && 
-             formUser.email.trim() && 
-             isValidEmail(formUser.email);
+      return (
+        firstName.value.trim() &&
+        lastName.value.trim() &&
+        email.value.trim() &&
+        isValidEmail(email.value)
+      );
     case 2:
-      return formUser.userName.trim() && 
-             (formUser.generatePassword || 
-              (formUser.password.trim() && 
-               formUser.password === formUser.passwordConfirm &&
-               isValidPassword(formUser.password)));
+      return (
+        userName.value.trim() &&
+        (generatePassword.value ||
+          (password.value.trim() &&
+            password.value === passwordConfirm.value &&
+            isValidPassword(password.value)))
+      );
     case 3:
-      return true; // Professional info is optional
+      return true;
     case 4:
-      return formUser.laboratoryUids.length > 0;
+      return laboratoryUids.value.length > 0;
     default:
       return false;
   }
 });
 
 const isFormValid = computed(() => {
-  return formUser.firstName.trim() &&
-         formUser.lastName.trim() &&
-         formUser.email.trim() &&
-         formUser.userName.trim() &&
-         (formUser.generatePassword || 
-          (formUser.password.trim() && formUser.password === formUser.passwordConfirm)) &&
-         formUser.laboratoryUids.length > 0;
+  return (
+    firstName.value.trim() &&
+    lastName.value.trim() &&
+    email.value.trim() &&
+    userName.value.trim() &&
+    (generatePassword.value ||
+      (password.value.trim() && password.value === passwordConfirm.value)) &&
+    laboratoryUids.value.length > 0
+  );
 });
 
 const assignedLaboratories = computed(() => {
-  return laboratories.value.filter(lab => formUser.laboratoryUids.includes(lab.uid));
+  return laboratories.value.filter(lab => laboratoryUids.value.includes(lab.uid));
 });
 
 // Validation methods
@@ -335,53 +380,6 @@ const isValidPassword = (password: string) => {
          /\d/.test(password);
 };
 
-const validateCurrentStep = () => {
-  // Clear previous errors
-  Object.keys(validationErrors).forEach(key => {
-    validationErrors[key as keyof typeof validationErrors] = "";
-  });
-
-  switch (currentStep.value) {
-    case 1:
-      if (!formUser.firstName.trim()) {
-        validationErrors.firstName = "First name is required";
-      }
-      if (!formUser.lastName.trim()) {
-        validationErrors.lastName = "Last name is required";
-      }
-      if (!formUser.email.trim()) {
-        validationErrors.email = "Email is required";
-      } else if (!isValidEmail(formUser.email)) {
-        validationErrors.email = "Please enter a valid email address";
-      }
-      break;
-      
-    case 2:
-      if (!formUser.userName.trim()) {
-        validationErrors.userName = "Username is required";
-      }
-      if (!formUser.generatePassword) {
-        if (!formUser.password.trim()) {
-          validationErrors.password = "Password is required";
-        } else if (!isValidPassword(formUser.password)) {
-          validationErrors.password = "Password must be at least 8 characters with uppercase, lowercase, and number";
-        }
-        if (formUser.password !== formUser.passwordConfirm) {
-          validationErrors.passwordConfirm = "Passwords do not match";
-        }
-      }
-      break;
-      
-    case 4:
-      if (formUser.laboratoryUids.length === 0) {
-        validationErrors.laboratoryUids = "At least one laboratory must be selected";
-      }
-      break;
-  }
-
-  return Object.values(validationErrors).every(error => error === "");
-};
-
 // Helper methods
 const getLaboratoryName = (labUid: string) => {
   const lab = laboratories.value.find(l => l.uid === labUid);
@@ -395,8 +393,8 @@ const getOrganizationName = (orgUid: string) => {
 
 // Generate username from email
 const generateUsername = () => {
-  if (formUser.email) {
-    formUser.userName = formUser.email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '');
+  if (email.value) {
+    userName.value = email.value.split('@')[0].replace(/[^a-zA-Z0-9]/g, '');
   }
 };
 
@@ -430,19 +428,19 @@ const handleProfilePictureUpload = (event: Event) => {
 // Handle laboratory selection changes
 const onLaboratorySelectionChange = () => {
   // Reset active laboratory if it's not in selected labs
-  if (formUser.activeLaboratoryUid && !formUser.laboratoryUids.includes(formUser.activeLaboratoryUid)) {
-    formUser.activeLaboratoryUid = "";
+  if (activeLaboratoryUid.value && !laboratoryUids.value.includes(activeLaboratoryUid.value)) {
+    activeLaboratoryUid.value = "";
   }
   
   // Auto-select first lab as active if none selected
-  if (formUser.laboratoryUids.length === 1 && !formUser.activeLaboratoryUid) {
-    formUser.activeLaboratoryUid = formUser.laboratoryUids[0];
+  if (laboratoryUids.value.length === 1 && !activeLaboratoryUid.value) {
+    activeLaboratoryUid.value = laboratoryUids.value[0];
   }
 };
 
 // Navigation methods
 const nextStep = () => {
-  if (validateCurrentStep() && currentStep.value < totalSteps) {
+  if (isStepValid.value && currentStep.value < totalSteps) {
     currentStep.value++;
   }
 };
@@ -460,47 +458,39 @@ const goToStep = (step: number) => {
 };
 
 // Form submission
-const saveUser = async () => {
-  if (!isFormValid.value) {
-    toastError("Please fill in all required fields correctly");
-    return;
-  }
-
+const saveUser = handleSubmit(async (values) => {
   processing.value = true;
-  
   try {
-    // Generate password if requested
-    let finalPassword = formUser.password;
-    if (formUser.generatePassword) {
+    let finalPassword = values.password;
+    if (values.generatePassword) {
       finalPassword = generateRandomPassword();
-      formUser.includeCredentials = true; // Auto-include credentials in welcome email
+      includeCredentials.value = true;
     }
 
-    // Step 1: Create the user with enhanced mutation
     const userResult = await withClientMutation<CreateUserMutation, CreateUserMutationVariables>(
       CreateUserEnhancedDocument,
-      { 
+      {
         payload: {
-          firstName: formUser.firstName,
-          lastName: formUser.lastName,
-          email: formUser.email,
-          userName: formUser.userName,
+          firstName: values.firstName,
+          lastName: values.lastName,
+          email: values.email,
+          userName: values.userName,
           password: finalPassword,
           passwordc: finalPassword,
-          isActive: formUser.isActive,
-          isBlocked: formUser.isBlocked,
-          groupUid: formUser.groupUid || undefined,
-          laboratoryUids: formUser.laboratoryUids,
-          activeLaboratoryUid: formUser.activeLaboratoryUid || undefined,
-          mobilePhone: formUser.phoneNumber || undefined,
+          isActive: values.isActive,
+          isBlocked: values.isBlocked,
+          groupUid: values.groupUid || undefined,
+          laboratoryUids: values.laboratoryUids,
+          activeLaboratoryUid: values.activeLaboratoryUid || undefined,
+          mobilePhone: values.phoneNumber || undefined,
           businessPhone: undefined,
           bio: undefined,
-          jobTitle: formUser.jobTitle || undefined,
-          department: formUser.department || undefined,
-          employeeId: formUser.employeeId || undefined,
-          profilePicture: formUser.profilePicture || undefined,
-          sendWelcomeEmail: formUser.sendWelcomeEmail,
-          includeCredentials: formUser.includeCredentials,
+          jobTitle: values.jobTitle || undefined,
+          department: values.department || undefined,
+          employeeId: values.employeeId || undefined,
+          profilePicture: values.profilePicture || undefined,
+          sendWelcomeEmail: values.sendWelcomeEmail,
+          includeCredentials: includeCredentials.value,
         }
       },
       "createUserEnhanced"
@@ -517,45 +507,41 @@ const saveUser = async () => {
       toastError(userResult.error || "Failed to create user");
     }
   } catch (error) {
-    console.error("Error creating user:", error);
     toastError("Failed to create user");
   } finally {
     processing.value = false;
   }
-};
+});
 
 // Reset form
-const resetForm = () => {
-  Object.assign(formUser, {
-    firstName: "",
-    lastName: "",
-    email: "",
-    phoneNumber: "",
-    employeeId: "",
-    userName: "",
-    password: "",
-    passwordConfirm: "",
-    generatePassword: false,
-    jobTitle: "",
-    department: "",
-    groupUid: "",
-    laboratoryUids: [],
-    activeLaboratoryUid: "",
-    isActive: true,
-    isBlocked: false,
-    profilePicture: "",
-    sendWelcomeEmail: true,
-    includeCredentials: false,
+const resetUserForm = () => {
+  resetForm({
+    values: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phoneNumber: "",
+      employeeId: "",
+      userName: "",
+      password: "",
+      passwordConfirm: "",
+      generatePassword: false,
+      jobTitle: "",
+      department: "",
+      groupUid: "",
+      laboratoryUids: [],
+      activeLaboratoryUid: "",
+      isActive: true,
+      isBlocked: false,
+      profilePicture: "",
+      sendWelcomeEmail: true,
+      includeCredentials: false,
+    },
   });
   
   profilePictureFile.value = null;
   profilePicturePreview.value = "";
   currentStep.value = 1;
-  
-  // Clear validation errors
-  Object.keys(validationErrors).forEach(key => {
-    validationErrors[key as keyof typeof validationErrors] = "";
-  });
 };
 
 // Go back to user listing
@@ -564,20 +550,20 @@ const goBack = () => {
 };
 
 const createAnotherUser = () => {
-  resetForm();
+  resetUserForm();
 };
 
 // Watch for auto-generated password toggle
-watch(() => formUser.generatePassword, (newValue) => {
+watch(generatePassword, (newValue) => {
   if (newValue) {
-    formUser.password = "";
-    formUser.passwordConfirm = "";
+    password.value = "";
+    passwordConfirm.value = "";
   }
 });
 
 // Watch for email changes to auto-generate username
-watch(() => formUser.email, () => {
-  if (formUser.email && !formUser.userName) {
+watch(email, () => {
+  if (email.value && !userName.value) {
     generateUsername();
   }
 });
@@ -615,7 +601,7 @@ onMounted(() => {
         </div>
         <h3 class="text-xl font-semibold text-foreground mb-2">User Created Successfully!</h3>
         <p class="text-muted-foreground mb-6">
-          {{ createdUser?.firstName }} {{ createdUser?.lastName }} has been registered and assigned to {{ formUser.laboratoryUids.length }} laboratory{{ formUser.laboratoryUids.length !== 1 ? 's' : '' }}.
+          {{ createdUser?.firstName }} {{ createdUser?.lastName }} has been registered and assigned to {{ laboratoryUids.length }} laboratory{{ laboratoryUids.length !== 1 ? 's' : '' }}.
         </p>
         
         <!-- User Summary -->
@@ -635,9 +621,9 @@ onMounted(() => {
             </div>
             <div class="flex justify-between">
               <span class="font-medium">Laboratories:</span>
-              <span>{{ formUser.laboratoryUids.length }}</span>
+              <span>{{ laboratoryUids.length }}</span>
             </div>
-            <div v-if="formUser.sendWelcomeEmail" class="flex justify-between">
+            <div v-if="sendWelcomeEmail" class="flex justify-between">
               <span class="font-medium">Welcome Email:</span>
               <span class="text-green-600">Sent</span>
             </div>
@@ -731,15 +717,14 @@ onMounted(() => {
                   First Name *
                 </label>
                 <input
-                  v-model="formUser.firstName"
+                  v-model="firstName"
                   type="text"
                   required
                   placeholder="Enter first name..."
                   class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  :class="{ 'border-destructive': validationErrors.firstName }"
                 />
-                <p v-if="validationErrors.firstName" class="text-sm text-destructive">
-                  {{ validationErrors.firstName }}
+                <p v-if="firstNameError" class="text-sm text-destructive">
+                  {{ firstNameError }}
                 </p>
               </div>
 
@@ -748,15 +733,14 @@ onMounted(() => {
                   Last Name *
                 </label>
                 <input
-                  v-model="formUser.lastName"
+                  v-model="lastName"
                   type="text"
                   required
                   placeholder="Enter last name..."
                   class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  :class="{ 'border-destructive': validationErrors.lastName }"
                 />
-                <p v-if="validationErrors.lastName" class="text-sm text-destructive">
-                  {{ validationErrors.lastName }}
+                <p v-if="lastNameError" class="text-sm text-destructive">
+                  {{ lastNameError }}
                 </p>
               </div>
 
@@ -765,15 +749,14 @@ onMounted(() => {
                   Email Address *
                 </label>
                 <input
-                  v-model="formUser.email"
+                  v-model="email"
                   type="email"
                   required
                   placeholder="Enter email address..."
                   class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  :class="{ 'border-destructive': validationErrors.email }"
                 />
-                <p v-if="validationErrors.email" class="text-sm text-destructive">
-                  {{ validationErrors.email }}
+                <p v-if="emailError" class="text-sm text-destructive">
+                  {{ emailError }}
                 </p>
               </div>
 
@@ -782,7 +765,7 @@ onMounted(() => {
                   Phone Number
                 </label>
                 <input
-                  v-model="formUser.phoneNumber"
+                  v-model="phoneNumber"
                   type="tel"
                   placeholder="Enter phone number..."
                   class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
@@ -794,7 +777,7 @@ onMounted(() => {
                   Employee ID
                 </label>
                 <input
-                  v-model="formUser.employeeId"
+                  v-model="employeeId"
                   type="text"
                   placeholder="Enter employee ID..."
                   class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
@@ -816,12 +799,11 @@ onMounted(() => {
                 </label>
                 <div class="flex space-x-2">
                   <input
-                    v-model="formUser.userName"
+                    v-model="userName"
                     type="text"
                     required
                     placeholder="Enter username..."
                     class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    :class="{ 'border-destructive': validationErrors.userName }"
                   />
                   <button
                     type="button"
@@ -832,15 +814,15 @@ onMounted(() => {
                     <i class="fas fa-magic"></i>
                   </button>
                 </div>
-                <p v-if="validationErrors.userName" class="text-sm text-destructive">
-                  {{ validationErrors.userName }}
+                <p v-if="userNameError" class="text-sm text-destructive">
+                  {{ userNameError }}
                 </p>
               </div>
 
               <div class="space-y-2">
                 <label class="flex items-center space-x-2">
                   <input
-                    v-model="formUser.generatePassword"
+                    v-model="generatePassword"
                     type="checkbox"
                     class="h-4 w-4 text-primary focus:ring-ring border-gray-300 rounded"
                   />
@@ -851,40 +833,38 @@ onMounted(() => {
                 </p>
               </div>
 
-              <div v-if="!formUser.generatePassword" class="space-y-2">
+              <div v-if="!generatePassword" class="space-y-2">
                 <label class="text-sm font-medium text-foreground">
                   Password *
                 </label>
                 <input
-                  v-model="formUser.password"
+                  v-model="password"
                   type="password"
                   required
                   placeholder="Enter password..."
                   class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  :class="{ 'border-destructive': validationErrors.password }"
                 />
-                <p v-if="validationErrors.password" class="text-sm text-destructive">
-                  {{ validationErrors.password }}
+                <p v-if="passwordError" class="text-sm text-destructive">
+                  {{ passwordError }}
                 </p>
                 <div class="text-xs text-muted-foreground">
                   Password must be at least 8 characters with uppercase, lowercase, and number
                 </div>
               </div>
 
-              <div v-if="!formUser.generatePassword" class="space-y-2">
+              <div v-if="!generatePassword" class="space-y-2">
                 <label class="text-sm font-medium text-foreground">
                   Confirm Password *
                 </label>
                 <input
-                  v-model="formUser.passwordConfirm"
+                  v-model="passwordConfirm"
                   type="password"
                   required
                   placeholder="Confirm password..."
                   class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  :class="{ 'border-destructive': validationErrors.passwordConfirm }"
                 />
-                <p v-if="validationErrors.passwordConfirm" class="text-sm text-destructive">
-                  {{ validationErrors.passwordConfirm }}
+                <p v-if="passwordConfirmError" class="text-sm text-destructive">
+                  {{ passwordConfirmError }}
                 </p>
               </div>
             </div>
@@ -901,7 +881,7 @@ onMounted(() => {
               <div class="space-y-2">
                 <label class="text-sm font-medium text-foreground">Job Title</label>
                 <select
-                  v-model="formUser.jobTitle"
+                  v-model="jobTitle"
                   class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <option value="">Select job title...</option>
@@ -914,7 +894,7 @@ onMounted(() => {
               <div class="space-y-2">
                 <label class="text-sm font-medium text-foreground">Department</label>
                 <select
-                  v-model="formUser.department"
+                  v-model="department"
                   class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <option value="">Select department...</option>
@@ -936,7 +916,7 @@ onMounted(() => {
             <div class="space-y-2">
               <label class="text-sm font-medium text-foreground">Default Group</label>
               <select
-                v-model="formUser.groupUid"
+                v-model="groupUid"
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <option value="">Select Default Group (Optional)</option>
@@ -953,7 +933,7 @@ onMounted(() => {
                 <div v-for="lab in laboratories" :key="lab.uid" class="flex items-center space-x-3">
                   <input
                     :id="`lab-${lab.uid}`"
-                    v-model="formUser.laboratoryUids"
+                    v-model="laboratoryUids"
                     :value="lab.uid"
                     @change="onLaboratorySelectionChange"
                     type="checkbox"
@@ -970,16 +950,16 @@ onMounted(() => {
                   </label>
                 </div>
               </div>
-              <p v-if="validationErrors.laboratoryUids" class="text-sm text-destructive">
-                {{ validationErrors.laboratoryUids }}
+              <p v-if="laboratoryUidsError" class="text-sm text-destructive">
+                {{ laboratoryUidsError }}
               </p>
             </div>
 
             <!-- Active Laboratory Selection -->
-            <div v-if="formUser.laboratoryUids.length > 0" class="space-y-2">
+            <div v-if="laboratoryUids.length > 0" class="space-y-2">
               <label class="text-sm font-medium text-foreground">Default Active Laboratory</label>
               <select
-                v-model="formUser.activeLaboratoryUid"
+                v-model="activeLaboratoryUid"
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <option value="">Select default laboratory...</option>
@@ -987,6 +967,7 @@ onMounted(() => {
                   {{ lab.name }}
                 </option>
               </select>
+              <p v-if="activeLaboratoryUidError" class="text-sm text-destructive">{{ activeLaboratoryUidError }}</p>
             </div>
 
             <!-- User Status -->
@@ -996,7 +977,7 @@ onMounted(() => {
               <div class="flex items-center space-x-6">
                 <label class="flex items-center space-x-3">
                   <input
-                    v-model="formUser.isActive"
+                    v-model="isActive"
                     type="checkbox"
                     class="h-4 w-4 text-primary focus:ring-ring border-gray-300 rounded"
                   />
@@ -1005,7 +986,7 @@ onMounted(() => {
                 
                 <label class="flex items-center space-x-3">
                   <input
-                    v-model="formUser.isBlocked"
+                    v-model="isBlocked"
                     type="checkbox"
                     class="h-4 w-4 text-destructive focus:ring-ring border-gray-300 rounded"
                   />
@@ -1021,7 +1002,7 @@ onMounted(() => {
               <div class="space-y-3">
                 <label class="flex items-center space-x-3">
                   <input
-                    v-model="formUser.sendWelcomeEmail"
+                    v-model="sendWelcomeEmail"
                     type="checkbox"
                     class="h-4 w-4 text-primary focus:ring-ring border-gray-300 rounded"
                   />
@@ -1031,9 +1012,9 @@ onMounted(() => {
                   </div>
                 </label>
                 
-                <label v-if="formUser.sendWelcomeEmail" class="flex items-center space-x-3 ml-7">
+                <label v-if="sendWelcomeEmail" class="flex items-center space-x-3 ml-7">
                   <input
-                    v-model="formUser.includeCredentials"
+                    v-model="includeCredentials"
                     type="checkbox"
                     class="h-4 w-4 text-primary focus:ring-ring border-gray-300 rounded"
                   />

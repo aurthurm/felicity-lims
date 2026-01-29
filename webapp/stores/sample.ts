@@ -130,18 +130,14 @@ export const useSampleStore = defineStore('sample', {
                 if (result && Array.isArray(result)) {
                     this.sampleTypes = result as SampleTypeTyp[];
                 } else {
-                    console.error('Invalid sample types data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching sample types:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingSampleTypes = false;
             }
         },
 
         updateSampleType(payload: SampleTypeTyp): void {
             if (!payload?.uid) {
-                console.error('Invalid sample type payload:', payload);
                 return;
             }
 
@@ -153,7 +149,6 @@ export const useSampleStore = defineStore('sample', {
 
         addSampleType(payload: SampleTypeTyp): void {
             if (!payload?.uid) {
-                console.error('Invalid sample type payload:', payload);
                 return;
             }
 
@@ -162,7 +157,6 @@ export const useSampleStore = defineStore('sample', {
 
         async fetchSampleTypesMappings(profileUid: string): Promise<void> {
             if (!profileUid) {
-                console.error('Invalid profile UID provided to fetchSampleTypesMappings');
                 return;
             }
 
@@ -175,16 +169,12 @@ export const useSampleStore = defineStore('sample', {
                 if (result && Array.isArray(result)) {
                     this.sampleTypesMappings = result;
                 } else {
-                    console.error('Invalid sample type mappings data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching sample type mappings:', error);
-            }
+            } catch {}
         },
 
         addSampleTypesMapping(payload: any): void {
             if (!payload?.uid) {
-                console.error('Invalid sample type mapping payload:', payload);
                 return;
             }
 
@@ -193,7 +183,6 @@ export const useSampleStore = defineStore('sample', {
 
         updateSampleTypesMapping(payload: any): void {
             if (!payload?.uid) {
-                console.error('Invalid sample type mapping payload:', payload);
                 return;
             }
 
@@ -242,18 +231,14 @@ export const useSampleStore = defineStore('sample', {
                     this.sampleCount = page?.totalCount || 0;
                     this.samplePageInfo = page?.pageInfo;
                 } else {
-                    console.error('Invalid samples data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching samples:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingSamples = false;
             }
         },
 
         async fetchSampleByUid(uid: string): Promise<void> {
             if (!uid) {
-                console.error('Invalid UID provided to fetchSampleByUid');
                 return;
             }
 
@@ -272,18 +257,14 @@ export const useSampleStore = defineStore('sample', {
                     sample.profiles = parseEdgeNodeToList(sample?.profiles) || [];
                     this.sample = sample;
                 } else {
-                    console.error('Invalid sample data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching sample:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingSample = false;
             }
         },
 
         addSamples(samples: SampleType[]): void {
             if (!samples || !Array.isArray(samples)) {
-                console.error('Invalid samples payload:', samples);
                 return;
             }
 
@@ -292,7 +273,6 @@ export const useSampleStore = defineStore('sample', {
 
         addSampleClones(clones: SampleType[]): void {
             if (!clones || !Array.isArray(clones)) {
-                console.error('Invalid clones payload:', clones);
                 return;
             }
 
@@ -310,7 +290,6 @@ export const useSampleStore = defineStore('sample', {
 
         updateSamplesStatus(samples: SampleType[]): void {
             if (!samples || !Array.isArray(samples)) {
-                console.error('Invalid samples payload for status update:', samples);
                 return;
             }
 
@@ -319,7 +298,6 @@ export const useSampleStore = defineStore('sample', {
 
         updateSampleStatus(sample: SampleType): void {
             if (!sample?.uid) {
-                console.error('Invalid sample payload for status update:', sample);
                 return;
             }
 
@@ -335,7 +313,6 @@ export const useSampleStore = defineStore('sample', {
 
         updateSamples(samples: SampleType[]): void {
             if (!samples || !Array.isArray(samples)) {
-                console.error('Invalid samples payload for update:', samples);
                 return;
             }
 
@@ -344,7 +321,6 @@ export const useSampleStore = defineStore('sample', {
 
         updateSample(sample: SampleType): void {
             if (!sample?.uid) {
-                console.error('Invalid sample payload for update:', sample);
                 return;
             }
 
@@ -360,7 +336,6 @@ export const useSampleStore = defineStore('sample', {
 
         async fetchSampleStatus(uid: string): Promise<void> {
             if (!uid) {
-                console.error('Invalid UID provided to fetchSampleStatus');
                 return;
             }
 
@@ -381,18 +356,14 @@ export const useSampleStore = defineStore('sample', {
                     // also update sample listing
                     this.updateSampleStatus(result as SampleType);
                 } else {
-                    console.error('Invalid sample status data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching sample status:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingSamplesStatuses = false;
             }
         },
 
         async fetchRepeatSampleByParentId(parentId: string): Promise<void> {
             if (!parentId) {
-                console.error('Invalid parent ID provided to fetchRepeatSampleByParentId');
                 return;
             }
 
@@ -407,11 +378,8 @@ export const useSampleStore = defineStore('sample', {
                 if (result && Array.isArray(result) && result.length > 0) {
                     this.repeatSample = result[0] as SampleType;
                 } else {
-                    console.error('No repeat sample found for parent ID:', parentId);
                 }
-            } catch (error) {
-                console.error('Error fetching repeat sample:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingRepeatSample = false;
             }
         },
@@ -423,7 +391,6 @@ export const useSampleStore = defineStore('sample', {
 
         async fetchAnalysisRequestsForPatient(uid: string): Promise<void> {
             if (!uid) {
-                console.error('Invalid UID provided to fetchAnalysisRequestsForPatient');
                 return;
             }
 
@@ -438,18 +405,14 @@ export const useSampleStore = defineStore('sample', {
                 if (result && Array.isArray(result)) {
                     this.analysisRequests = sortAnalysisRequests(result as AnalysisRequestType[]);
                 } else {
-                    console.error('Invalid analysis requests data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching analysis requests for patient:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingAnalysisRequests = false;
             }
         },
 
         async fetchAnalysisRequestsForClient(uid: string): Promise<void> {
             if (!uid) {
-                console.error('Invalid UID provided to fetchAnalysisRequestsForClient');
                 return;
             }
 
@@ -464,18 +427,14 @@ export const useSampleStore = defineStore('sample', {
                 if (result && Array.isArray(result)) {
                     this.analysisRequests = sortAnalysisRequests(result as AnalysisRequestType[]);
                 } else {
-                    console.error('Invalid analysis requests data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching analysis requests for client:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingAnalysisRequests = false;
             }
         },
 
         addAnalysisRequest(payload: AnalysisRequestType): void {
             if (!payload?.uid) {
-                console.error('Invalid analysis request payload:', payload);
                 return;
             }
 
@@ -485,7 +444,6 @@ export const useSampleStore = defineStore('sample', {
         // ANALYSIS RESULTS
         async fetchAnalysisResultsForSample(uid: string): Promise<void> {
             if (!uid) {
-                console.error('Invalid UID provided to fetchAnalysisResultsForSample');
                 return;
             }
 
@@ -501,24 +459,19 @@ export const useSampleStore = defineStore('sample', {
                 if (result && Array.isArray(result)) {
                     this.analysisResults = sortResults(result as AnalysisResultType[]);
                 } else {
-                    console.error('Invalid analysis results data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching analysis results for sample:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingResults = false;
             }
         },
 
         updateAnalysesResults(payload: AnalysisResultType[]): void {
             if (!payload || !Array.isArray(payload)) {
-                console.error('Invalid analysis results payload:', payload);
                 return;
             }
 
             payload.forEach(result => {
                 if (!result?.uid) {
-                    console.error('Invalid analysis result item:', result);
                     return;
                 }
 
@@ -536,13 +489,11 @@ export const useSampleStore = defineStore('sample', {
 
         updateAnalysesResultsStatus(payload: any[]): void {
             if (!payload || !Array.isArray(payload)) {
-                console.error('Invalid analysis results status payload:', payload);
                 return;
             }
 
             payload.forEach(result => {
                 if (!result?.uid) {
-                    console.error('Invalid analysis result status item:', result);
                     return;
                 }
 
@@ -555,13 +506,11 @@ export const useSampleStore = defineStore('sample', {
 
         backgroundProcessing(payload: any[], sampleUid: string, process: string): void {
             if (!payload || !Array.isArray(payload)) {
-                console.error('Invalid background processing payload:', payload);
                 return;
             }
 
             payload.forEach(result => {
                 if (!result?.uid) {
-                    console.error('Invalid background processing item:', result);
                     return;
                 }
 
@@ -607,18 +556,14 @@ export const useSampleStore = defineStore('sample', {
                     this.qcSetCount = page?.totalCount || 0;
                     this.qcSetPageInfo = page?.pageInfo;
                 } else {
-                    console.error('Invalid QC sets data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching QC sets:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingQCSets = false;
             }
         },
 
         async fetchQCSetByUid(uid: string): Promise<void> {
             if (!uid) {
-                console.error('Invalid UID provided to fetchQCSetByUid');
                 return;
             }
 
@@ -633,18 +578,14 @@ export const useSampleStore = defineStore('sample', {
                 if (result && typeof result === 'object') {
                     this.qcSet = result as QcSetType;
                 } else {
-                    console.error('Invalid QC set data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching QC set:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingQCSet = false;
             }
         },
 
         addQCSets(payload: QcSetType[]): void {
             if (!payload || !Array.isArray(payload)) {
-                console.error('Invalid QC sets payload:', payload);
                 return;
             }
 

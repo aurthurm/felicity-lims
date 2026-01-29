@@ -82,9 +82,11 @@ const collapsed = ref(false);
  * Handle node drag start
  */
 const onDragStart = (event: DragEvent, nodeType: string) => {
-  if (!event.dataTransfer) return;
+  if (!event.dataTransfer) {
+    return;
+  }
 
-  event.dataTransfer.effectAllowed = 'move';
+  event.dataTransfer.effectAllowed = 'copy';
   event.dataTransfer.setData('application/vueflow', nodeType);
 };
 
@@ -107,13 +109,14 @@ const toggleCollapse = () => {
   <div class="node-palette" :class="{ 'palette-collapsed': collapsed }">
     <!-- Header -->
     <div class="palette-header">
-      <div class="flex items-center space-x-2">
+      <div v-if="!collapsed" class="flex items-center space-x-2">
         <div class="text-lg">🎨</div>
         <h3 class="text-sm font-semibold text-gray-700">Node Palette</h3>
       </div>
       <button
         @click="toggleCollapse"
         class="p-1 hover:bg-gray-200 rounded transition-colors"
+        :class="{ 'mx-auto': collapsed }"
         :title="collapsed ? 'Expand palette' : 'Collapse palette'"
       >
         <svg
@@ -195,12 +198,18 @@ const toggleCollapse = () => {
             <span class="text-blue-600">⚡</span>
             <span>→</span>
             <span class="text-purple-600">◆</span>
+            <span class="text-xs text-gray-500">(entry point)</span>
           </div>
           <div class="flex items-center space-x-1">
             <span class="text-purple-600">◆</span>
+            <span class="text-amber-600">[rules]</span>
             <span>→</span>
             <span class="text-amber-600">⚖️</span>
-            <span>or</span>
+          </div>
+          <div class="flex items-center space-x-1">
+            <span class="text-purple-600">◆</span>
+            <span class="text-green-600">[actions]</span>
+            <span>→</span>
             <span class="text-green-600">➕</span>
           </div>
           <div class="flex items-center space-x-1">
@@ -254,13 +263,14 @@ const toggleCollapse = () => {
         @dragstart="onDragStart($event, node.type)"
         @click="handleQuickAdd(node.type)"
       >
-        <span class="text-xl">{{ node.icon }}</span>
+        <span class="text-2xl">{{ node.icon }}</span>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+@import "tailwindcss";
 .node-palette {
   @apply w-64 bg-white border-r border-gray-200 shadow-sm;
   @apply flex flex-col h-full overflow-hidden;
@@ -275,6 +285,10 @@ const toggleCollapse = () => {
 .palette-header {
   @apply flex items-center justify-between px-4 py-3 border-b border-gray-200;
   @apply bg-gray-50;
+}
+
+.palette-collapsed .palette-header {
+  @apply justify-center px-2;
 }
 
 /* Content */
@@ -314,12 +328,12 @@ kbd {
 
 /* Collapsed State */
 .palette-collapsed-content {
-  @apply flex flex-col items-center py-4 space-y-3;
+  @apply flex flex-col items-center justify-start flex-1 space-y-3 px-2 py-4;
 }
 
 .collapsed-node-icon {
   @apply w-12 h-12 flex items-center justify-center rounded-lg border-2;
   @apply cursor-move transition-all duration-200;
-  @apply hover:scale-110 hover:shadow-md;
+  @apply hover:scale-110 hover:shadow-md flex-shrink-0;
 }
 </style>

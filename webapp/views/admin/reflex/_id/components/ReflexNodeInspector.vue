@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import type { Node } from '@vue-flow/core';
+import Multiselect from 'vue-multiselect';
+import 'vue-multiselect/dist/vue-multiselect.css';
 
 /**
  * Reflex Node Inspector Component
@@ -8,15 +10,29 @@ import type { Node } from '@vue-flow/core';
  * Right sidebar for editing node properties
  * Features:
  * - Dynamic property form based on node type
- * - Analysis selectors
+ * - Analysis selectors with multiselect
  * - Operator dropdowns
  * - Live preview
+ * - Filtered analyses for downstream nodes
  */
+
+interface Analysis {
+  uid: string;
+  name: string;
+  keyword?: string;
+}
+
+interface SampleType {
+  uid: string;
+  name: string;
+  abbr?: string;
+}
 
 interface Props {
   selectedNode: Node | null;
-  analyses?: Array<{ uid: string; name: string }>;
-  sampleTypes?: Array<{ uid: string; name: string }>;
+  allAnalyses?: Array<Analysis>; // All analyses (for trigger node)
+  availableAnalyses?: Array<Analysis>; // Filtered analyses (for downstream nodes)
+  sampleTypes?: Array<SampleType>;
 }
 
 interface Emits {
@@ -51,6 +67,54 @@ watch(
  * Computed node type
  */
 const nodeType = computed(() => props.selectedNode?.type || null);
+
+/**
+ * Selected analyses for trigger node (computed for v-model)
+ */
+const selectedAnalyses = computed({
+  get: () => {
+    if (!localData.value.analyses || !props.allAnalyses) return [];
+
+    // localData.analyses is array of UIDs, convert to array of objects
+    return props.allAnalyses.filter((a) =>
+      localData.value.analyses.includes(a.uid)
+    );
+  },
+  set: (selected: Analysis[]) => {
+    localData.value.analyses = selected.map((a) => a.uid);
+    handleUpdate();
+  },
+});
+
+/**
+ * Selected analysis for rule/action nodes (computed for v-model)
+ */
+const selectedAnalysis = computed({
+  get: () => {
+    if (!localData.value.analysis_uid) return null;
+
+    const analyses = nodeType.value === 'trigger' ? props.allAnalyses : props.availableAnalyses;
+    return analyses?.find((a) => a.uid === localData.value.analysis_uid) || null;
+  },
+  set: (selected: Analysis | null) => {
+    localData.value.analysis_uid = selected?.uid || null;
+    handleUpdate();
+  },
+});
+
+/**
+ * Selected sample type (computed for v-model)
+ */
+const selectedSampleType = computed({
+  get: () => {
+    if (!localData.value.sample_type_uid || !props.sampleTypes) return null;
+    return props.sampleTypes.find((st) => st.uid === localData.value.sample_type_uid) || null;
+  },
+  set: (selected: SampleType | null) => {
+    localData.value.sample_type_uid = selected?.uid || null;
+    handleUpdate();
+  },
+});
 
 /**
  * Operators for rule nodes
@@ -164,36 +228,44 @@ const handleDelete = () => {
         <!-- Sample Type -->
         <div class="form-group" v-if="sampleTypes">
           <label class="form-label">Sample Type</label>
-          <select v-model="localData.sample_type_uid" class="form-input" @change="handleUpdate">
-            <option :value="null">Any sample type</option>
-            <option v-for="type in sampleTypes" :key="type.uid" :value="type.uid">
-              {{ type.name }}
-            </option>
-          </select>
+          <Multiselect
+            v-model="selectedSampleType"
+            :options="sampleTypes"
+            label="name"
+            track-by="uid"
+            placeholder="Select sample type (optional)"
+            :searchable="true"
+            :allow-empty="true"
+            :show-labels="false"
+          >
+            <template #noResult>No sample types found</template>
+            <template #noOptions>No sample types available</template>
+          </Multiselect>
+          <p class="form-hint">Leave empty to apply to all sample types</p>
         </div>
 
         <!-- Analyses (Multi-select) -->
-        <div class="form-group" v-if="analyses">
+        <div class="form-group" v-if="allAnalyses">
           <label class="form-label">Monitored Tests *</label>
-          <div class="analyses-list">
-            <div
-              v-for="analysis in analyses"
-              :key="analysis.uid"
-              class="analysis-checkbox"
-            >
-              <input
-                type="checkbox"
-                :id="analysis.uid"
-                :value="analysis"
-                v-model="localData.analyses"
-                @change="handleUpdate"
-                class="mr-2"
-              />
-              <label :for="analysis.uid" class="text-sm text-gray-700 cursor-pointer">
-                {{ analysis.name }}
-              </label>
-            </div>
-          </div>
+          <Multiselect
+            v-model="selectedAnalyses"
+            :options="allAnalyses"
+            label="name"
+            track-by="uid"
+            placeholder="Select tests to monitor"
+            :multiple="true"
+            :searchable="true"
+            :close-on-select="false"
+            :clear-on-select="false"
+            :preserve-search="true"
+            :show-labels="false"
+          >
+            <template #noResult>No tests found</template>
+            <template #noOptions>No tests available</template>
+          </Multiselect>
+          <p class="form-hint">
+            Selected tests will be available in downstream nodes
+          </p>
         </div>
       </div>
 
@@ -238,14 +310,22 @@ const handleDelete = () => {
       <!-- Rule Node Form -->
       <div v-if="nodeType === 'rule'" class="form-section">
         <!-- Analysis Selection -->
-        <div class="form-group" v-if="analyses">
+        <div class="form-group" v-if="availableAnalyses">
           <label class="form-label">Test *</label>
-          <select v-model="localData.analysis_uid" class="form-input" @change="handleUpdate">
-            <option :value="null">Select a test...</option>
-            <option v-for="analysis in analyses" :key="analysis.uid" :value="analysis.uid">
-              {{ analysis.name }}
-            </option>
-          </select>
+          <Multiselect
+            v-model="selectedAnalysis"
+            :options="availableAnalyses"
+            label="name"
+            track-by="uid"
+            placeholder="Select test from trigger"
+            :searchable="true"
+            :allow-empty="false"
+            :show-labels="false"
+          >
+            <template #noResult>No tests found</template>
+            <template #noOptions>No tests selected in trigger node</template>
+          </Multiselect>
+          <p class="form-hint">Only tests from trigger are available</p>
         </div>
 
         <!-- Operator -->
@@ -309,14 +389,22 @@ const handleDelete = () => {
         </div>
 
         <!-- Analysis Selection -->
-        <div class="form-group" v-if="analyses">
+        <div class="form-group" v-if="availableAnalyses">
           <label class="form-label">Test *</label>
-          <select v-model="localData.analysis_uid" class="form-input" @change="handleUpdate">
-            <option :value="null">Select a test...</option>
-            <option v-for="analysis in analyses" :key="analysis.uid" :value="analysis.uid">
-              {{ analysis.name }}
-            </option>
-          </select>
+          <Multiselect
+            v-model="selectedAnalysis"
+            :options="availableAnalyses"
+            label="name"
+            track-by="uid"
+            placeholder="Select test from trigger"
+            :searchable="true"
+            :allow-empty="false"
+            :show-labels="false"
+          >
+            <template #noResult>No tests found</template>
+            <template #noOptions>No tests selected in trigger node</template>
+          </Multiselect>
+          <p class="form-hint">Only tests from trigger are available</p>
         </div>
 
         <!-- Count (for Add actions) -->
@@ -360,6 +448,7 @@ const handleDelete = () => {
 </template>
 
 <style scoped>
+@import "tailwindcss";
 .node-inspector {
   @apply w-80 bg-white border-l border-gray-200 shadow-sm;
   @apply flex flex-col h-full overflow-hidden;

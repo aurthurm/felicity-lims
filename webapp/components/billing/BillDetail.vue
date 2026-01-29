@@ -44,7 +44,6 @@ onMounted(() => {
 
 watch(() => props.testBill, (newVal) => {
   if (newVal?.uid) {
-      console.log("testBill changed", newVal.uid);
       selectTestBill(newVal);
     }
   },

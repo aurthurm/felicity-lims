@@ -314,11 +314,9 @@ export function useEnhancedLaboratory() {
     // Real-time updates (placeholder for WebSocket integration)
     const subscribeLaboratoryUpdates = (laboratoryUid: string, callback: (update: any) => void) => {
         // This would set up WebSocket or Server-Sent Events subscription
-        console.log(`Subscribing to updates for laboratory: ${laboratoryUid}`);
 
         // Return unsubscribe function
         return () => {
-            console.log(`Unsubscribing from updates for laboratory: ${laboratoryUid}`);
         };
     };
 

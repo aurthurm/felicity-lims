@@ -3928,9 +3928,9 @@ export type Mutation = {
   createQcSet: QcSetResponse;
   createQcTemplate: QcTemplateResponse;
   createReferralLaboratory: ReferralLaboratoryResponse;
-  createReflexAction: ReflexActionResponse;
-  createReflexBrain: ReflexBrainResponse;
+  createReflexDecision: ReflexDecisionResponse;
   createReflexRule: ReflexRuleResponse;
+  createReflexTrigger: ReflexTriggerResponse;
   createRejectionReason: RejectionReasonResponse;
   createResultOption: ResultOptionResponse;
   createSampleRelationship: SampleRelationshipResponse;
@@ -3977,7 +3977,8 @@ export type Mutation = {
   deleteGrindStamp: DeleteResponse;
   deleteMessage: DeleteResponse;
   deleteNotice: DeleteResponse;
-  deleteReflexBrain: DeletedItem;
+  deleteReflexDecision: DeleteResponse;
+  deleteReflexTrigger: DeleteResponse;
   deleteSmsTemplate: OperationErrorDeletedItem;
   deleteStockOrder: StockOrderResponse;
   deleteThread: DeleteResponse;
@@ -4006,6 +4007,7 @@ export type Mutation = {
   retractAnalysisResults: AnalysisResultResponse;
   samplesApplyTemplate: ResultedSampleActionResponse;
   saveAbxOrganismResult: AbxOrganismResultType;
+  saveReflexRuleGraph: ReflexRuleResponse;
   sendMessage: MessageResponse;
   setUserActiveLaboratory: UserResponse;
   shipmentManageSamples: ShipmentResponse;
@@ -4098,9 +4100,9 @@ export type Mutation = {
   updateQcLevel: QcLevelResponse;
   updateQcTemplate: QcTemplateResponse;
   updateReferralLaboratory: ReferralLaboratoryResponse;
-  updateReflexAction: ReflexActionResponse;
-  updateReflexBrain: ReflexBrainResponse;
+  updateReflexDecision: ReflexDecisionResponse;
   updateReflexRule: ReflexRuleResponse;
+  updateReflexTrigger: ReflexTriggerResponse;
   updateRejectionReason: RejectionReasonResponse;
   updateResultOption: ResultOptionResponse;
   updateSampleType: SampleTypeResponse;
@@ -4602,18 +4604,18 @@ export type MutationCreateReferralLaboratoryArgs = {
 };
 
 
-export type MutationCreateReflexActionArgs = {
-  payload: ReflexActionInput;
-};
-
-
-export type MutationCreateReflexBrainArgs = {
-  payload: ReflexBrainInput;
+export type MutationCreateReflexDecisionArgs = {
+  payload: ReflexDecisionInput;
 };
 
 
 export type MutationCreateReflexRuleArgs = {
   payload: ReflexRuleInput;
+};
+
+
+export type MutationCreateReflexTriggerArgs = {
+  payload: ReflexTriggerInput;
 };
 
 
@@ -4859,7 +4861,12 @@ export type MutationDeleteNoticeArgs = {
 };
 
 
-export type MutationDeleteReflexBrainArgs = {
+export type MutationDeleteReflexDecisionArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteReflexTriggerArgs = {
   uid: Scalars['String']['input'];
 };
 
@@ -5011,6 +5018,12 @@ export type MutationSamplesApplyTemplateArgs = {
 
 export type MutationSaveAbxOrganismResultArgs = {
   organismUid: Scalars['String']['input'];
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationSaveReflexRuleGraphArgs = {
+  graph: ReflexRuleGraphInput;
   uid: Scalars['String']['input'];
 };
 
@@ -5565,20 +5578,20 @@ export type MutationUpdateReferralLaboratoryArgs = {
 };
 
 
-export type MutationUpdateReflexActionArgs = {
-  payload: ReflexActionInput;
-  uid: Scalars['String']['input'];
-};
-
-
-export type MutationUpdateReflexBrainArgs = {
-  payload: ReflexBrainInput;
+export type MutationUpdateReflexDecisionArgs = {
+  payload: ReflexDecisionInput;
   uid: Scalars['String']['input'];
 };
 
 
 export type MutationUpdateReflexRuleArgs = {
   payload: ReflexRuleInput;
+  uid: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateReflexTriggerArgs = {
+  payload: ReflexTriggerInput;
   uid: Scalars['String']['input'];
 };
 
@@ -6651,8 +6664,11 @@ export type Query = {
   referralLaboratoryAll: Array<ReferralLaboratoryType>;
   referralLaboratoryByCode: ReferralLaboratoryType;
   referralLaboratoryByUid: ReferralLaboratoryType;
+  reflexDecisionByUid?: Maybe<ReflexDecisionType>;
   reflexRuleAll: ReflexRuleCursorPage;
   reflexRuleByUid?: Maybe<ReflexRuleType>;
+  reflexTriggerAll: Array<ReflexTriggerType>;
+  reflexTriggerByUid?: Maybe<ReflexTriggerType>;
   rejectionReasonByUid: RejectionReasonType;
   rejectionReasonsAll: Array<RejectionReasonType>;
   resultMutationByResultUid?: Maybe<ResultMutationType>;
@@ -7951,6 +7967,11 @@ export type QueryReferralLaboratoryByUidArgs = {
 };
 
 
+export type QueryReflexDecisionByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
 export type QueryReflexRuleAllArgs = {
   afterCursor?: InputMaybe<Scalars['String']['input']>;
   beforeCursor?: InputMaybe<Scalars['String']['input']>;
@@ -7961,6 +7982,16 @@ export type QueryReflexRuleAllArgs = {
 
 
 export type QueryReflexRuleByUidArgs = {
+  uid: Scalars['String']['input'];
+};
+
+
+export type QueryReflexTriggerAllArgs = {
+  reflexRuleUid?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryReflexTriggerByUidArgs = {
   uid: Scalars['String']['input'];
 };
 
@@ -8410,156 +8441,121 @@ export type ReferralLaboratoryType = {
   username?: Maybe<Scalars['String']['output']>;
 };
 
-export type ReflexActionInput = {
-  analyses: Array<Scalars['String']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  level: Scalars['Int']['input'];
-  reflexRuleUid: Scalars['String']['input'];
-  sampleTypeUid?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type ReflexActionResponse = OperationError | ReflexActionType;
-
-export type ReflexActionType = {
-  __typename?: 'ReflexActionType';
-  analyses?: Maybe<Array<AnalysisType>>;
-  brains?: Maybe<Array<ReflexBrainType>>;
-  createdAt?: Maybe<Scalars['String']['output']>;
-  createdBy?: Maybe<UserType>;
-  createdByUid?: Maybe<Scalars['String']['output']>;
-  description: Scalars['String']['output'];
-  laboratory?: Maybe<LaboratoryType>;
-  laboratoryUid?: Maybe<Scalars['String']['output']>;
-  level: Scalars['Int']['output'];
-  reflexRule?: Maybe<ReflexRuleType>;
-  reflexRuleUid: Scalars['String']['output'];
-  sampleType?: Maybe<SampleTypeTyp>;
-  sampleTypeUid?: Maybe<Scalars['String']['output']>;
-  uid: Scalars['String']['output'];
-  updatedAt?: Maybe<Scalars['String']['output']>;
-  updatedBy?: Maybe<UserType>;
-  updatedByUid?: Maybe<Scalars['String']['output']>;
-};
-
-export type ReflexAddNewInput = {
+export type ReflexAddAnalysisInput = {
   analysisUid: Scalars['String']['input'];
-  count: Scalars['Int']['input'];
+  count?: Scalars['Int']['input'];
+  posX?: InputMaybe<Scalars['Float']['input']>;
+  posY?: InputMaybe<Scalars['Float']['input']>;
 };
 
-export type ReflexBrainActionInput = {
-  addNew?: InputMaybe<Array<ReflexAddNewInput>>;
-  finalise?: InputMaybe<Array<ReflexFinalInput>>;
-};
-
-export type ReflexBrainActionType = {
-  __typename?: 'ReflexBrainActionType';
-  addNew?: Maybe<Array<ReflexBrainAdditionType>>;
-  createdAt?: Maybe<Scalars['String']['output']>;
-  createdBy?: Maybe<UserType>;
-  createdByUid?: Maybe<Scalars['String']['output']>;
-  description: Scalars['String']['output'];
-  finalise?: Maybe<Array<ReflexBrainFinalType>>;
-  laboratory?: Maybe<LaboratoryType>;
-  laboratoryUid?: Maybe<Scalars['String']['output']>;
-  priority: Scalars['Int']['output'];
-  reflexBrain?: Maybe<ReflexBrainType>;
-  reflexBrainUid: Scalars['String']['output'];
-  uid: Scalars['String']['output'];
-  updatedAt?: Maybe<Scalars['String']['output']>;
-  updatedBy?: Maybe<UserType>;
-  updatedByUid?: Maybe<Scalars['String']['output']>;
-};
-
-export type ReflexBrainAdditionType = {
-  __typename?: 'ReflexBrainAdditionType';
+export type ReflexAddAnalysisType = {
+  __typename?: 'ReflexAddAnalysisType';
   analysis?: Maybe<AnalysisType>;
   analysisUid: Scalars['String']['output'];
   count: Scalars['Int']['output'];
-  laboratory?: Maybe<LaboratoryType>;
-  laboratoryUid?: Maybe<Scalars['String']['output']>;
-  reflexBrainAction?: Maybe<ReflexBrainActionType>;
-  reflexBrainActionUid: Scalars['String']['output'];
-};
-
-export type ReflexBrainConditionCriteriaType = {
-  __typename?: 'ReflexBrainConditionCriteriaType';
-  analysis?: Maybe<AnalysisType>;
-  analysisUid: Scalars['String']['output'];
-  laboratory?: Maybe<LaboratoryType>;
-  laboratoryUid?: Maybe<Scalars['String']['output']>;
-  operator: Scalars['String']['output'];
-  reflexBrainCondition?: Maybe<ReflexBrainConditionType>;
-  reflexBrainConditionUid: Scalars['String']['output'];
-  value: Scalars['String']['output'];
-};
-
-export type ReflexBrainConditionInput = {
-  criteria?: InputMaybe<Array<ReflexBrainCriteriaInput>>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  priority?: InputMaybe<Scalars['Int']['input']>;
-};
-
-export type ReflexBrainConditionType = {
-  __typename?: 'ReflexBrainConditionType';
-  criteria?: Maybe<Array<ReflexBrainConditionCriteriaType>>;
-  description?: Maybe<Scalars['String']['output']>;
-  laboratory?: Maybe<LaboratoryType>;
-  laboratoryUid?: Maybe<Scalars['String']['output']>;
-  priority: Scalars['Int']['output'];
-  reflexBrain: ReflexBrainType;
-  reflexBrainUid: Scalars['String']['output'];
-  uid: Scalars['String']['output'];
-};
-
-export type ReflexBrainCriteriaInput = {
-  analysisUid: Scalars['String']['input'];
-  operator: Scalars['String']['input'];
-  value: Scalars['String']['input'];
-};
-
-export type ReflexBrainFinalType = {
-  __typename?: 'ReflexBrainFinalType';
-  analysis?: Maybe<AnalysisType>;
-  analysisUid: Scalars['String']['output'];
-  laboratory?: Maybe<LaboratoryType>;
-  laboratoryUid?: Maybe<Scalars['String']['output']>;
-  reflexBrainAction?: Maybe<ReflexBrainActionType>;
-  reflexBrainActionUid: Scalars['String']['output'];
-  value: Scalars['String']['output'];
-};
-
-export type ReflexBrainInput = {
-  actions?: InputMaybe<Array<ReflexBrainActionInput>>;
-  conditions?: InputMaybe<Array<ReflexBrainConditionInput>>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  priority?: InputMaybe<Scalars['Int']['input']>;
-  reflexActionUid: Scalars['String']['input'];
-};
-
-export type ReflexBrainResponse = OperationError | ReflexBrainType;
-
-export type ReflexBrainType = {
-  __typename?: 'ReflexBrainType';
-  actions: Array<ReflexBrainActionType>;
-  conditions: Array<ReflexBrainConditionType>;
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
-  description: Scalars['String']['output'];
   laboratory?: Maybe<LaboratoryType>;
   laboratoryUid?: Maybe<Scalars['String']['output']>;
-  priority: Scalars['Int']['output'];
-  reflexAction?: Maybe<ReflexBrainType>;
-  reflexActionUid: Scalars['String']['output'];
+  posX?: Maybe<Scalars['Float']['output']>;
+  posY?: Maybe<Scalars['Float']['output']>;
+  reflexDecision?: Maybe<ReflexDecisionType>;
+  reflexDecisionUid: Scalars['String']['output'];
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
   updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
-export type ReflexFinalInput = {
+export type ReflexDecisionInput = {
+  addAnalyses?: InputMaybe<Array<ReflexAddAnalysisInput>>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  finalizeAnalyses?: InputMaybe<Array<ReflexFinalizeAnalysisInput>>;
+  posX?: InputMaybe<Scalars['Float']['input']>;
+  posY?: InputMaybe<Scalars['Float']['input']>;
+  priority?: Scalars['Int']['input'];
+  reflexTriggerUid: Scalars['String']['input'];
+  ruleGroups?: InputMaybe<Array<ReflexRuleGroupInput>>;
+};
+
+/** Response for reflex decision mutations */
+export type ReflexDecisionResponse = OperationError | ReflexDecisionType;
+
+export type ReflexDecisionType = {
+  __typename?: 'ReflexDecisionType';
+  addAnalyses?: Maybe<Array<ReflexAddAnalysisType>>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  finalizeAnalyses?: Maybe<Array<ReflexFinalizeAnalysisType>>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
+  posX?: Maybe<Scalars['Float']['output']>;
+  posY?: Maybe<Scalars['Float']['output']>;
+  priority: Scalars['Int']['output'];
+  reflexTrigger?: Maybe<ReflexTriggerType>;
+  reflexTriggerUid: Scalars['String']['output'];
+  ruleGroups?: Maybe<Array<ReflexRuleGroupType>>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type ReflexFinalizeAnalysisInput = {
   analysisUid: Scalars['String']['input'];
+  posX?: InputMaybe<Scalars['Float']['input']>;
+  posY?: InputMaybe<Scalars['Float']['input']>;
   value: Scalars['String']['input'];
+};
+
+export type ReflexFinalizeAnalysisType = {
+  __typename?: 'ReflexFinalizeAnalysisType';
+  analysis?: Maybe<AnalysisType>;
+  analysisUid: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
+  posX?: Maybe<Scalars['Float']['output']>;
+  posY?: Maybe<Scalars['Float']['output']>;
+  reflexDecision?: Maybe<ReflexDecisionType>;
+  reflexDecisionUid: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  value: Scalars['String']['output'];
+};
+
+export type ReflexRuleCriteriaInput = {
+  analysisUid: Scalars['String']['input'];
+  operator: Scalars['String']['input'];
+  priority?: Scalars['Int']['input'];
+  value: Scalars['String']['input'];
+};
+
+export type ReflexRuleCriteriaType = {
+  __typename?: 'ReflexRuleCriteriaType';
+  analysis?: Maybe<AnalysisType>;
+  analysisUid: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
+  operator: Scalars['String']['output'];
+  priority: Scalars['Int']['output'];
+  reflexRuleGroup?: Maybe<ReflexRuleGroupType>;
+  reflexRuleGroupUid: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+  value: Scalars['String']['output'];
 };
 
 export type ReflexRuleCursorPage = {
@@ -8576,8 +8572,57 @@ export type ReflexRuleEdge = {
   node: ReflexRuleType;
 };
 
+export type ReflexRuleGraphEdge = {
+  source: Scalars['String']['input'];
+  sourceHandle?: InputMaybe<Scalars['String']['input']>;
+  target: Scalars['String']['input'];
+  targetHandle?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type ReflexRuleGraphInput = {
+  edges: Array<ReflexRuleGraphEdge>;
+  nodes: Array<ReflexRuleGraphNode>;
+};
+
+export type ReflexRuleGraphNode = {
+  data: Scalars['JSON']['input'];
+  id: Scalars['String']['input'];
+  positionX: Scalars['Float']['input'];
+  positionY: Scalars['Float']['input'];
+  type: Scalars['String']['input'];
+};
+
+export type ReflexRuleGroupInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  posX?: InputMaybe<Scalars['Float']['input']>;
+  posY?: InputMaybe<Scalars['Float']['input']>;
+  priority?: Scalars['Int']['input'];
+  rules?: InputMaybe<Array<ReflexRuleCriteriaInput>>;
+};
+
+export type ReflexRuleGroupType = {
+  __typename?: 'ReflexRuleGroupType';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
+  posX?: Maybe<Scalars['Float']['output']>;
+  posY?: Maybe<Scalars['Float']['output']>;
+  priority: Scalars['Int']['output'];
+  reflexDecision?: Maybe<ReflexDecisionType>;
+  reflexDecisionUid: Scalars['String']['output'];
+  rules?: Maybe<Array<ReflexRuleCriteriaType>>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
 export type ReflexRuleInput = {
   description?: InputMaybe<Scalars['String']['input']>;
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
   name: Scalars['String']['input'];
 };
 
@@ -8594,7 +8639,43 @@ export type ReflexRuleType = {
   laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   priority: Scalars['Int']['output'];
-  reflexActions?: Maybe<Array<ReflexActionType>>;
+  reflexTriggers?: Maybe<Array<ReflexTriggerType>>;
+  uid: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['String']['output']>;
+  updatedBy?: Maybe<UserType>;
+  updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type ReflexTriggerInput = {
+  analyses?: InputMaybe<Array<Scalars['String']['input']>>;
+  description: Scalars['String']['input'];
+  level?: Scalars['Int']['input'];
+  posX?: InputMaybe<Scalars['Float']['input']>;
+  posY?: InputMaybe<Scalars['Float']['input']>;
+  reflexRuleUid: Scalars['String']['input'];
+  sampleTypeUid?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Response for reflex trigger mutations */
+export type ReflexTriggerResponse = OperationError | ReflexTriggerType;
+
+export type ReflexTriggerType = {
+  __typename?: 'ReflexTriggerType';
+  analyses?: Maybe<Array<AnalysisType>>;
+  createdAt?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<UserType>;
+  createdByUid?: Maybe<Scalars['String']['output']>;
+  decisions?: Maybe<Array<ReflexDecisionType>>;
+  description: Scalars['String']['output'];
+  laboratory?: Maybe<LaboratoryType>;
+  laboratoryUid?: Maybe<Scalars['String']['output']>;
+  level: Scalars['Int']['output'];
+  posX?: Maybe<Scalars['Float']['output']>;
+  posY?: Maybe<Scalars['Float']['output']>;
+  reflexRule?: Maybe<ReflexRuleType>;
+  reflexRuleUid: Scalars['String']['output'];
+  sampleType?: Maybe<SampleTypeTyp>;
+  sampleTypeUid?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
@@ -8758,7 +8839,7 @@ export type SampleGenealogyNode = {
 
 export type SampleListingType = {
   __typename?: 'SampleListingType';
-  message?: Maybe<Scalars['String']['output']>;
+  message: Scalars['String']['output'];
   samples: Array<SampleType>;
 };
 
@@ -9549,11 +9630,11 @@ export type StockUnitType = {
   createdAt?: Maybe<Scalars['String']['output']>;
   createdBy?: Maybe<UserType>;
   createdByUid?: Maybe<Scalars['String']['output']>;
-  description: Scalars['String']['output'];
+  description?: Maybe<Scalars['String']['output']>;
   laboratory?: Maybe<LaboratoryType>;
   laboratoryUid?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
-  synonyms: Scalars['String']['output'];
+  synonyms?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;

@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
+import {computed, defineAsyncComponent, onMounted, ref, h} from 'vue';
+import { useForm, useField } from 'vee-validate';
+import * as yup from 'yup';
 import { addListsUnique } from '@/utils';
 import useApiUtil from '@/composables/api_util';
 import { AbxClassType, AbxFamilyType, AbxGenusType, AbxKingdomType, AbxOrderType, AbxOrganismType, AbxPhylumType } from "@/types/gql";
@@ -17,22 +19,69 @@ const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as AbxOrganismType;
 const formAction = ref<boolean>(true);
+const currentUid = ref<string | null>(null);
+
+const organismSchema = yup.object({
+  name: yup.string().trim().required('Name is required'),
+});
+
+const { handleSubmit, resetForm, setValues, errors } = useForm({
+  validationSchema: organismSchema,
+  initialValues: {
+    name: '',
+    whonetOrgCode: '',
+    replacedBy: '',
+    taxonomicStatus: '',
+    common: '',
+    organismType: '',
+    anaerobe: false,
+    morphology: '',
+    subkingdomCode: '',
+    familyCode: '',
+    genusGroup: '',
+    genusCode: '',
+    speciesGroup: '',
+    serovarGroup: '',
+    msfGrpClin: '',
+    sctCode: '',
+    sctText: '',
+    gbifTaxonId: '',
+    gbifDatasetId: '',
+    gbifTaxonomicStatus: '',
+    kingdom: null,
+    phylum: null,
+    class: null,
+    order: null,
+    family: null,
+    genus: null,
+    comments: '',
+  },
+});
+const { value: name } = useField<string>('name');
+const { value: whonetOrgCode } = useField<string>('whonetOrgCode');
+const { value: kingdom } = useField<AbxKingdomType | null>('kingdom');
+const { value: phylum } = useField<AbxPhylumType | null>('phylum');
+const { value: classValue } = useField<AbxClassType | null>('class');
+const { value: order } = useField<AbxOrderType | null>('order');
+const { value: family } = useField<AbxFamilyType | null>('family');
+const { value: genus } = useField<AbxGenusType | null>('genus');
+const { value: organismType } = useField<string>('organismType');
+const { value: anaerobe } = useField<boolean>('anaerobe');
 
 const fetchingOrganisms = ref<boolean>(false);
 const abxOrganisms = ref<AbxOrganismType[]>([]);
 const abxKingdoms = ref<AbxKingdomType[]>([]);
 const abxPhylums = ref<AbxPhylumType[]>([]);
-const phylums = computed(() => abxPhylums.value.filter((phylum) => phylum.kingdomUid === form.kingdom?.uid));
+const phylums = computed(() => abxPhylums.value.filter((phylumItem) => phylumItem.kingdomUid === kingdom.value?.uid));
 const abxClasss = ref<AbxClassType[]>([]);
-const classes = computed(() => abxClasss.value.filter((clas_) => clas_.phylumUid === form.phylum?.uid));
+const classes = computed(() => abxClasss.value.filter((clas_) => clas_.phylumUid === phylum.value?.uid));
 const abxOrders = ref<AbxOrderType[]>([]);
-const orders = computed(() => abxOrders.value.filter((order) => order.classUid === form.class?.uid));
+const orders = computed(() => abxOrders.value.filter((orderItem) => orderItem.classUid === classValue.value?.uid));
 const abxFamilys = ref<AbxFamilyType[]>([]);
-const familys = computed(() => abxFamilys.value.filter((family) => family.orderUid === form.order?.uid));
+const familys = computed(() => abxFamilys.value.filter((familyItem) => familyItem.orderUid === order.value?.uid));
 const abxGenuss = ref<AbxGenusType[]>([]);
-const genuses = computed(() => abxGenuss.value.filter((genus) => genus.familyUid === form.family?.uid));
+const genuses = computed(() => abxGenuss.value.filter((genusItem) => genusItem.familyUid === family.value?.uid));
 
 
 let abxParams = reactive({
@@ -361,48 +410,78 @@ function showMoreOrganisms(opts: any): void {
   fetchOrganisms(abxParams);
 }
 
-const resetOrganism = () => Object.assign(form, {}) as AbxOrganismType;
+const resetOrganism = () => resetForm();
 
 function FormManager(create: boolean, obj = {} as AbxOrganismType): void {
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? 'Create' : 'Edit') + ' ' + "Organism";
   if (create) {
-    Object.assign(form, {} as AbxOrganismType);
+    currentUid.value = null;
+    resetForm();
   } else {
-    Object.assign(form, {...obj});
+    currentUid.value = obj.uid ?? null;
+    setValues({
+      name: obj.name ?? '',
+      whonetOrgCode: obj.whonetOrgCode ?? '',
+      replacedBy: obj.replacedBy ?? '',
+      taxonomicStatus: obj.taxonomicStatus ?? '',
+      common: obj.common ?? '',
+      organismType: obj.organismType ?? '',
+      anaerobe: obj.anaerobe ?? false,
+      morphology: obj.morphology ?? '',
+      subkingdomCode: obj.subkingdomCode ?? '',
+      familyCode: obj.familyCode ?? '',
+      genusGroup: obj.genusGroup ?? '',
+      genusCode: obj.genusCode ?? '',
+      speciesGroup: obj.speciesGroup ?? '',
+      serovarGroup: obj.serovarGroup ?? '',
+      msfGrpClin: obj.msfGrpClin ?? '',
+      sctCode: obj.sctCode ?? '',
+      sctText: obj.sctText ?? '',
+      gbifTaxonId: obj.gbifTaxonId ?? '',
+      gbifDatasetId: obj.gbifDatasetId ?? '',
+      gbifTaxonomicStatus: obj.gbifTaxonomicStatus ?? '',
+      kingdom: obj.kingdom ?? null,
+      phylum: obj.phylum ?? null,
+      class: (obj as AbxOrganismType).class ?? (obj as AbxOrganismType).class_ ?? null,
+      order: obj.order ?? null,
+      family: obj.family ?? null,
+      genus: obj.genus ?? null,
+      comments: obj.comments ?? '',
+    });
   }
 }
 
-function saveForm(): void {
+const saveForm = handleSubmit((formValues) => {
   const payload = {
-    name: form?.name,
-    whonetOrgCode: form?.whonetOrgCode,
-    replacedBy: form?.replacedBy,
-    taxonomicStatus: form?.taxonomicStatus,
-    common: form?.common,
-    organismType: form?.organismType,
-    anaerobe: form?.anaerobe,
-    morphology: form?.morphology,
-    subkingdomCode: form?.subkingdomCode,
-    familyCode: form?.familyCode,
-    genusGroup: form?.genusGroup,
-    genusCode: form?.genusCode,
-    speciesGroup: form?.speciesGroup,
-    serovarGroup: form?.serovarGroup,
-    msfGrpClin: form?.msfGrpClin,
-    sctCode: form?.sctCode,
-    sctText: form?.sctText,
-    gbifTaxonId: form?.gbifTaxonId,
-    gbifDatasetId: form?.gbifDatasetId,
-    gbifTaxonomicStatus: form?.gbifTaxonomicStatus,
-    kingdomUid: form?.kingdom?.uid,
-    phylumUid: form?.phylum?.uid,
-    classUid: form?.class?.uid,
-    orderUid: form?.order?.uid,
-    familyUid: form?.family?.uid,
-    genusUid: form?.genus?.uid,
-    comments: form?.comments,
+    name: formValues.name,
+    whonetOrgCode: formValues.whonetOrgCode,
+    replacedBy: formValues.replacedBy,
+    taxonomicStatus: formValues.taxonomicStatus,
+    common: formValues.common,
+    organismType: formValues.organismType,
+    anaerobe: formValues.anaerobe,
+    morphology: formValues.morphology,
+    subkingdomCode: formValues.subkingdomCode,
+    familyCode: formValues.familyCode,
+    genusGroup: formValues.genusGroup,
+    genusCode: formValues.genusCode,
+    speciesGroup: formValues.speciesGroup,
+    serovarGroup: formValues.serovarGroup,
+    msfGrpClin: formValues.msfGrpClin,
+    sctCode: formValues.sctCode,
+    sctText: formValues.sctText,
+    gbifTaxonId: formValues.gbifTaxonId,
+    gbifDatasetId: formValues.gbifDatasetId,
+    gbifTaxonomicStatus: formValues.gbifTaxonomicStatus,
+    kingdomUid: formValues.kingdom?.uid,
+    phylumUid: formValues.phylum?.uid,
+    classUid: formValues.class?.uid,
+    orderUid: formValues.order?.uid,
+    familyUid: formValues.family?.uid,
+    genusUid: formValues.genus?.uid,
+    comments: formValues.comments,
   }
 
   if (formAction.value === true) {
@@ -415,9 +494,9 @@ function saveForm(): void {
     });
   }
 
-  if (formAction.value === false) {
+  if (formAction.value === false && currentUid.value) {
     withClientMutation<EditAbxOrganismMutation, EditAbxOrganismMutationVariables>(
-      EditAbxOrganismDocument, { uid: form.uid!, payload }, 
+      EditAbxOrganismDocument, { uid: currentUid.value, payload }, 
       "updateAbxOrganism"
     ).then((result: any) => {
       if(result) {
@@ -428,7 +507,7 @@ function saveForm(): void {
   }
 
   showModal.value = false;
-}
+});
 
 </script>
 
@@ -475,14 +554,15 @@ function saveForm(): void {
             <span class="text-sm font-medium text-foreground">Name</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              v-model="form.name" 
+              v-model="name" 
               placeholder="Name ..." />
+            <p v-if="errors.name" class="text-sm text-destructive">{{ errors.name }}</p>
           </label>
           <label class="block">
             <span class="text-sm font-medium text-foreground">Whonet Org Code</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              v-model="form.whonetOrgCode" 
+              v-model="whonetOrgCode" 
               placeholder="Whonet Org Code ..." />
           </label>
         </div>
@@ -491,7 +571,7 @@ function saveForm(): void {
           <label class="block">
             <span class="text-sm font-medium text-foreground">Kingdom</span>
             <VueMultiselect
-              v-model="form.kingdom"
+              v-model="kingdom"
               :options="abxKingdoms"
               :searchable="true"
               :close-on-select="true"
@@ -504,7 +584,7 @@ function saveForm(): void {
           <label class="block">
             <span class="text-sm font-medium text-foreground">Phylum</span>
             <VueMultiselect
-              v-model="form.phylum"
+              v-model="phylum"
               :options="phylums"
               :searchable="true"
               :close-on-select="true"
@@ -520,7 +600,7 @@ function saveForm(): void {
           <label class="block">
             <span class="text-sm font-medium text-foreground">Class</span>
             <VueMultiselect
-              v-model="form.class"
+              v-model="classValue"
               :options="classes"
               :searchable="true"
               :close-on-select="true"
@@ -533,7 +613,7 @@ function saveForm(): void {
           <label class="block">
             <span class="text-sm font-medium text-foreground">Order</span>
             <VueMultiselect
-              v-model="form.order"
+              v-model="order"
               :options="orders"
               :searchable="true"
               :close-on-select="true"
@@ -549,7 +629,7 @@ function saveForm(): void {
           <label class="block">
             <span class="text-sm font-medium text-foreground">Family</span>
             <VueMultiselect
-              v-model="form.family"
+              v-model="family"
               :options="familys"
               :searchable="true"
               :close-on-select="true"
@@ -562,7 +642,7 @@ function saveForm(): void {
           <label class="block">
             <span class="text-sm font-medium text-foreground">Genus</span>
             <VueMultiselect
-              v-model="form.genus"
+              v-model="genus"
               :options="genuses"
               :searchable="true"
               :close-on-select="true"
@@ -579,7 +659,7 @@ function saveForm(): void {
             <span class="text-sm font-medium text-foreground">Organism Type</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              v-model="form.organismType" 
+              v-model="organismType" 
               placeholder="Organism Type ..." />
           </label>
           <label class="block">
@@ -587,7 +667,7 @@ function saveForm(): void {
             <input 
               type="checkbox"
               class="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-primary" 
-              v-model="form.anaerobe" />
+              v-model="anaerobe" />
           </label>
         </div>
 

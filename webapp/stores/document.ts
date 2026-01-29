@@ -59,16 +59,12 @@ export const useDocumentStore = defineStore('documents', {
                             .slice(0, 25);
                     }
                 } else {
-                    console.error('Invalid documents data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching documents:', error);
-            }
+            } catch {}
         },
 
         addDocument(document: DocumentType): void {
             if (!document?.uid) {
-                console.error('Invalid document payload:', document);
                 return;
             }
 
@@ -78,7 +74,6 @@ export const useDocumentStore = defineStore('documents', {
 
         updateDocument(document: DocumentType): void {
             if (!document?.uid) {
-                console.error('Invalid document payload:', document);
                 return;
             }
 
@@ -94,7 +89,6 @@ export const useDocumentStore = defineStore('documents', {
 
         deleteDocument(id: string): void {
             if (!id) {
-                console.error('Invalid document ID provided to deleteDocument');
                 return;
             }
 
@@ -104,13 +98,11 @@ export const useDocumentStore = defineStore('documents', {
 
         duplicateDocument(id: string): void {
             if (!id) {
-                console.error('Invalid document ID provided to duplicateDocument');
                 return;
             }
 
             const docToDuplicate = this.documents.find(doc => doc.uid === id);
             if (!docToDuplicate) {
-                console.error('Document not found:', id);
                 return;
             }
 
@@ -142,16 +134,12 @@ export const useDocumentStore = defineStore('documents', {
                 if (result && typeof result === 'object' && 'items' in result) {
                     this.folders = result.items as DocumentFolderType[];
                 } else {
-                    console.error('Invalid folders data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching folders:', error);
-            }
+            } catch {}
         },
 
         addFolder(folder: DocumentFolderType): void {
             if (!folder?.uid) {
-                console.error('Invalid folder payload:', folder);
                 return;
             }
 
@@ -160,7 +148,6 @@ export const useDocumentStore = defineStore('documents', {
 
         deleteFolder(id: string): void {
             if (!id) {
-                console.error('Invalid folder ID provided to deleteFolder');
                 return;
             }
 
@@ -170,7 +157,6 @@ export const useDocumentStore = defineStore('documents', {
 
         updateFolder(folder: DocumentFolderType): void {
             if (!folder?.uid) {
-                console.error('Invalid folder payload:', folder);
                 return;
             }
 
@@ -187,7 +173,6 @@ export const useDocumentStore = defineStore('documents', {
 
         toggleFolderExpanded(id: string): void {
             if (!id) {
-                console.error('Invalid folder ID provided to toggleFolderExpanded');
                 return;
             }
 

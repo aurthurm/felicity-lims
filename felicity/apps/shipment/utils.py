@@ -322,9 +322,9 @@ async def shipment_receive(job_uid: str):
             )
         created = await analysis_result_service.bulk_create(result_schemas)
 
-        # initialise reflex action if exist
-        logger.info("ReflexUtil .... set_reflex_actions ...")
-        await ReflexEngineService().set_reflex_actions(created)
+        # initialise reflex trigger if exist
+        logger.info("ReflexUtil .... set_reflex_triggers ...")
+        await ReflexEngineService().set_reflex_triggers(created)
 
         # ! paramount !
         await asyncio.sleep(1)

@@ -1,5 +1,7 @@
 <script setup lang="ts">
-  import { ref, reactive, computed } from 'vue';
+  import { ref, computed } from 'vue';
+  import { useField, useForm } from 'vee-validate';
+  import * as yup from 'yup';
   import { IQCTemplateType, IQCLevelType } from '@/types/gql';
   import { AddQcTemplateDocument, AddQcTemplateMutation, AddQcTemplateMutationVariables,
     EditQcTemplateDocument, EditQcTemplateMutation, EditQcTemplateMutationVariables } from '@/graphql/operations/analyses.mutations';
@@ -11,8 +13,30 @@
   
   let showModal = ref(false);
   let formTitle = ref('');
-  let form = reactive({}) as IQCTemplateType;
   const formAction = ref(true);
+  const currentUid = ref<string | null>(null);
+
+  const qcTemplateSchema = yup.object({
+    name: yup.string().trim().required('Template name is required'),
+    description: yup.string().trim().nullable(),
+    qcLevels: yup.array().nullable(),
+    departments: yup.array().nullable(),
+  });
+
+  const { handleSubmit, resetForm, setValues } = useForm({
+    validationSchema: qcTemplateSchema,
+    initialValues: {
+      name: '',
+      description: '',
+      qcLevels: [],
+      departments: [],
+    },
+  });
+
+  const { value: name, errorMessage: nameError } = useField<string>('name');
+  const { value: description, errorMessage: descriptionError } = useField<string | null>('description');
+  const { value: qcLevelsField, errorMessage: qcLevelsError } = useField<IQCLevelType[]>('qcLevels');
+  const { value: departments } = useField<any[]>('departments');
 
   analysisStore.fetchQCLevels();
   analysisStore.fetchQCTemplates();
@@ -20,15 +44,14 @@
   const qcTemplates = computed(() => analysisStore.getQCTemplates)
   const qcLevels = computed(() => analysisStore.getQCLevels)
 
-  function addQCTemplate(): void {
-    const payload = { name: form.name, description: form.description, levels: levelsUids(form.qcLevels!), departments: form.departments }
+  function addQCTemplate(payload: { name: string; description: string | null; levels: string[]; departments: any[] }): void {
     withClientMutation<AddQcTemplateMutation, AddQcTemplateMutationVariables>(AddQcTemplateDocument, { payload}, "createQcTemplate")
     .then((result) => analysisStore.addQcTemplate(result));
   }
 
-  function editQCTemplate(): void {
-    const payload = { name: form.name, description: form.description, levels: levelsUids(form.qcLevels!), departments: form.departments }
-    withClientMutation<EditQcTemplateMutation, EditQcTemplateMutationVariables>(EditQcTemplateDocument, { uid: form.uid, payload }, "updateQcTemplate")
+  function editQCTemplate(payload: { name: string; description: string | null; levels: string[]; departments: any[] }): void {
+    if (!currentUid.value) return;
+    withClientMutation<EditQcTemplateMutation, EditQcTemplateMutationVariables>(EditQcTemplateDocument, { uid: currentUid.value, payload }, "updateQcTemplate")
     .then((result) => analysisStore.updateQcTemplate(result));
   }
 
@@ -44,9 +67,23 @@
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "QC Template";
     if (create) {
-      Object.assign(form, { ...({} as IQCTemplateType) });
+      currentUid.value = null;
+      resetForm({
+        values: {
+          name: '',
+          description: '',
+          qcLevels: [],
+          departments: [],
+        },
+      });
     } else {
-      Object.assign(form, { ...obj });
+      currentUid.value = obj.uid ?? null;
+      setValues({
+        name: obj.name ?? '',
+        description: obj.description ?? '',
+        qcLevels: obj.qcLevels ?? [],
+        departments: obj.departments ?? [],
+      });
     }
   }
 
@@ -57,11 +94,17 @@
     return qcLevels.join(", ");
   }
 
-  function saveForm(): void {
-    if (formAction.value === true) addQCTemplate();
-    if (formAction.value === false) editQCTemplate();
+  const saveForm = handleSubmit((values) => {
+    const payload = {
+      name: values.name,
+      description: values.description ?? null,
+      levels: levelsUids(values.qcLevels ?? []),
+      departments: values.departments ?? [],
+    };
+    if (formAction.value === true) addQCTemplate(payload);
+    if (formAction.value === false) editQCTemplate(payload);
     showModal.value = false;
-  }
+  });
 
 </script>
 
@@ -116,33 +159,35 @@
         </template>
 
         <template v-slot:body>
-          <form action="post" class="p-6 space-y-6">
+          <form @submit.prevent="saveForm" class="p-6 space-y-6">
             <div class="space-y-4">
               <div class="space-y-2">
                 <label for="name" class="text-sm font-medium text-muted-foreground">QC Template Name</label>
                 <input
                   id="name"
                   class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
-                  v-model="form.name"
+                  v-model="name"
                   placeholder="Enter template name"
                 />
+                <p v-if="nameError" class="text-sm text-destructive">{{ nameError }}</p>
               </div>
               <div class="space-y-2">
                 <label for="description" class="text-sm font-medium text-muted-foreground">Description</label>
                 <textarea
                   id="description"
                   class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground resize-none"
-                  v-model="form.description"
+                  v-model="description"
                   placeholder="Enter template description"
                   rows="3"
                 />
+                <p v-if="descriptionError" class="text-sm text-destructive">{{ descriptionError }}</p>
               </div>
               <div class="space-y-2">
                 <label for="controlLevels" class="text-sm font-medium text-muted-foreground">Quality Control Sample Levels</label>
                 <select 
                   name="controlLevels" 
                   id="controlLevels" 
-                  v-model="form.qcLevels"
+                  v-model="qcLevelsField"
                   class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring" 
                   multiple
                 >
@@ -157,13 +202,13 @@
                   </option>
                 </select>
                 <p class="text-xs text-muted-foreground mt-1">Hold Ctrl/Cmd to select multiple levels</p>
+                <p v-if="qcLevelsError" class="text-sm text-destructive">{{ qcLevelsError }}</p>
               </div>
             </div>
 
             <div class="pt-4">
               <button
-                type="button"
-                @click.prevent="saveForm()"
+                type="submit"
                 class="w-full inline-flex items-center justify-center bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
               >
                 Save Changes

@@ -48,7 +48,6 @@ export const decrypter = async (encryptedBase64: string, key: string): Promise<a
         const decryptedStr = decrypted.toString(CryptoJS.enc.Utf8);
         return JSON.parse(decryptedStr);
     } catch (err) {
-        console.error('Decryption failed:', err);
         return {};
     }
 };
@@ -76,7 +75,6 @@ export const decrypterSync = (encryptedBase64: string, key: string): any => {
         const decryptedStr = decrypted.toString(CryptoJS.enc.Utf8);
         return JSON.parse(decryptedStr);
     } catch (err) {
-        console.error('Synchronous decryption failed:', err);
         return {};
     }
 };

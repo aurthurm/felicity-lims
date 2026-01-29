@@ -1,5 +1,7 @@
 <script setup lang="ts">
-  import { ref, reactive, computed } from 'vue';
+  import { ref, computed } from 'vue';
+  import { useField, useForm } from 'vee-validate';
+  import * as yup from 'yup';
   import { AnalysisCategoryType } from '@/types/gql';
   import { AddAnalysisCategoryDocument, AddAnalysisCategoryMutation, AddAnalysisCategoryMutationVariables,
     EditAnalysisCategoryDocument, EditAnalysisCategoryMutation, EditAnalysisCategoryMutationVariables } from '@/graphql/operations/analyses.mutations';
@@ -13,33 +15,44 @@
   
   let showModal = ref(false);
   let formTitle = ref('');
-  let form = reactive({} as AnalysisCategoryType);
   const formAction = ref(true);
+  const currentUid = ref<string | null>(null);
+
+  const categorySchema = yup.object({
+    name: yup.string().trim().required('Category name is required'),
+    description: yup.string().trim().nullable(),
+    departmentUid: yup.string().trim().nullable(),
+    active: yup.boolean().default(true),
+  });
+
+  const { handleSubmit, resetForm, setValues } = useForm({
+    validationSchema: categorySchema,
+    initialValues: {
+      name: '',
+      description: '',
+      departmentUid: '',
+      active: true,
+    },
+  });
+
+  const { value: name, errorMessage: nameError } = useField<string>('name');
+  const { value: description, errorMessage: descriptionError } = useField<string | null>('description');
+  const { value: departmentUid, errorMessage: departmentError } = useField<string | null>('departmentUid');
+  const { value: active } = useField<boolean>('active');
 
   const departments = computed<any[]>(() => setupStore.getDepartments);
 
   analysisStore.fetchAnalysesCategories();
   const analysesCategories= computed(() => analysisStore.getAnalysesCategories);
 
-  function addAnalysesCategory(): void {
-    const payload = { 
-      name: form.name, 
-      description: form.description, 
-      departmentUid: form.departmentUid,
-      active: form.active 
-    }
+  function addAnalysesCategory(payload: { name: string; description: string | null; departmentUid: string | null; active: boolean }): void {
     withClientMutation<AddAnalysisCategoryMutation, AddAnalysisCategoryMutationVariables>(AddAnalysisCategoryDocument, { payload }, "createAnalysisCategory")
     .then((result) => analysisStore.addAnalysisCategory(result));
   }
 
-  function editAnalysesCategory(): void {
-    const payload = { 
-      name: form.name, 
-      description: form.description, 
-      departmentUid: form.departmentUid,
-      active: form.active 
-    }
-    withClientMutation<EditAnalysisCategoryMutation, EditAnalysisCategoryMutationVariables>(EditAnalysisCategoryDocument, { uid: form.uid!, payload }, "updateAnalysisCategory")
+  function editAnalysesCategory(payload: { name: string; description: string | null; departmentUid: string | null; active: boolean }): void {
+    if (!currentUid.value) return;
+    withClientMutation<EditAnalysisCategoryMutation, EditAnalysisCategoryMutationVariables>(EditAnalysisCategoryDocument, { uid: currentUid.value, payload }, "updateAnalysisCategory")
     .then((result) => analysisStore.updateAnalysisCategory(result));
   }
 
@@ -48,17 +61,37 @@
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES CATEGORY";
     if (create) {
-      Object.assign(form, {} as AnalysisCategoryType);
+      currentUid.value = null;
+      resetForm({
+        values: {
+          name: '',
+          description: '',
+          departmentUid: '',
+          active: true,
+        },
+      });
     } else {
-      Object.assign(form, { ...obj });
+      currentUid.value = obj?.uid ?? null;
+      setValues({
+        name: obj?.name ?? '',
+        description: obj?.description ?? '',
+        departmentUid: obj?.departmentUid ?? '',
+        active: obj?.active ?? true,
+      });
     }
   }
 
-  function saveForm():void {
-    if (formAction.value === true) addAnalysesCategory();
-    if (formAction.value === false) editAnalysesCategory();
+  const saveForm = handleSubmit((values) => {
+    const payload = {
+      name: values.name,
+      description: values.description ?? null,
+      departmentUid: values.departmentUid ? values.departmentUid : null,
+      active: values.active,
+    };
+    if (formAction.value === true) addAnalysesCategory(payload);
+    if (formAction.value === false) editAnalysesCategory(payload);
     showModal.value = false;
-  }
+  });
 
 </script>
 
@@ -106,43 +139,45 @@
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-6 space-y-6">
+      <form @submit.prevent="saveForm" class="p-6 space-y-6">
         <div class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <label class="col-span-2 space-y-2">
               <span class="text-sm font-medium text-muted-foreground">Category Name</span>
               <input
                 class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="form.name"
+                v-model="name"
                 placeholder="Name ..."
               />
+              <p v-if="nameError" class="text-sm text-destructive">{{ nameError }}</p>
             </label>
             <label class="col-span-1 space-y-2">
               <span class="text-sm font-medium text-muted-foreground">Department</span>
               <select 
                 class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="form.departmentUid"
+                v-model="departmentUid"
               >
                 <option value="">Select Department</option>
                 <option v-for="department in departments" :key="department.uid" :value="department?.uid">{{ department.name }}</option>
               </select>
+              <p v-if="departmentError" class="text-sm text-destructive">{{ departmentError }}</p>
             </label>
             <label class="col-span-2 space-y-2">
               <span class="text-sm font-medium text-muted-foreground">Description</span>
               <textarea
                 class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="form.description"
+                v-model="description"
                 placeholder="Description ..."
                 rows="3"
               />
+              <p v-if="descriptionError" class="text-sm text-destructive">{{ descriptionError }}</p>
             </label>
           </div>
         </div>
 
         <div class="pt-4">
           <button
-            type="button"
-            @click.prevent="saveForm()"
+            type="submit"
             class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
           >
             Save Form

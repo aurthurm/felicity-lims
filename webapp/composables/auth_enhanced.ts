@@ -189,12 +189,10 @@ export function useEnhancedAuth() {
 
     const enableBiometric = async () => {
         // Placeholder for biometric enrollment
-        console.log('Biometric authentication enrollment would be implemented here');
     };
 
     const authenticateWithBiometric = async () => {
         // Placeholder for biometric authentication
-        console.log('Biometric authentication would be implemented here');
     };
 
     // Theme and accessibility helpers
@@ -223,14 +221,12 @@ export function useEnhancedAuth() {
     // Watchers for automatic behaviors
     watch(isSessionExpiring, expiring => {
         if (expiring) {
-            console.warn('Session is expiring soon!');
             // Could show a warning notification here
         }
     });
 
     watch(isTokenExpiring, expiring => {
         if (expiring) {
-            console.warn('Token is expiring soon!');
             // Could show a warning notification here
         }
     });

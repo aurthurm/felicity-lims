@@ -20,7 +20,7 @@ const analysisStore = useAnalysisStore();
 const sampleStore = useSampleStore();
 const { withClientMutation } = useApiUtil();
 
-const templateUid = ref<number>();
+const templateUid = ref<string | null>(null);
 
 worksheetStore.fetchWorkSheetTemplates();
 const worksheet = computed(() => worksheetStore.getWorkSheet);
@@ -45,7 +45,7 @@ const applyTemplate = async () => {
         ).then((result) => {});
       }
     });
-  } catch (error) {}
+  } catch {}
 };
 
 analysisStore.fetchAnalysesServices({
@@ -57,7 +57,7 @@ analysisStore.fetchAnalysesServices({
 sampleStore.fetchSampleTypes();
 analysisStore.fetchQCTemplates();
 const qcTemplates = computed(() => analysisStore.getQCTemplates);
-const qcTemplateUid = ref<number | undefined>(undefined);
+const qcTemplateUid = ref<string | null>(null);
 
 const filterForm = reactive({
   sampleTypeUid: undefined,
@@ -113,7 +113,7 @@ const assignToWorkSheet = () => {
         });
       }
     });
-  } catch (error) {}
+  } catch {}
 };
 
 // Analysis CheckMark Management
@@ -157,7 +157,7 @@ async function toggleCheckAll() {
   );
 }
 
-function areAllChecked(): Boolean {
+function areAllChecked(): boolean {
   return analysisResults?.value?.every((item: AnalysisResultType) => item.checked === true);
 }
 </script>

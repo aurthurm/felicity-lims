@@ -479,7 +479,12 @@ class AnalysisQuery:
         filters = []
         department_uids = await _get_department_uids()
         if department_uids:
-            filters.append({"department_uid__in": department_uids})
+            filters.append({
+                sa.or_: {
+                    "department_uid__in": department_uids,
+                    "department_uid": None
+                }
+            })
         _or_text_ = {}
         if has_value_or_is_truthy(text):
             arg_list = ["name__ilike", "description__ilike", "keyword__ilike"]

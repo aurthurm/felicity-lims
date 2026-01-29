@@ -83,7 +83,7 @@ async function toggleCheckAll() {
   );
 }
 
-function areAllChecked(): Boolean {
+function areAllChecked(): boolean {
   return samples?.value?.every((item: SampleType) => item.checked === true);
 }
 </script>

@@ -86,11 +86,8 @@ export const useStorageStore = defineStore('storage', {
                     this.tree = result as StoreRoomType[];
                     setTree(result as StoreRoomType[]);
                 } else {
-                    console.error('Invalid tree data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching storage tree:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingTree = false;
             }
         },
@@ -108,18 +105,14 @@ export const useStorageStore = defineStore('storage', {
                 if (result && Array.isArray(result)) {
                     this.storeRooms = result as StoreRoomType[];
                 } else {
-                    console.error('Invalid store rooms data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching store rooms:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingStoreRooms = false;
             }
         },
 
         addStoreRoom(payload: StoreRoomType): void {
             if (!payload?.uid) {
-                console.error('Invalid store room payload:', payload);
                 return;
             }
             this.storeRooms.unshift(payload);
@@ -127,7 +120,6 @@ export const useStorageStore = defineStore('storage', {
 
         updateStoreRoom(payload: StoreRoomType): void {
             if (!payload?.uid) {
-                console.error('Invalid store room payload:', payload);
                 return;
             }
             const index = this.storeRooms.findIndex(item => item.uid === payload.uid);
@@ -139,7 +131,6 @@ export const useStorageStore = defineStore('storage', {
         // Storage Locations
         async fetchStorageLocations(storeRoomUid: string): Promise<void> {
             if (!storeRoomUid) {
-                console.error('Store room UID is required');
                 return;
             }
 
@@ -154,18 +145,14 @@ export const useStorageStore = defineStore('storage', {
                 if (result && Array.isArray(result)) {
                     this.storageLocations = result as StorageLocationType[];
                 } else {
-                    console.error('Invalid storage locations data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching storage locations:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingStorageLocations = false;
             }
         },
 
         addStorageLocation(payload: StorageLocationType): void {
             if (!payload?.uid) {
-                console.error('Invalid storage location payload:', payload);
                 return;
             }
             this.storageLocations.unshift(payload);
@@ -173,7 +160,6 @@ export const useStorageStore = defineStore('storage', {
 
         updateStorageLocation(payload: StorageLocationType): void {
             if (!payload?.uid) {
-                console.error('Invalid storage location payload:', payload);
                 return;
             }
             const index = this.storageLocations.findIndex(item => item.uid === payload.uid);
@@ -185,7 +171,6 @@ export const useStorageStore = defineStore('storage', {
         // Storage Sections
         async fetchStorageSections(storageLocationUid: string): Promise<void> {
             if (!storageLocationUid) {
-                console.error('Storage location UID is required');
                 return;
             }
 
@@ -200,18 +185,14 @@ export const useStorageStore = defineStore('storage', {
                 if (result && Array.isArray(result)) {
                     this.storageSections = result as StorageSectionType[];
                 } else {
-                    console.error('Invalid storage sections data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching storage sections:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingStorageSections = false;
             }
         },
 
         addStorageSection(payload: StorageSectionType): void {
             if (!payload?.uid) {
-                console.error('Invalid storage section payload:', payload);
                 return;
             }
             this.storageSections.unshift(payload);
@@ -219,7 +200,6 @@ export const useStorageStore = defineStore('storage', {
 
         updateStorageSection(payload: StorageSectionType): void {
             if (!payload?.uid) {
-                console.error('Invalid storage section payload:', payload);
                 return;
             }
             const index = this.storageSections.findIndex(item => item.uid === payload.uid);
@@ -231,7 +211,6 @@ export const useStorageStore = defineStore('storage', {
         // Storage Containers
         async fetchStorageContainers(storageSectionUid: string): Promise<void> {
             if (!storageSectionUid) {
-                console.error('Storage section UID is required');
                 return;
             }
 
@@ -246,18 +225,14 @@ export const useStorageStore = defineStore('storage', {
                 if (result && Array.isArray(result)) {
                     this.storageContainers = result as StorageContainerType[];
                 } else {
-                    console.error('Invalid storage containers data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching storage containers:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingStorageContainers = false;
             }
         },
 
         addStorageContainer(payload: StorageContainerType): void {
             if (!payload?.uid) {
-                console.error('Invalid storage container payload:', payload);
                 return;
             }
             this.storageContainers.unshift(payload);
@@ -265,7 +240,6 @@ export const useStorageStore = defineStore('storage', {
 
         updateStorageContainer(payload: StorageContainerType): void {
             if (!payload?.uid) {
-                console.error('Invalid storage container payload:', payload);
                 return;
             }
             const index = this.storageContainers.findIndex(item => item.uid === payload.uid);
@@ -276,7 +250,6 @@ export const useStorageStore = defineStore('storage', {
 
         async fetchStorageContainer(uid: string): Promise<void> {
             if (!uid) {
-                console.error('Storage container UID is required');
                 return;
             }
 
@@ -293,11 +266,8 @@ export const useStorageStore = defineStore('storage', {
                     this.storageContainer = result as StorageContainerType;
                     await this.fetchStorageContainerSamples(uid);
                 } else {
-                    console.error('Invalid storage container data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching storage container:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingStorageContainer = false;
             }
         },
@@ -308,7 +278,6 @@ export const useStorageStore = defineStore('storage', {
 
         async fetchStorageContainerSamples(uid: string): Promise<void> {
             if (!uid) {
-                console.error('Storage container UID is required');
                 return;
             }
 
@@ -325,11 +294,8 @@ export const useStorageStore = defineStore('storage', {
                     // Use type assertion to handle the samples property
                     (this.storageContainer as any).samples = result;
                 } else {
-                    console.error('Invalid storage container samples data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching storage container samples:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingStorageContainerSamples = false;
             }
         },

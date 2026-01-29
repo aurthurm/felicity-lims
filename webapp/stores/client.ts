@@ -89,11 +89,8 @@ export const useClientStore = defineStore('client', {
                     this.clientCount = page?.totalCount;
                     this.clientPageInfo = page?.pageInfo || defaultPageInfo;
                 } else {
-                    console.error('Invalid clients data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching clients:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingClients = false;
             }
         },
@@ -111,18 +108,14 @@ export const useClientStore = defineStore('client', {
                     // Use type assertion for the search results
                     this.clients = result as unknown as ClientType[];
                 } else {
-                    console.error('Invalid search results received:', result);
                 }
-            } catch (error) {
-                console.error('Error searching clients:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingClients = false;
             }
         },
 
         async fetchClientByUid(uid: string): Promise<void> {
             if (!uid) {
-                console.error('Invalid client UID provided to fetchClientByUid');
                 return;
             }
 
@@ -143,18 +136,14 @@ export const useClientStore = defineStore('client', {
                         useLocationStore().addDistrict(result.district);
                     }
                 } else {
-                    console.error('Invalid client data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching client by UID:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingClient = false;
             }
         },
 
         addClient(payload: ClientType): void {
             if (!payload?.uid) {
-                console.error('Invalid client payload:', payload);
                 return;
             }
 
@@ -163,7 +152,6 @@ export const useClientStore = defineStore('client', {
 
         updateClient(payload: ClientType): void {
             if (!payload?.uid) {
-                console.error('Invalid client payload:', payload);
                 return;
             }
 
@@ -173,7 +161,6 @@ export const useClientStore = defineStore('client', {
 
         async fetchClientContacts(clientUid: string): Promise<void> {
             if (!clientUid) {
-                console.error('Invalid client UID provided to fetchClientContacts');
                 return;
             }
 
@@ -189,18 +176,14 @@ export const useClientStore = defineStore('client', {
                     // Use type assertion for the client contacts
                     this.clientContacts = result as unknown as ClientContactType[];
                 } else {
-                    console.error('Invalid client contacts data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching client contacts:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingClientContacts = false;
             }
         },
 
         addClientContact(payload: ClientContactType): void {
             if (!payload?.uid) {
-                console.error('Invalid client contact payload:', payload);
                 return;
             }
 
@@ -209,7 +192,6 @@ export const useClientStore = defineStore('client', {
 
         updateClientContact(payload: ClientContactType): void {
             if (!payload?.uid) {
-                console.error('Invalid client contact payload:', payload);
                 return;
             }
 
@@ -218,7 +200,6 @@ export const useClientStore = defineStore('client', {
 
         deleteClientContact(uid: string): void {
             if (!uid) {
-                console.error('Invalid client contact UID provided to deleteClientContact');
                 return;
             }
 

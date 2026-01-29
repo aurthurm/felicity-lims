@@ -1,5 +1,7 @@
 <script setup lang="ts">
-  import { ref, reactive, computed, defineAsyncComponent, onMounted } from 'vue';
+  import { ref, computed, defineAsyncComponent, onMounted } from 'vue';
+  import { useField, useForm } from "vee-validate";
+  import { object, string } from "yup";
   import { InstrumentTypeType } from '@/types/gql'
   import { AddInstrumentTypeDocument, AddInstrumentTypeMutation, AddInstrumentTypeMutationVariables,
     EditInstrumentTypeDocument, EditInstrumentTypeMutation, EditInstrumentTypeMutationVariables } from '@/graphql/operations/instrument.mutations';
@@ -15,32 +17,40 @@
   let showModal = ref(false);
   let formTitle = ref('');
   const formAction = ref(true);
+  const currentUid = ref<string | null>(null);
+
+  const formSchema = object({
+    name: string().required("Name is required"),
+    description: string().nullable(),
+  });
+
+  const { handleSubmit, errors, resetForm, setValues } = useForm({
+    validationSchema: formSchema,
+    initialValues: {
+      name: "",
+      description: "",
+    },
+  });
+
+  const { value: name } = useField<string>("name");
+  const { value: description } = useField<string | null>("description");
 
   onMounted(() => {
     setupStore.fetchInstrumentTypes(); 
   })
    
   const instrumentTypes = computed(() => setupStore.getInstrumentTypes);
-  let instrumentType = reactive({}) as InstrumentTypeType;
-
-  function addInstrumentType(): void {
-    const payload = { name: instrumentType.name, description: instrumentType.description }
+  function addInstrumentType(payload: { name: string; description?: string | null }): void {
     withClientMutation<AddInstrumentTypeMutation, AddInstrumentTypeMutationVariables>(AddInstrumentTypeDocument, { payload }, "createInstrumentType")
     .then((result) => setupStore.addInstrumentType(result));
   }
 
-  function editInstrumentType(): void {
-    const payload = { name: instrumentType.name, description: instrumentType.description }
-    withClientMutation<EditInstrumentTypeMutation, EditInstrumentTypeMutationVariables>(EditInstrumentTypeDocument, { uid: instrumentType.uid, payload }, "updateInstrumentType")
+  function editInstrumentType(payload: { name: string; description?: string | null }): void {
+    if (!currentUid.value) {
+      return;
+    }
+    withClientMutation<EditInstrumentTypeMutation, EditInstrumentTypeMutationVariables>(EditInstrumentTypeDocument, { uid: currentUid.value, payload }, "updateInstrumentType")
     .then((result) => setupStore.updateInstrumentType(result));
-  }
-
-  function selectInstrumentType(obj: InstrumentTypeType): void {
-    Object.assign(instrumentType, { ...obj})
-  }
-  
-  function resetInstrumentType(): void {
-    Object.assign(instrumentType, { ...({} as InstrumentTypeType)})
   }
 
   function FormManager(create: boolean, obj = {} as InstrumentTypeType): void {
@@ -48,17 +58,28 @@
     showModal.value = true;
     formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "INSTRUMENT TYPE";
     if (create) {
-      Object.assign(instrumentType, { ...({} as InstrumentTypeType) });
+      currentUid.value = null;
+      resetForm({
+        values: {
+          name: "",
+          description: "",
+        },
+      });
     } else {
-      Object.assign(instrumentType, { ...obj });
+      currentUid.value = obj.uid ?? null;
+      setValues({
+        name: obj.name ?? "",
+        description: obj.description ?? "",
+      });
     }
   }
 
-  function saveForm():void {
-    if (formAction.value === true) addInstrumentType();
-    if (formAction.value === false) editInstrumentType();
+  const saveForm = handleSubmit((values): void => {
+    const payload = { name: values.name, description: values.description };
+    if (formAction.value === true) addInstrumentType(payload);
+    if (formAction.value === false) editInstrumentType(payload);
     showModal.value = false;
-  }
+  });
   
 </script>
 
@@ -111,17 +132,18 @@
               Name
             </label>
             <input
-              v-model="instrumentType.name"
+              v-model="name"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="Enter instrument type name..."
             />
+            <div class="text-sm text-destructive">{{ errors.name }}</div>
           </div>
           <div class="space-y-2">
             <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
               Description
             </label>
             <textarea
-              v-model="instrumentType.description"
+              v-model="description"
               class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="Enter description..."
             />

@@ -169,7 +169,6 @@ export function useLaboratoryContextMiddleware() {
                 },
             };
         } catch (error) {
-            console.error('Context middleware error:', error);
             throw error;
         }
     };
@@ -195,7 +194,6 @@ export function useLaboratoryContextMiddleware() {
 
             return fetch(url, enhancedOptions);
         } catch (error) {
-            console.error('Context-aware fetch error:', error);
             throw error;
         }
     };
@@ -239,7 +237,7 @@ export function useLaboratoryContextMiddleware() {
                     await new Promise(resolve => {
                         const checkContext = () => {
                             if (!contextStore.context.contextSwitching) {
-                                resolve(void 0);
+                                resolve();
                             } else {
                                 setTimeout(checkContext, 100);
                             }
@@ -260,7 +258,6 @@ export function useLaboratoryContextMiddleware() {
     const setupContextErrorHandling = () => {
         // Listen for context change events
         window.addEventListener('laboratoryContextChanged', (event: any) => {
-            console.log('Laboratory context changed:', event.detail);
 
             // Could trigger cache invalidation or other context-dependent updates
             const customEvent = new CustomEvent('contextDependentDataRefresh', {

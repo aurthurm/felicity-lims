@@ -119,9 +119,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             await countAnalysisGroupsByStatus();
             await countWrksheetGroupsByStatus();
             await countExtrasGroupsByStatus();
-        } catch (error) {
-            console.error('Error fetching overview stats:', error);
-        } finally {
+        } catch {} finally {
             dashboard.value.fetchingOverViewStats = false;
         }
     };
@@ -132,9 +130,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
         try {
             await countAnalysisGroupsByInstrument();
             await getSampleGroupByAction();
-        } catch (error) {
-            console.error('Error fetching resource stats:', error);
-        } finally {
+        } catch {} finally {
             dashboard.value.fetchingResourceStats = false;
         }
     };
@@ -158,11 +154,8 @@ export const useDashBoardStore = defineStore('dashboard', () => {
                     'group'
                 );
             } else {
-                console.error('Invalid sample group by status data received:', result);
             }
-        } catch (error) {
-            console.error('Error counting samples groups by status:', error);
-        }
+        } catch {}
     };
 
     // GET_ANALYSIS_GROUP_BY_STATUS
@@ -180,11 +173,8 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             if (result && typeof result === 'object' && 'data' in result) {
                 dashboard.value.overViewStats.analyses = mapOrder(result.data, ['pending', 'resulted'], 'group');
             } else {
-                console.error('Invalid analysis group by status data received:', result);
             }
-        } catch (error) {
-            console.error('Error counting analysis groups by status:', error);
-        }
+        } catch {}
     };
 
     // GET_WORKSHEET_GROUP_BY_STATUS
@@ -202,11 +192,8 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             if (result && typeof result === 'object' && 'data' in result) {
                 dashboard.value.overViewStats.worksheets = mapOrder(result.data, ['empty', 'awaiting', 'pending'], 'group');
             } else {
-                console.error('Invalid worksheet group by status data received:', result);
             }
-        } catch (error) {
-            console.error('Error counting worksheet groups by status:', error);
-        }
+        } catch {}
     };
 
     // GET_extras_GROUP_BY_STATUS
@@ -228,11 +215,8 @@ export const useDashBoardStore = defineStore('dashboard', () => {
                     'group'
                 );
             } else {
-                console.error('Invalid extras group by status data received:', result);
             }
-        } catch (error) {
-            console.error('Error counting extras groups by status:', error);
-        }
+        } catch {}
     };
 
     // GET_ANALYSIS_GROUP_BY_INSTRUMENT
@@ -253,11 +237,8 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             if (result && typeof result === 'object' && 'data' in result) {
                 dashboard.value.resourceStats.instruments = result.data;
             } else {
-                console.error('Invalid analysis group by instrument data received:', result);
             }
-        } catch (error) {
-            console.error('Error counting analysis groups by instrument:', error);
-        }
+        } catch {}
     };
 
     // GET_SAMPLE_GROUPS_BY_ACTION
@@ -278,11 +259,8 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             if (result && typeof result === 'object' && 'data' in result) {
                 dashboard.value.resourceStats.samples = result.data;
             } else {
-                console.error('Invalid sample group by action data received:', result);
             }
-        } catch (error) {
-            console.error('Error getting sample groups by action:', error);
-        }
+        } catch {}
     };
 
     // GET_SAMPLE_PROCESS_PEFORMANCE
@@ -305,11 +283,8 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             if (result && typeof result === 'object' && 'data' in result) {
                 dashboard.value.peformanceStats.sample = result.data as unknown as Process[];
             } else {
-                console.error('Invalid sample process performance data received:', result);
             }
-        } catch (error) {
-            console.error('Error getting sample process performance:', error);
-        } finally {
+        } catch {} finally {
             dashboard.value.fetchingSampePeformanceStats = false;
         }
     };
@@ -335,11 +310,8 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             if (result && typeof result === 'object' && 'data' in result) {
                 dashboard.value.peformanceStats.analysis = result.data as unknown as Process[];
             } else {
-                console.error('Invalid analysis process performance data received:', result);
             }
-        } catch (error) {
-            console.error('Error getting analysis process performance:', error);
-        } finally {
+        } catch {} finally {
             dashboard.value.fetchingAnalysisPeformanceStats = false;
         }
     };
@@ -359,11 +331,8 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             if (result && typeof result === 'object' && 'data' in result) {
                 dashboard.value.laggards = result.data as unknown as Record<string, LaggardData[]>;
             } else {
-                console.error('Invalid sample laggards data received:', result);
             }
-        } catch (error) {
-            console.error('Error getting sample laggards:', error);
-        } finally {
+        } catch {} finally {
             dashboard.value.fetchingLaggards = false;
         }
     };
@@ -437,7 +406,6 @@ export const useDashBoardStore = defineStore('dashboard', () => {
                 break;
 
             default:
-                console.error('Unknown Range Selected');
                 break;
         }
     };

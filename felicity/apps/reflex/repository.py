@@ -1,13 +1,12 @@
 from felicity.apps.abstract.repository import BaseRepository
 from felicity.apps.reflex.entities import (
-    ReflexAction,
-    ReflexBrain,
-    ReflexBrainAddition,
-    ReflexBrainCondition,
-    ReflexBrainFinal,
     ReflexRule,
-    ReflexBrainConditionCriteria,
-    ReflexBrainAction,
+    ReflexTrigger,
+    ReflexDecision,
+    ReflexRuleGroup,
+    ReflexRuleCriteria,
+    ReflexAddAnalysis,
+    ReflexFinalizeAnalysis, ReflexDecisionExecution,
 )
 
 
@@ -16,38 +15,50 @@ class ReflexRuleRepository(BaseRepository[ReflexRule]):
         super().__init__(ReflexRule)
 
 
-class ReflexBrainAdditionRepository(BaseRepository[ReflexBrainAddition]):
+class ReflexTriggerRepository(BaseRepository[ReflexTrigger]):
+    """Repository for ReflexTrigger"""
+
     def __init__(self) -> None:
-        super().__init__(ReflexBrainAddition)
+        super().__init__(ReflexTrigger)
 
 
-class ReflexBrainFinalRepository(BaseRepository[ReflexBrainFinal]):
+class ReflexDecisionRepository(BaseRepository[ReflexDecision]):
+    """Repository for ReflexDecision"""
+
     def __init__(self) -> None:
-        super().__init__(ReflexBrainFinal)
+        super().__init__(ReflexDecision)
 
 
-class ReflexBrainActionRepository(BaseRepository[ReflexBrainAction]):
+class ReflexRuleGroupRepository(BaseRepository[ReflexRuleGroup]):
+    """Repository for ReflexRuleGroup"""
+
     def __init__(self) -> None:
-        super().__init__(ReflexBrainAction)
+        super().__init__(ReflexRuleGroup)
 
 
-class ReflexBrainConditionRepository(BaseRepository[ReflexBrainCondition]):
+class ReflexRuleCriteriaRepository(BaseRepository[ReflexRuleCriteria]):
+    """Repository for ReflexRuleCriteria"""
+
     def __init__(self) -> None:
-        super().__init__(ReflexBrainCondition)
+        super().__init__(ReflexRuleCriteria)
 
 
-class ReflexBrainConditionCriteriaRepository(
-    BaseRepository[ReflexBrainConditionCriteria]
-):
+class ReflexAddAnalysisRepository(BaseRepository[ReflexAddAnalysis]):
+    """Repository for ReflexAddAnalysis"""
+
     def __init__(self) -> None:
-        super().__init__(ReflexBrainConditionCriteria)
+        super().__init__(ReflexAddAnalysis)
 
 
-class ReflexBrainRepository(BaseRepository[ReflexBrain]):
+class ReflexFinalizeAnalysisRepository(BaseRepository[ReflexFinalizeAnalysis]):
+    """Repository for ReflexFinalizeAnalysis"""
+
     def __init__(self) -> None:
-        super().__init__(ReflexBrain)
+        super().__init__(ReflexFinalizeAnalysis)
 
 
-class ReflexActionRepository(BaseRepository[ReflexAction]):
+class ReflexDecisionExecutionRepository(BaseRepository[ReflexDecisionExecution]):
+    """Repository for ReflexDecisionExecution"""
+
     def __init__(self) -> None:
-        super().__init__(ReflexAction)
+        super().__init__(ReflexDecisionExecution)

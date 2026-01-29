@@ -124,6 +124,7 @@ const levelBadgeColor = computed(() => {
 </template>
 
 <style scoped>
+@import "tailwindcss";
 .trigger-node {
   @apply bg-white border-2 border-blue-400 rounded-lg shadow-md;
   @apply px-4 py-3 min-w-[220px] max-w-[280px];

@@ -86,7 +86,6 @@ export const useUserStore = defineStore('user', {
                 } else {
                     this.groups = [];
                     this.permissions = [];
-                    console.error('Unexpected response format:', resp);
                 }
             } catch (error) {
                 if (error instanceof Error) {
@@ -109,7 +108,7 @@ export const useUserStore = defineStore('user', {
         },
 
         updateGroupsAndPermissions(payload) {
-            let group = payload?.group;
+            const group = payload?.group;
             const index = this.groups?.findIndex(g => g.uid === group?.uid);
             if (index > -1) {
                 group.permissions = group?.permissions || [];

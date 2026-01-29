@@ -1,5 +1,7 @@
 <script setup lang="ts">
-  import { ref, computed, reactive, toRefs, watch, defineAsyncComponent } from 'vue';
+  import { ref, computed, toRefs, watch, defineAsyncComponent } from 'vue';
+  import { useField, useForm } from 'vee-validate';
+  import * as yup from 'yup';
   import { AddResultOptionDocument, AddResultOptionMutation, AddResultOptionMutationVariables,
     EditResultOptionDocument, EditResultOptionMutation, EditResultOptionMutationVariables } from '@/graphql/operations/analyses.mutations';
   import { ResultOptionType } from '@/types/gql';
@@ -35,28 +37,44 @@
   const { analysis } = toRefs(props);
   let showModal = ref(false);
   let formTitle = ref('');
-  let form = reactive({}) as ResultOptionType;
   const formAction = ref(true);
+  const currentUid = ref<string | null>(null);
+
+  const resultOptionSchema = yup.object({
+    optionKey: yup
+      .number()
+      .typeError('Result key must be a number')
+      .integer('Result key must be an integer')
+      .required('Result key is required'),
+    value: yup.string().trim().required('Result value is required'),
+    sampleTypes: yup.array().nullable(),
+  });
+
+  const { handleSubmit, resetForm, setValues } = useForm({
+    validationSchema: resultOptionSchema,
+    initialValues: {
+      optionKey: '',
+      value: '',
+      sampleTypes: [],
+    },
+  });
+
+  const { value: optionKey, errorMessage: optionKeyError } = useField<number | string>('optionKey');
+  const { value: resultValue, errorMessage: resultValueError } = useField<string>('value');
+  const { value: sampleTypesField, errorMessage: sampleTypesError } = useField<any[]>('sampleTypes');
 
   watch(() => props.analysisUid, (anal, prev) => {
       
   })
 
-  function addResultOption(): void {
-      form.optionKey = +form.optionKey!;
-      const payload = { ...form, 
-        analysisUid: analysis?.value?.uid,
-        sampleTypes: form.sampleTypes?.map(item => item.uid),
-      }
+  function addResultOption(payload: { optionKey: number; value: string; sampleTypes: string[]; analysisUid: string }): void {
       withClientMutation<AddResultOptionMutation, AddResultOptionMutationVariables>(AddResultOptionDocument, { payload }, "createResultOption")
       .then((result) => analysisStore.addResultOption(result));
   }
 
-  function editResultOption(): void {
-      const payload = { ...form, analysisUid: analysis?.value?.uid, sampleTypes: form.sampleTypes?.map(item => item.uid) };
-      delete payload['__typename']
-      delete payload['uid']
-      withClientMutation<EditResultOptionMutation, EditResultOptionMutationVariables>(EditResultOptionDocument, { uid : form.uid,  payload }, "updateResultOption")
+  function editResultOption(payload: { optionKey: number; value: string; sampleTypes: string[]; analysisUid: string }): void {
+      if (!currentUid.value) return;
+      withClientMutation<EditResultOptionMutation, EditResultOptionMutationVariables>(EditResultOptionDocument, { uid: currentUid.value, payload }, "updateResultOption")
       .then((result) => analysisStore.updateResultOption(result));
   }
 
@@ -65,17 +83,37 @@
       showModal.value = true;
       formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "RESULT OPTION";
       if (create) {
-          Object.assign(form, { optionKey: null, value: null });
+          currentUid.value = null;
+          resetForm({
+            values: {
+              optionKey: '',
+              value: '',
+              sampleTypes: [],
+            },
+          });
       } else {
-          Object.assign(form, { ...obj });
+          currentUid.value = obj.uid ?? null;
+          setValues({
+            optionKey: obj.optionKey ?? '',
+            value: obj.value ?? '',
+            sampleTypes: obj.sampleTypes ?? [],
+          });
       }
   }
 
-  function saveForm():void {
-      if (formAction.value === true) addResultOption();
-      if (formAction.value === false) editResultOption();
+  const saveForm = handleSubmit((values) => {
+      const analysisUid = analysis?.value?.uid;
+      if (!analysisUid) return;
+      const payload = {
+        optionKey: Number(values.optionKey),
+        value: values.value,
+        sampleTypes: (values.sampleTypes ?? []).map((item: any) => item.uid),
+        analysisUid,
+      };
+      if (formAction.value === true) addResultOption(payload);
+      if (formAction.value === false) editResultOption(payload);
       showModal.value = false;
-  }
+  });
 
 </script>
 
@@ -135,7 +173,7 @@
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-6 space-y-6">
+      <form @submit.prevent="saveForm" class="p-6 space-y-6">
         <div class="space-y-4">
           <div class="grid grid-cols-3 gap-4">
             <label class="space-y-2">
@@ -143,25 +181,27 @@
               <input
                 type="number"
                 class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="form.optionKey"
+                v-model="optionKey"
                 placeholder="Key ..."
               />
+              <p v-if="optionKeyError" class="text-sm text-destructive">{{ optionKeyError }}</p>
             </label>
             <label class="col-span-2 space-y-2">
               <span class="text-sm font-medium text-muted-foreground">Result Value</span>
               <input
                 type="text"
                 class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="form.value"
+                v-model="resultValue"
                 placeholder="Value ..."
               />
+              <p v-if="resultValueError" class="text-sm text-destructive">{{ resultValueError }}</p>
             </label>
           </div>
 
           <div class="space-y-2">
             <span class="text-sm font-medium text-muted-foreground">Sample Types</span>
             <VueMultiselect
-              v-model="form.sampleTypes"
+              v-model="sampleTypesField"
               :options="sampleTypes"
               :multiple="true"
               :searchable="true"
@@ -170,13 +210,13 @@
               class="multiselect-primary"
             >
             </VueMultiselect>
+            <p v-if="sampleTypesError" class="text-sm text-destructive">{{ sampleTypesError }}</p>
           </div>
         </div>
 
         <div class="pt-4">
           <button
-            type="button"
-            @click.prevent="saveForm()"
+            type="submit"
             class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
           >
             Save Form

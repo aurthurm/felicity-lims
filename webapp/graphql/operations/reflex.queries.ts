@@ -31,72 +31,155 @@ export type GetReflexRuleByUidQuery = (
   { __typename?: 'Query' }
   & { reflexRuleByUid?: Types.Maybe<(
     { __typename?: 'ReflexRuleType' }
-    & Pick<Types.ReflexRuleType, 'uid' | 'name' | 'description'>
-    & { reflexActions?: Types.Maybe<Array<(
-      { __typename: 'ReflexActionType' }
-      & Pick<Types.ReflexActionType, 'uid' | 'level' | 'description'>
-      & {
-        analyses?: Types.Maybe<Array<(
-          { __typename: 'AnalysisType' }
-          & Pick<Types.AnalysisType, 'uid' | 'name'>
-        )>>,
-        brains?: Types.Maybe<Array<(
-          { __typename: 'ReflexBrainType' }
-          & Pick<Types.ReflexBrainType, 'uid' | 'description'>
-          & {
-            conditions: Array<(
-              { __typename?: 'ReflexBrainConditionType' }
-              & Pick<Types.ReflexBrainConditionType, 'description' | 'priority'>
-              & { criteria?: Types.Maybe<Array<(
-                { __typename: 'ReflexBrainConditionCriteriaType' }
-                & Pick<Types.ReflexBrainConditionCriteriaType, 'analysisUid' | 'operator' | 'value'>
-                & { analysis?: Types.Maybe<(
-                  { __typename: 'AnalysisType' }
-                  & Pick<Types.AnalysisType, 'uid' | 'name'>
-                  & { resultOptions?: Types.Maybe<Array<(
-                    { __typename: 'ResultOptionType' }
-                    & Pick<Types.ResultOptionType, 'optionKey' | 'value'>
-                  )>> }
-                )> }
-              )>> }
-            )>,
-            actions: Array<(
-              { __typename: 'ReflexBrainActionType' }
-              & {
-                addNew?: Types.Maybe<Array<(
-                  { __typename: 'ReflexBrainAdditionType' }
-                  & Pick<Types.ReflexBrainAdditionType, 'analysisUid' | 'count'>
+    & Pick<
+      Types.ReflexRuleType,
+      | 'uid'
+      | 'name'
+      | 'description'
+      | 'isActive'
+      | 'priority'
+      | 'createdAt'
+      | 'updatedAt'
+    >
+    & {
+      reflexTriggers?: Types.Maybe<Array<(
+        { __typename?: 'ReflexTriggerType' }
+        & Pick<
+          Types.ReflexTriggerType,
+          | 'uid'
+          | 'level'
+          | 'description'
+          | 'sampleTypeUid'
+          | 'posX'
+          | 'posY'
+        >
+        & {
+          sampleType?: Types.Maybe<(
+            { __typename?: 'SampleTypeTyp' }
+            & Pick<Types.SampleTypeTyp, 'uid' | 'name'>
+          )>,
+          analyses?: Types.Maybe<Array<(
+            { __typename?: 'AnalysisType' }
+            & Pick<Types.AnalysisType, 'uid' | 'name'>
+            & { resultOptions?: Types.Maybe<Array<(
+              { __typename?: 'ResultOptionType' }
+              & Pick<Types.ResultOptionType, 'optionKey' | 'value'>
+            )>> }
+          )>>,
+          decisions?: Types.Maybe<Array<(
+            { __typename?: 'ReflexDecisionType' }
+            & Pick<
+              Types.ReflexDecisionType,
+              | 'uid'
+              | 'description'
+              | 'priority'
+              | 'posX'
+              | 'posY'
+            >
+            & {
+              ruleGroups?: Types.Maybe<Array<(
+                { __typename?: 'ReflexRuleGroupType' }
+                & Pick<
+                  Types.ReflexRuleGroupType,
+                  | 'uid'
+                  | 'description'
+                  | 'priority'
+                  | 'posX'
+                  | 'posY'
+                >
+                & { rules?: Types.Maybe<Array<(
+                  { __typename?: 'ReflexRuleCriteriaType' }
+                  & Pick<
+                    Types.ReflexRuleCriteriaType,
+                    | 'uid'
+                    | 'analysisUid'
+                    | 'operator'
+                    | 'value'
+                    | 'priority'
+                  >
                   & { analysis?: Types.Maybe<(
-                    { __typename: 'AnalysisType' }
+                    { __typename?: 'AnalysisType' }
                     & Pick<Types.AnalysisType, 'uid' | 'name'>
                     & { resultOptions?: Types.Maybe<Array<(
-                      { __typename: 'ResultOptionType' }
+                      { __typename?: 'ResultOptionType' }
                       & Pick<Types.ResultOptionType, 'optionKey' | 'value'>
                     )>> }
                   )> }
-                )>>,
-                finalise?: Types.Maybe<Array<(
-                  { __typename: 'ReflexBrainFinalType' }
-                  & Pick<Types.ReflexBrainFinalType, 'analysisUid' | 'value'>
-                  & { analysis?: Types.Maybe<(
-                    { __typename: 'AnalysisType' }
-                    & Pick<Types.AnalysisType, 'name'>
-                    & { resultOptions?: Types.Maybe<Array<(
-                      { __typename: 'ResultOptionType' }
-                      & Pick<Types.ResultOptionType, 'optionKey' | 'value'>
-                    )>> }
-                  )> }
-                )>>,
-              }
-            )>,
-          }
-        )>>,
-        createdBy?: Types.Maybe<(
-          { __typename: 'UserType' }
-          & Pick<Types.UserType, 'firstName' | 'lastName'>
-        )>,
-      }
-    )>> }
+                )>> }
+              )>>,
+              addAnalyses?: Types.Maybe<Array<(
+                { __typename?: 'ReflexAddAnalysisType' }
+                & Pick<
+                  Types.ReflexAddAnalysisType,
+                  | 'uid'
+                  | 'analysisUid'
+                  | 'count'
+                  | 'posX'
+                  | 'posY'
+                >
+                & { analysis?: Types.Maybe<(
+                  { __typename?: 'AnalysisType' }
+                  & Pick<Types.AnalysisType, 'uid' | 'name'>
+                )> }
+              )>>,
+              finalizeAnalyses?: Types.Maybe<Array<(
+                { __typename?: 'ReflexFinalizeAnalysisType' }
+                & Pick<
+                  Types.ReflexFinalizeAnalysisType,
+                  | 'uid'
+                  | 'analysisUid'
+                  | 'value'
+                  | 'posX'
+                  | 'posY'
+                >
+                & { analysis?: Types.Maybe<(
+                  { __typename?: 'AnalysisType' }
+                  & Pick<Types.AnalysisType, 'uid' | 'name'>
+                )> }
+              )>>,
+            }
+          )>>,
+        }
+      )>>,
+      createdBy?: Types.Maybe<(
+        { __typename?: 'UserType' }
+        & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
+      )>,
+      updatedBy?: Types.Maybe<(
+        { __typename?: 'UserType' }
+        & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
+      )>,
+    }
+  )> }
+);
+
+export type GetAllReflexTriggersQueryVariables = Types.Exact<{
+  reflexRuleUid?: Types.InputMaybe<Types.Scalars['String']['input']>;
+}>;
+
+
+export type GetAllReflexTriggersQuery = (
+  { __typename?: 'Query' }
+  & { reflexTriggerAll: Array<(
+    { __typename?: 'ReflexTriggerType' }
+    & Pick<
+      Types.ReflexTriggerType,
+      | 'uid'
+      | 'reflexRuleUid'
+      | 'level'
+      | 'description'
+      | 'sampleTypeUid'
+    >
+    & {
+      analyses?: Types.Maybe<Array<(
+        { __typename?: 'AnalysisType' }
+        & Pick<Types.AnalysisType, 'uid' | 'name'>
+      )>>,
+      decisions?: Types.Maybe<Array<(
+        { __typename?: 'ReflexDecisionType' }
+        & Pick<Types.ReflexDecisionType, 'uid' | 'description' | 'priority'>
+      )>>,
+    }
   )> }
 );
 
@@ -127,22 +210,41 @@ export const GetReflexRuleByUidDocument = gql`
     uid
     name
     description
-    reflexActions {
+    isActive
+    priority
+    reflexTriggers {
       uid
       level
       description
+      sampleTypeUid
+      posX
+      posY
+      sampleType {
+        uid
+        name
+      }
       analyses {
         uid
         name
-        __typename
+        resultOptions {
+          optionKey
+          value
+        }
       }
-      brains {
+      decisions {
         uid
         description
-        conditions {
+        priority
+        posX
+        posY
+        ruleGroups {
+          uid
           description
           priority
-          criteria {
+          posX
+          posY
+          rules {
+            uid
             analysisUid
             analysis {
               uid
@@ -150,60 +252,77 @@ export const GetReflexRuleByUidDocument = gql`
               resultOptions {
                 optionKey
                 value
-                __typename
               }
-              __typename
             }
             operator
             value
-            __typename
+            priority
           }
         }
-        actions {
-          addNew {
-            analysisUid
-            analysis {
-              uid
-              name
-              resultOptions {
-                optionKey
-                value
-                __typename
-              }
-              __typename
-            }
-            count
-            __typename
+        addAnalyses {
+          uid
+          analysisUid
+          analysis {
+            uid
+            name
           }
-          finalise {
-            analysisUid
-            analysis {
-              name
-              resultOptions {
-                optionKey
-                value
-                __typename
-              }
-              __typename
-            }
-            value
-            __typename
-          }
-          __typename
+          count
+          posX
+          posY
         }
-        __typename
+        finalizeAnalyses {
+          uid
+          analysisUid
+          analysis {
+            uid
+            name
+          }
+          value
+          posX
+          posY
+        }
       }
-      createdBy {
-        firstName
-        lastName
-        __typename
-      }
-      __typename
     }
+    createdBy {
+      uid
+      firstName
+      lastName
+    }
+    createdAt
+    updatedBy {
+      uid
+      firstName
+      lastName
+    }
+    updatedAt
   }
 }
     `;
 
 export function useGetReflexRuleByUidQuery(options?: Omit<Urql.UseQueryArgs<never, GetReflexRuleByUidQueryVariables | undefined>, 'query'>) {
   return Urql.useQuery<GetReflexRuleByUidQuery, GetReflexRuleByUidQueryVariables | undefined>({ query: GetReflexRuleByUidDocument, variables: undefined, ...options });
+};
+export const GetAllReflexTriggersDocument = gql`
+    query getAllReflexTriggers($reflexRuleUid: String) {
+  reflexTriggerAll(reflexRuleUid: $reflexRuleUid) {
+    uid
+    reflexRuleUid
+    level
+    description
+    sampleTypeUid
+    analyses {
+      uid
+      name
+    }
+    decisions {
+      uid
+      description
+      priority
+    }
+  }
+}
+    `;
+
+export function useGetAllReflexTriggersQuery(options?: Omit<Urql.UseQueryArgs<never, GetAllReflexTriggersQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetAllReflexTriggersQuery, GetAllReflexTriggersQueryVariables | undefined>({ query: GetAllReflexTriggersDocument, variables: undefined, ...options });
 };

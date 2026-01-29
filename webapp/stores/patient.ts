@@ -67,16 +67,12 @@ export const usePatientStore = defineStore('patient', {
                 if (result && Array.isArray(result)) {
                     this.identifications = result as IdentificationType[];
                 } else {
-                    console.error('Invalid identifications data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching identifications:', error);
-            }
+            } catch {}
         },
 
         addIdentification(payload: IdentificationType): void {
             if (!payload?.uid) {
-                console.error('Invalid identification payload:', payload);
                 return;
             }
 
@@ -85,7 +81,6 @@ export const usePatientStore = defineStore('patient', {
 
         updateIdentification(payload: IdentificationType): void {
             if (!payload?.uid) {
-                console.error('Invalid identification payload:', payload);
                 return;
             }
 
@@ -126,18 +121,14 @@ export const usePatientStore = defineStore('patient', {
                     this.patientCount = page?.totalCount || 0;
                     this.patientPageInfo = page?.pageInfo;
                 } else {
-                    console.error('Invalid patients data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching patients:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingPatients = false;
             }
         },
 
         addPatient(payload: PatientType): void {
             if (!payload?.uid) {
-                console.error('Invalid patient payload:', payload);
                 return;
             }
 
@@ -146,7 +137,6 @@ export const usePatientStore = defineStore('patient', {
 
         updatePatient(payload: PatientType): void {
             if (!payload?.uid) {
-                console.error('Invalid patient payload:', payload);
                 return;
             }
 
@@ -162,7 +152,6 @@ export const usePatientStore = defineStore('patient', {
 
         async fetchPatientByUid(uid: string): Promise<void> {
             if (!uid) {
-                console.error('Invalid UID provided to fetchPatientByUid');
                 return;
             }
 
@@ -177,18 +166,14 @@ export const usePatientStore = defineStore('patient', {
                 if (result && typeof result === 'object') {
                     this.patient = result as PatientType;
                 } else {
-                    console.error('Invalid patient data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching patient:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingPatient = false;
             }
         },
 
         async setPatient(payload: PatientType): Promise<void> {
             if (!payload?.uid) {
-                console.error('Invalid patient payload:', payload);
                 return;
             }
 
@@ -201,7 +186,6 @@ export const usePatientStore = defineStore('patient', {
 
         async searchPatients(queryString: string): Promise<void> {
             if (!queryString) {
-                console.error('Invalid query string provided to searchPatients');
                 return;
             }
 
@@ -216,11 +200,8 @@ export const usePatientStore = defineStore('patient', {
                 if (result && Array.isArray(result)) {
                     this.patients = result as PatientType[];
                 } else {
-                    console.error('Invalid search results received:', result);
                 }
-            } catch (error) {
-                console.error('Error searching patients:', error);
-            }
+            } catch {}
         },
 
         clearSearchQuery(): void {

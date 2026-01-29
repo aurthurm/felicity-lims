@@ -1,4 +1,6 @@
-import { computed, defineComponent, reactive, ref } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
+import { useField, useForm } from 'vee-validate';
+import * as yup from 'yup';
 import {
     AddStockUnitDocument,
     AddStockUnitMutation,
@@ -17,16 +19,28 @@ const StockUnit = defineComponent({
         const inventoryStore = useInventoryStore();
         const { withClientMutation } = useApiUtil();
 
-        let showModal = ref(false);
-        let formTitle = ref('');
-        let form = reactive({} as StockUnitType);
+        const showModal = ref(false);
+        const formTitle = ref('');
         const formAction = ref(true);
+        const currentUid = ref<string | null>(null);
+
+        const unitSchema = yup.object({
+            name: yup.string().trim().required('Stock unit name is required'),
+        });
+
+        const { handleSubmit, resetForm, setValues } = useForm({
+            validationSchema: unitSchema,
+            initialValues: {
+                name: '',
+            },
+        });
+
+        const { value: name, errorMessage: nameError } = useField<string>('name');
 
         inventoryStore.fetchUnits();
         const stockUnits = computed(() => inventoryStore.getUnits);
 
-        function addStockUnit(): void {
-            const payload = { ...form };
+        function addStockUnit(payload: { name: string }): void {
             withClientMutation<AddStockUnitMutation, AddStockUnitMutationVariables>(
                 AddStockUnitDocument,
                 { payload },
@@ -34,14 +48,12 @@ const StockUnit = defineComponent({
             ).then(result => inventoryStore.addUnit(result));
         }
 
-        function editStockUnit(): void {
-            const payload = {
-                name: form.name,
-            };
+        function editStockUnit(payload: { name: string }): void {
+            if (!currentUid.value) return;
             withClientMutation<EditStockUnitMutation, EditStockUnitMutationVariables>(
                 EditStockUnitDocument,
                 {
-                    uid: form.uid,
+                    uid: currentUid.value,
                     payload,
                 },
                 'updateStockUnit'
@@ -53,20 +65,24 @@ const StockUnit = defineComponent({
             formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + 'STOCK UNIT';
             showModal.value = true;
             if (create) {
-                Object.assign(form, {} as StockUnitType);
+                currentUid.value = null;
+                resetForm({ values: { name: '' } });
             } else {
-                Object.assign(form, { ...obj });
+                currentUid.value = obj?.uid ?? null;
+                setValues({ name: obj?.name ?? '' });
             }
         }
 
-        function saveForm(): void {
-            if (formAction.value === true) addStockUnit();
-            if (formAction.value === false) editStockUnit();
+        const saveForm = handleSubmit(values => {
+            const payload = { name: values.name };
+            if (formAction.value === true) addStockUnit(payload);
+            if (formAction.value === false) editStockUnit(payload);
             showModal.value = false;
-        }
+        });
 
         return {
-            form,
+            name,
+            nameError,
             FormManager,
             saveForm,
             stockUnits,
@@ -133,11 +149,14 @@ const StockUnit = defineComponent({
                                                 Stock Unit Name
                                             </label>
                                             <input
-                                                value={this.form.name}
-                                                onChange={e => (this.form.name = e.target.value)}
+                                                value={this.name}
+                                                onChange={e => (this.name = (e.target as HTMLInputElement).value)}
                                                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                 placeholder="Enter unit name..."
                                             />
+                                            {this.nameError ? (
+                                                <p class="text-sm text-destructive">{this.nameError}</p>
+                                            ) : null}
                                         </div>
                                     </div>
                                     <div class="flex justify-end">

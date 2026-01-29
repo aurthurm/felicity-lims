@@ -1,5 +1,7 @@
 import { defineAsyncComponent, defineComponent, PropType, toRefs, watch } from 'vue';
-import { ref, reactive } from 'vue';
+import { ref } from 'vue';
+import { useField, useForm } from 'vee-validate';
+import * as yup from 'yup';
 import {
     AddStockItemVariantDocument,
     AddStockItemVariantMutation,
@@ -34,13 +36,34 @@ const StockItemDetail = defineComponent({
             }
         );
 
-        let showModal = ref(false);
-        let formTitle = ref('');
-        let form = reactive({} as StockItemVariantType);
+        const showModal = ref(false);
+        const formTitle = ref('');
         const formAction = ref(true);
+        const currentUid = ref<string | null>(null);
 
-        function addStockItemVariant(): void {
-            const payload = { ...form } as StockItemVariantInputType;
+        const variantSchema = yup.object({
+            name: yup.string().trim().required('Variant name is required'),
+            description: yup.string().trim().nullable(),
+            minimumLevel: yup.number().nullable(),
+            maximumLevel: yup.number().nullable(),
+        });
+
+        const { handleSubmit, resetForm, setValues } = useForm({
+            validationSchema: variantSchema,
+            initialValues: {
+                name: '',
+                description: '',
+                minimumLevel: '',
+                maximumLevel: '',
+            },
+        });
+
+        const { value: name, errorMessage: nameError } = useField<string>('name');
+        const { value: description, errorMessage: descriptionError } = useField<string | null>('description');
+        const { value: minimumLevel, errorMessage: minimumError } = useField<number | string>('minimumLevel');
+        const { value: maximumLevel, errorMessage: maximumError } = useField<number | string>('maximumLevel');
+
+        function addStockItemVariant(payload: StockItemVariantInputType): void {
             withClientMutation<AddStockItemVariantMutation, AddStockItemVariantMutationVariables>(
                 AddStockItemVariantDocument,
                 { stockItemUid: stockItem?.value?.uid!, payload },
@@ -48,16 +71,11 @@ const StockItemDetail = defineComponent({
             ).then(result => inventoryStore.addItemVariant(result));
         }
 
-        function editStockItemVariant(): void {
-            const payload = {
-                name: form.name,
-                description: form.description,
-                minimumLevel: form.minimumLevel,
-                maximumLevel: form.maximumLevel,
-            } as StockItemVariantInputType;
+        function editStockItemVariant(payload: StockItemVariantInputType): void {
+            if (!currentUid.value) return;
             withClientMutation<EditStockItemVariantMutation, EditStockItemVariantMutationVariables>(
                 EditStockItemVariantDocument,
-                { uid: form.uid, payload },
+                { uid: currentUid.value, payload },
                 'updateStockItemVariant'
             ).then(result => inventoryStore.updateItemVariant(result));
         }
@@ -67,20 +85,47 @@ const StockItemDetail = defineComponent({
             formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + 'A VARIANT';
             showModal.value = true;
             if (create) {
-                Object.assign(form, {} as StockItemVariantType);
+                currentUid.value = null;
+                resetForm({
+                    values: {
+                        name: '',
+                        description: '',
+                        minimumLevel: '',
+                        maximumLevel: '',
+                    },
+                });
             } else {
-                Object.assign(form, { ...obj });
+                currentUid.value = obj?.uid ?? null;
+                setValues({
+                    name: obj?.name ?? '',
+                    description: obj?.description ?? '',
+                    minimumLevel: obj?.minimumLevel ?? '',
+                    maximumLevel: obj?.maximumLevel ?? '',
+                });
             }
         }
 
-        function saveForm(): void {
-            if (formAction.value === true) addStockItemVariant();
-            if (formAction.value === false) editStockItemVariant();
+        const saveForm = handleSubmit(values => {
+            const payload = {
+                name: values.name,
+                description: values.description ?? null,
+                minimumLevel: values.minimumLevel === '' ? null : Number(values.minimumLevel),
+                maximumLevel: values.maximumLevel === '' ? null : Number(values.maximumLevel),
+            } as StockItemVariantInputType;
+            if (formAction.value === true) addStockItemVariant(payload);
+            if (formAction.value === false) editStockItemVariant(payload);
             showModal.value = false;
-        }
+        });
 
         return {
-            form,
+            name,
+            nameError,
+            description,
+            descriptionError,
+            minimumLevel,
+            minimumError,
+            maximumLevel,
+            maximumError,
             FormManager,
             saveForm,
             showModal,
@@ -161,22 +206,28 @@ const StockItemDetail = defineComponent({
                                                     Variant Name
                                                 </label>
                                                 <input
-                                                    value={this.form.name}
-                                                    onChange={e => (this.form.name = e.target.value)}
+                                                    value={this.name}
+                                                    onChange={e => (this.name = (e.target as HTMLInputElement).value)}
                                                     class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                     placeholder="Enter variant name..."
                                                 />
+                                                {this.nameError ? (
+                                                    <p class="text-sm text-destructive">{this.nameError}</p>
+                                                ) : null}
                                             </div>
                                             <div class="space-y-2">
                                                 <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                                                     Description
                                                 </label>
                                                 <textarea
-                                                    value={this.form.description}
-                                                    onChange={e => (this.form.description = e.target.value)}
+                                                    value={this.description}
+                                                    onChange={e => (this.description = (e.target as HTMLTextAreaElement).value)}
                                                     class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                     placeholder="Enter description..."
                                                 />
+                                                {this.descriptionError ? (
+                                                    <p class="text-sm text-destructive">{this.descriptionError}</p>
+                                                ) : null}
                                             </div>
                                             <div class="grid grid-cols-2 gap-4">
                                                 <div class="space-y-2">
@@ -185,12 +236,15 @@ const StockItemDetail = defineComponent({
                                                     </label>
                                                     <input
                                                         type="number"
-                                                        value={this.form.minimumLevel}
-                                                        onChange={e => (this.form.minimumLevel = Number(e.target.value))}
+                                                        value={this.minimumLevel}
+                                                        onChange={e => (this.minimumLevel = (e.target as HTMLInputElement).value)}
                                                         class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                         min="0"
                                                         placeholder="0"
                                                     />
+                                                    {this.minimumError ? (
+                                                        <p class="text-sm text-destructive">{this.minimumError}</p>
+                                                    ) : null}
                                                 </div>
                                                 <div class="space-y-2">
                                                     <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
@@ -198,12 +252,15 @@ const StockItemDetail = defineComponent({
                                                     </label>
                                                     <input
                                                         type="number"
-                                                        value={this.form.maximumLevel}
-                                                        onChange={e => (this.form.maximumLevel = Number(e.target.value))}
+                                                        value={this.maximumLevel}
+                                                        onChange={e => (this.maximumLevel = (e.target as HTMLInputElement).value)}
                                                         class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                         min="0"
                                                         placeholder="0"
                                                     />
+                                                    {this.maximumError ? (
+                                                        <p class="text-sm text-destructive">{this.maximumError}</p>
+                                                    ) : null}
                                                 </div>
                                             </div>
                                         </div>

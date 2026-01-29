@@ -98,7 +98,6 @@
     })
     .catch((err) => {
       error.value = "Failed to get current version"
-      console.error(err)
     })
     .finally(() => (loading.value = false));
   };
@@ -118,7 +117,6 @@
     })
     .catch((err) => {
       error.value = "Failed to get current version"
-      console.error(err)
     })
     .finally(() => (loading.value = false));
   };

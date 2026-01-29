@@ -146,7 +146,6 @@ function setupLaboratoryRouteGuards(
                     await laboratoryStore.switchActiveLaboratory(singleLab.uid);
                     next();
                 } catch (error) {
-                    console.error('Failed to auto-switch to single laboratory:', error);
                     next(config.laboratorySelectionRoute);
                 }
             } else {
@@ -162,7 +161,6 @@ function setupLaboratoryRouteGuards(
         const routeLaboratoryId = to.params.laboratoryId as string;
         if (routeLaboratoryId) {
             if (!guardContext.canAccessLaboratory(routeLaboratoryId)) {
-                console.warn(`Access denied to laboratory: ${routeLaboratoryId}`);
                 next({
                     path: '/unauthorized',
                     query: { reason: 'laboratory_access_denied' },
@@ -175,7 +173,6 @@ function setupLaboratoryRouteGuards(
                 try {
                     await laboratoryStore.switchActiveLaboratory(routeLaboratoryId);
                 } catch (error) {
-                    console.error('Failed to switch to route laboratory:', error);
                     next({
                         path: '/error',
                         query: { reason: 'laboratory_switch_failed' },
@@ -188,7 +185,6 @@ function setupLaboratoryRouteGuards(
         // Handle laboratory permission requirements
         const requiredPermission = to.meta?.laboratoryPermission as string;
         if (requiredPermission && !guardContext.hasLaboratoryPermission(requiredPermission)) {
-            console.warn(`Laboratory permission denied: ${requiredPermission}`);
             next({
                 path: '/unauthorized',
                 query: { reason: 'insufficient_laboratory_permissions' },
@@ -201,7 +197,6 @@ function setupLaboratoryRouteGuards(
         if (requiredLabType && guardContext.activeLaboratory) {
             const labType = guardContext.activeLaboratory.laboratory_type;
             if (labType !== requiredLabType) {
-                console.warn(`Laboratory type mismatch. Required: ${requiredLabType}, Current: ${labType}`);
                 next({
                     path: '/unauthorized',
                     query: { reason: 'laboratory_type_mismatch' },
@@ -244,7 +239,6 @@ function setupLaboratoryAnalytics() {
             const duration = timestamp - laboratoryAccessStartTime;
 
             // Update laboratory usage analytics
-            console.log(`Laboratory ${laboratoryUid} accessed for ${duration}ms`);
 
             // This would typically send analytics to backend
             recordLaboratoryUsage(laboratoryUid, duration);
@@ -305,30 +299,23 @@ function setupRealTimeUpdates() {
             websocket = new WebSocket(wsUrl);
 
             websocket.onopen = () => {
-                console.log('Laboratory WebSocket connected');
             };
 
             websocket.onmessage = event => {
                 try {
                     const update = JSON.parse(event.data);
                     handleRealTimeUpdate(update);
-                } catch (error) {
-                    console.error('Failed to parse WebSocket message:', error);
-                }
+                } catch {}
             };
 
             websocket.onclose = () => {
-                console.log('Laboratory WebSocket disconnected');
                 // Attempt reconnection after delay
                 setTimeout(connectWebSocket, 5000);
             };
 
             websocket.onerror = error => {
-                console.error('Laboratory WebSocket error:', error);
             };
-        } catch (error) {
-            console.error('Failed to connect to Laboratory WebSocket:', error);
-        }
+        } catch {}
     };
 
     const handleRealTimeUpdate = (update: any) => {
@@ -362,7 +349,6 @@ function setupRealTimeUpdates() {
                 break;
 
             default:
-                console.log('Unknown laboratory update type:', update.type);
         }
     };
 
@@ -397,10 +383,7 @@ function setupAutoSwitch() {
             if (targetLab) {
                 try {
                     await laboratoryStore.switchActiveLaboratory(targetLab.uid);
-                    console.log(`Auto-switched to laboratory: ${targetLab.name}`);
-                } catch (error) {
-                    console.error('Auto-switch failed:', error);
-                }
+                } catch {}
             }
         }
     };
@@ -436,7 +419,6 @@ function setupLaboratoryErrorHandling(app: App) {
     app.config.errorHandler = (err, instance, info) => {
         // Check if error is laboratory-related
         if (info.includes('laboratory') || String(err).toLowerCase().includes('laboratory')) {
-            console.error('Laboratory operation error:', err, info);
 
             // Record error in laboratory store
             laboratoryStore.store.errorHistory.unshift({
@@ -460,7 +442,6 @@ function setupLaboratoryErrorHandling(app: App) {
     // Handle unhandled promise rejections
     window.addEventListener('unhandledrejection', event => {
         if (String(event.reason).toLowerCase().includes('laboratory')) {
-            console.error('Unhandled laboratory promise rejection:', event.reason);
 
             laboratoryStore.store.errorHistory.unshift({
                 error: String(event.reason),
@@ -483,7 +464,6 @@ function setupLaboratoryPerformanceMonitoring() {
             for (const entry of list.getEntries()) {
                 if (entry.name.includes('laboratory')) {
                     // Record laboratory-related performance metrics
-                    console.log(`Laboratory performance: ${entry.name} took ${entry.duration}ms`);
 
                     // Update performance metrics in store
                     if (entry.name.includes('load')) {
@@ -519,7 +499,6 @@ function setupLaboratoryPerformanceMonitoring() {
  * Initialize laboratory plugin
  */
 function initializeLaboratoryPlugin() {
-    console.log('Enhanced Laboratory Plugin initialized');
 
     // Set up global laboratory utilities
     (window as any).__laboratoryPlugin = {

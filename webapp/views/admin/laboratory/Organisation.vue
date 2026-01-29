@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref, defineAsyncComponent, computed, watch } from "vue";
+import { ref, defineAsyncComponent, computed, watch } from "vue";
 import { OrganizationType, OrganizationSettingType } from "@/types/gql";
 import { useUserStore } from "@/stores/user";
 import { useSetupStore } from "@/stores/setup";
@@ -8,6 +8,8 @@ import useNotifyToast from "@/composables/alert_toast";
 import axiosInstance from "@/composables/axios";
 import { EditOrganizationMutation, EditOrganizationMutationVariables, EditOrganizationDocument, EditOrganizationSettingDocument, EditOrganizationSettingMutation, EditOrganizationSettingMutationVariables } from "@/graphql/operations/_mutations";
 import { PaymentStatus } from "@/graphql/schema";
+import { useField, useForm } from "vee-validate";
+import { boolean, number, object, string } from "yup";
 
 const FelAsideTabs = defineAsyncComponent(
     () => import("@/components/ui/tabs/FelTabsAside.vue")
@@ -20,44 +22,155 @@ const setupStore = useSetupStore();
 setupStore.fetchOrganization();
 const laboratory = computed(() => setupStore.getOrganization);
 
-const formOrganization = reactive({ ...laboratory.value }) as OrganizationType;
-const formSettings = reactive({ ...laboratory.value?.settings }) as OrganizationSettingType;
+const orgUid = ref<string | null>(null);
+const settingUid = ref<string | null>(null);
+
+const orgSchema = object({
+  name: string().required("Organization name is required"),
+  tagLine: string().nullable(),
+  email: string().nullable(),
+  emailCc: string().nullable(),
+  mobilePhone: string().nullable(),
+  businessPhone: string().nullable(),
+  address: string().nullable(),
+  banking: string().nullable(),
+  qualityStatement: string().nullable(),
+});
+
+const {
+  handleSubmit: handleOrgSubmit,
+  setValues: setOrgValues,
+} = useForm({
+  validationSchema: orgSchema,
+  initialValues: {
+    name: "",
+    tagLine: "",
+    email: "",
+    emailCc: "",
+    mobilePhone: "",
+    businessPhone: "",
+    address: "",
+    banking: "",
+    qualityStatement: "",
+  },
+});
+
+const { value: name } = useField<string>("name");
+const { value: tagLine } = useField<string | null>("tagLine");
+const { value: email } = useField<string | null>("email");
+const { value: emailCc } = useField<string | null>("emailCc");
+const { value: mobilePhone } = useField<string | null>("mobilePhone");
+const { value: businessPhone } = useField<string | null>("businessPhone");
+const { value: address } = useField<string | null>("address");
+const { value: banking } = useField<string | null>("banking");
+const { value: qualityStatement } = useField<string | null>("qualityStatement");
+
+const settingSchema = object({
+  passwordLifetime: number().min(0, "Must be 0 or greater").nullable(),
+  inactivityLogOut: number().min(0, "Must be 0 or greater").nullable(),
+  allowBilling: boolean().nullable(),
+  allowAutoBilling: boolean().nullable(),
+  processBilledOnly: boolean().nullable(),
+  minPaymentStatus: string().nullable(),
+  minPartialPerentage: number().min(0, "Must be 0 or greater").nullable(),
+  currency: string().nullable(),
+  paymentTermsDays: number().min(0, "Must be 0 or greater").nullable(),
+});
+
+const {
+  handleSubmit: handleSettingsSubmit,
+  setValues: setSettingValues,
+} = useForm({
+  validationSchema: settingSchema,
+  initialValues: {
+    passwordLifetime: null,
+    inactivityLogOut: null,
+    allowBilling: false,
+    allowAutoBilling: false,
+    processBilledOnly: false,
+    minPaymentStatus: "",
+    minPartialPerentage: null,
+    currency: "",
+    paymentTermsDays: null,
+  },
+});
+
+const { value: passwordLifetime } = useField<number | null>("passwordLifetime");
+const { value: inactivityLogOut } = useField<number | null>("inactivityLogOut");
+const { value: allowBilling } = useField<boolean | null>("allowBilling");
+const { value: allowAutoBilling } = useField<boolean | null>("allowAutoBilling");
+const { value: processBilledOnly } = useField<boolean | null>("processBilledOnly");
+const { value: minPaymentStatus } = useField<string | null>("minPaymentStatus");
+const { value: minPartialPerentage } = useField<number | null>("minPartialPerentage");
+const { value: currency } = useField<string | null>("currency");
+const { value: paymentTermsDays } = useField<number | null>("paymentTermsDays");
+
 watch(
   () => laboratory.value?.uid,
   (anal, prev) => {
-    Object.assign(formOrganization, laboratory.value);
-    Object.assign(formSettings, laboratory.value?.settings)
+    const currentOrg = laboratory.value as OrganizationType | undefined;
+    orgUid.value = currentOrg?.uid ?? null;
+    settingUid.value = currentOrg?.settings?.uid ?? null;
+    setOrgValues({
+      name: currentOrg?.name ?? "",
+      tagLine: currentOrg?.tagLine ?? "",
+      email: currentOrg?.email ?? "",
+      emailCc: currentOrg?.emailCc ?? "",
+      mobilePhone: currentOrg?.mobilePhone ?? "",
+      businessPhone: currentOrg?.businessPhone ?? "",
+      address: currentOrg?.address ?? "",
+      banking: currentOrg?.banking ?? "",
+      qualityStatement: currentOrg?.qualityStatement ?? "",
+    });
+    setSettingValues({
+      passwordLifetime: currentOrg?.settings?.passwordLifetime ?? null,
+      inactivityLogOut: currentOrg?.settings?.inactivityLogOut ?? null,
+      allowBilling: currentOrg?.settings?.allowBilling ?? false,
+      allowAutoBilling: currentOrg?.settings?.allowAutoBilling ?? false,
+      processBilledOnly: currentOrg?.settings?.processBilledOnly ?? false,
+      minPaymentStatus: currentOrg?.settings?.minPaymentStatus ?? "",
+      minPartialPerentage: currentOrg?.settings?.minPartialPerentage ?? null,
+      currency: currentOrg?.settings?.currency ?? "",
+      paymentTermsDays: currentOrg?.settings?.paymentTermsDays ?? null,
+    });
   }
 );
 
 const { withClientMutation } = useApiUtil();
 let processing = ref(false);
-const saveOrganizationForm = () => {
+const saveOrganizationForm = handleOrgSubmit((values) => {
   processing.value = true;
-  const payload = { ...formOrganization };
-  delete payload["uid"];
-  delete payload["__typename"];
-  delete payload["settings"];
-  withClientMutation<EditOrganizationMutation, EditOrganizationMutationVariables>(EditOrganizationDocument, { uid: formOrganization.uid, payload }, "updateOrganization").then((result) => {
+  if (!orgUid.value) {
+    processing.value = false;
+    return;
+  }
+  const payload = {
+    ...values,
+  } as OrganizationType;
+  withClientMutation<EditOrganizationMutation, EditOrganizationMutationVariables>(EditOrganizationDocument, { uid: orgUid.value, payload }, "updateOrganization").then((result) => {
     setupStore.updateOrganization(result);
     processing.value = false;
     toastSuccess("Organization information updated");
   });
-};
+});
 
 
 
-const saveSettingForm = () => {
+const saveSettingForm = handleSettingsSubmit((values) => {
   processing.value = true;
-  const payload = { ...formSettings };
-  delete payload["uid"];
-  delete payload["__typename"];
-  withClientMutation<EditOrganizationSettingMutation, EditOrganizationSettingMutationVariables>(EditOrganizationSettingDocument, { uid: formSettings.uid, payload }, "updateOrganizationSetting").then((result) => {
+  if (!settingUid.value) {
+    processing.value = false;
+    return;
+  }
+  const payload = {
+    ...values,
+  } as OrganizationSettingType;
+  withClientMutation<EditOrganizationSettingMutation, EditOrganizationSettingMutationVariables>(EditOrganizationSettingDocument, { uid: settingUid.value, payload }, "updateOrganizationSetting").then((result) => {
     setupStore.updateOrganizationSetting(result);
     processing.value = false;
     toastSuccess("Organization settings updated");
   });
-};
+});
 
 userStore.fetchUsers({});
 const users = computed(() => userStore.getUsers);
@@ -156,56 +269,56 @@ const uploadLogo = async () => {
     <section v-if="currentTab === 'general-info'" class="space-y-6">
       <h2 class="text-2xl font-semibold text-foreground">Organization Information</h2>
       <hr class="border-border">
-      <form class="space-y-6">
+      <form class="space-y-6" @submit.prevent="saveOrganizationForm">
         <div class="grid grid-cols-2 gap-6">
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Organization Name</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formOrganization.name" placeholder="Name ..."
+            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="name" placeholder="Name ..."
               :disabled="processing" />
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Tag Line</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formOrganization.tagLine" placeholder="Tag Line ..."
+            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="tagLine" placeholder="Tag Line ..."
               :disabled="processing" />
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Organization Email</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formOrganization.email" placeholder="Name ..."
+            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="email" placeholder="Name ..."
               :disabled="processing" />
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">CC Emails</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formOrganization.emailCc" placeholder="Name ..."
+            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="emailCc" placeholder="Name ..."
               :disabled="processing" />
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Lab Mobile Phone</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formOrganization.mobilePhone" placeholder="Name ..."
+            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="mobilePhone" placeholder="Name ..."
               :disabled="processing" />
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Lab Business Phone</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formOrganization.businessPhone" placeholder="Name ..."
+            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="businessPhone" placeholder="Name ..."
               :disabled="processing" />
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Address</span>
-            <textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formOrganization.address"
+            <textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="address"
               placeholder="Address ..." :disabled="processing" />
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Banking Details</span>
-            <textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formOrganization.banking"
+            <textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="banking"
               placeholder="Banking ..." :disabled="processing" />
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Quality Statement</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formOrganization.qualityStatement" placeholder="Quality Statement ..."
+            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="qualityStatement" placeholder="Quality Statement ..."
               :disabled="processing" />
           </label>
         </div>
         <hr class="border-border" />
-        <button v-show="!processing" type="button" @click.prevent="saveOrganizationForm()"
+        <button v-show="!processing" type="submit"
           class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
           Update
         </button>
@@ -265,16 +378,16 @@ const uploadLogo = async () => {
     <section v-if="currentTab === 'other-settings'" class="space-y-6">
       <h2 class="text-2xl font-semibold text-foreground">Other Settings</h2>
       <hr class="border-border">
-      <form class="space-y-6">
+      <form class="space-y-6" @submit.prevent="saveSettingForm">
         <div class="grid grid-cols-2 gap-6">
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Password Lifetime (days)</span>
-            <input type="number" min="0" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formSettings.passwordLifetime"
+            <input type="number" min="0" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="passwordLifetime"
               placeholder="Name ..." :disabled="processing" />
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Inactivity Auto Logout (minutes)</span>
-            <input type="number" min="0" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="formSettings.inactivityLogOut"
+            <input type="number" min="0" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="inactivityLogOut"
               placeholder="Name ..." :disabled="processing" />
           </label>
           <span class="block col-span-1"></span>
@@ -283,20 +396,20 @@ const uploadLogo = async () => {
         <div class="grid grid-cols-2 gap-6">
           <label class="block col-span-1 space-y-2">
             <div class="flex items-center space-x-2">
-              <input type="checkbox" class="h-4 w-4 rounded border-input text-primary focus:ring-ring" v-model="formSettings.allowBilling" :disabled="processing" />
+              <input type="checkbox" class="h-4 w-4 rounded border-input text-primary focus:ring-ring" v-model="allowBilling" :disabled="processing" />
               <span class="text-sm font-medium text-foreground">Enable Sample Billing</span>
             </div>
           </label>
           <label class="block col-span-1 space-y-2"> 
             <div class="flex items-center space-x-2">
-              <input type="checkbox" class="h-4 w-4 rounded border-input text-primary focus:ring-ring" v-model="formSettings.allowAutoBilling" :disabled="processing" />
+              <input type="checkbox" class="h-4 w-4 rounded border-input text-primary focus:ring-ring" v-model="allowAutoBilling" :disabled="processing" />
               <span class="text-sm font-medium text-foreground">Allow automatic billing on sample registration</span>
             </div>
           </label>
 
           <label class="block col-span-1 space-y-2"> 
             <div class="flex items-center space-x-2">
-              <input type="checkbox" class="h-4 w-4 rounded border-input text-primary focus:ring-ring" v-model="formSettings.processBilledOnly" :disabled="processing" />
+              <input type="checkbox" class="h-4 w-4 rounded border-input text-primary focus:ring-ring" v-model="processBilledOnly" :disabled="processing" />
               <span class="text-sm font-medium text-foreground">Only process billed analysis requests</span>
             </div>
           </label>
@@ -305,7 +418,7 @@ const uploadLogo = async () => {
               Minimum Allowed Payment status
             </label>
             <select 
-              v-model="formSettings.minPaymentStatus"
+              v-model="minPaymentStatus"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <option value="">Select Payment Status</option>
@@ -316,22 +429,22 @@ const uploadLogo = async () => {
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Minimum Partial Percentage</span>
             <input type="number" min="0.0" max="1.0" step="0.1" default="0.5" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-            v-model="formSettings.minPartialPerentage" :disabled="processing" />
+            v-model="minPartialPerentage" :disabled="processing" />
           </label>
 
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Currency</span>
             <input type="text" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-            v-model="formSettings.currency" :disabled="processing" />
+            v-model="currency" :disabled="processing" />
           </label>
           <label class="block col-span-1 space-y-2">
             <span class="text-sm font-medium text-foreground">Payment Terms (Days)</span>
             <input type="number" min="0" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-            v-model="formSettings.paymentTermsDays" :disabled="processing" />
+            v-model="paymentTermsDays" :disabled="processing" />
           </label>
         </div>
         <hr class="border-border" />
-        <button v-show="!processing" type="button" @click.prevent="saveSettingForm()"
+        <button v-show="!processing" type="submit"
           class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
           Update
         </button>

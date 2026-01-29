@@ -120,14 +120,3 @@ services:
       - felicitynet
     extra_hosts:
       - 'host.docker.internal:host-gateway'
-
-  word-processor-server:
-    image: syncfusion/word-processor-server:latest # Pinning image version
-    restart: unless-stopped
-    environment:
-      # Syncfusion license key (should ideally be in .env for production)
-      SYNCFUSION_LICENSE_KEY: ${SYNCFUSION_LICENSE} # Sourced from .env
-    ports:
-      - '127.0.0.1:9994:80' # Expose Word Processor Server on localhost port 9994
-    networks:
-      - felicitynet # Connect to the custom network

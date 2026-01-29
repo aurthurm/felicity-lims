@@ -250,14 +250,3 @@ services:
         condition: service_healthy
       felicity-mongo:
         condition: service_healthy
-
-  word-processor-server:
-    container_name: word-processor-server
-    image: syncfusion/word-processor-server:25.1.42 # Pinned image version
-    restart: unless-stopped
-    environment:
-      SYNCFUSION_LICENSE_KEY: ${SYNCFUSION_LICENSE}
-    ports:
-      - '6002:80' # Expose Word Processor Server on host port 6002
-    networks:
-      - felicitynet

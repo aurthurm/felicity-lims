@@ -96,7 +96,7 @@ const calculateAge = () => {
 }
 
 const patientSchema = yup.object({
-  uid: yup.number().nullable(),
+  uid: yup.string().nullable(),
   clientPatientId: yup.string().required("Client Patient ID is Required"),
   patientId: yup.string().nullable(),
   firstName: yup.string().required("First Name is Required"),
@@ -110,9 +110,15 @@ const patientSchema = yup.object({
   phoneHome: yup.string().nullable(),
   phoneMobile: yup.string().nullable(),
   consentSms: yup.boolean().nullable(),
-  districtUid: yup.number().nullable(),
-  provinceUid: yup.number().nullable(),
-  countryUid: yup.number().nullable(),
+  districtUid: yup.string().nullable(),
+  provinceUid: yup.string().nullable(),
+  countryUid: yup.string().nullable(),
+  identifications: yup.array().of(
+    yup.object({
+      identificationUid: yup.string().required("Identification type is required"),
+      value: yup.string().required("Identification value is required"),
+    })
+  ).nullable(),
 });
 
 const { handleSubmit, errors } = useForm({
@@ -174,7 +180,9 @@ function addPatient(payload: PatientType) {
         lastName: payload.lastName,
         age: payload.age,
         gender: payload.gender,
-        dateOfBirth: formatDate(payload.dateOfBirth, "YYYY-MM-DD HH:mm"),
+        dateOfBirth: payload.dateOfBirth
+          ? formatDate(payload.dateOfBirth, "YYYY-MM-DD HH:mm")
+          : null,
         ageDobEstimated: payload.ageDobEstimated,
         clientUid: payload.client.uid!,
         phoneMobile: payload.phoneMobile,
@@ -236,7 +244,7 @@ function getDistricts(event: Event) {
 }
 
 function addIdentifier() {
-  identifications.value.push({ identificationUid: "12122", value: "" })
+  identifications.value.push({ identificationUid: "", value: "" })
 }
 
 function removeIdentifier(index: number) {

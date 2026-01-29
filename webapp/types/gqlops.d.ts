@@ -486,7 +486,7 @@ export type PublishSamplesMutationVariables = Exact<{
 export type PublishSamplesMutation = { __typename?: 'Mutation', publishSamples:
     | { __typename: 'OperationError', error: string, suggestion?: string | null }
     | { __typename?: 'OperationSuccess' }
-    | { __typename: 'SampleListingType', message?: string | null, samples: Array<{ __typename?: 'SampleType', uid: string, status?: string | null, publishedByUid?: string | null, datePublished?: never | null }> }
+    | { __typename: 'SampleListingType', message: string, samples: Array<{ __typename?: 'SampleType', uid: string, status?: string | null, publishedByUid?: string | null, datePublished?: never | null }> }
    };
 
 export type PrintSamplesMutationVariables = Exact<{
@@ -3352,57 +3352,81 @@ export type EditReflexRuleMutationVariables = Exact<{
 
 export type EditReflexRuleMutation = { __typename?: 'Mutation', updateReflexRule:
     | { __typename: 'OperationError', error: string, suggestion?: string | null }
-    | { __typename: 'ReflexRuleType', uid: string, name: string, description: string, createdByUid?: string | null, createdAt?: string | null }
+    | { __typename: 'ReflexRuleType', uid: string, name: string, description: string, isActive: boolean, createdByUid?: string | null, createdAt?: string | null }
    };
 
-export type AddReflexActionMutationVariables = Exact<{
-  payload: ReflexActionInput;
+export type CreateReflexDecisionMutationVariables = Exact<{
+  payload: ReflexDecisionInput;
 }>;
 
 
-export type AddReflexActionMutation = { __typename?: 'Mutation', createReflexAction:
+export type CreateReflexDecisionMutation = { __typename?: 'Mutation', createReflexDecision:
     | { __typename: 'OperationError', error: string, suggestion?: string | null }
-    | { __typename: 'ReflexActionType', uid: string, description: string, level: number, analyses?: Array<{ __typename?: 'AnalysisType', uid: string, name: string }> | null, reflexRule?: { __typename?: 'ReflexRuleType', uid: string, name: string } | null }
+    | { __typename?: 'ReflexDecisionType', uid: string, reflexTriggerUid: string, description?: string | null, priority: number, ruleGroups?: Array<{ __typename?: 'ReflexRuleGroupType', uid: string, description?: string | null, priority: number, rules?: Array<{ __typename?: 'ReflexRuleCriteriaType', uid: string, analysisUid: string, operator: string, value: string, priority: number }> | null }> | null, addAnalyses?: Array<{ __typename?: 'ReflexAddAnalysisType', uid: string, analysisUid: string, count: number }> | null, finalizeAnalyses?: Array<{ __typename?: 'ReflexFinalizeAnalysisType', uid: string, analysisUid: string, value: string }> | null }
    };
 
-export type EditReflexActionMutationVariables = Exact<{
+export type UpdateReflexDecisionMutationVariables = Exact<{
   uid: Scalars['String']['input'];
-  payload: ReflexActionInput;
+  payload: ReflexDecisionInput;
 }>;
 
 
-export type EditReflexActionMutation = { __typename?: 'Mutation', updateReflexAction:
+export type UpdateReflexDecisionMutation = { __typename?: 'Mutation', updateReflexDecision:
     | { __typename: 'OperationError', error: string, suggestion?: string | null }
-    | { __typename: 'ReflexActionType', uid: string, description: string, level: number, analyses?: Array<{ __typename?: 'AnalysisType', uid: string, name: string }> | null, reflexRule?: { __typename?: 'ReflexRuleType', uid: string, name: string } | null }
+    | { __typename?: 'ReflexDecisionType', uid: string, reflexTriggerUid: string, description?: string | null, priority: number, ruleGroups?: Array<{ __typename?: 'ReflexRuleGroupType', uid: string, description?: string | null, priority: number, rules?: Array<{ __typename?: 'ReflexRuleCriteriaType', uid: string, analysisUid: string, operator: string, value: string, priority: number }> | null }> | null, addAnalyses?: Array<{ __typename?: 'ReflexAddAnalysisType', uid: string, analysisUid: string, count: number }> | null, finalizeAnalyses?: Array<{ __typename?: 'ReflexFinalizeAnalysisType', uid: string, analysisUid: string, value: string }> | null }
    };
 
-export type AddReflexBrainMutationVariables = Exact<{
-  payload: ReflexBrainInput;
+export type CreateReflexTriggerMutationVariables = Exact<{
+  payload: ReflexTriggerInput;
 }>;
 
 
-export type AddReflexBrainMutation = { __typename?: 'Mutation', createReflexBrain:
+export type CreateReflexTriggerMutation = { __typename?: 'Mutation', createReflexTrigger:
     | { __typename: 'OperationError', error: string, suggestion?: string | null }
-    | { __typename: 'ReflexBrainType', uid: string, description: string, conditions: Array<{ __typename?: 'ReflexBrainConditionType', description?: string | null, priority: number, criteria?: Array<{ __typename: 'ReflexBrainConditionCriteriaType', analysisUid: string, operator: string, value: string, analysis?: { __typename: 'AnalysisType', uid: string, name: string, resultOptions?: Array<{ __typename: 'ResultOptionType', optionKey: number, value: string }> | null } | null }> | null }>, actions: Array<{ __typename: 'ReflexBrainActionType', addNew?: Array<{ __typename: 'ReflexBrainAdditionType', analysisUid: string, count: number, analysis?: { __typename: 'AnalysisType', uid: string, name: string, resultOptions?: Array<{ __typename: 'ResultOptionType', optionKey: number, value: string }> | null } | null }> | null, finalise?: Array<{ __typename: 'ReflexBrainFinalType', analysisUid: string, value: string, analysis?: { __typename: 'AnalysisType', name: string, resultOptions?: Array<{ __typename: 'ResultOptionType', optionKey: number, value: string }> | null } | null }> | null }> }
+    | { __typename?: 'ReflexTriggerType', uid: string, reflexRuleUid: string, level: number, description: string, sampleTypeUid?: string | null, posX?: number | null, posY?: number | null, analyses?: Array<{ __typename?: 'AnalysisType', uid: string, name: string }> | null }
    };
 
-export type EditReflexBrainMutationVariables = Exact<{
+export type UpdateReflexTriggerMutationVariables = Exact<{
   uid: Scalars['String']['input'];
-  payload: ReflexBrainInput;
+  payload: ReflexTriggerInput;
 }>;
 
 
-export type EditReflexBrainMutation = { __typename?: 'Mutation', updateReflexBrain:
+export type UpdateReflexTriggerMutation = { __typename?: 'Mutation', updateReflexTrigger:
     | { __typename: 'OperationError', error: string, suggestion?: string | null }
-    | { __typename: 'ReflexBrainType', uid: string, description: string, conditions: Array<{ __typename?: 'ReflexBrainConditionType', description?: string | null, priority: number, criteria?: Array<{ __typename: 'ReflexBrainConditionCriteriaType', analysisUid: string, operator: string, value: string, analysis?: { __typename: 'AnalysisType', uid: string, name: string, resultOptions?: Array<{ __typename: 'ResultOptionType', optionKey: number, value: string }> | null } | null }> | null }>, actions: Array<{ __typename: 'ReflexBrainActionType', addNew?: Array<{ __typename: 'ReflexBrainAdditionType', analysisUid: string, count: number, analysis?: { __typename: 'AnalysisType', uid: string, name: string, resultOptions?: Array<{ __typename: 'ResultOptionType', optionKey: number, value: string }> | null } | null }> | null, finalise?: Array<{ __typename: 'ReflexBrainFinalType', analysisUid: string, value: string, analysis?: { __typename: 'AnalysisType', name: string, resultOptions?: Array<{ __typename: 'ResultOptionType', optionKey: number, value: string }> | null } | null }> | null }> }
+    | { __typename?: 'ReflexTriggerType', uid: string, reflexRuleUid: string, level: number, description: string, sampleTypeUid?: string | null, analyses?: Array<{ __typename?: 'AnalysisType', uid: string, name: string }> | null }
    };
 
-export type DeleteReflexBrainMutationVariables = Exact<{
+export type DeleteReflexTriggerMutationVariables = Exact<{
   uid: Scalars['String']['input'];
 }>;
 
 
-export type DeleteReflexBrainMutation = { __typename?: 'Mutation', deleteReflexBrain: { __typename: 'DeletedItem', uid: string } };
+export type DeleteReflexTriggerMutation = { __typename?: 'Mutation', deleteReflexTrigger:
+    | { __typename?: 'DeletedItem', uid: string }
+    | { __typename: 'OperationError', error: string, suggestion?: string | null }
+   };
+
+export type DeleteReflexDecisionMutationVariables = Exact<{
+  uid: Scalars['String']['input'];
+}>;
+
+
+export type DeleteReflexDecisionMutation = { __typename?: 'Mutation', deleteReflexDecision:
+    | { __typename?: 'DeletedItem', uid: string }
+    | { __typename: 'OperationError', error: string, suggestion?: string | null }
+   };
+
+export type SaveReflexRuleGraphMutationVariables = Exact<{
+  uid: Scalars['String']['input'];
+  graph: ReflexRuleGraphInput;
+}>;
+
+
+export type SaveReflexRuleGraphMutation = { __typename?: 'Mutation', saveReflexRuleGraph:
+    | { __typename: 'OperationError', error: string, suggestion?: string | null }
+    | { __typename?: 'ReflexRuleType', uid: string, name: string, description: string, isActive: boolean, priority: number, reflexTriggers?: Array<{ __typename?: 'ReflexTriggerType', uid: string, level: number, description: string, posX?: number | null, posY?: number | null, analyses?: Array<{ __typename?: 'AnalysisType', uid: string, name: string }> | null, decisions?: Array<{ __typename?: 'ReflexDecisionType', uid: string, description?: string | null, priority: number, posX?: number | null, posY?: number | null, ruleGroups?: Array<{ __typename?: 'ReflexRuleGroupType', uid: string, description?: string | null, priority: number, posX?: number | null, posY?: number | null, rules?: Array<{ __typename?: 'ReflexRuleCriteriaType', uid: string, analysisUid: string, operator: string, value: string, priority: number }> | null }> | null, addAnalyses?: Array<{ __typename?: 'ReflexAddAnalysisType', uid: string, analysisUid: string, count: number, posX?: number | null, posY?: number | null }> | null, finalizeAnalyses?: Array<{ __typename?: 'ReflexFinalizeAnalysisType', uid: string, analysisUid: string, value: string, posX?: number | null, posY?: number | null }> | null }> | null }> | null }
+   };
 
 export type GetAllReflexRulesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3414,7 +3438,14 @@ export type GetReflexRuleByUidQueryVariables = Exact<{
 }>;
 
 
-export type GetReflexRuleByUidQuery = { __typename?: 'Query', reflexRuleByUid?: { __typename?: 'ReflexRuleType', uid: string, name: string, description: string, reflexActions?: Array<{ __typename: 'ReflexActionType', uid: string, level: number, description: string, analyses?: Array<{ __typename: 'AnalysisType', uid: string, name: string }> | null, brains?: Array<{ __typename: 'ReflexBrainType', uid: string, description: string, conditions: Array<{ __typename?: 'ReflexBrainConditionType', description?: string | null, priority: number, criteria?: Array<{ __typename: 'ReflexBrainConditionCriteriaType', analysisUid: string, operator: string, value: string, analysis?: { __typename: 'AnalysisType', uid: string, name: string, resultOptions?: Array<{ __typename: 'ResultOptionType', optionKey: number, value: string }> | null } | null }> | null }>, actions: Array<{ __typename: 'ReflexBrainActionType', addNew?: Array<{ __typename: 'ReflexBrainAdditionType', analysisUid: string, count: number, analysis?: { __typename: 'AnalysisType', uid: string, name: string, resultOptions?: Array<{ __typename: 'ResultOptionType', optionKey: number, value: string }> | null } | null }> | null, finalise?: Array<{ __typename: 'ReflexBrainFinalType', analysisUid: string, value: string, analysis?: { __typename: 'AnalysisType', name: string, resultOptions?: Array<{ __typename: 'ResultOptionType', optionKey: number, value: string }> | null } | null }> | null }> }> | null, createdBy?: { __typename: 'UserType', firstName?: string | null, lastName?: string | null } | null }> | null } | null };
+export type GetReflexRuleByUidQuery = { __typename?: 'Query', reflexRuleByUid?: { __typename?: 'ReflexRuleType', uid: string, name: string, description: string, isActive: boolean, priority: number, createdAt?: string | null, updatedAt?: string | null, reflexTriggers?: Array<{ __typename?: 'ReflexTriggerType', uid: string, level: number, description: string, sampleTypeUid?: string | null, posX?: number | null, posY?: number | null, sampleType?: { __typename?: 'SampleTypeTyp', uid: string, name: string } | null, analyses?: Array<{ __typename?: 'AnalysisType', uid: string, name: string, resultOptions?: Array<{ __typename?: 'ResultOptionType', optionKey: number, value: string }> | null }> | null, decisions?: Array<{ __typename?: 'ReflexDecisionType', uid: string, description?: string | null, priority: number, posX?: number | null, posY?: number | null, ruleGroups?: Array<{ __typename?: 'ReflexRuleGroupType', uid: string, description?: string | null, priority: number, posX?: number | null, posY?: number | null, rules?: Array<{ __typename?: 'ReflexRuleCriteriaType', uid: string, analysisUid: string, operator: string, value: string, priority: number, analysis?: { __typename?: 'AnalysisType', uid: string, name: string, resultOptions?: Array<{ __typename?: 'ResultOptionType', optionKey: number, value: string }> | null } | null }> | null }> | null, addAnalyses?: Array<{ __typename?: 'ReflexAddAnalysisType', uid: string, analysisUid: string, count: number, posX?: number | null, posY?: number | null, analysis?: { __typename?: 'AnalysisType', uid: string, name: string } | null }> | null, finalizeAnalyses?: Array<{ __typename?: 'ReflexFinalizeAnalysisType', uid: string, analysisUid: string, value: string, posX?: number | null, posY?: number | null, analysis?: { __typename?: 'AnalysisType', uid: string, name: string } | null }> | null }> | null }> | null, createdBy?: { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null } | null, updatedBy?: { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null } | null } | null };
+
+export type GetAllReflexTriggersQueryVariables = Exact<{
+  reflexRuleUid?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type GetAllReflexTriggersQuery = { __typename?: 'Query', reflexTriggerAll: Array<{ __typename?: 'ReflexTriggerType', uid: string, reflexRuleUid: string, level: number, description: string, sampleTypeUid?: string | null, analyses?: Array<{ __typename?: 'AnalysisType', uid: string, name: string }> | null, decisions?: Array<{ __typename?: 'ReflexDecisionType', uid: string, description?: string | null, priority: number }> | null }> };
 
 export type AddReferralLaboratoryMutationVariables = Exact<{
   payload: ReferralLaboratoryInputType;

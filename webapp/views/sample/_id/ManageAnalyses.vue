@@ -48,7 +48,7 @@ const applyTemplate = async () => {
         ).then((result) => changeTab("analysis-results"));
       }
     });
-  } catch (error) {}
+  } catch {}
 };
 
 // Manually Modify Analyses
@@ -104,7 +104,7 @@ const applyChanges = async () => {
         ).then((result) => changeTab("analysis-results"));
       }
     });
-  } catch (error) {}
+  } catch {}
 };
 
 </script>

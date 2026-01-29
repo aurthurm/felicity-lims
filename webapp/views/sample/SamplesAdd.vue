@@ -24,8 +24,7 @@ import {
   AddAnalysisRequestMutationVariables
 } from "@/graphql/operations/analyses.mutations";
 import {useField, useForm} from "vee-validate";
-import {array, boolean, number, object, string} from "yup";
-import useNotifyToast from "@/composables/alert_toast";
+import { array, boolean, mixed, number, object, string } from "yup";
 import useApiUtil from "@/composables/api_util";
 import {formatDate} from "@/utils";
 import dayjs from "dayjs";
@@ -42,7 +41,6 @@ const setupStore = useSetupStore();
 const router = useRouter();
 
 const {withClientMutation} = useApiUtil();
-const {swalError} = useNotifyToast();
 
 // Clinical Data Section State
 const clinicalDataExpanded = ref(false);
@@ -99,6 +97,20 @@ const analysesProfiles = computed(() => analysisStore.getAnalysesProfiles);
 const arSaving = ref(false);
 const maxDate = dayjs().endOf('day').toDate();
 
+const sampleSchema = object({
+  sampleType: object()
+    .required("Sample type is required")
+    .test("sample-type-uid", "Sample type is required", value => !!value?.uid),
+  dateCollected: mixed().nullable(),
+  dateReceived: mixed().nullable(),
+  profiles: array().nullable(),
+  analyses: array().nullable(),
+}).test(
+  "profiles-or-analyses",
+  "Samples must have either profiles or services",
+  value => (value?.profiles?.length ?? 0) + (value?.analyses?.length ?? 0) > 0
+);
+
 const arSchema = object({
   clientRequestId: string().required("Client Request ID is Required"),
   clinicalData: object({
@@ -113,14 +125,14 @@ const arSchema = object({
   }).nullable(),
   client: object().required("Client is Required"),
   clientContact: object().nullable().required("Client Contact is Required"),
-  samples: array().required().min(1, "Add at least 1 sample"),
+  samples: array().of(sampleSchema).required().min(1, "Add at least 1 sample"),
   priority: number(),
 });
 
 // Create default sample
 function createDefaultSample(overrides): PartialSample {
   return {
-    sampleType: {} as SampleTypeTyp,
+    sampleType: null as unknown as SampleTypeTyp | null,
     dateCollected: dayjs(new Date()),
     dateReceived: dayjs(new Date()),
     profiles: [],
@@ -166,6 +178,17 @@ if (patient?.value?.client) {
   selectedClient.value = patient.value.client;
 }
 
+watch(
+  client,
+  (value) => {
+    selectedClient.value = value ?? null;
+    if (clientContact.value && clientContact.value?.clientUid !== value?.uid) {
+      clientContact.value = null;
+    }
+  },
+  { immediate: true }
+);
+
 const {value: clientRequestId} = useField("clientRequestId");
 const {value: clinicalData} = useField<ClinicalDataType>("clinicalData");
 const {value: client} = useField<ClientType>("client");
@@ -193,20 +216,6 @@ const removeSymptom = (index: number) => {
 
 const submitARForm = handleSubmit((values) => {
   arSaving.value = true;
-  console.log("values", values);
-  for (let sample of values.samples || []) {
-    if ([null, undefined, ""].includes(sample?.sampleType)) {
-      swalError("Samples must have sample types");
-      arSaving.value = false;
-      return;
-    }
-    if (sample?.analyses?.length <= 0 && sample?.profiles?.length <= 0) {
-      swalError("Samples must have either profiles/analyses or both");
-      arSaving.value = false;
-      return;
-    }
-  }
-
   addAnalysesRequest(values as any);
 });
 
@@ -224,12 +233,15 @@ function addAnalysesRequest(request: AnalysisRequestType): void {
         profiles: s.profiles?.map(p => p.uid),
         analyses: s.analyses?.map(a => a.uid),
         sampleType: s.sampleType?.uid,
-        dateCollected: formatDate(s.dateCollected, "YYYY-MM-DD HH:mm"),
-        dateReceived: formatDate(s.dateReceived, "YYYY-MM-DD HH:mm"),
+        dateCollected: s.dateCollected
+          ? formatDate(s.dateCollected, "YYYY-MM-DD HH:mm")
+          : null,
+        dateReceived: s.dateReceived
+          ? formatDate(s.dateReceived, "YYYY-MM-DD HH:mm")
+          : null,
       };
     }),
   } as unknown as AnalysisRequestInputType;
-  console.log(payload);
   withClientMutation<AddAnalysisRequestMutation, AddAnalysisRequestMutationVariables>(AddAnalysisRequestDocument, {payload}, "createAnalysisRequest")
       .then((result) => {
         sampleStore.addAnalysisRequest(result);

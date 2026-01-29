@@ -87,17 +87,13 @@ export const useShipmentStore = defineStore('shipment', {
                 if (result && Array.isArray(result)) {
                     this.laboratories = result;
                 } else {
-                    console.error('Invalid laboratories data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching referral laboratories:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingLaboratories = false;
             }
         },
         updateReferralLaboratory(payload: ReferralLaboratoryType): void {
             if (!payload?.uid) {
-                console.error('Invalid laboratory payload:', payload);
                 return;
             }
             const index = this.laboratories.findIndex(item => item.uid === payload.uid);
@@ -107,7 +103,6 @@ export const useShipmentStore = defineStore('shipment', {
         },
         addReferralLaboratory(payload: ReferralLaboratoryType): void {
             if (!payload?.uid) {
-                console.error('Invalid laboratory payload:', payload);
                 return;
             }
             this.laboratories.unshift(payload);
@@ -135,17 +130,13 @@ export const useShipmentStore = defineStore('shipment', {
                     this.shipmentCount = page.totalCount;
                     this.shipmentPageInfo = page.pageInfo;
                 } else {
-                    console.error('Invalid shipments data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching shipments:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingShipments = false;
             }
         },
         async fetchShipmentByUid(uid: string): Promise<void> {
             if (!uid) {
-                console.error('Shipment UID is required');
                 return;
             }
 
@@ -159,15 +150,11 @@ export const useShipmentStore = defineStore('shipment', {
                 if (result && typeof result === 'object') {
                     this.shipment = result as ShipmentType;
                 } else {
-                    console.error('Invalid shipment data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching shipment by UID:', error);
-            }
+            } catch {}
         },
         addShipment(payload: { shipments: ShipmentType[] }): void {
             if (!payload?.shipments || !Array.isArray(payload.shipments)) {
-                console.error('Invalid shipment payload:', payload);
                 return;
             }
 
@@ -194,15 +181,11 @@ export const useShipmentStore = defineStore('shipment', {
                 if (result && typeof result === 'object') {
                     this.updateShipmentMetadata(result);
                 } else {
-                    console.error('Invalid update shipment result:', result);
                 }
-            } catch (error) {
-                console.error('Error updating shipment:', error);
-            }
+            } catch {}
         },
         updateShipmentMetadata(payload: Partial<ShipmentType>): void {
             if (!this.shipment) {
-                console.error('No shipment to update');
                 return;
             }
 
@@ -213,7 +196,6 @@ export const useShipmentStore = defineStore('shipment', {
         },
         updateShipmentStatus(shipment: { uid: string; state: string }): void {
             if (!shipment?.uid) {
-                console.error('Invalid shipment status update:', shipment);
                 return;
             }
 
@@ -254,11 +236,8 @@ export const useShipmentStore = defineStore('shipment', {
                     this.sampleCount = page.totalCount;
                     this.samplePageInfo = page.pageInfo;
                 } else {
-                    console.error('Invalid samples data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching samples for shipment assign:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingSamples = false;
             }
         },
@@ -266,13 +245,11 @@ export const useShipmentStore = defineStore('shipment', {
         // analysis samples
         updateShipmentSamplesStatus(payload: { uid: string; status: string }[]): void {
             if (!payload || !Array.isArray(payload)) {
-                console.error('Invalid samples status update payload:', payload);
                 return;
             }
 
             payload.forEach(result => {
                 if (!result?.uid) {
-                    console.error('Invalid sample result:', result);
                     return;
                 }
 
@@ -291,13 +268,11 @@ export const useShipmentStore = defineStore('shipment', {
         },
         updateSamples(payload: any[]): void {
             if (!payload || !Array.isArray(payload)) {
-                console.error('Invalid samples update payload:', payload);
                 return;
             }
 
             payload.forEach(result => {
                 if (!result?.uid) {
-                    console.error('Invalid sample result:', result);
                     return;
                 }
 

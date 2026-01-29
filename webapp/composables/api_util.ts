@@ -75,7 +75,6 @@ export default function useApiUtil() {
 
                 // Optional: log extended error information
                 if (err.extensions) {
-                    console.error('GraphQL Error Details:', err.extensions);
                 }
             });
 

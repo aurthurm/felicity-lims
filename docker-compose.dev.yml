@@ -206,14 +206,3 @@ services:
       # Ensure databases are up before DbGate tries to connect
       - felicity-postgres
       - felicity-mongo
-
-  word-processor-server:
-    image: syncfusion/word-processor-server:25.1.42 # Pinning image version (example, check latest stable)
-    restart: unless-stopped
-    environment:
-      # Syncfusion license key (hardcoded for dev, consider .env for consistency)
-      SYNCFUSION_LICENSE_KEY: ${SYNCFUSION_LICENSE}
-    ports:
-      - '6002:80' # Expose Word Processor Server on host port 6002
-    networks:
-      - felicitynet # Connect to the custom network

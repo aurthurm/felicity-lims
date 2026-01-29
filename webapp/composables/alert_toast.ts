@@ -77,7 +77,6 @@ const fireAlert = async (options: SwalOptions): Promise<any> => {
             cancelButtonColor: options.cancelButtonColor || '#d33',
         });
     } catch (error) {
-        console.error('Error showing alert:', error);
         return null;
     }
 };

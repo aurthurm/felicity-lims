@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { defineAsyncComponent, onMounted, reactive, ref } from 'vue';
+import { defineAsyncComponent, onMounted, ref } from 'vue';
+import { useForm, useField } from 'vee-validate';
+import * as yup from 'yup';
 import useApiUtil from '@/composables/api_util';
 import { AbxAntibioticType, AbxASTPanelType, AbxOrganismType } from "@/types/gql";
 import {
@@ -29,6 +31,7 @@ const { withClientMutation, withClientQuery } = useApiUtil()
 const showModal = ref<boolean>(false);
 const formTitle = ref<string>('');
 const formAction = ref<boolean>(true);
+const currentUid = ref<string | null>(null);
 const searchOrgText = ref<string>('');
 const searchAbxText = ref<string>('');
 
@@ -38,13 +41,25 @@ const filteredAntibiotics = ref<AbxAntibioticType[]>([]);
 const organisms = ref<AbxOrganismType[]>([]);
 const filteredOrganisms = ref<AbxOrganismType[]>([]);
 
-const form = reactive({
-  uid: '',
-  name: '',
-  description: '',
-  selectedAntibiotics: [] as string[],
-  selectedOrganisms: [] as string[]
+const astPanelSchema = yup.object({
+  name: yup.string().trim().required('Panel name is required'),
+  selectedAntibiotics: yup.array().of(yup.string().trim()).min(1, 'Select at least one antibiotic'),
+  selectedOrganisms: yup.array().of(yup.string().trim()).min(1, 'Select at least one organism'),
 });
+
+const { handleSubmit, resetForm, setValues, errors } = useForm({
+  validationSchema: astPanelSchema,
+  initialValues: {
+    name: '',
+    description: '',
+    selectedAntibiotics: [] as string[],
+    selectedOrganisms: [] as string[],
+  },
+});
+const { value: name } = useField<string>('name');
+const { value: description } = useField<string>('description');
+const { value: selectedAntibiotics } = useField<string[]>('selectedAntibiotics');
+const { value: selectedOrganisms } = useField<string[]>('selectedOrganisms');
 
 // Fetch initial data
 onMounted(() => {
@@ -74,7 +89,7 @@ function fetchOrganisms() {
       }, "abxOrganismAll"
   ).then((result) => {
     // The organism list can be big, so we need to handle keeping selecteds on each search before replacement
-    organisms.value = organisms.value?.filter(org => form.selectedOrganisms.includes(org.uid)) || [];
+    organisms.value = organisms.value?.filter(org => selectedOrganisms.value.includes(org.uid)) || [];
     organisms.value = addListsUnique(organisms.value, (result as AbxOrganismCursorPage)?.items as AbxOrganismType[], "uid");
     filteredOrganisms.value = [...organisms.value];
   })
@@ -98,26 +113,25 @@ function FormManager(create: boolean, panel = {} as AbxASTPanelType): void {
   formTitle.value = (create ? 'Create' : 'Edit') + ' AST Panel';
   
   if (create) {
-    form.uid = '';
-    form.name = '';
-    form.description = '';
-    form.selectedAntibiotics = [];
-    form.selectedOrganisms = [];
+    currentUid.value = null;
+    resetForm();
   } else {
-    form.uid = panel.uid;
-    form.name = panel.name;
-    form.description = panel.description!;
-    form.selectedAntibiotics = panel.antibiotics?.map(a => a.uid) || [];
-    form.selectedOrganisms = panel.organisms?.map(o => o.uid) || [];
+    currentUid.value = panel.uid ?? null;
+    setValues({
+      name: panel.name ?? '',
+      description: panel.description ?? '',
+      selectedAntibiotics: panel.antibiotics?.map(a => a.uid) || [],
+      selectedOrganisms: panel.organisms?.map(o => o.uid) || [],
+    });
   }
 }
 
-function saveForm(): void {
+const saveForm = handleSubmit((formValues) => {
   const payload = {
-    name: form.name,
-    description: form.description,
-    antibiotics: form.selectedAntibiotics,
-    organisms: form.selectedOrganisms
+    name: formValues.name,
+    description: formValues.description,
+    antibiotics: formValues.selectedAntibiotics,
+    organisms: formValues.selectedOrganisms
   };
 
   if (formAction.value) {
@@ -128,10 +142,10 @@ function saveForm(): void {
         panels.value.unshift(result as AbxASTPanelType);
       }
     });
-  } else {
+  } else if (currentUid.value) {
     withClientMutation<EditAbxAstPanelMutation, EditAbxAstPanelMutationVariables>(
       EditAbxAstPanelDocument, {
-        uid: form.uid,
+        uid: currentUid.value,
         payload
       }, "updateAbxAstPanel"
     ).then((result) => {
@@ -147,7 +161,7 @@ function saveForm(): void {
   }
 
   showModal.value = false;
-}
+});
 
 // Filter functions
 function filterAntibiotics() {
@@ -221,15 +235,16 @@ function filterOrganisms() {
             <label class="block">
               <span class="text-sm font-medium text-foreground">Panel Name</span>
               <input
-                  v-model="form.name"
+                  v-model="name"
                   class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   placeholder="Enter panel name"
               />
+              <p v-if="errors.name" class="text-sm text-destructive">{{ errors.name }}</p>
             </label>
             <label class="block">
               <span class="text-sm font-medium text-foreground">Description</span>
               <textarea
-                  v-model="form.description"
+                  v-model="description"
                   rows="2"
                   class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   placeholder="Enter description"
@@ -254,26 +269,27 @@ function filterOrganisms() {
                   <input
                       type="checkbox"
                       :value="org.uid"
-                      v-model="form.selectedOrganisms"
+                      v-model="selectedOrganisms"
                       class="rounded border-border text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary/50"
                   />
                   <span class="ml-2 text-sm text-foreground">{{ org.name }}</span>
                 </div>
               </div>
+              <p v-if="errors.selectedOrganisms" class="text-sm text-destructive">{{ errors.selectedOrganisms }}</p>
             </div>
             
             <!-- Selected Organisms List -->
             <div class="w-1/3">
               <div class="text-sm font-medium text-foreground mb-1">Selected Organisms</div>
               <div class="border border-border rounded-md p-2 h-72 overflow-y-auto bg-background">
-                <div v-for="orgUid in form.selectedOrganisms" 
+                <div v-for="orgUid in selectedOrganisms" 
                      :key="orgUid" 
                      class="flex items-center justify-between py-1 px-2 mb-1 bg-background rounded-md shadow-sm">
                   <span class="text-sm text-foreground">
                     {{ organisms?.find(o => o.uid === orgUid)?.name }}
                   </span>
                   <button 
-                    @click="form.selectedOrganisms = form.selectedOrganisms.filter(id => id !== orgUid)"
+                    @click="selectedOrganisms = selectedOrganisms.filter(id => id !== orgUid)"
                     class="text-destructive hover:text-destructive/80 text-sm"
                   >
                     ×
@@ -300,26 +316,27 @@ function filterOrganisms() {
                   <input
                       type="checkbox"
                       :value="abx.uid"
-                      v-model="form.selectedAntibiotics"
+                      v-model="selectedAntibiotics"
                       class="rounded border-border text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary/50"
                   />
                   <span class="ml-2 text-sm text-foreground">{{ abx.name }}</span>
                 </div>
               </div>
+              <p v-if="errors.selectedAntibiotics" class="text-sm text-destructive">{{ errors.selectedAntibiotics }}</p>
             </div>
             
             <!-- Selected Antibiotics List -->
             <div class="w-1/3">
               <div class="text-sm font-medium text-foreground mb-1">Selected Antibiotics</div>
               <div class="border border-border rounded-md p-2 h-72 overflow-y-auto bg-background">
-                <div v-for="abxUid in form.selectedAntibiotics" 
+                <div v-for="abxUid in selectedAntibiotics" 
                      :key="abxUid" 
                      class="flex items-center justify-between py-1 px-2 mb-1 bg-background rounded-md shadow-sm">
                   <span class="text-sm text-foreground">
                     {{ antibiotics.find(a => a.uid == abxUid)?.name }}
                   </span>
                   <button 
-                    @click="form.selectedAntibiotics = form.selectedAntibiotics.filter(id => id !== abxUid)"
+                    @click="selectedAntibiotics = selectedAntibiotics.filter(id => id !== abxUid)"
                     class="text-destructive hover:text-destructive/80 text-sm"
                   >
                     ×

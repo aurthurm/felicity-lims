@@ -88,13 +88,11 @@ export const useAuthStore = defineStore('auth', () => {
 
     const refreshToken = async (): Promise<void> => {
         if (!auth.value.refresh) {
-            console.error('No refresh token available');
             return;
         }
 
         // Prevent multiple refresh attempts
         if (auth.value.processing) {
-            console.warn('Token refresh already in progress');
             return;
         }
 
@@ -108,15 +106,12 @@ export const useAuthStore = defineStore('auth', () => {
             );
 
             if (!res) {
-                console.warn('Token refresh returned no data');
                 return;
             }
 
             await persistAuth(res);
             // The watch function will handle starting a new timer
-        } catch (err) {
-            console.error('Token refresh failed:', err);
-        } finally {
+        } catch {} finally {
             auth.value.processing = false;
         }
     };
@@ -130,7 +125,6 @@ export const useAuthStore = defineStore('auth', () => {
 
             const decodedToken: any = jwtDecode(auth.value.token);
             if (!decodedToken || !decodedToken.exp) {
-                console.error('Invalid token format');
                 return;
             }
 
@@ -145,20 +139,16 @@ export const useAuthStore = defineStore('auth', () => {
 
             // If token is already expired or will expire in less than 5 minutes
             if (timeout <= 0) {
-                console.warn('Token is expired or about to expire, refreshing immediately');
                 refreshToken();
                 return;
             }
 
-            console.log(`Setting refresh token timer for ${new Date(now.getTime() + timeout).toLocaleTimeString()}`);
 
             // Set new timer
             auth.value.refreshTokenTimeout = setTimeout(() => {
                 refreshToken();
             }, timeout);
-        } catch (error) {
-            console.error('Failed to start refresh token timer:', error);
-        }
+        } catch {}
     };
 
     // Initialize auth state from storage
@@ -176,7 +166,6 @@ export const useAuthStore = defineStore('auth', () => {
                 reset();
             }
         } catch (error) {
-            console.error('Failed to initialize auth from storage:', error);
             reset();
         }
     };
@@ -194,7 +183,6 @@ export const useAuthStore = defineStore('auth', () => {
                     authToStorage(authValue as AuthenticatedData);
                     // startRefreshTokenTimer();
                 } catch (error) {
-                    console.error('Failed to persist auth state:', error);
                     reset();
                 }
             }
@@ -210,7 +198,6 @@ export const useAuthStore = defineStore('auth', () => {
                 processing: false,
             };
         } catch (error) {
-            console.error('Failed to persist auth data:', error);
             reset();
         }
     };
@@ -230,7 +217,6 @@ export const useAuthStore = defineStore('auth', () => {
                 persistAuth(res);
             })
             .catch(err => {
-                console.error('Authentication failed:', err);
                 auth.value.processing = false;
             });
     };
@@ -255,7 +241,6 @@ export const useAuthStore = defineStore('auth', () => {
                 auth.value.processing = false;
             })
             .catch(err => {
-                console.error('Password reset request failed:', err);
                 auth.value.processing = false;
             });
     };
@@ -269,20 +254,18 @@ export const useAuthStore = defineStore('auth', () => {
         )
             .then(res => {
                 auth.value.resetData = {
-                    canReset: !!!res?.username,
+                    canReset: !res?.username,
                     username: res?.username,
                 };
                 auth.value.processing = false;
             })
             .catch(err => {
-                console.error('Token validation failed:', err);
                 auth.value.processing = false;
             });
     };
 
     const resetPassword = async (password: string, passwordc: string) => {
         if (!auth.value?.resetData?.username) {
-            console.error('No username found for password reset');
             auth.value.processing = false;
             return;
         }
@@ -302,7 +285,6 @@ export const useAuthStore = defineStore('auth', () => {
                 auth.value.processing = false;
             })
             .catch(err => {
-                console.error('Password reset failed:', err);
                 auth.value.processing = false;
             });
     };

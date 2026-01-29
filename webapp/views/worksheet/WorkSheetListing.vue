@@ -9,7 +9,7 @@ import useApiUtil  from "@/composables/api_util";
 import { AddWorkSheetDocument, AddWorkSheetMutation, AddWorkSheetMutationVariables } from "@/graphql/operations/worksheet.mutations";
 import { AnalysisType } from "@/types/gql";
 import { useField, useForm } from "vee-validate";
-import { object, number } from "yup";
+import { object, number, string } from "yup";
 import * as shield from "@/guards";
 
 const DataTable = defineAsyncComponent(
@@ -132,19 +132,19 @@ userStore.fetchUsers({});
 
 //
 const worksheetSchema = object({
-  analystUid: number().required("Analyst is Required").typeError("Analyst is Required"),
-  templateUid: number().typeError("Worksheet Template is required"),
-  instrumentUid: number(),
-  count: number().typeError("Required number of worksheets must be defined"),
+  analystUid: string().required("Analyst is Required"),
+  templateUid: string().required("Worksheet Template is required"),
+  instrumentUid: string().nullable(),
+  count: number().min(1, "Count must be at least 1").required("Count is required"),
 });
 
 const { handleSubmit, errors } = useForm({
   validationSchema: worksheetSchema,
   initialValues: {
     count: 1,
-    analystUid: undefined,
-    templateUid: undefined,
-    instrumentUid: undefined,
+    analystUid: "",
+    templateUid: "",
+    instrumentUid: null,
   },
 });
 
@@ -260,6 +260,7 @@ const countNone = computed(
                 class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary" 
                 v-model="analystUid"
               >
+                <option value=""></option>
                 <option v-for="analyst in analysts" :key="analyst.uid" :value="analyst.uid">
                   {{ analystName(analyst) }}
                 </option>
@@ -271,7 +272,7 @@ const countNone = computed(
                 class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary" 
                 v-model="templateUid"
               >
-                <option value="undefined"></option>
+                <option value=""></option>
                 <option v-for="template in workSheetTemplates" :key="template.uid" :value="template.uid">
                   {{ template.name }}
                 </option>

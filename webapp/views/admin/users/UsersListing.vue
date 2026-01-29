@@ -67,9 +67,9 @@
     </div>
   </div>
 
-  <fel-modal v-if="showUserModal" @close="showUserModal = false" :title="form.userUid ? 'Edit User' : 'Add User'">
+  <fel-modal v-if="showUserModal" @close="showUserModal = false" :title="userUid ? 'Edit User' : 'Add User'">
     <template v-slot:body>
-      <form @submit.prevent="saveUserForm()" class="space-y-6">
+      <form @submit.prevent="saveUserForm" class="space-y-6">
         <div class="grid grid-cols-2 gap-6">
           <!-- OPTION 1: Enhanced visibility with explicit colors -->
           <div class="space-y-2">
@@ -78,11 +78,12 @@
             </label>
             <input
               id="firstName"
-              v-model="form.firstName"
+              v-model="firstName"
               type="text"
               class="mt-1 block w-full rounded-md border-2 border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 hover:border-gray-400"
               placeholder="Enter first name"
             />
+            <p v-if="firstNameError" class="text-sm text-destructive">{{ firstNameError }}</p>
           </div>
 
           <div class="space-y-2">
@@ -91,11 +92,12 @@
             </label>
             <input
               id="lastName"
-              v-model="form.lastName"
+              v-model="lastName"
               type="text"
               class="mt-1 block w-full rounded-md border-2 border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 hover:border-gray-400"
               placeholder="Enter last name"
             />
+            <p v-if="lastNameError" class="text-sm text-destructive">{{ lastNameError }}</p>
           </div>
 
           <div class="space-y-2">
@@ -104,11 +106,12 @@
             </label>
             <input
               id="email"
-              v-model="form.email"
+              v-model="email"
               type="email"
               class="mt-1 block w-full rounded-md border-2 border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 hover:border-gray-400"
               placeholder="Enter email address"
             />
+            <p v-if="emailError" class="text-sm text-destructive">{{ emailError }}</p>
           </div>
 
           <div class="space-y-2">
@@ -125,11 +128,12 @@
             /> -->
             <FelProtectedInput
               id="userName"
-              v-model="form.userName"
+              v-model="userName"
               type="text"
               :required-clicks="5"
               placeholder="Enter username"
             />
+            <p v-if="userNameError" class="text-sm text-destructive">{{ userNameError }}</p>
           </div>
 
           <div class="space-y-2">
@@ -138,11 +142,12 @@
             </label>
             <input
               id="password"
-              v-model="form.password"
+              v-model="password"
               type="password"
               class="mt-1 block w-full rounded-md border-2 border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 hover:border-gray-400"
               placeholder="Enter password"
             />
+            <p v-if="passwordError" class="text-sm text-destructive">{{ passwordError }}</p>
           </div>
 
           <div class="space-y-2">
@@ -151,11 +156,12 @@
             </label>
             <input
               id="passwordc"
-              v-model="form.passwordc"
+              v-model="passwordc"
               type="password"
               class="mt-1 block w-full rounded-md border-2 border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 hover:border-gray-400"
               placeholder="Confirm password"
             />
+            <p v-if="passwordcError" class="text-sm text-destructive">{{ passwordcError }}</p>
           </div>
 
           <div class="col-span-2 space-y-2">
@@ -164,7 +170,7 @@
             </label>
             <select
               id="groupUid"
-              v-model="form.groupUid"
+              v-model="groupUid"
               class="mt-1 block w-full rounded-md border-2 border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 hover:border-gray-400"
             >
               <option value="" class="text-gray-400">Select a group</option>
@@ -177,6 +183,7 @@
                 {{ group?.name }}
               </option>
             </select>
+            <p v-if="groupUidError" class="text-sm text-destructive">{{ groupUidError }}</p>
           </div>
 
           <!-- Laboratory Assignment Section -->
@@ -190,7 +197,7 @@
                 <div v-for="lab in setupStore.getLaboratories" :key="lab.uid" class="flex items-center space-x-3">
                   <input
                     :id="`lab-${lab.uid}`"
-                    v-model="form.laboratoryUids"
+                    v-model="laboratoryUids"
                     :value="lab.uid"
                     type="checkbox"
                     class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
@@ -203,15 +210,15 @@
             </div>
 
             <!-- Active Laboratory Selection -->
-            <div v-if="form.laboratoryUids && form.laboratoryUids.length > 0" class="space-y-2">
+            <div v-if="laboratoryUids && laboratoryUids.length > 0" class="space-y-2">
               <label class="block text-sm font-medium text-gray-700">Default Active Laboratory</label>
               <select
-                v-model="form.activeLaboratoryUid"
+                v-model="activeLaboratoryUid"
                 class="mt-1 block w-full rounded-md border-2 border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 hover:border-gray-400"
               >
                 <option value="">Select default laboratory...</option>
                 <option
-                  v-for="labUid in form.laboratoryUids"
+                  v-for="labUid in laboratoryUids"
                   :key="labUid"
                   :value="labUid"
                   class="text-gray-900"
@@ -219,6 +226,7 @@
                   {{ getLaboratoryName(labUid) }}
                 </option>
               </select>
+              <p v-if="activeLaboratoryUidError" class="text-sm text-destructive">{{ activeLaboratoryUidError }}</p>
             </div>
           </div>
 
@@ -228,15 +236,15 @@
               <button
                 type="button"
                 role="switch"
-                :aria-checked="form.isBlocked"
-                @click="form.isBlocked = !form.isBlocked"
+                :aria-checked="isBlocked"
+                @click="isBlocked = !isBlocked"
                 class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm"
-                :class="[form.isBlocked ? 'bg-red-500' : 'bg-green-500']"
+                :class="[isBlocked ? 'bg-red-500' : 'bg-green-500']"
               >
                 <span
                   aria-hidden="true"
                   class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-                  :class="[form.isBlocked ? 'translate-x-5' : 'translate-x-0']"
+                  :class="[isBlocked ? 'translate-x-5' : 'translate-x-0']"
                 />
               </button>
             </label>
@@ -248,17 +256,17 @@
               <button
                 type="button"
                 role="switch"
-                :aria-checked="form.isActive"
-                @click="form.isActive = !form.isActive"
+                :aria-checked="isActive"
+                @click="isActive = !isActive"
                 class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm"
-                :class="[form.isActive ? 'bg-green-500' : 'bg-red-500']"
+                :class="[isActive ? 'bg-green-500' : 'bg-red-500']"
               >
                 <span
                   aria-hidden="true"
                   class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-                  :class="[form.isActive ? 'translate-x-5' : 'translate-x-0']"
+                  :class="[isActive ? 'translate-x-5' : 'translate-x-0']"
                 />
-              </button>
+             </button>
             </label>
           </div>
         </div>
@@ -268,7 +276,7 @@
             type="submit"
             class="inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
           >
-            {{ form.userUid ? 'Update' : 'Create' }} User
+            {{ userUid ? 'Update' : 'Create' }} User
           </button>
         </div>
       </form>
@@ -277,7 +285,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive, defineAsyncComponent, onMounted } from "vue";
+import { ref, computed, defineAsyncComponent, onMounted } from "vue";
+import { useField, useForm } from "vee-validate";
+import * as yup from "yup";
 import {
     AddUserDocument, AddUserMutation, AddUserMutationVariables,
     EditUserDocument, EditUserMutation, EditUserMutationVariables
@@ -300,32 +310,71 @@ let users = computed<UserType[]>(() => userStore.getUsers);
 const groups = computed(() => userStore.getGroups);
 let showUserModal = ref<boolean>(false);
 let formTitle = ref<string>("");
-let form = reactive({ 
-  userUid: "",
-  firstName: "",
-  lastName: "",
-  email: "",
-  groupUid: "",
-  userName: "",
-  password: "",
-  passwordc: "",
-  isActive: true,
-  isBlocked: false,
-  laboratoryUids: [] as string[],
-  activeLaboratoryUid: "",
-});
 
 const formAction = ref<boolean>(true);
+const userSchema = yup.object({
+  userUid: yup.string().nullable(),
+  firstName: yup.string().trim().required("First name is required"),
+  lastName: yup.string().trim().required("Last name is required"),
+  email: yup.string().trim().email("Enter a valid email").required("Email is required"),
+  groupUid: yup.string().trim().required("Group is required"),
+  userName: yup.string().trim().required("Username is required"),
+  password: yup.string().when("userUid", {
+    is: (value: string | null | undefined) => !value,
+    then: schema => schema.required("Password is required"),
+    otherwise: schema => schema.nullable(),
+  }),
+  passwordc: yup.string().when("password", {
+    is: (value: string | null | undefined) => !!value,
+    then: schema => schema.oneOf([yup.ref("password")], "Passwords must match").required("Confirm your password"),
+    otherwise: schema => schema.nullable(),
+  }),
+  isActive: yup.boolean().default(true),
+  isBlocked: yup.boolean().default(false),
+  laboratoryUids: yup.array().of(yup.string()).default([]),
+  activeLaboratoryUid: yup.string().trim().nullable(),
+});
+
+const { handleSubmit, resetForm, setValues } = useForm({
+  validationSchema: userSchema,
+  initialValues: {
+    userUid: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    groupUid: "",
+    userName: "",
+    password: "",
+    passwordc: "",
+    isActive: true,
+    isBlocked: false,
+    laboratoryUids: [] as string[],
+    activeLaboratoryUid: "",
+  },
+});
+
+const { value: userUid } = useField<string | null>("userUid");
+const { value: firstName, errorMessage: firstNameError } = useField<string>("firstName");
+const { value: lastName, errorMessage: lastNameError } = useField<string>("lastName");
+const { value: email, errorMessage: emailError } = useField<string>("email");
+const { value: groupUid, errorMessage: groupUidError } = useField<string>("groupUid");
+const { value: userName, errorMessage: userNameError } = useField<string>("userName");
+const { value: password, errorMessage: passwordError } = useField<string>("password");
+const { value: passwordc, errorMessage: passwordcError } = useField<string>("passwordc");
+const { value: isActive } = useField<boolean>("isActive");
+const { value: isBlocked } = useField<boolean>("isBlocked");
+const { value: laboratoryUids } = useField<string[]>("laboratoryUids");
+const { value: activeLaboratoryUid, errorMessage: activeLaboratoryUidError } = useField<string | null>("activeLaboratoryUid");
 
 const { withClientMutation } = useApiUtil();
-function addUser(): void {
-  withClientMutation<AddUserMutation, AddUserMutationVariables>(AddUserDocument, form, "createUser").then((result) =>
+function addUser(payload: AddUserMutationVariables): void {
+  withClientMutation<AddUserMutation, AddUserMutationVariables>(AddUserDocument, payload, "createUser").then((result) =>
     userStore.addUser(result)
   );
 }
 
-function editUser(): void {
-    withClientMutation<EditUserMutation, EditUserMutationVariables>(EditUserDocument, form, "updateUser").then((result) =>
+function editUser(payload: EditUserMutationVariables): void {
+  withClientMutation<EditUserMutation, EditUserMutationVariables>(EditUserDocument, payload, "updateUser").then((result) =>
     userStore.updateUser(result)
   );
 }
@@ -349,40 +398,70 @@ function FormManager(create: boolean, obj: UserType = {} as UserType): void {
   showUserModal.value = true;
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + "USER";
   if (create) {
-    let user = new Object() as UserType;
-    user.firstName = "";
-    user.lastName = "";
-    user.email = "";
-    user.isActive = true;
-    user.userName = "";
-    user.isBlocked = false;
-    Object.assign(form, { 
-      ...user, 
-      groupUid: "", 
-      userUid: "",
-      laboratoryUids: [],
-      activeLaboratoryUid: ""
+    resetForm({
+      values: {
+        userUid: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        groupUid: "",
+        userName: "",
+        password: "",
+        passwordc: "",
+        isActive: true,
+        isBlocked: false,
+        laboratoryUids: [],
+        activeLaboratoryUid: "",
+      },
     });
   } else {
-    form.userUid = obj?.uid || "";
-    form.groupUid = obj?.groups && obj.groups[0] ? obj.groups[0].uid : "";
-    form.isActive = obj.isActive ?? true;
-    form.isBlocked = obj.isBlocked ?? false;
-    form.userName = obj.userName ?? "";
-    form.laboratoryUids = obj.laboratories || [];
-    form.activeLaboratoryUid = obj.activeLaboratoryUid || "";
-    Object.assign(form, { ...obj });
+    setValues({
+      userUid: obj?.uid || "",
+      firstName: obj?.firstName ?? "",
+      lastName: obj?.lastName ?? "",
+      email: obj?.email ?? "",
+      groupUid: obj?.groups && obj.groups[0] ? obj.groups[0].uid : "",
+      userName: obj?.userName ?? "",
+      password: "",
+      passwordc: "",
+      isActive: obj?.isActive ?? true,
+      isBlocked: obj?.isBlocked ?? false,
+      laboratoryUids: (obj?.laboratories as string[]) || [],
+      activeLaboratoryUid: obj?.activeLaboratoryUid || "",
+    });
   }
 }
 
-function saveUserForm(): void {
+const saveUserForm = handleSubmit((values) => {
+  const basePayload = {
+    firstName: values.firstName,
+    lastName: values.lastName,
+    email: values.email,
+    groupUid: values.groupUid,
+    activeLaboratoryUid: values.activeLaboratoryUid || null,
+    laboratoryUids: values.laboratoryUids || [],
+    userName: values.userName,
+  };
+
   if (formAction.value) {
-    addUser();
+    addUser({
+      ...basePayload,
+      password: values.password || "",
+      passwordc: values.passwordc || "",
+    });
   } else {
-    editUser();
+    if (!values.userUid) return;
+    editUser({
+      userUid: values.userUid,
+      ...basePayload,
+      isActive: values.isActive,
+      isBlocked: values.isBlocked,
+      password: values.password || undefined,
+      passwordc: values.passwordc || undefined,
+    });
   }
   showUserModal.value = false;
-}
+});
 
 const headers = [
   "Full Name",

@@ -1,21 +1,22 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, defineAsyncComponent } from 'vue';
-import { useRoute } from 'vue-router';
+import {computed, defineAsyncComponent, onMounted, ref} from 'vue';
+import {useRoute} from 'vue-router';
 import useApiUtil from '@/composables/api_util';
-import { GetDocumentVersionByBidDocument, GetDocumentVersionByBidQuery, GetDocumentVersionByBidQueryVariables } from '@/graphql/operations/document.queries';
-import { DocumentVersionType } from '@/types/gql';
+import {
+  GetDocumentVersionByBidDocument,
+  GetDocumentVersionByBidQuery,
+  GetDocumentVersionByBidQueryVariables
+} from '@/graphql/operations/document.queries';
+import {DocumentVersionType} from '@/types/gql';
 
 // Lazy load components
 const UmoEditor = defineAsyncComponent(
-  () => import('@/components/document/editor/umo/UmoEditor.vue')
-);
-const SyncfusionEditor = defineAsyncComponent(
-  () => import('@/components/document/editor/syncfusion/SyncfusionEditor.vue')
+    () => import('@/components/document/editor/umo/UmoEditor.vue')
 );
 
 // Initialize composables and route
 const route = useRoute();
-const { withClientQuery } = useApiUtil();
+const {withClientQuery} = useApiUtil();
 
 // Computed properties
 const documentUid = computed(() => route.params.documentVersionUid as string);
@@ -29,15 +30,13 @@ const fetchDocument = async () => {
   isFetching.value = true;
   try {
     withClientQuery<GetDocumentVersionByBidQuery, GetDocumentVersionByBidQueryVariables>(
-      GetDocumentVersionByBidDocument,
-      { uid: documentUid.value },
-      'documentVersionByUid'
+        GetDocumentVersionByBidDocument,
+        {uid: documentUid.value},
+        'documentVersionByUid'
     ).then(doc => {
       document.value = doc as DocumentVersionType;
     });
-  } catch (error) {
-    console.error('Error fetching document:', error);
-  } finally {
+  } catch {} finally {
     isFetching.value = false;
   }
 };
@@ -49,18 +48,18 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-background p-6">
+  <div class="h-screen bg-background pb-6 overflow-y-scroll">
     <div v-if="isFetching" class="flex items-center justify-center h-full">
-      <fel-loader message="Loading Document..." />
+      <fel-loader message="Loading Document..."/>
     </div>
     <div v-else-if="!document" class="text-center text-muted-foreground">
       <p>No document found</p>
     </div>
     <component
-      v-else
-      :is="document.editor === 'syncfusion' ? UmoEditor : SyncfusionEditor"
-      :document="document"
-      class="h-full"
+        v-else
+        :is="UmoEditor"
+        :document="document"
+        class="h-full"
     />
   </div>
 </template>

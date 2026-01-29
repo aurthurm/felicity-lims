@@ -128,24 +128,19 @@ export const useSetupStore = defineStore('setup', {
                 if (result && Array.isArray(result)) {
                     this.departments = result;
                 } else {
-                    console.error('Invalid departments data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching departments:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingDepartments = false;
             }
         },
         addDepartment(payload: DepartmentType): void {
             if (!payload?.uid) {
-                console.error('Invalid department payload:', payload);
                 return;
             }
             this.departments.unshift(payload);
         },
         updateDepartment(payload: DepartmentType): void {
             if (!payload?.uid) {
-                console.error('Invalid department payload:', payload);
                 return;
             }
             const index = this.departments.findIndex(item => item.uid === payload.uid);
@@ -166,15 +161,11 @@ export const useSetupStore = defineStore('setup', {
                 if (result && typeof result === 'object') {
                     this.organization = result as OrganizationType;
                 } else {
-                    console.error('Invalid laboratory data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching laboratory:', error);
-            }
+            } catch {}
         },
         updateOrganization(payload: OrganizationType): void {
             if (!payload?.uid) {
-                console.error('Invalid laboratory payload:', payload);
                 return;
             }
             this.organization = payload;
@@ -190,11 +181,8 @@ export const useSetupStore = defineStore('setup', {
                 if (result?.items && result && Array.isArray(result?.items)) {
                     this.laboratories = result?.items as LaboratoryType[];
                 } else {
-                    console.error('Invalid laboratories data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching laboratories:', error);
-            }
+            } catch {}
         },
         async fetchLaboratory(): Promise<void> {
             try {
@@ -207,22 +195,17 @@ export const useSetupStore = defineStore('setup', {
                 if (result && typeof result === 'object') {
                     this.laboratory = result as LaboratoryType;
                 } else {
-                    console.error('Invalid laboratory data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching laboratory:', error);
-            }
+            } catch {}
         },
         addLaboratory(payload: LaboratoryType): void {
             if (!payload?.uid) {
-                console.error('Invalid laboratory payload:', payload);
                 return;
             }
             this.laboratories.unshift(payload);
         },
         updateLaboratory(payload: LaboratoryType, listing = false): void {
             if (!payload?.uid) {
-                console.error('Invalid laboratory payload:', payload);
                 return;
             }
             if (listing) {
@@ -238,7 +221,6 @@ export const useSetupStore = defineStore('setup', {
         // ORGANIZATION SETTING
         updateOrganizationSetting(payload: OrganizationSettingType): void {
             if (!payload?.uid) {
-                console.error('Invalid organization setting payload:', payload);
                 return;
             }
             this.organization = { ...this.organization, settings: payload } as OrganizationType;
@@ -247,7 +229,6 @@ export const useSetupStore = defineStore('setup', {
         // LABORATORY SETTING
         updateLaboratorySetting(payload: LaboratorySettingType): void {
             if (!payload?.uid) {
-                console.error('Invalid laboratory setting payload:', payload);
                 return;
             }
             this.laboratory = { ...this.laboratory, settings: payload } as LaboratoryType;
@@ -266,24 +247,19 @@ export const useSetupStore = defineStore('setup', {
                 if (result && Array.isArray(result)) {
                     this.suppliers = result;
                 } else {
-                    console.error('Invalid suppliers data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching suppliers:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingSuppliers = false;
             }
         },
         addSupplier(payload: SupplierType): void {
             if (!payload?.uid) {
-                console.error('Invalid supplier payload:', payload);
                 return;
             }
             this.suppliers.unshift(payload);
         },
         updateSupplier(payload: SupplierType): void {
             if (!payload?.uid) {
-                console.error('Invalid supplier payload:', payload);
                 return;
             }
             const index = this.suppliers.findIndex(item => item.uid === payload.uid);
@@ -305,24 +281,19 @@ export const useSetupStore = defineStore('setup', {
                 if (result && Array.isArray(result)) {
                     this.manufacturers = result;
                 } else {
-                    console.error('Invalid manufacturers data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching manufacturers:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingManufacturers = false;
             }
         },
         addManufacturer(payload: ManufacturerType): void {
             if (!payload?.uid) {
-                console.error('Invalid manufacturer payload:', payload);
                 return;
             }
             this.manufacturers.unshift(payload);
         },
         updateManufacturer(payload: ManufacturerType): void {
             if (!payload?.uid) {
-                console.error('Invalid manufacturer payload:', payload);
                 return;
             }
             const index = this.manufacturers.findIndex(item => item.uid === payload.uid);
@@ -344,24 +315,19 @@ export const useSetupStore = defineStore('setup', {
                 if (result && typeof result === 'object' && 'items' in result) {
                     this.instrumentTypes = result.items || [];
                 } else {
-                    console.error('Invalid instrument types data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching instrument types:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingInstrumentTypes = false;
             }
         },
         addInstrumentType(payload: InstrumentTypeType): void {
             if (!payload?.uid) {
-                console.error('Invalid instrument type payload:', payload);
                 return;
             }
             this.instrumentTypes.unshift(payload);
         },
         updateInstrumentType(payload: InstrumentTypeType): void {
             if (!payload?.uid) {
-                console.error('Invalid instrument type payload:', payload);
                 return;
             }
             const index = this.instrumentTypes.findIndex(item => item.uid === payload.uid);
@@ -383,24 +349,19 @@ export const useSetupStore = defineStore('setup', {
                 if (result && typeof result === 'object' && 'items' in result) {
                     this.instruments = result.items || [];
                 } else {
-                    console.error('Invalid instruments data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching instruments:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingInstruments = false;
             }
         },
         addInstrument(payload: InstrumentType): void {
             if (!payload?.uid) {
-                console.error('Invalid instrument payload:', payload);
                 return;
             }
             this.instruments.unshift(payload);
         },
         updateInstrument(payload: InstrumentType): void {
             if (!payload?.uid) {
-                console.error('Invalid instrument payload:', payload);
                 return;
             }
             const index = this.instruments.findIndex(item => item.uid === payload.uid);
@@ -422,24 +383,19 @@ export const useSetupStore = defineStore('setup', {
                 if (result && typeof result === 'object' && 'items' in result) {
                     this.laboratoryInstruments = result.items || [];
                 } else {
-                    console.error('Invalid laboratory instruments data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching laboratory instruments:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingInstruments = false;
             }
         },
         addLaboratoryInstrument(payload: LaboratoryInstrumentType): void {
             if (!payload?.uid) {
-                console.error('Invalid laboratory instrument payload:', payload);
                 return;
             }
             this.laboratoryInstruments.unshift(payload);
         },
         updateLaboratoryInstrument(payload: LaboratoryInstrumentType): void {
             if (!payload?.uid) {
-                console.error('Invalid laboratory instrument payload:', payload);
                 return;
             }
             const index = this.laboratoryInstruments.findIndex(item => item.uid === payload.uid);
@@ -461,24 +417,19 @@ export const useSetupStore = defineStore('setup', {
                 if (result && typeof result === 'object' && 'items' in result) {
                     this.methods = result.items || [];
                 } else {
-                    console.error('Invalid methods data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching methods:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingMethods = false;
             }
         },
         addMethod(payload: MethodType): void {
             if (!payload?.uid) {
-                console.error('Invalid method payload:', payload);
                 return;
             }
             this.methods.unshift(payload);
         },
         updateMethod(payload: MethodType): void {
             if (!payload?.uid) {
-                console.error('Invalid method payload:', payload);
                 return;
             }
             const index = this.methods.findIndex(item => item.uid === payload.uid);
@@ -496,24 +447,19 @@ export const useSetupStore = defineStore('setup', {
                 if (result && Array.isArray(result)) {
                     this.units = result;
                 } else {
-                    console.error('Invalid units data received:', result);
                 }
-            } catch (error) {
-                console.error('Error fetching units:', error);
-            } finally {
+            } catch {} finally {
                 this.fetchingUnits = false;
             }
         },
         addUnit(payload: UnitType): void {
             if (!payload?.uid) {
-                console.error('Invalid unit payload:', payload);
                 return;
             }
             this.units.unshift(payload);
         },
         updateUnit(payload: UnitType): void {
             if (!payload?.uid) {
-                console.error('Invalid unit payload:', payload);
                 return;
             }
             const index = this.units.findIndex(item => item.uid === payload.uid);

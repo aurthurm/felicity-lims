@@ -50,9 +50,7 @@ const selectLaboratory = async () => {
       const redirectTo = router.currentRoute.value.query.redirect as string || '/dashboard';
       router.push(redirectTo);
     }
-  } catch (error) {
-    console.error('Error selecting laboratory:', error);
-  } finally {
+  } catch {} finally {
     isLoading.value = false;
   }
 };

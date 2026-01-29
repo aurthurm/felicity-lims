@@ -536,9 +536,7 @@ export const useNavigationStore = defineStore('navigation', () => {
                 preferences: navigationPreferences.value,
             };
             localStorage.setItem(NAVIGATION_STORAGE_KEY, JSON.stringify(preferences));
-        } catch (error) {
-            console.error('Failed to save navigation preferences:', error);
-        }
+        } catch {}
     };
 
     const loadNavigationPreferences = () => {
@@ -551,9 +549,7 @@ export const useNavigationStore = defineStore('navigation', () => {
                 favoriteRoutes.value = preferences.favoriteRoutes || [];
                 Object.assign(navigationPreferences.value, preferences.preferences || {});
             }
-        } catch (error) {
-            console.error('Failed to load navigation preferences:', error);
-        }
+        } catch {}
     };
 
     // Navigation state management

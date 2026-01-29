@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
+import { useField, useForm } from "vee-validate";
+import * as yup from "yup";
 import { useRoute, useRouter } from "vue-router";
 import { UserType, GroupType, LaboratoryType } from "@/types/gql";
 import { useUserStore } from "@/stores/user";
@@ -173,21 +175,39 @@ const loading = ref(false);
 const saving = ref(false);
 const isEditing = ref(false);
 
-// Edit form
-const editForm = reactive({
-  firstName: "",
-  lastName: "",
-  email: "",
-  userName: "",
-  isActive: true,
-  isBlocked: false,
+const userSchema = yup.object({
+  firstName: yup.string().trim().required("First name is required"),
+  lastName: yup.string().trim().required("Last name is required"),
+  email: yup.string().trim().email("Enter a valid email").required("Email is required"),
+  userName: yup.string().trim().nullable(),
+  isActive: yup.boolean().default(true),
+  isBlocked: yup.boolean().default(false),
+  laboratoryUids: yup.array().of(yup.string()).default([]),
+  activeLaboratoryUid: yup.string().trim().nullable(),
 });
 
-// Laboratory assignment form
-const labAssignForm = reactive({
-  laboratoryUids: [] as string[],
-  activeLaboratoryUid: "",
+const { handleSubmit, resetForm, setValues } = useForm({
+  validationSchema: userSchema,
+  initialValues: {
+    firstName: "",
+    lastName: "",
+    email: "",
+    userName: "",
+    isActive: true,
+    isBlocked: false,
+    laboratoryUids: [] as string[],
+    activeLaboratoryUid: "",
+  },
 });
+
+const { value: firstName, errorMessage: firstNameError } = useField<string>("firstName");
+const { value: lastName, errorMessage: lastNameError } = useField<string>("lastName");
+const { value: email, errorMessage: emailError } = useField<string>("email");
+const { value: userName } = useField<string | null>("userName");
+const { value: isActive } = useField<boolean>("isActive");
+const { value: isBlocked } = useField<boolean>("isBlocked");
+const { value: laboratoryUids } = useField<string[]>("laboratoryUids");
+const { value: activeLaboratoryUid } = useField<string | null>("activeLaboratoryUid");
 
 // Tabs
 const activeTab = ref("overview");
@@ -232,24 +252,21 @@ const fetchUser = async () => {
     
     // Populate edit form
     if (user.value) {
-      Object.assign(editForm, {
+      setValues({
         firstName: user.value.firstName || "",
         lastName: user.value.lastName || "",
         email: user.value.email || "",
         userName: user.value.userName || "",
         isActive: user.value.isActive ?? true,
         isBlocked: user.value.isBlocked ?? false,
+        laboratoryUids: user.value.laboratories?.map(lab => lab.uid) || [],
+        activeLaboratoryUid: user.value.activeLaboratoryUid || "",
       });
-
-      // Populate lab assignment form
-      labAssignForm.laboratoryUids = user.value.laboratories?.map(lab => lab.uid) || [];
-      labAssignForm.activeLaboratoryUid = user.value.activeLaboratoryUid || "";
     }
 
     // Fetch user permissions
     await fetchUserPermissions();
   } catch (error) {
-    console.error("Error fetching user:", error);
     toastError("Failed to fetch user details");
   } finally {
     loading.value = false;
@@ -266,9 +283,7 @@ const fetchUserPermissions = async () => {
     );
 
     userPermissions.value = result.userPermissions;
-  } catch (error) {
-    console.error("Error fetching user permissions:", error);
-  }
+  } catch {}
 };
 
 const toggleEdit = () => {
@@ -276,18 +291,22 @@ const toggleEdit = () => {
   
   if (!isEditing.value && user.value) {
     // Reset form when canceling edit
-    Object.assign(editForm, {
-      firstName: user.value.firstName || "",
-      lastName: user.value.lastName || "",
-      email: user.value.email || "",
-      userName: user.value.userName || "",
-      isActive: user.value.isActive ?? true,
-      isBlocked: user.value.isBlocked ?? false,
+    resetForm({
+      values: {
+        firstName: user.value.firstName || "",
+        lastName: user.value.lastName || "",
+        email: user.value.email || "",
+        userName: user.value.userName || "",
+        isActive: user.value.isActive ?? true,
+        isBlocked: user.value.isBlocked ?? false,
+        laboratoryUids: user.value.laboratories?.map(lab => lab.uid) || [],
+        activeLaboratoryUid: user.value.activeLaboratoryUid || "",
+      },
     });
   }
 };
 
-const saveUser = async () => {
+const saveUser = handleSubmit(async (values) => {
   if (!user.value) return;
   
   saving.value = true;
@@ -297,7 +316,14 @@ const saveUser = async () => {
       UpdateUserDocument,
       {
         uid: user.value.uid,
-        payload: editForm
+        payload: {
+          firstName: values.firstName,
+          lastName: values.lastName,
+          email: values.email,
+          userName: values.userName ?? undefined,
+          isActive: values.isActive,
+          isBlocked: values.isBlocked,
+        }
       },
       "updateUser"
     );
@@ -310,14 +336,13 @@ const saveUser = async () => {
       toastError(result.error || "Failed to update user");
     }
   } catch (error) {
-    console.error("Error updating user:", error);
     toastError("Failed to update user");
   } finally {
     saving.value = false;
   }
-};
+});
 
-const saveLabAssignments = async () => {
+const saveLabAssignments = handleSubmit(async (values) => {
   if (!user.value) return;
   
   saving.value = true;
@@ -327,8 +352,8 @@ const saveLabAssignments = async () => {
       AssignUserToLaboratoriesDocument,
       {
         userUid: user.value.uid,
-        laboratoryUids: labAssignForm.laboratoryUids,
-        activeLaboratoryUid: labAssignForm.activeLaboratoryUid || undefined,
+        laboratoryUids: values.laboratoryUids,
+        activeLaboratoryUid: values.activeLaboratoryUid || undefined,
       },
       "assignUserToLaboratories"
     );
@@ -340,32 +365,31 @@ const saveLabAssignments = async () => {
       toastError(result.error || "Failed to update laboratory assignments");
     }
   } catch (error) {
-    console.error("Error updating laboratory assignments:", error);
     toastError("Failed to update laboratory assignments");
   } finally {
     saving.value = false;
   }
-};
+});
 
 const addLaboratory = (labUid: string) => {
-  if (!labAssignForm.laboratoryUids.includes(labUid)) {
-    labAssignForm.laboratoryUids.push(labUid);
+  if (!laboratoryUids.value.includes(labUid)) {
+    laboratoryUids.value.push(labUid);
     
     // Auto-set as active if it's the first lab
-    if (labAssignForm.laboratoryUids.length === 1) {
-      labAssignForm.activeLaboratoryUid = labUid;
+    if (laboratoryUids.value.length === 1) {
+      activeLaboratoryUid.value = labUid;
     }
   }
 };
 
 const removeLaboratory = (labUid: string) => {
-  const index = labAssignForm.laboratoryUids.indexOf(labUid);
+  const index = laboratoryUids.value.indexOf(labUid);
   if (index > -1) {
-    labAssignForm.laboratoryUids.splice(index, 1);
+    laboratoryUids.value.splice(index, 1);
     
     // Reset active lab if it was the removed one
-    if (labAssignForm.activeLaboratoryUid === labUid) {
-      labAssignForm.activeLaboratoryUid = labAssignForm.laboratoryUids[0] || "";
+    if (activeLaboratoryUid.value === labUid) {
+      activeLaboratoryUid.value = laboratoryUids.value[0] || "";
     }
   }
 };
@@ -492,11 +516,12 @@ onMounted(() => {
               <label class="text-sm font-medium text-foreground">First Name</label>
               <input
                 v-if="isEditing"
-                v-model="editForm.firstName"
+                v-model="firstName"
                 type="text"
                 required
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               />
+              <p v-if="firstNameError" class="text-sm text-destructive">{{ firstNameError }}</p>
               <div v-else class="p-3 bg-muted/50 rounded-md">
                 <span class="text-sm">{{ user.firstName || "-" }}</span>
               </div>
@@ -506,11 +531,12 @@ onMounted(() => {
               <label class="text-sm font-medium text-foreground">Last Name</label>
               <input
                 v-if="isEditing"
-                v-model="editForm.lastName"
+                v-model="lastName"
                 type="text"
                 required
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               />
+              <p v-if="lastNameError" class="text-sm text-destructive">{{ lastNameError }}</p>
               <div v-else class="p-3 bg-muted/50 rounded-md">
                 <span class="text-sm">{{ user.lastName || "-" }}</span>
               </div>
@@ -520,10 +546,11 @@ onMounted(() => {
               <label class="text-sm font-medium text-foreground">Email Address</label>
               <input
                 v-if="isEditing"
-                v-model="editForm.email"
+                v-model="email"
                 type="email"
                 class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               />
+              <p v-if="emailError" class="text-sm text-destructive">{{ emailError }}</p>
               <div v-else class="p-3 bg-muted/50 rounded-md">
                 <span class="text-sm">{{ user.email || "-" }}</span>
               </div>
@@ -546,19 +573,19 @@ onMounted(() => {
             <div v-if="isEditing" class="flex items-center space-x-6">
               <label class="flex items-center space-x-2">
                 <input
-                  v-model="editForm.isActive"
-                  type="checkbox"
-                  class="h-4 w-4 text-primary focus:ring-ring border-gray-300 rounded"
-                />
+                v-model="isActive"
+                type="checkbox"
+                class="h-4 w-4 text-primary focus:ring-ring border-gray-300 rounded"
+              />
                 <span class="text-sm font-medium text-foreground">Active User</span>
               </label>
               
               <label class="flex items-center space-x-2">
                 <input
-                  v-model="editForm.isBlocked"
-                  type="checkbox"
-                  class="h-4 w-4 text-destructive focus:ring-ring border-gray-300 rounded"
-                />
+                v-model="isBlocked"
+                type="checkbox"
+                class="h-4 w-4 text-destructive focus:ring-ring border-gray-300 rounded"
+              />
                 <span class="text-sm font-medium text-foreground">Blocked</span>
               </label>
             </div>
@@ -634,11 +661,11 @@ onMounted(() => {
           <div class="space-y-2">
             <label class="text-sm font-medium text-foreground">Default Active Laboratory</label>
             <select
-              v-model="labAssignForm.activeLaboratoryUid"
+              v-model="activeLaboratoryUid"
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <option value="">Select default laboratory...</option>
-              <option v-for="labUid in labAssignForm.laboratoryUids" :key="labUid" :value="labUid">
+              <option v-for="labUid in laboratoryUids" :key="labUid" :value="labUid">
                 {{ getLaboratoryName(labUid) }}
               </option>
             </select>
@@ -648,13 +675,13 @@ onMounted(() => {
           <div class="space-y-2">
             <label class="text-sm font-medium text-foreground">Assigned Laboratories</label>
             <div class="space-y-2">
-              <div v-for="labUid in labAssignForm.laboratoryUids" :key="labUid" class="flex items-center justify-between p-3 border border-input rounded-md">
+              <div v-for="labUid in laboratoryUids" :key="labUid" class="flex items-center justify-between p-3 border border-input rounded-md">
                 <div class="flex items-center space-x-3">
                   <div class="w-3 h-3 rounded-full bg-primary"></div>
                   <div>
                     <div class="font-medium text-sm">{{ getLaboratoryName(labUid) }}</div>
                     <div class="text-xs text-muted-foreground">
-                      {{ labUid === labAssignForm.activeLaboratoryUid ? "Active Laboratory" : "Access Granted" }}
+                      {{ labUid === activeLaboratoryUid ? "Active Laboratory" : "Access Granted" }}
                     </div>
                   </div>
                 </div>
@@ -667,7 +694,7 @@ onMounted(() => {
                 </button>
               </div>
               
-              <div v-if="labAssignForm.laboratoryUids.length === 0" class="p-8 text-center text-muted-foreground">
+              <div v-if="laboratoryUids.length === 0" class="p-8 text-center text-muted-foreground">
                 <i class="fas fa-building mb-2 block text-2xl"></i>
                 No laboratories assigned
               </div>

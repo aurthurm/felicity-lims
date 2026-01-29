@@ -139,7 +139,6 @@ const isValidConnection = (connection: Connection): boolean => {
  */
 onConnect((params: Connection) => {
   if (!isValidConnection(params)) {
-    console.warn('Invalid connection:', params);
     return;
   }
 
@@ -229,7 +228,6 @@ const emitUpdate = () => {
  * Handle drag over canvas (required for drop to work)
  */
 const handleDragOver = (event: DragEvent) => {
-  console.log('Drag over canvas');
   event.preventDefault();
   event.stopPropagation(); // Prevent VueFlow from consuming
   if (event.dataTransfer) {
@@ -241,21 +239,17 @@ const handleDragOver = (event: DragEvent) => {
  * Handle drop on canvas
  */
 const handleDrop = (event: DragEvent) => {
-  console.log('Drop event fired');
   event.preventDefault();
   event.stopPropagation(); // Prevent VueFlow from consuming
 
   if (!event.dataTransfer) {
-    console.log('No dataTransfer');
     return;
   }
 
   // Get node type from drag data
   const nodeType = event.dataTransfer.getData('application/vueflow');
-  console.log('Node type from dataTransfer:', nodeType);
 
   if (!nodeType) {
-    console.log('No node type found in dataTransfer');
     return;
   }
 
@@ -269,7 +263,6 @@ const handleDrop = (event: DragEvent) => {
     y: event.clientY - bounds.top,
   });
 
-  console.log('Drop position:', position);
 
   // Emit to parent to create the node
   emit('addNodeAtPosition', nodeType, position);

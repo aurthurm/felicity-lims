@@ -223,12 +223,10 @@ export default function useSampleComposable() {
 
     // DOWNLOAD_IMPRESS by SAMPLES
     const downloadSamplesImpress = async (sampleIds: string[]): Promise<void> => {
-        console.log('Downloading Impress reports for samples:', sampleIds);
         try {
             const result = await swalConfirm('You want to download PDFs', 'Are you sure?');
 
             if (result.isConfirmed) {
-                console.log('impressReportsDownload:', sampleIds);
                 const response = await withClientQuery<ImpressSampleReportsQuery, ImpressSampleReportsQueryVariables>(
                     ImpressSampleReportsDocument,
                     { sampleIds },

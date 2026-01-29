@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { ref, reactive, computed, defineAsyncComponent } from 'vue';
+import { ref, computed, defineAsyncComponent } from 'vue';
+import { useField, useForm } from 'vee-validate';
+import * as yup from 'yup';
 import { usePatientStore } from '@/stores/patient';
 import  useApiUtil  from '@/composables/api_util';
 import { IdentificationType } from '@/types/gql'
@@ -14,18 +16,32 @@ const { withClientMutation } = useApiUtil();
 
 let showModal = ref<boolean>(false);
 let formTitle = ref<string>('');
-let form = reactive({}) as IdentificationType;
 const formAction = ref<boolean>(true);
+const currentUid = ref<string | null>(null);
+
+const identificationSchema = yup.object({
+  name: yup.string().trim().required('Identification name is required'),
+});
+
+const { handleSubmit, resetForm, setValues } = useForm({
+  validationSchema: identificationSchema,
+  initialValues: {
+    name: '',
+  },
+});
+
+const { value: name, errorMessage: nameError } = useField<string>('name');
 
 patientStore.fetchIdentifications();
 
-function addIdentification(): void {
-  withClientMutation<AddIdentificationMutation, AddIdentificationMutationVariables>(AddIdentificationDocument, { name: form.name }, "createIdentification")
+function addIdentification(payload: { name: string }): void {
+  withClientMutation<AddIdentificationMutation, AddIdentificationMutationVariables>(AddIdentificationDocument, payload, "createIdentification")
     .then((result) => patientStore.addIdentification(result));
 }
 
-function editIdentification(): void {
-  withClientMutation<EditIdentificationMutation, EditIdentificationMutationVariables>(EditIdentificationDocument, { uid: form.uid, name: form.name }, "updateIdentification")
+function editIdentification(payload: { name: string }): void {
+  if (!currentUid.value) return;
+  withClientMutation<EditIdentificationMutation, EditIdentificationMutationVariables>(EditIdentificationDocument, { uid: currentUid.value, ...payload }, "updateIdentification")
     .then((result) => patientStore.updateIdentification(result));
 }
 
@@ -34,17 +50,22 @@ function FormManager(create: boolean, obj = {} as IdentificationType): void {
   showModal.value = true;
   formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "PERSON IDENTIFICATION";
   if (create) {
-    Object.assign(form, {} as IdentificationType);
+    currentUid.value = null;
+    resetForm({ values: { name: '' } });
   } else {
-    Object.assign(form, { ...obj });
+    currentUid.value = obj.uid ?? null;
+    setValues({
+      name: obj.name ?? '',
+    });
   }
 }
 
-function saveForm(): void {
-  if (formAction.value === true) addIdentification();
-  if (formAction.value === false) editIdentification();
+const saveForm = handleSubmit((values) => {
+  const payload = { name: values.name };
+  if (formAction.value === true) addIdentification(payload);
+  if (formAction.value === false) editIdentification(payload);
   showModal.value = false;
-}
+});
 
 const identifications = computed(() => patientStore.getIdentifications)
 </script>
@@ -97,8 +118,9 @@ const identifications = computed(() => patientStore.getIdentifications)
             <span class="text-sm font-medium text-foreground">Identification Name</span>
             <input 
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              v-model="form.name" 
+              v-model="name" 
               placeholder="Name ..." />
+            <p v-if="nameError" class="mt-1 text-sm text-destructive">{{ nameError }}</p>
           </label>
         </div>
 
