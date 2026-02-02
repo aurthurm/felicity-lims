@@ -1,0 +1,589 @@
+@import "tailwindcss";
+
+/* --- Configuration (must be at root level, not nested) --- */
+@source "webapp/**/*.{html,js,jsx,ts,tsx,vue}";
+@source "public/**/*.html";
+@source "index.html";
+
+:root{
+    --umo-primary-color: #3480f9;
+    --umo-color-white: #fff;
+    --umo-color-black: #000;
+    --umo-warning-color: #f6913e;
+    --umo-error-color: #ef3f35;
+    --umo-container-background: #f4f5f7;
+    --umo-button-hover-background: #f1f3f5;
+    --umo-text-selection-background: #94cfff;
+    --umo-font-family: helvetica neue, helvetica, pingfang sc, hiragino sans gb, microsoft yahei, simsun, sans-serif;
+    --umo-font-size: 14px;
+    --umo-font-size-small: 12px;
+    --umo-text-color: rgb(51, 54, 57);
+    --umo-text-color-light: rgba(0, 0, 0, 0.5);
+    --umo-text-color-disabled: #a7abac;
+    --umo-border-color: rgba(0, 0, 0, 0.08);
+    --umo-border-color-dark: #ddd;
+    --umo-border-color-light: rgba(0, 0, 0, .05);
+    --umo-shadow: 0 3px 14px 2px rgba(0, 0, 0, 0.03), 0 8px 10px 1px rgba(0, 0, 0, 4%), 0 5px 5px -3px rgba(0, 0, 0, 8%);
+    --umo-radius: 3px;
+    --umo-radius-medium: 5px;
+    --umo-popup-content-padding: 12px;
+    --umo-popup-max-height: max(60vh, 180px);
+    --umo-tooltip-content-padding: 6px 10px;
+    --umo-mask-color: transparent;
+    --umo-content-placeholder-color: #999;
+    --umo-content-text-color: #333;
+    --umo-content-node-border: #e7e7e7;
+    --umo-content-node-radius: var(--umo-radius);
+    --umo-content-node-bottom: 0.75em;
+    --umo-content-node-selected-background: #f5f8fc;
+    --umo-content-table-border-color: #333;
+    --umo-content-table-thead-background: #f1f3f5;
+    --umo-content-table-selected-background: rgba(200, 200, 255, 0.4);
+    --umo-content-line-number-color: #e7e8ea;
+    --umo-content-search-result-background: #fefc7ef2;
+    --umo-content-search-result-current-background: #0dff00c3;
+    --umo-content-invisible-break-color: rgb(78, 139, 252);
+    --umo-content-code-color: var(--umo-primary-color);
+    --umo-content-code-background: #f1f3f5;
+    --umo-content-code-family: Consolas, Monaco, Andale Mono, Ubuntu Mono,monospace;
+    --umo-scrollbar-size: 4px;
+    --umo-scrollbar-thumb-color: rgba(0, 0, 0, 0.2);
+    --umo-scrollbar-thumb-hover-color: rgba(0, 0, 0, 0.35);
+}
+
+html[theme-mode='dark']{
+    --umo-color-white: #17171a;
+    --umo-color-black: #fff;
+    --umo-warning-color: rgb(207, 110, 45);
+    --umo-error-color: rgb(198, 71, 81);
+    --umo-container-background: #2a2b2d;
+    --umo-button-hover-background: #2c2c2c;
+    --umo-text-color: #ddd;
+    --umo-text-color-light: #bbb;
+    --umo-text-color-disabled: #999;
+    --umo-border-color: rgba(255, 255, 255, 0.15);
+    --umo-border-color-dark: rgba(255, 255, 255, 0.2);
+    --umo-border-color-light: rgba(255, 255, 255, 0.08);
+    --umo-content-text-color: #000;
+    --umo-scrollbar-thumb-color: rgba(255, 255, 255, 0.3);
+    --umo-scrollbar-thumb-hover-color: rgba(255, 255, 255, 0.45);
+}
+
+@layer components {
+    .fel-table {
+        @apply min-w-full border-collapse;
+    }
+
+    .fel-table thead {
+        @apply bg-muted;
+    }
+
+    .fel-table th {
+        @apply px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider;
+    }
+
+    .fel-table tbody {
+        @apply bg-background divide-y divide-border;
+    }
+
+    .fel-table td {
+        @apply px-3 py-2 text-sm text-foreground;
+    }
+
+    .fel-table tbody tr {
+        @apply hover:bg-muted transition-colors duration-150;
+    }
+
+    /* vue-multiselect overrides to align with theme tokens */
+    .multiselect,
+    .multiselect__input,
+    .multiselect__single,
+    .multiselect__tags {
+        @apply bg-background text-foreground;
+    }
+
+    .multiselect__tags {
+        @apply border border-input;
+    }
+
+    .multiselect__option--highlight {
+        @apply bg-primary text-primary-foreground;
+    }
+
+    .multiselect__option--selected {
+        @apply bg-muted text-foreground;
+    }
+
+    .multiselect__option--disabled {
+        @apply bg-muted text-muted-foreground;
+    }
+
+    .multiselect__content-wrapper {
+        @apply border border-border bg-background;
+    }
+
+    .multiselect__spinner::before,
+    .multiselect__spinner::after {
+        border-top-color: hsl(var(--primary));
+    }
+}
+
+@theme {
+    --color-background: hsl(var(--background) / <alpha-value>);
+    --color-foreground: hsl(var(--foreground) / <alpha-value>);
+    --color-card: hsl(var(--card) / <alpha-value>);
+    --color-card-foreground: hsl(var(--card-foreground) / <alpha-value>);
+    --color-popover: hsl(var(--popover) / <alpha-value>);
+    --color-popover-foreground: hsl(var(--popover-foreground) / <alpha-value>);
+    --color-primary: hsl(var(--primary) / <alpha-value>);
+    --color-primary-foreground: hsl(var(--primary-foreground) / <alpha-value>);
+    --color-secondary: hsl(var(--secondary) / <alpha-value>);
+    --color-secondary-foreground: hsl(var(--secondary-foreground) / <alpha-value>);
+    --color-muted: hsl(var(--muted) / <alpha-value>);
+    --color-muted-foreground: hsl(var(--muted-foreground) / <alpha-value>);
+    --color-accent: hsl(var(--accent) / <alpha-value>);
+    --color-accent-foreground: hsl(var(--accent-foreground) / <alpha-value>);
+    --color-destructive: hsl(var(--destructive) / <alpha-value>);
+    --color-destructive-foreground: hsl(var(--destructive-foreground) / <alpha-value>);
+    --color-success: hsl(var(--success) / <alpha-value>);
+    --color-success-foreground: hsl(var(--success-foreground) / <alpha-value>);
+    --color-warning: hsl(var(--warning) / <alpha-value>);
+    --color-warning-foreground: hsl(var(--warning-foreground) / <alpha-value>);
+    --color-info: hsl(var(--info) / <alpha-value>);
+    --color-info-foreground: hsl(var(--info-foreground) / <alpha-value>);
+    --color-border: hsl(var(--border) / <alpha-value>);
+    --color-input: hsl(var(--input) / <alpha-value>);
+    --color-ring: hsl(var(--ring) / <alpha-value>);
+    --radius: 0.5rem;
+    --grid-template-columns-dashboard: 150px minmax(350px, 1fr);
+}
+
+@layer theme {
+    /* --- Original Light Theme (Default) --- */
+    :root {
+        --background: 0 0% 100%; /* white */
+        --foreground: 220 9% 20%; /* near black */
+        --card: 0 0% 100%; /* white */
+        --card-foreground: 220 9% 20%; /* near black */
+        --popover: 0 0% 100%; /* white */
+        --popover-foreground: 220 9% 20%; /* near black */
+        --primary: 204 100% 33%; /* sky-800 */
+        --primary-foreground: 0 0% 98%; /* near white */
+        --secondary: 0 0% 96%; /* gray-100 */
+        --secondary-foreground: 220 9% 20%; /* near black */
+        --muted: 0 0% 91%; /* gray-200 */
+        --muted-foreground: 220 5% 50%; /* gray-500 */
+        --accent: 217 91% 60%; /* blue-500 */
+        --accent-foreground: 0 0% 100%; /* white */
+        --destructive: 0 84% 60%; /* red-500 */
+        --destructive-foreground: 0 0% 98%; /* near white */
+        --success: 142 71% 45%; /* green-600 */
+        --success-foreground: 0 0% 100%; /* white */
+        --warning: 40 90% 60%; /* orange-yellow */
+        --warning-foreground: 40 90% 15%; /* dark brown-orange */
+        --info: 210 80% 55%; /* clear blue */
+        --info-foreground: 0 0% 100%; /* white */
+        --border: 220 5% 85%; /* gray-300 */
+        --input: 220 5% 85%; /* gray-300 */
+        --ring: 204 100% 33%; /* sky-800 (same as primary) */
+        --radius: 0.5rem;
+        
+        /* Register custom colors for Tailwind utilities */
+        --color-background: hsl(var(--background));
+        --color-foreground: hsl(var(--foreground));
+        --color-card: hsl(var(--card));
+        --color-card-foreground: hsl(var(--card-foreground));
+        --color-popover: hsl(var(--popover));
+        --color-popover-foreground: hsl(var(--popover-foreground));
+        --color-primary: hsl(var(--primary));
+        --color-primary-foreground: hsl(var(--primary-foreground));
+        --color-secondary: hsl(var(--secondary));
+        --color-secondary-foreground: hsl(var(--secondary-foreground));
+        --color-muted: hsl(var(--muted));
+        --color-muted-foreground: hsl(var(--muted-foreground));
+        --color-accent: hsl(var(--accent));
+        --color-accent-foreground: hsl(var(--accent-foreground));
+        --color-destructive: hsl(var(--destructive));
+        --color-destructive-foreground: hsl(var(--destructive-foreground));
+        --color-success: hsl(var(--success));
+        --color-success-foreground: hsl(var(--success-foreground));
+        --color-warning: hsl(var(--warning));
+        --color-warning-foreground: hsl(var(--warning-foreground));
+        --color-info: hsl(var(--info));
+        --color-info-foreground: hsl(var(--info-foreground));
+        --color-border: hsl(var(--border));
+        --color-input: hsl(var(--input));
+        --color-ring: hsl(var(--ring));
+
+        /* Custom UI tokens */
+        --color-chart-error: hsl(var(--destructive));
+        --color-chart-warning: hsl(var(--warning));
+        --color-chart-good: hsl(var(--success));
+        --color-chart-mean: hsl(var(--primary));
+        --color-chart-axis: hsl(var(--muted-foreground));
+        --color-chart-grid: hsl(var(--border));
+        --color-chart-point-stroke: hsl(var(--background));
+        --color-chart-muted: hsl(var(--muted));
+
+        --color-guideline-clsi-bg: hsl(var(--info) / 0.12);
+        --color-guideline-eucast-bg: hsl(var(--success) / 0.12);
+        --color-guideline-who-bg: hsl(var(--warning) / 0.12);
+        --color-guideline-default-bg: hsl(var(--muted));
+        --color-guideline-clsi-text: hsl(var(--info));
+        --color-guideline-eucast-text: hsl(var(--success));
+        --color-guideline-who-text: hsl(var(--warning));
+        --color-guideline-default-text: hsl(var(--muted-foreground));
+
+        --color-reflex-connection: hsl(var(--muted-foreground));
+        --color-reflex-grid: hsl(var(--border));
+        --color-reflex-trigger: hsl(var(--primary));
+        --color-reflex-decision: hsl(262 83% 58%);
+        --color-reflex-rule: hsl(38 92% 50%);
+        --color-reflex-action-add: hsl(var(--success));
+        --color-reflex-action-finalize: hsl(330 81% 60%);
+        --color-reflex-node-stroke: hsl(var(--background));
+
+        --color-loader-primary: hsl(var(--primary));
+    }
+
+    /* --- Original Dark Theme --- */
+    [data-theme="dark"] {
+        --background: 220 9% 10%; /* very dark blue-gray */
+        --foreground: 0 0% 98%; /* near white */
+        --card: 220 9% 12%; /* slightly lighter dark */
+        --card-foreground: 0 0% 98%; /* near white */
+        --popover: 220 9% 12%; /* slightly lighter dark */
+        --popover-foreground: 0 0% 98%; /* near white */
+        --primary: 217 91% 60%; /* blue-500 */
+        --primary-foreground: 0 0% 100%; /* white */
+        --secondary: 220 4% 20%; /* dark gray */
+        --secondary-foreground: 0 0% 98%; /* near white */
+        --muted: 220 4% 25%; /* slightly lighter dark gray */
+        --muted-foreground: 220 5% 70%; /* light gray */
+        --accent: 204 100% 33%; /* sky-800 */
+        --accent-foreground: 0 0% 100%; /* white */
+        --destructive: 0 72% 50%; /* slightly muted red */
+        --destructive-foreground: 0 0% 98%; /* near white */
+        --success: 142 71% 45%; /* green-600 */
+        --success-foreground: 0 0% 100%; /* white */
+        --warning: 45 80% 55%; /* slightly brighter orange/yellow */
+        --warning-foreground: 30 80% 10%; /* very dark brown */
+        --info: 205 75% 60%; /* slightly brighter blue */
+        --info-foreground: 0 0% 100%; /* white */
+        --border: 220 4% 30%; /* medium dark gray */
+        --input: 220 4% 30%; /* medium dark gray */
+        --ring: 217 91% 60%; /* blue-500 (same as primary) */
+    }
+
+    /* --- Theme: Black and White --- */
+    [data-theme="black-and-white"] {
+        --background: 0 0% 100%; /* white */
+        --foreground: 0 0% 0%; /* black */
+        --card: 0 0% 100%; /* white */
+        --card-foreground: 0 0% 0%; /* black */
+        --popover: 0 0% 100%; /* white */
+        --popover-foreground: 0 0% 0%; /* black */
+        --primary: 0 0% 15%; /* very dark gray (near black) */
+        --primary-foreground: 0 0% 100%; /* white */
+        --secondary: 0 0% 95%; /* very light gray */
+        --secondary-foreground: 0 0% 0%; /* black */
+        --muted: 0 0% 85%; /* light gray */
+        --muted-foreground: 0 0% 40%; /* mid-dark gray */
+        --accent: 0 0% 50%; /* mid gray */
+        --accent-foreground: 0 0% 100%; /* white */
+        --destructive: 0 0% 20%; /* dark gray */
+        --destructive-foreground: 0 0% 100%; /* white */
+        --success: 0 0% 45%; /* mid gray */
+        --success-foreground: 0 0% 100%; /* white */
+        --warning: 0 0% 75%; /* light-mid gray */
+        --warning-foreground: 0 0% 0%; /* black */
+        --info: 0 0% 65%; /* mid gray */
+        --info-foreground: 0 0% 0%; /* black */
+        --border: 0 0% 80%; /* gray border */
+        --input: 0 0% 80%; /* gray input */
+        --ring: 0 0% 15%; /* very dark gray (same as primary) */
+    }
+
+    /* --- Theme: Sterile White --- */
+    [data-theme="sterile"] {
+        --background: 0 0% 98%; /* off white */
+        --foreground: 220 9% 25%; /* dark grayish blue */
+        --card: 0 0% 98%;
+        --card-foreground: 220 9% 25%;
+        --popover: 0 0% 98%;
+        --popover-foreground: 220 9% 25%;
+        --primary: 200 80% 50%; /* light sky blue */
+        --primary-foreground: 0 0% 100%; /* white */
+        --secondary: 200 20% 90%; /* very light blue-gray */
+        --secondary-foreground: 220 9% 25%;
+        --muted: 0 0% 90%; /* light gray */
+        --muted-foreground: 220 5% 60%; /* mid gray */
+        --accent: 190 70% 60%; /* light teal */
+        --accent-foreground: 0 0% 100%; /* white */
+        --destructive: 0 84% 60%; /* standard red */
+        --destructive-foreground: 0 0% 98%; /* near white */
+        --success: 142 71% 45%; /* standard green */
+        --success-foreground: 0 0% 100%; /* white */
+        --warning: 40 90% 60%; /* orange-yellow */
+        --warning-foreground: 40 90% 15%; /* dark brown-orange */
+        --info: 210 80% 55%; /* clear blue */
+        --info-foreground: 0 0% 100%; /* white */
+        --border: 220 5% 85%; /* gray-300 */
+        --input: 220 5% 85%; /* gray-300 */
+        --ring: 200 80% 50%; /* light sky blue (same as primary) */
+    }
+
+    /* --- Theme: Clinical Blue --- */
+    [data-theme="clinical-blue"] {
+        --background: 210 20% 98%; /* very light cool gray */
+        --foreground: 220 15% 25%; /* dark slate blue */
+        --card: 0 0% 100%; /* white */
+        --card-foreground: 220 15% 25%; /* dark slate blue */
+        --popover: 0 0% 100%; /* white */
+        --popover-foreground: 220 15% 25%; /* dark slate blue */
+        --primary: 210 90% 45%; /* strong clear blue */
+        --primary-foreground: 0 0% 100%; /* white */
+        --secondary: 210 30% 94%; /* light blue-gray */
+        --secondary-foreground: 220 15% 25%; /* dark slate blue */
+        --muted: 210 20% 90%; /* light gray */
+        --muted-foreground: 210 10% 55%; /* mid gray-blue */
+        --accent: 190 80% 50%; /* teal/cyan */
+        --accent-foreground: 0 0% 100%; /* white */
+        --destructive: 0 80% 55%; /* standard red */
+        --destructive-foreground: 0 0% 100%; /* white */
+        --success: 140 60% 40%; /* standard green */
+        --success-foreground: 0 0% 100%; /* white */
+        --warning: 40 90% 60%; /* orange-yellow */
+        --warning-foreground: 40 90% 15%; /* dark brown-orange */
+        --info: 210 80% 55%; /* clear blue */
+        --info-foreground: 0 0% 100%; /* white */
+        --border: 210 20% 88%; /* light gray border */
+        --input: 210 20% 88%; /* light gray input */
+        --ring: 210 90% 45%; /* strong clear blue (same as primary) */
+    }
+
+    /* --- Theme: Emergency Red --- */
+    [data-theme="emergency-red"] {
+        --background: 0 50% 95%; /* very light red */
+        --foreground: 0 50% 30%; /* dark desaturated red */
+        --card: 0 50% 98%; /* extremely light red */
+        --card-foreground: 0 50% 30%;
+        --popover: 0 50% 98%;
+        --popover-foreground: 0 50% 30%;
+        --primary: 0 80% 55%; /* strong red */
+        --primary-foreground: 0 0% 100%; /* white */
+        --secondary: 0 20% 90%; /* light pinkish gray */
+        --secondary-foreground: 0 50% 30%;
+        --muted: 0 50% 90%; /* light pink */
+        --muted-foreground: 0 50% 60%; /* mid desaturated red */
+        --accent: 0 100% 60%; /* bright red */
+        --accent-foreground: 0 0% 100%; /* white */
+        --destructive: 0 84% 60%; /* slightly different strong red */
+        --destructive-foreground: 0 0% 98%; /* near white */
+        --success: 142 71% 45%; /* standard green */
+        --success-foreground: 0 0% 100%; /* white */
+        --warning: 40 90% 60%; /* orange-yellow */
+        --warning-foreground: 40 90% 15%; /* dark brown-orange */
+        --info: 210 80% 55%; /* clear blue */
+        --info-foreground: 0 0% 100%; /* white */
+        --border: 0 50% 60%; /* mid desaturated red border */
+        --input: 0 50% 85%; /* light pink input */
+        --ring: 0 80% 55%; /* strong red (same as primary) */
+    }
+
+    /* --- Theme: Sterile Green --- */
+    [data-theme="sterile-green"] {
+        --background: 0 0% 100%; /* white */
+        --foreground: 215 10% 20%; /* dark cool gray */
+        --card: 0 0% 100%; /* white */
+        --card-foreground: 215 10% 20%; /* dark cool gray */
+        --popover: 0 0% 100%; /* white */
+        --popover-foreground: 215 10% 20%; /* dark cool gray */
+        --primary: 145 65% 35%; /* calm medium green */
+        --primary-foreground: 0 0% 100%; /* white */
+        --secondary: 150 20% 96%; /* very light green-gray */
+        --secondary-foreground: 215 10% 20%; /* dark cool gray */
+        --muted: 0 0% 92%; /* light gray */
+        --muted-foreground: 215 5% 50%; /* mid cool gray */
+        --accent: 160 70% 40%; /* slightly brighter teal-green */
+        --accent-foreground: 0 0% 100%; /* white */
+        --destructive: 0 80% 55%; /* standard red */
+        --destructive-foreground: 0 0% 98%; /* near white */
+        --success: 145 65% 35%; /* calm medium green (same as primary) */
+        --success-foreground: 0 0% 100%; /* white */
+        --warning: 40 90% 60%; /* orange-yellow */
+        --warning-foreground: 40 90% 15%; /* dark brown-orange */
+        --info: 210 80% 55%; /* clear blue */
+        --info-foreground: 0 0% 100%; /* white */
+        --border: 215 10% 85%; /* light cool gray border */
+        --input: 215 10% 85%; /* light cool gray input */
+        --ring: 145 65% 35%; /* calm medium green (same as primary) */
+    }
+
+    /* --- Theme: Warm Neutral --- */
+    [data-theme="warm-neutral"] {
+        --background: 40 30% 96%; /* very light beige */
+        --foreground: 30 25% 20%; /* dark warm brown */
+        --card: 0 0% 100%; /* white */
+        --card-foreground: 30 25% 20%; /* dark warm brown */
+        --popover: 0 0% 100%; /* white */
+        --popover-foreground: 30 25% 20%; /* dark warm brown */
+        --primary: 30 70% 50%; /* warm orange/brown */
+        --primary-foreground: 0 0% 100%; /* white */
+        --secondary: 40 20% 92%; /* light beige */
+        --secondary-foreground: 30 25% 20%; /* dark warm brown */
+        --muted: 40 20% 88%; /* lighter beige */
+        --muted-foreground: 35 15% 50%; /* mid brown-gray */
+        --accent: 45 60% 55%; /* muted gold/ochre */
+        --accent-foreground: 30 25% 15%; /* very dark warm brown */
+        --destructive: 0 60% 50%; /* muted red */
+        --destructive-foreground: 0 0% 100%; /* white */
+        --success: 90 40% 40%; /* muted olive green */
+        --success-foreground: 0 0% 100%; /* white */
+        --warning: 40 90% 60%; /* orange-yellow */
+        --warning-foreground: 40 90% 15%; /* dark brown-orange */
+        --info: 210 80% 55%; /* clear blue */
+        --info-foreground: 0 0% 100%; /* white */
+        --border: 35 15% 80%; /* light brown-gray border */
+        --input: 35 15% 80%; /* light brown-gray input */
+        --ring: 30 70% 50%; /* warm orange/brown (same as primary) */
+    }
+
+    /* --- Theme: Cool Slate (Darker) --- */
+    [data-theme="cool-slate"] {
+        --background: 220 15% 15%; /* very dark cool slate */
+        --foreground: 210 15% 95%; /* very light gray */
+        --card: 220 12% 20%; /* slightly lighter dark slate */
+        --card-foreground: 210 15% 95%; /* very light gray */
+        --popover: 220 12% 20%; /* slightly lighter dark slate */
+        --popover-foreground: 210 15% 95%; /* very light gray */
+        --primary: 220 50% 60%; /* medium slate blue */
+        --primary-foreground: 220 15% 10%; /* very dark slate */
+        --secondary: 220 10% 25%; /* dark gray */
+        --secondary-foreground: 210 15% 95%; /* very light gray */
+        --muted: 220 10% 35%; /* darker gray */
+        --muted-foreground: 210 15% 70%; /* light gray */
+        --accent: 260 60% 65%; /* muted purple */
+        --accent-foreground: 0 0% 100%; /* white */
+        --destructive: 0 50% 55%; /* desaturated red */
+        --destructive-foreground: 0 0% 100%; /* white */
+        --success: 140 40% 50%; /* desaturated green */
+        --success-foreground: 0 0% 100%; /* white */
+        --warning: 45 80% 55%; /* slightly brighter orange/yellow */
+        --warning-foreground: 30 80% 10%; /* very dark brown */
+        --info: 205 75% 60%; /* slightly brighter blue */
+        --info-foreground: 0 0% 100%; /* white */
+        --border: 220 10% 40%; /* mid-dark gray border */
+        --input: 220 10% 40%; /* mid-dark gray input */
+        --ring: 220 50% 60%; /* medium slate blue (same as primary) */
+    }
+
+    /* --- Theme: Corporate Navy --- */
+    [data-theme="corporate-navy"] {
+        --background: 0 0% 100%; /* white */
+        --foreground: 220 30% 20%; /* very dark navy */
+        --card: 0 0% 100%; /* white */
+        --card-foreground: 220 30% 20%; /* very dark navy */
+        --popover: 0 0% 100%; /* white */
+        --popover-foreground: 220 30% 20%; /* very dark navy */
+        --primary: 220 80% 40%; /* strong navy blue */
+        --primary-foreground: 0 0% 100%; /* white */
+        --secondary: 215 30% 95%; /* very light gray-blue */
+        --secondary-foreground: 220 30% 20%; /* very dark navy */
+        --muted: 210 20% 90%; /* light gray */
+        --muted-foreground: 215 15% 55%; /* mid gray-blue */
+        --accent: 210 90% 55%; /* brighter lighter blue */
+        --accent-foreground: 0 0% 100%; /* white */
+        --destructive: 0 84% 60%; /* standard red */
+        --destructive-foreground: 0 0% 98%; /* near white */
+        --success: 142 71% 45%; /* standard green */
+        --success-foreground: 0 0% 100%; /* white */
+        --warning: 40 90% 60%; /* orange-yellow */
+        --warning-foreground: 40 90% 15%; /* dark brown-orange */
+        --info: 210 80% 55%; /* clear blue */
+        --info-foreground: 0 0% 100%; /* white */
+        --border: 215 20% 85%; /* light gray-blue border */
+        --input: 215 20% 85%; /* light gray-blue input */
+        --ring: 220 80% 40%; /* strong navy blue (same as primary) */
+    }
+}
+
+@layer components {
+    /* Your custom component classes go here */
+    .btn-primary {
+        @apply px-4 py-2 text-sm border border-sky-800 text-gray-800 rounded-sm hover:bg-sky-800 hover:text-gray-100 transition-colors duration-150;
+    }
+
+    .btn {
+        @apply px-4 py-2 rounded-md font-medium transition-colors;
+    }
+
+    .btn-secondary {
+        @apply bg-gray-200 text-gray-800 hover:bg-gray-300;
+    }
+
+    .card {
+        @apply bg-white rounded-lg shadow-md p-4;
+    }
+}
+
+@layer utilities {
+    /* Grid column utilities (Tailwind v4 handles these better, but keeping for compatibility) */
+    .grid-cols-5 {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+    .grid-cols-6 {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+    .grid-cols-7 {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+    .grid-cols-8 {
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+    }
+    .grid-cols-9 {
+        grid-template-columns: repeat(9, minmax(0, 1fr));
+    }
+    .grid-cols-10 {
+        grid-template-columns: repeat(10, minmax(0, 1fr));
+    }
+    .grid-cols-11 {
+        grid-template-columns: repeat(11, minmax(0, 1fr));
+    }
+    .grid-cols-12 {
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+    .grid-cols-13 {
+        grid-template-columns: repeat(13, minmax(0, 1fr));
+    }
+    .grid-cols-14 {
+        grid-template-columns: repeat(14, minmax(0, 1fr));
+    }
+    .grid-cols-15 {
+        grid-template-columns: repeat(15, minmax(0, 1fr));
+    }
+    .grid-cols-16 {
+        grid-template-columns: repeat(16, minmax(0, 1fr));
+    }
+    .grid-cols-17 {
+        grid-template-columns: repeat(17, minmax(0, 1fr));
+    }
+    .grid-cols-18 {
+        grid-template-columns: repeat(18, minmax(0, 1fr));
+    }
+    .grid-cols-19 {
+        grid-template-columns: repeat(19, minmax(0, 1fr));
+    }
+    .grid-cols-20 {
+        grid-template-columns: repeat(20, minmax(0, 1fr));
+    }
+
+    /* Form utilities */
+    .form-input,
+    .form-textarea,
+    .form-select,
+    .form-multiselect {
+        padding-top: 4px;
+        padding-bottom: 4px;
+    }
+}
