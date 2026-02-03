@@ -3,16 +3,31 @@
   import { InstrumentInputType, InstrumentType } from '@/types/gql'
   import { AddInstrumentDocument, AddInstrumentMutation, AddInstrumentMutationVariables,
     EditInstrumentDocument, EditInstrumentMutation, EditInstrumentMutationVariables } from '@/graphql/operations/instrument.mutations';
-  import { useUserStore } from '@/stores/user';
   import { useSetupStore } from '@/stores/setup';
   import  useApiUtil  from '@/composables/api_util';
-  import { useField, useForm } from "vee-validate";
+  import { useForm } from "vee-validate";
   import { object, string } from "yup";
-  const modal = defineAsyncComponent(
-    () => import('@/components/ui/FelModal.vue')
-  )
-
-  const userStore = useUserStore()
+  import { Button } from "@/components/ui/button";
+  import { Input } from "@/components/ui/input";
+  import { Textarea } from "@/components/ui/textarea";
+  import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+  } from "@/components/ui/form";
+  import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select";
+  import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import PageHeading from "@/components/common/PageHeading.vue"
+defineOptions({ name: 'InstrumentsView' })
   const setupStore = useSetupStore()
   const { withClientMutation } = useApiUtil()
 
@@ -34,7 +49,7 @@
     supplierUid: string().nullable(),
   });
 
-  const { handleSubmit, errors, resetForm, setValues } = useForm({
+  const { handleSubmit, resetForm, setValues } = useForm({
     validationSchema: formSchema,
     initialValues: {
       name: "",
@@ -45,13 +60,6 @@
       supplierUid: null,
     },
   });
-
-  const { value: name } = useField<string>("name");
-  const { value: keyword } = useField<string>("keyword");
-  const { value: description } = useField<string | null>("description");
-  const { value: instrumentTypeUid } = useField<string | null>("instrumentTypeUid");
-  const { value: manufacturerUid } = useField<string | null>("manufacturerUid");
-  const { value: supplierUid } = useField<string | null>("supplierUid");
 
   setupStore.fetchInstrumentTypes();    
   const instrumentTypes = computed(() => setupStore.getInstrumentTypes)
@@ -132,158 +140,145 @@
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Instruments">
-      <fel-button @click="FormManager(true)"> Add Instrument</fel-button>
-    </fel-heading>
+    <PageHeading title="Instruments">
+      <Button @click="FormManager(true)"> Add Instrument</Button>
+    </PageHeading>
 
     <div class="border border-border bg-background rounded-lg shadow-sm p-6 overflow-hidden">
-      <table class="min-w-full divide-y divide-border fel-table">
-        <thead>
-          <tr>
-            <th class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Name</th>
-            <th class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Type</th>
-            <th class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Manufacturer</th>
-            <th class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Supplier</th>
-            <th class="px-4 py-2 text-right text-sm font-medium text-muted-foreground tracking-wider">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="bg-background divide-y divide-border">
-          <tr v-for="inst in instruments" :key="inst?.uid" class="hover:bg-muted/50">
-            <td class="px-4 py-2 whitespace-nowrap text-sm text-foreground">{{ inst?.name }}</td>
-            <td class="px-4 py-2 whitespace-nowrap text-sm text-foreground">{{ inst?.instrumentType?.name }}</td>
-            <td class="px-4 py-2 whitespace-nowrap text-sm text-foreground">{{ inst?.manufacturer?.name }}</td>
-            <td class="px-4 py-2 whitespace-nowrap text-sm text-foreground">{{ inst?.supplier?.name }}</td>
-            <td class="px-4 py-2 whitespace-nowrap text-sm text-right">
-              <button 
-                @click="FormManager(false, inst)" 
-                class="text-primary hover:text-primary/80 focus:outline-none focus:underline"
-                aria-label="Edit instrument"
-              >
+      <Table class="min-w-full divide-y divide-border">
+        <TableHeader>
+          <TableRow>
+            <TableHead class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Name</TableHead>
+            <TableHead class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Type</TableHead>
+            <TableHead class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Manufacturer</TableHead>
+            <TableHead class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Supplier</TableHead>
+            <TableHead class="px-4 py-2 text-right text-sm font-medium text-muted-foreground tracking-wider">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody class="bg-background divide-y divide-border">
+          <TableRow v-for="inst in instruments" :key="inst?.uid" class="hover:bg-muted/50">
+            <TableCell class="px-4 py-2 whitespace-nowrap text-sm text-foreground">{{ inst?.name }}</TableCell>
+            <TableCell class="px-4 py-2 whitespace-nowrap text-sm text-foreground">{{ inst?.instrumentType?.name }}</TableCell>
+            <TableCell class="px-4 py-2 whitespace-nowrap text-sm text-foreground">{{ inst?.manufacturer?.name }}</TableCell>
+            <TableCell class="px-4 py-2 whitespace-nowrap text-sm text-foreground">{{ inst?.supplier?.name }}</TableCell>
+            <TableCell class="px-4 py-2 whitespace-nowrap text-sm text-right">
+              <Button variant="outline" size="sm" @click="FormManager(false, inst)">
                 Edit
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              </Button>
+            </TableCell>
+          </TableRow>
+          <TableEmpty v-if="!instruments || instruments.length === 0" :colspan="5">
+            <Empty class="border-0 bg-transparent p-0">
+              <EmptyContent>
+                <EmptyHeader>
+                  <EmptyTitle>No instruments found</EmptyTitle>
+                  <EmptyDescription>Add an instrument to get started.</EmptyDescription>
+                </EmptyHeader>
+              </EmptyContent>
+            </Empty>
+          </TableEmpty>
+        </TableBody>
+      </Table>
     </div>
   </div>
 
   <!-- Instrument Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" :title="formTitle">
+  <Modal v-if="showModal" @close="showModal = false" :title="formTitle">
     <template v-slot:body>
-      <form @submit.prevent="saveForm" class="space-y-6">
+      <Form @submit="saveForm" class="space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="space-y-2 md:col-span-2">
-            <label for="name" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Instrument Name
-            </label>
-            <input
-              id="name"
-              v-model="name"
-              type="text"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              placeholder="Enter instrument name"
-            />
-            <div class="text-sm text-destructive">{{ errors.name }}</div>
-          </div>
-          
-          <div class="space-y-2">
-            <label for="keyword" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Keyword
-            </label>
-            <input
-              id="keyword"
-              v-model="keyword"
-              type="text"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              placeholder="Enter keyword"
-            />
-            <div class="text-sm text-destructive">{{ errors.keyword }}</div>
-          </div>
-          
-          <div class="space-y-2">
-            <label for="instrumentType" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Instrument Type
-            </label>
-            <select
-              id="instrumentType"
-              v-model="instrumentTypeUid"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <option value="">Select instrument type</option>
-              <option 
-                v-for="instrumentType in instrumentTypes" 
-                :key="instrumentType?.uid" 
-                :value="instrumentType.uid"
-              >
-                {{ instrumentType?.name }}
-              </option>
-            </select>
-          </div>
-          
-          <div class="space-y-2">
-            <label for="manufacturer" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Manufacturer
-            </label>
-            <select
-              id="manufacturer"
-              v-model="manufacturerUid"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <option value="">Select manufacturer</option>
-              <option 
-                v-for="manufacturer in manufacturers" 
-                :key="manufacturer?.uid" 
-                :value="manufacturer.uid"
-              >
-                {{ manufacturer?.name }}
-              </option>
-            </select>
-          </div>
-          
-          <div class="space-y-2">
-            <label for="supplier" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Supplier
-            </label>
-            <select
-              id="supplier"
-              v-model="supplierUid"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <option value="">Select supplier</option>
-              <option 
-                v-for="supplier in suppliers" 
-                :key="supplier?.uid" 
-                :value="supplier.uid"
-              >
-                {{ supplier?.name }}
-              </option>
-            </select>
-          </div>
-          
-          <div class="space-y-2 md:col-span-2">
-            <label for="description" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Description
-            </label>
-            <textarea
-              id="description"
-              v-model="description"
-              rows="3"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              placeholder="Enter description"
-            ></textarea>
-          </div>
+          <FormField name="name" v-slot="{ componentField }">
+            <FormItem class="md:col-span-2">
+              <FormLabel>Instrument Name</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Enter instrument name" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+          <FormField name="keyword" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Keyword</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Enter keyword" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+          <FormField name="instrumentTypeUid" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Instrument Type</FormLabel>
+              <FormControl>
+                <Select v-bind="componentField">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select instrument type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Select instrument type</SelectItem>
+                    <SelectItem v-for="instrumentType in instrumentTypes" :key="instrumentType?.uid" :value="instrumentType.uid">
+                      {{ instrumentType?.name }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+          <FormField name="manufacturerUid" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Manufacturer</FormLabel>
+              <FormControl>
+                <Select v-bind="componentField">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select manufacturer" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Select manufacturer</SelectItem>
+                    <SelectItem v-for="manufacturer in manufacturers" :key="manufacturer?.uid" :value="manufacturer.uid">
+                      {{ manufacturer?.name }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+          <FormField name="supplierUid" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Supplier</FormLabel>
+              <FormControl>
+                <Select v-bind="componentField">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select supplier" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Select supplier</SelectItem>
+                    <SelectItem v-for="supplier in suppliers" :key="supplier?.uid" :value="supplier.uid">
+                      {{ supplier?.name }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+          <FormField name="description" v-slot="{ componentField }">
+            <FormItem class="md:col-span-2">
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea v-bind="componentField" placeholder="Enter description" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </div>
 
-        <div class="flex justify-end pt-6">
-          <button
-            type="submit"
-            class="inline-flex justify-center rounded-md border border-transparent bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-          >
+        <div class="flex justify-end pt-2">
+          <Button type="submit">
             {{ formAction ? 'Create' : 'Update' }} Instrument
-          </button>
+          </Button>
         </div>
-      </form>
+      </Form>
     </template>
-  </fel-modal>
+  </Modal>
 </template>

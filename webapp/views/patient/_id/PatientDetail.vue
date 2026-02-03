@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import TabsNav from "@/components/ui/tabs/TabsNav.vue";
 import { storeToRefs } from "pinia";
 import { defineAsyncComponent, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { PatientType } from "@/types/gql";
 import { usePatientStore } from "@/stores/patient";
 import * as shield from "@/guards";
+import { Spinner } from "@/components/ui/spinner";
 
 const patientStore = usePatientStore();
 const { patient, fetchingPatient } = storeToRefs(patientStore);
@@ -31,7 +33,7 @@ const tabs = computed(() => [
     id: "samples",
     label: "samples",
     component: defineAsyncComponent(() =>
-      import("@/components/sample/FelAnalyisRequestListing.vue")
+      import("@/components/sample/AnalysisRequestListing.vue")
     ),
     props: {
       target: "patient-samples",
@@ -60,7 +62,7 @@ const tabs = computed(() => [
     id: "logs",
     label: "logs",
     component: defineAsyncComponent(() =>
-      import("@/components/audit/FelAuditLog.vue")
+      import("@/components/audit/AuditLog.vue")
     ),
     props: {
       targetType: "patient",
@@ -85,13 +87,16 @@ const tabs = computed(() => [
     </section>
 
     <!-- Render tabs only after patient is loaded -->
-    <fel-tabs
+    <TabsNav
       v-if="!fetchingPatient && patientUid"
       :tabs="tabs"
       :initial-tab="activeTab"
       class="rounded-lg"
     />
 
-    <fel-loader v-else message="Loading patient…" />
+    <span v-else class="inline-flex items-center gap-2">
+      <Spinner class="size-4" />
+      <span class="text-sm">Loading patient…</span>
+    </span>
   </section>
 </template>

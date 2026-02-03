@@ -140,7 +140,7 @@ export function useLaboratoryContextMiddleware() {
             requireLaboratoryContext?: boolean;
             skipContextValidation?: boolean;
             operationName?: string;
-        } = {}
+        } = {},
     ) => {
         const { requireLaboratoryContext = true, skipContextValidation = false, operationName } = options;
 
@@ -152,9 +152,9 @@ export function useLaboratoryContextMiddleware() {
                         skipContextValidation,
                         requireLaboratoryContext,
                     },
-                    requireLaboratoryContext
+                    requireLaboratoryContext,
                 ),
-                requireLaboratoryContext
+                requireLaboratoryContext,
             );
 
             return {
@@ -181,7 +181,7 @@ export function useLaboratoryContextMiddleware() {
                     headers: options.headers as Record<string, string>,
                     requireLaboratoryContext,
                 },
-                requireLaboratoryContext
+                requireLaboratoryContext,
             );
 
             const enhancedOptions: RequestInit = {
@@ -258,7 +258,6 @@ export function useLaboratoryContextMiddleware() {
     const setupContextErrorHandling = () => {
         // Listen for context change events
         window.addEventListener('laboratoryContextChanged', (event: any) => {
-
             // Could trigger cache invalidation or other context-dependent updates
             const customEvent = new CustomEvent('contextDependentDataRefresh', {
                 detail: {

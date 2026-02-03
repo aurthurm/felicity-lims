@@ -4,6 +4,7 @@ import { GrindErrandDiscussionType } from '@/types/gql';
 import { GetGrindErrandDiscussionsByParentDocument, GetGrindErrandDiscussionsByParentQuery, GetGrindErrandDiscussionsByParentQueryVariables } from '@/graphql/operations/grind.queries';
 import useApiUtil from '@/composables/api_util';
 import CommentForm from './CommentForm.vue';
+import { Spinner } from "@/components/ui/spinner";
 
 interface Props {
     discussion: GrindErrandDiscussionType & {
@@ -120,7 +121,10 @@ function handleCommentAdded() {
 
         <div v-if="showReplies" class="mt-4 ml-8">
             <div v-if="isLoading" class="flex items-center justify-center py-4">
-                <fel-loader message="Loading replies..." variant="muted" size="sm" />
+                <span class="inline-flex items-center gap-2">
+                    <Spinner class="size-3" />
+                    <span class="text-xs">Loading replies...</span>
+                </span>
             </div>
             <template v-else>
                 <div v-if="replies.length === 0" class="text-sm text-muted-foreground py-2">

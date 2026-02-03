@@ -4,9 +4,9 @@ import { storeToRefs } from "pinia";
 import { RouterLink } from "vue-router";
 import { usePatientStore } from "@/stores/patient";
 import { PatientType } from "@/types/gql";
-
+import PageHeading from "@/components/common/PageHeading.vue"
 const DataTable = defineAsyncComponent(
-  () => import("@/components/ui/datatable/FelDataTable.vue")
+  () => import("@/components/common/DataTable.vue")
 )
 let patientStore = usePatientStore();
 
@@ -163,7 +163,7 @@ let getPatientFullName = (pt: PatientType) => {
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Patients" />
+    <PageHeading title="Patients" />
     <div class="rounded-lg border border-border bg-card shadow-sm p-6">
       <DataTable 
         :columns="tableColumns" 

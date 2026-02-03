@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent } from 'vue';
+import { computed } from 'vue';
 import { useUserStore } from '@/stores/user';
 import  useApiUtil  from '@/composables/api_util';
 import { GroupType, PermissionType } from '@/types/gql';
 import { UpdateGroupsAndPermissionsMutation, UpdateGroupsAndPermissionsMutationVariables, UpdateGroupsAndPermissionsDocument } from '@/graphql/operations/_mutations';
+import { Switch } from "@/components/ui/switch";
 
-const FelSwitch = defineAsyncComponent(
-  () => import("@/components/ui/switch/FelSwitch.vue")
-)
-
+defineOptions({ name: 'PermissionsView' })
 let userStore = useUserStore()
 const { withClientMutation } = useApiUtil()
 
@@ -48,52 +46,53 @@ function handlePermissionToggle(group: GroupType, perm: PermissionType, value: b
     <div class="bg-background rounded-lg shadow-sm overflow-hidden">
       <div class="relative">
         <!-- Fixed Header -->
-        <table class="w-full fel-table">
-          <thead>
-            <tr>
-              <th
+        <Table class="w-full">
+          <TableHeader>
+            <TableRow>
+              <TableHead
                 class="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-3 border-b border-border text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
               >
                 Permissions
-              </th>
-              <th 
+              </TableHead>
+              <TableHead 
                 v-for="group in groups" 
                 :key="group.uid"
                 class="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-3 border-b border-border text-right text-xs font-medium text-muted-foreground uppercase tracking-wider"
               >
                 {{ group.name }}
-              </th>
-              <th class="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-3 border-b border-border"></th>
-            </tr>
-          </thead>
-        </table>
+              </TableHead>
+              <TableHead class="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-3 border-b border-border"></TableHead>
+            </TableRow>
+          </TableHeader>
+        </Table>
         
         <!-- Scrollable Body -->
         <div class="overflow-y-auto max-h-[700px] scrollbar-thin scrollbar-thumb-border scrollbar-track-muted">
-          <table class="w-full fel-table">
-            <tbody class="divide-y divide-border">
+          <Table class="w-full">
+            <TableBody class="divide-y divide-border">
               <template v-for="category in permissions" :key="category[0]">
-                <tr class="bg-muted/50">
-                  <td class="px-4 py-3 font-medium text-sm text-foreground">{{ category[0] }}</td>
-                  <td class="px-4 py-3 font-medium text-sm text-muted-foreground" v-for="group in groups" :key="group.uid">
+                <TableRow class="bg-muted/50">
+                  <TableCell class="px-4 py-3 font-medium text-sm text-foreground">{{ category[0] }}</TableCell>
+                  <TableCell class="px-4 py-3 font-medium text-sm text-muted-foreground" v-for="group in groups" :key="group.uid">
                     <!-- {{ group.name }} -->
-                  </td>
-                </tr>
-                <tr v-for="perm in category[1]" :key="perm.uid">
-                  <td class="px-4 py-2 text-sm text-muted-foreground">
+                  </TableCell>
+                </TableRow>
+                <TableRow v-for="perm in category[1]" :key="perm.uid">
+                  <TableCell class="px-4 py-2 text-sm text-muted-foreground">
                     {{ perm.action }}
-                  </td>
-                  <td v-for="group in groups" :key="group.uid" class="px-4 py-2">
-                    <FelSwitch
-                      :model-value="hasPermission(group, perm)"
-                      @update:model-value="handlePermissionToggle(group, perm, $event)"
-                      reverse
-                    />
-                  </td>
-                </tr>
+                  </TableCell>
+                  <TableCell v-for="group in groups" :key="group.uid" class="px-4 py-2">
+                    <div class="flex justify-end">
+                      <Switch
+                        :checked="hasPermission(group, perm)"
+                        @update:checked="(value) => handlePermissionToggle(group, perm, value)"
+                      />
+                    </div>
+                  </TableCell>
+                </TableRow>
               </template>
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
     </div>

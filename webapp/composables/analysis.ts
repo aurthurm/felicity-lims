@@ -38,14 +38,14 @@ export default function useAnalysisComposable() {
         try {
             const result = await swalConfirm(
                 `Are you sure you want to cancel ${uids.length} analyte${uids.length > 1 ? 's' : ''}?`,
-                'Cancel Analysis'
+                'Cancel Analysis',
             );
 
             if (result.isConfirmed) {
                 const response = await withClientMutation<CancelAnalysisResultsMutation, CancelAnalysisResultsMutationVariables>(
                     CancelAnalysisResultsDocument,
                     { analyses: uids },
-                    'cancelAnalysisResults'
+                    'cancelAnalysisResults',
                 );
 
                 if (response?.results) {
@@ -64,14 +64,14 @@ export default function useAnalysisComposable() {
         try {
             const result = await swalConfirm(
                 `Are you sure you want to reinstate ${uids.length} analyte${uids.length > 1 ? 's' : ''}?`,
-                'Reinstate Analysis'
+                'Reinstate Analysis',
             );
 
             if (result.isConfirmed) {
                 const response = await withClientMutation<ReInstateAnalysisResultsMutation, ReInstateAnalysisResultsMutationVariables>(
                     ReInstateAnalysisResultsDocument,
                     { analyses: uids },
-                    'reInstateAnalysisResults'
+                    'reInstateAnalysisResults',
                 );
 
                 if (response?.results) {
@@ -116,7 +116,7 @@ export default function useAnalysisComposable() {
                     sourceObject: 'sample',
                     sourceObjectUid: result.sampleUid || '',
                 },
-                'submitAnalysisResults'
+                'submitAnalysisResults',
             );
 
             // results submitting is in the background
@@ -130,7 +130,7 @@ export default function useAnalysisComposable() {
                         },
                     ],
                     undefined,
-                    'submitting'
+                    'submitting',
                 );
             } else {
                 // results submission was instant and has finished
@@ -151,7 +151,7 @@ export default function useAnalysisComposable() {
         try {
             const result = await swalConfirm(
                 `Are you sure you want to submit ${results.length} result${results.length > 1 ? 's' : ''}?`,
-                'Submit Results'
+                'Submit Results',
             );
 
             if (result.isConfirmed) {
@@ -165,12 +165,12 @@ export default function useAnalysisComposable() {
                     sampleStore.backgroundProcessing(
                         results,
                         sourceObject === NotificationObjectType.Sample ? sourceObjectUid : '',
-                        'submitting'
+                        'submitting',
                     );
                     worksheetStore.backgroundProcessing(
                         results,
                         sourceObject === NotificationObjectType.Worksheet ? sourceObjectUid : undefined,
-                        'submitting'
+                        'submitting',
                     );
                 } else {
                     // results submission was instant and has finished
@@ -195,7 +195,7 @@ export default function useAnalysisComposable() {
         try {
             const result = await swalConfirm(
                 `Are you sure you want to approve ${uids.length} result${uids.length > 1 ? 's' : ''}?`,
-                'Approve Results'
+                'Approve Results',
             );
 
             if (result.isConfirmed) {
@@ -231,14 +231,14 @@ export default function useAnalysisComposable() {
         try {
             const result = await swalConfirm(
                 `Are you sure you want to retract ${uids.length} result${uids.length > 1 ? 's' : ''}?`,
-                'Retract Results'
+                'Retract Results',
             );
 
             if (result.isConfirmed) {
                 const response = await withClientMutation<RetractAnalysisResultsMutation, RetractAnalysisResultsMutationVariables>(
                     RetractAnalysisResultsDocument,
                     { analyses: uids },
-                    'retractAnalysisResults'
+                    'retractAnalysisResults',
                 );
 
                 if (response?.results) {
@@ -257,14 +257,14 @@ export default function useAnalysisComposable() {
         try {
             const result = await swalConfirm(
                 `Are you sure you want to retest ${uids.length} analyte${uids.length > 1 ? 's' : ''}?`,
-                'Retest Analysis'
+                'Retest Analysis',
             );
 
             if (result.isConfirmed) {
                 const response = await withClientMutation<RetestAnalysisResultsMutation, RetestAnalysisResultsMutationVariables>(
                     RetestAnalysisResultsDocument,
                     { analyses: uids },
-                    'retestAnalysisResults'
+                    'retestAnalysisResults',
                 );
 
                 if (response?.results) {

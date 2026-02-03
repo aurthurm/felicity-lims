@@ -18,9 +18,9 @@ const forwardedProps = useForwardProps(delegatedProps)
   <RangeCalendarNext
     data-slot="range-calendar-next-button"
     :class="cn(
-      buttonVariants({ variant: 'outline' }),
-      'absolute right-1',
-      'size-7 bg-transparent p-0 opacity-50 hover:opacity-100',
+      buttonVariants({ variant: 'ghost' }),
+      'absolute right-1 border-0 shadow-none',
+      'size-7 bg-transparent p-0 opacity-50 hover:opacity-100 hover:bg-transparent',
       props.class,
     )"
     v-bind="forwardedProps"

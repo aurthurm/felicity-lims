@@ -208,7 +208,7 @@ const submitDeriveRequest = async () => {
 </script>
 
 <template>
-  <fel-modal v-if="show" @close="emit('close')" :content-width="'w-4/5'">
+  <Modal v-if="show" @close="emit('close')" :content-width="'w-4/5'">
     <template #header>
       Derive Samples
     </template>
@@ -284,7 +284,7 @@ const submitDeriveRequest = async () => {
                 </select>
               </div>
               <div class="flex items-center gap-2 pt-6">
-                <input type="checkbox" v-model="config.overrideTests" />
+                <Checkbox :checked="config.overrideTests" @update:checked="(value) => config.overrideTests = value" />
                 <span class="text-sm text-foreground">Override tests</span>
               </div>
             </div>
@@ -355,7 +355,7 @@ const submitDeriveRequest = async () => {
           </div>
 
           <div class="flex items-center gap-2">
-            <input type="checkbox" v-model="poolConfig.overrideTests" />
+            <Checkbox :checked="poolConfig.overrideTests" @update:checked="(value) => poolConfig.overrideTests = value" />
             <span class="text-sm text-foreground">Override tests</span>
           </div>
 
@@ -416,7 +416,7 @@ const submitDeriveRequest = async () => {
         </button>
       </div>
     </template>
-  </fel-modal>
+  </Modal>
 </template>
 
 <style scoped>

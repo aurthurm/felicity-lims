@@ -98,12 +98,15 @@ export const useAnalysisStore = defineStore('analysis', {
         getAnalysesServices: (state): { [key: string]: AnalysisType[] }[] => {
             const analyses = state.analysesServices;
             if (analyses?.length > 0) {
-                const profiled = analyses?.reduce((r, obj) => {
-                    const key = obj?.category?.name || 'No Category';
-                    r[key] = r[key] || [];
-                    r[key].push(obj);
-                    return r;
-                }, {} as Record<string, AnalysisType[]>);
+                const profiled = analyses?.reduce(
+                    (r, obj) => {
+                        const key = obj?.category?.name || 'No Category';
+                        r[key] = r[key] || [];
+                        r[key].push(obj);
+                        return r;
+                    },
+                    {} as Record<string, AnalysisType[]>,
+                );
                 return Object.entries(profiled || {}).sort() as unknown as { [key: string]: AnalysisType[] }[];
             } else {
                 return [];
@@ -125,14 +128,15 @@ export const useAnalysisStore = defineStore('analysis', {
                 const result = await withClientQuery<GetAllCodingStandardsQuery, GetAllCodingStandardsQueryVariables>(
                     GetAllCodingStandardsDocument,
                     {},
-                    'codingStandardAll'
+                    'codingStandardAll',
                 );
 
                 if (result && Array.isArray(result)) {
                     this.codingStandards = result as unknown as CodingStandardType[];
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingCodingStandards = false;
             }
         },
@@ -159,7 +163,7 @@ export const useAnalysisStore = defineStore('analysis', {
                 const result = await withClientQuery<GetAllAnalysesCategoriesQuery, GetAllAnalysesCategoriesQueryVariables>(
                     GetAllAnalysesCategoriesDocument,
                     {},
-                    'analysisCategoryAll'
+                    'analysisCategoryAll',
                 );
 
                 if (result && Array.isArray(result)) {
@@ -191,7 +195,7 @@ export const useAnalysisStore = defineStore('analysis', {
                 const result = await withClientQuery<GetAllAnalysesServicesQuery, GetAllAnalysesServicesQueryVariables>(
                     GetAllAnalysesServicesDocument,
                     params,
-                    'analysisAll'
+                    'analysisAll',
                 );
 
                 if (result && typeof result === 'object' && 'items' in result) {
@@ -222,7 +226,7 @@ export const useAnalysisStore = defineStore('analysis', {
                 const result = await withClientQuery<GetAllProfilesAndServicesQuery, GetAllProfilesAndServicesQueryVariables>(
                     GetAllProfilesAndServicesDocument,
                     {},
-                    undefined
+                    undefined,
                 );
 
                 if (result && typeof result === 'object') {
@@ -248,7 +252,7 @@ export const useAnalysisStore = defineStore('analysis', {
                 const result = await withClientQuery<GetAnalysisMappingsByAnalysisUidQuery, GetAnalysisMappingsByAnalysisUidQueryVariables>(
                     GetAnalysisMappingsByAnalysisUidDocument,
                     { uid: profileUid },
-                    'analysisMappingsByAnalysis'
+                    'analysisMappingsByAnalysis',
                 );
 
                 if (result && Array.isArray(result)) {
@@ -280,7 +284,7 @@ export const useAnalysisStore = defineStore('analysis', {
                 const result = await withClientQuery<GetAllAnalysesProfilesQuery, GetAllAnalysesProfilesQueryVariables>(
                     GetAllAnalysesProfilesDocument,
                     {},
-                    'profileAll'
+                    'profileAll',
                 );
 
                 if (result && Array.isArray(result)) {
@@ -315,7 +319,7 @@ export const useAnalysisStore = defineStore('analysis', {
                 const result = await withClientQuery<GetProfileMappingsByProfileUidQuery, GetProfileMappingsByProfileUidQueryVariables>(
                     GetProfileMappingsByProfileUidDocument,
                     { uid: profileUid },
-                    'profileMappingsByProfile'
+                    'profileMappingsByProfile',
                 );
 
                 if (result && Array.isArray(result)) {
@@ -347,7 +351,7 @@ export const useAnalysisStore = defineStore('analysis', {
                 const result = await withClientQuery<GetAllAnalysesTemplatesQuery, GetAllAnalysesTemplatesQueryVariables>(
                     GetAllAnalysesTemplatesDocument,
                     {},
-                    'analysisTemplateAll'
+                    'analysisTemplateAll',
                 );
 
                 if (result && Array.isArray(result)) {
@@ -379,7 +383,7 @@ export const useAnalysisStore = defineStore('analysis', {
                 const result = await withClientQuery<GetAllQcLevelsQuery, GetAllQcLevelsQueryVariables>(
                     GetAllQcLevelsDocument,
                     {},
-                    'qcLevelAll'
+                    'qcLevelAll',
                 );
 
                 if (result && Array.isArray(result)) {
@@ -411,7 +415,7 @@ export const useAnalysisStore = defineStore('analysis', {
                 const result = await withClientQuery<GetAllQcTemplatesQuery, GetAllQcTemplatesQueryVariables>(
                     GetAllQcTemplatesDocument,
                     {},
-                    'qcTemplateAll'
+                    'qcTemplateAll',
                 );
 
                 if (result && Array.isArray(result)) {
@@ -646,7 +650,7 @@ export const useAnalysisStore = defineStore('analysis', {
                 const result = await withClientQuery<GetAllRejectionReasonsQuery, GetAllRejectionReasonsQueryVariables>(
                     GetAllRejectionReasonsDocument,
                     {},
-                    'rejectionReasonsAll'
+                    'rejectionReasonsAll',
                 );
 
                 if (result && Array.isArray(result)) {

@@ -1,5 +1,7 @@
 import { defineComponent, computed, reactive, toRefs, ref, watch, defineAsyncComponent } from 'vue';
+import { Checkbox } from '@/components/ui/checkbox';
 import useTreeStateComposable from '@/composables/tree-state';
+import Modal from '@/components/ui/Modal.vue';
 import {
     StorageContainerInputType,
     StorageContainerType,
@@ -39,9 +41,9 @@ import {
 import { useStorageStore } from '@/stores/storage';
 import useApiUtil from '@/composables/api_util';
 import { useRouter } from 'vue-router';
-
+import PageHeading from '@/components/common/PageHeading.vue';
 const ContainerView = defineAsyncComponent(() => import('./ContainerView'));
-const TreeItem = defineAsyncComponent(() => import('@/components/storage/FelTreeItem.vue'));
+const TreeItem = defineAsyncComponent(() => import('@/components/storage/TreeItem.vue'));
 
 const StorageHome = defineComponent({
     name: 'storage-home',
@@ -60,7 +62,7 @@ const StorageHome = defineComponent({
                 if (treeIn.tag === tags.STORAGE_CONTAINER) {
                     storageStore.fetchStorageContainer(treeIn.uid!);
                 }
-            }
+            },
         );
 
         watch(
@@ -79,7 +81,7 @@ const StorageHome = defineComponent({
                     setActiveTree({ ...ss, tag: tags.STORAGE_SECTION });
                     setActiveTree({ ...sc, tag: tags.STORAGE_CONTAINER });
                 }
-            }
+            },
         );
 
         const nextTreeType = computed(() => {
@@ -123,7 +125,7 @@ const StorageHome = defineComponent({
             withClientMutation<AddStoreRoomMutation, AddStoreRoomMutationVariables>(
                 AddStoreRoomDocument,
                 { payload },
-                'createStoreRoom'
+                'createStoreRoom',
             ).then(result => {
                 storageStore.addStoreRoom(result);
                 newStoreRoom(result);
@@ -138,7 +140,7 @@ const StorageHome = defineComponent({
             withClientMutation<EditStoreRoomMutation, EditStoreRoomMutationVariables>(
                 EditStoreRoomDocument,
                 { uid: state.roomForm.uid, payload },
-                'updateStoreRoom'
+                'updateStoreRoom',
             ).then(result => storageStore.updateStoreRoom(result));
         }
 
@@ -165,7 +167,7 @@ const StorageHome = defineComponent({
             withClientMutation<AddStorageLocationMutation, AddStorageLocationMutationVariables>(
                 AddStorageLocationDocument,
                 { payload },
-                'createStorageLocation'
+                'createStorageLocation',
             ).then(result => {
                 storageStore.addStorageLocation(result);
                 newStorageLocation(result);
@@ -180,7 +182,7 @@ const StorageHome = defineComponent({
             withClientMutation<EditStorageLocationMutation, EditStorageLocationMutationVariables>(
                 EditStorageLocationDocument,
                 { uid: state.locationForm.uid, payload },
-                'updateStorageLocation'
+                'updateStorageLocation',
             ).then(result => storageStore.updateStorageLocation(result));
         }
 
@@ -207,7 +209,7 @@ const StorageHome = defineComponent({
             withClientMutation<AddStorageSectionMutation, AddStorageSectionMutationVariables>(
                 AddStorageSectionDocument,
                 { payload },
-                'createStorageSection'
+                'createStorageSection',
             ).then(result => {
                 storageStore.addStorageSection(result);
                 newStorageSection(result);
@@ -222,7 +224,7 @@ const StorageHome = defineComponent({
             withClientMutation<EditStorageSectionMutation, EditStorageSectionMutationVariables>(
                 EditStorageSectionDocument,
                 { uid: state.sectionForm.uid, payload },
-                'updateStorageSection'
+                'updateStorageSection',
             ).then(result => storageStore.updateStorageSection(result));
         }
 
@@ -249,7 +251,7 @@ const StorageHome = defineComponent({
             withClientMutation<AddStorageContainerMutation, AddStorageContainerMutationVariables>(
                 AddStorageContainerDocument,
                 { payload },
-                'createStorageContainer'
+                'createStorageContainer',
             ).then(result => {
                 storageStore.addStorageContainer(result);
                 newStorageContainer(result);
@@ -264,7 +266,7 @@ const StorageHome = defineComponent({
             withClientMutation<EditStorageContainerMutation, EditStorageContainerMutationVariables>(
                 EditStorageContainerDocument,
                 { uid: state.containerForm.uid, payload },
-                'updateStorageContainer'
+                'updateStorageContainer',
             ).then(result => storageStore.updateStorageContainer(result));
         }
 
@@ -320,16 +322,16 @@ const StorageHome = defineComponent({
     render() {
         return (
             <>
-                <fel-heading title="Storage">
+                <PageHeading title="Storage">
                     <button
                         onClick={() => this.roomFormManager(true, null)}
-                        class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-md transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                        class="bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-primary w-full rounded-md px-4 py-2 transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-none"
                     >
                         Add Store Room
                     </button>
-                </fel-heading>
+                </PageHeading>
 
-                <div class="grid grid-cols-12 gap-6 min-h-full bg-background p-6">
+                <div class="bg-background grid min-h-full grid-cols-12 gap-6 p-6">
                     <div class="col-span-2 space-y-4">
                         <ul class="space-y-2">
                             {this.treeData.map(_tree => (
@@ -339,13 +341,13 @@ const StorageHome = defineComponent({
                     </div>
                     {this.activeTree?.name && (
                         <div class="col-span-10 space-y-6">
-                            <div class="text-lg font-medium text-foreground">Selected: {this.activeTree.name}</div>
-                            <div class="border-t border-border" />
+                            <div class="text-foreground text-lg font-medium">Selected: {this.activeTree.name}</div>
+                            <div class="border-border border-t" />
                             <div class="space-y-6">
                                 {this.nextTreeType === this.tags.STORAGE_LOCATION ? (
                                     <button
                                         onClick={() => this.locationFormManager(true, null)}
-                                        class="px-4 py-2 bg-primary text-primary-foreground rounded-md transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                                        class="bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-primary rounded-md px-4 py-2 transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-none"
                                     >
                                         Add Storage Location
                                     </button>
@@ -353,7 +355,7 @@ const StorageHome = defineComponent({
                                 {this.nextTreeType === this.tags.STORAGE_SECTION ? (
                                     <button
                                         onClick={() => this.sectionFormManager(true, null)}
-                                        class="px-4 py-2 bg-primary text-primary-foreground rounded-md transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                                        class="bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-primary rounded-md px-4 py-2 transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-none"
                                     >
                                         Add Storage Section
                                     </button>
@@ -361,21 +363,21 @@ const StorageHome = defineComponent({
                                 {this.nextTreeType === this.tags.STORAGE_CONTAINER ? (
                                     <button
                                         onClick={() => this.containerFormManager(true, null)}
-                                        class="px-4 py-2 bg-primary text-primary-foreground rounded-md transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                                        class="bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-primary rounded-md px-4 py-2 transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-none"
                                     >
                                         Add Storage Container
                                     </button>
                                 ) : null}
                                 {this.nextTreeType === this.tags.CONTAINER_VIEW ? <ContainerView /> : null}
                             </div>
-                            <div class="border-t border-border" />
+                            <div class="border-border border-t" />
                         </div>
                     )}
                 </div>
 
                 {/* Store Room Form Modal */}
                 {this.roomModalShow ? (
-                    <fel-modal onClose={() => (this.roomModalShow = false)} contentWidth="w-1/3">
+                    <Modal onClose={() => (this.roomModalShow = false)} contentWidth="w-1/3">
                         {{
                             header: () => <h3 class="text-lg font-medium">{this.roomFormTitle}</h3>,
                             body: () => {
@@ -385,7 +387,7 @@ const StorageHome = defineComponent({
                                             <label class="block space-y-2">
                                                 <span class="text-sm font-medium">Store Room Name</span>
                                                 <input
-                                                    class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                                                    class="border-input bg-background text-foreground placeholder:text-muted-foreground focus:ring-primary w-full rounded-md border px-3 py-2 focus:ring-2 focus:outline-none"
                                                     v-model={this.roomForm.name}
                                                     placeholder="Name ..."
                                                 />
@@ -393,17 +395,17 @@ const StorageHome = defineComponent({
                                             <label class="block space-y-2">
                                                 <span class="text-sm font-medium">Description</span>
                                                 <textarea
-                                                    class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary min-h-[100px]"
+                                                    class="border-input bg-background text-foreground placeholder:text-muted-foreground focus:ring-primary min-h-[100px] w-full rounded-md border px-3 py-2 focus:ring-2 focus:outline-none"
                                                     v-model={this.roomForm.description}
                                                     placeholder="Description ..."
                                                 />
                                             </label>
                                         </div>
-                                        <div class="border-t border-border pt-4">
+                                        <div class="border-border border-t pt-4">
                                             <button
                                                 type="button"
                                                 onClick={() => this.saveStoreRoomForm()}
-                                                class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-md transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                                                class="bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-primary w-full rounded-md px-4 py-2 transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-none"
                                             >
                                                 Save Form
                                             </button>
@@ -412,12 +414,12 @@ const StorageHome = defineComponent({
                                 );
                             },
                         }}
-                    </fel-modal>
+                    </Modal>
                 ) : null}
 
                 {/* Storage Location Form Modal */}
                 {this.locationModalShow ? (
-                    <fel-modal onClose={() => (this.locationModalShow = false)} contentWidth="w-1/3">
+                    <Modal onClose={() => (this.locationModalShow = false)} contentWidth="w-1/3">
                         {{
                             header: () => <h3 class="text-lg font-medium">{this.locationFormTitle}</h3>,
                             body: () => {
@@ -427,7 +429,7 @@ const StorageHome = defineComponent({
                                             <label class="block space-y-2">
                                                 <span class="text-sm font-medium">Storage Location Name</span>
                                                 <input
-                                                    class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                                                    class="border-input bg-background text-foreground placeholder:text-muted-foreground focus:ring-primary w-full rounded-md border px-3 py-2 focus:ring-2 focus:outline-none"
                                                     v-model={this.locationForm.name}
                                                     placeholder="Name ..."
                                                 />
@@ -435,17 +437,17 @@ const StorageHome = defineComponent({
                                             <label class="block space-y-2">
                                                 <span class="text-sm font-medium">Description</span>
                                                 <textarea
-                                                    class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary min-h-[100px]"
+                                                    class="border-input bg-background text-foreground placeholder:text-muted-foreground focus:ring-primary min-h-[100px] w-full rounded-md border px-3 py-2 focus:ring-2 focus:outline-none"
                                                     v-model={this.locationForm.description}
                                                     placeholder="Description ..."
                                                 />
                                             </label>
                                         </div>
-                                        <div class="border-t border-border pt-4">
+                                        <div class="border-border border-t pt-4">
                                             <button
                                                 type="button"
                                                 onClick={() => this.saveLocationForm()}
-                                                class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-md transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                                                class="bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-primary w-full rounded-md px-4 py-2 transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-none"
                                             >
                                                 Save Form
                                             </button>
@@ -454,12 +456,12 @@ const StorageHome = defineComponent({
                                 );
                             },
                         }}
-                    </fel-modal>
+                    </Modal>
                 ) : null}
 
                 {/* Storage Section Form Modal */}
                 {this.sectionModalShow ? (
-                    <fel-modal onClose={() => (this.sectionModalShow = false)} contentWidth="w-1/3">
+                    <Modal onClose={() => (this.sectionModalShow = false)} contentWidth="w-1/3">
                         {{
                             header: () => <h3 class="text-lg font-medium">{this.sectionFormTitle}</h3>,
                             body: () => {
@@ -469,7 +471,7 @@ const StorageHome = defineComponent({
                                             <label class="block space-y-2">
                                                 <span class="text-sm font-medium">Storage Section Name</span>
                                                 <input
-                                                    class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                                                    class="border-input bg-background text-foreground placeholder:text-muted-foreground focus:ring-primary w-full rounded-md border px-3 py-2 focus:ring-2 focus:outline-none"
                                                     v-model={this.sectionForm.name}
                                                     placeholder="Name ..."
                                                 />
@@ -477,17 +479,17 @@ const StorageHome = defineComponent({
                                             <label class="block space-y-2">
                                                 <span class="text-sm font-medium">Description</span>
                                                 <textarea
-                                                    class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary min-h-[100px]"
+                                                    class="border-input bg-background text-foreground placeholder:text-muted-foreground focus:ring-primary min-h-[100px] w-full rounded-md border px-3 py-2 focus:ring-2 focus:outline-none"
                                                     v-model={this.sectionForm.description}
                                                     placeholder="Description ..."
                                                 />
                                             </label>
                                         </div>
-                                        <div class="border-t border-border pt-4">
+                                        <div class="border-border border-t pt-4">
                                             <button
                                                 type="button"
                                                 onClick={() => this.saveStorageSectionForm()}
-                                                class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-md transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                                                class="bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-primary w-full rounded-md px-4 py-2 transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-none"
                                             >
                                                 Save Form
                                             </button>
@@ -496,12 +498,12 @@ const StorageHome = defineComponent({
                                 );
                             },
                         }}
-                    </fel-modal>
+                    </Modal>
                 ) : null}
 
                 {/* Storage Container Form Modal */}
                 {this.containerModalShow ? (
-                    <fel-modal onClose={() => (this.containerModalShow = false)} contentWidth="w-1/2">
+                    <Modal onClose={() => (this.containerModalShow = false)} contentWidth="w-1/2">
                         {{
                             header: () => <h3 class="text-lg font-medium">{this.containerFormTitle}</h3>,
                             body: () => {
@@ -511,7 +513,7 @@ const StorageHome = defineComponent({
                                             <label class="block space-y-2">
                                                 <span class="text-sm font-medium">Storage Container Name</span>
                                                 <input
-                                                    class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                                                    class="border-input bg-background text-foreground placeholder:text-muted-foreground focus:ring-primary w-full rounded-md border px-3 py-2 focus:ring-2 focus:outline-none"
                                                     v-model={this.containerForm.name}
                                                     placeholder="Name ..."
                                                 />
@@ -519,57 +521,65 @@ const StorageHome = defineComponent({
                                             <label class="block space-y-2">
                                                 <span class="text-sm font-medium">Description</span>
                                                 <textarea
-                                                    class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary min-h-[100px]"
+                                                    class="border-input bg-background text-foreground placeholder:text-muted-foreground focus:ring-primary min-h-[100px] w-full rounded-md border px-3 py-2 focus:ring-2 focus:outline-none"
                                                     v-model={this.containerForm.description}
                                                     placeholder="Description ..."
                                                 />
                                             </label>
-                                            <label class="block col-span-1 mb-2">
+                                            <label class="col-span-1 mb-2 block">
                                                 <span class="text-sm font-medium">Number of Slots</span>
                                                 <input
-                                                    class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                                                    class="border-input bg-background text-foreground placeholder:text-muted-foreground focus:ring-primary w-full rounded-md border px-3 py-2 focus:ring-2 focus:outline-none"
                                                     v-model={this.containerForm.slots}
                                                     placeholder="Slots ..."
                                                     type="number"
                                                 />
                                             </label>
-                                            <label class="flex justify-start items-center col-span-1 mt-10 gap-x-2">
-                                                <input
-                                                    type="checkbox"
-                                                    class=""
-                                                    onChange={e => this.changeContainerType(e)}
-                                                    v-model={this.containerForm.grid}
+                                            <label class="col-span-1 mt-10 flex items-center justify-start gap-x-2">
+                                                <Checkbox
+                                                    checked={this.containerForm.grid}
+                                                    onUpdate:checked={(value: boolean) => {
+                                                        this.containerForm.grid = value;
+                                                        this.changeContainerType({ target: { checked: value } } as any);
+                                                    }}
                                                 />
                                                 <span class="text-sm font-medium">Add Grid View</span>
                                             </label>
                                         </div>
 
-                                        <div class="grid grid-cols-4 gap-x-4 mb-4">
+                                        <div class="mb-4 grid grid-cols-4 gap-x-4">
                                             {this.containerForm.grid ? (
                                                 <>
                                                     <span class="col-span-3">
                                                         <div class="grid grid-cols-2 gap-x-4">
-                                                            <label class="block col-span-1 mb-2">
+                                                            <label class="col-span-1 mb-2 block">
                                                                 <span class="text-sm font-medium">Cols</span>
                                                                 <input
-                                                                    class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                                                                    class="border-input bg-background text-foreground placeholder:text-muted-foreground focus:ring-primary w-full rounded-md border px-3 py-2 focus:ring-2 focus:outline-none"
                                                                     v-model={this.containerForm.cols}
                                                                     onKeyup={e => this.calculateRows(e)}
                                                                     type="number"
                                                                 />
                                                             </label>
-                                                            <label class="block col-span-1 mb-2">
+                                                            <label class="col-span-1 mb-2 block">
                                                                 <span class="text-sm font-medium">Rows</span>
                                                                 <input
-                                                                    class="w-full px-3 py-2 border border-input rounded-md bg-muted text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                                                                    class="border-input bg-muted text-foreground placeholder:text-muted-foreground focus:ring-primary w-full rounded-md border px-3 py-2 focus:ring-2 focus:outline-none"
                                                                     v-model={this.containerForm.rows}
                                                                     type="number"
                                                                     disabled
                                                                 />
                                                             </label>
-                                                            <label class="block col-span-1 mt-2">
-                                                                <input type="checkbox" class="" v-model={this.containerForm.rowWise} />
-                                                                <span class="text-sm font-medium ml-3">Row Wise</span>
+                                                            <label class="col-span-1 mt-2 block">
+                                                                <div class="flex items-center gap-2">
+                                                                    <Checkbox
+                                                                        checked={this.containerForm.rowWise}
+                                                                        onUpdate:checked={(value: boolean) => {
+                                                                            this.containerForm.rowWise = value;
+                                                                        }}
+                                                                    />
+                                                                    <span class="text-sm font-medium">Row Wise</span>
+                                                                </div>
                                                             </label>
                                                         </div>
                                                     </span>
@@ -577,11 +587,11 @@ const StorageHome = defineComponent({
                                             ) : null}
                                         </div>
 
-                                        <div class="border-t border-border pt-4">
+                                        <div class="border-border border-t pt-4">
                                             <button
                                                 type="button"
                                                 onClick={() => this.saveStorageContainerForm()}
-                                                class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-md transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                                                class="bg-primary text-primary-foreground hover:bg-primary/90 focus:ring-primary w-full rounded-md px-4 py-2 transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-none"
                                             >
                                                 Save Form
                                             </button>
@@ -590,7 +600,7 @@ const StorageHome = defineComponent({
                                 );
                             },
                         }}
-                    </fel-modal>
+                    </Modal>
                 ) : null}
             </>
         );

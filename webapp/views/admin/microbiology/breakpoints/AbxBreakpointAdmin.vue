@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed, defineAsyncComponent} from 'vue';
 
-const FelTabs = defineAsyncComponent(() => import("@/components/ui/tabs/FelTabs.vue"));
+const TabsNav = defineAsyncComponent(() => import("@/components/ui/tabs/TabsNav.vue"));
 
 const tabs = computed(() => [
   {
@@ -28,5 +28,5 @@ const tabs = computed(() => [
 </script>
 
 <template>
-  <FelTabs :tabs="tabs" initial-tab="abx-breakpoints"/>
+  <TabsNav :tabs="tabs" initial-tab="abx-breakpoints"/>
 </template>

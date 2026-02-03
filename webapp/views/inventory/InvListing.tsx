@@ -2,6 +2,8 @@ import { computed, watch, defineComponent, reactive, ref, h, defineAsyncComponen
 import { useInventoryStore } from '@/stores/inventory';
 import { StockLotType, StockItemVariantType } from '@/types/gql';
 import useApiUtil from '@/composables/api_util';
+import Modal from '@/components/ui/Modal.vue';
+import Drawer from '@/components/ui/Drawer.vue';
 import {
     AddStockAdjustmentDocument,
     AddStockAdjustmentMutation,
@@ -10,7 +12,7 @@ import {
 import { GetAllStockLotsDocument, GetAllStockLotsQuery, GetAllStockLotsQueryVariables } from '@/graphql/operations/inventory.queries';
 import { parseDate } from '@/utils';
 
-const DataTable = defineAsyncComponent(() => import('@/components/ui/datatable/FelDataTable.vue'));
+const DataTable = defineAsyncComponent(() => import('@/components/common/DataTable.vue'));
 const StockReceiveForm = defineAsyncComponent(() => import('./StockReceiveForm.vue'));
 const ProductDetail = defineAsyncComponent(() => import('./ProductDetail'));
 
@@ -40,13 +42,13 @@ const InventoryListing = defineComponent({
             withClientQuery<GetAllStockLotsQuery, GetAllStockLotsQueryVariables>(GetAllStockLotsDocument, { productUid }, 'stockLots').then(
                 result => {
                     stockLots.value = result as StockLotType[];
-                }
+                },
             );
         };
 
         watch(
             () => choiceProduct.product?.uid,
-            (itemUid, _) => itemUid && fetchLots(itemUid)
+            (itemUid, _) => itemUid && fetchLots(itemUid),
         );
 
         const openAdjustProduct = ref(false);
@@ -131,7 +133,7 @@ const InventoryListing = defineComponent({
                                         openAddProduct.value = true;
                                     },
                                 },
-                                []
+                                [],
                             ),
                             h(
                                 'button',
@@ -146,7 +148,7 @@ const InventoryListing = defineComponent({
                                         openAdjustProduct.value = true;
                                     },
                                 },
-                                []
+                                [],
                             ),
                             h(
                                 'button',
@@ -159,9 +161,9 @@ const InventoryListing = defineComponent({
                                         productDetailItem.value = product;
                                     },
                                 },
-                                []
+                                [],
                             ),
-                        ]
+                        ],
                     );
                 },
             },
@@ -216,7 +218,7 @@ const InventoryListing = defineComponent({
                             remarks: choiceProduct.remarks,
                         },
                     },
-                    'createStockAdjustment'
+                    'createStockAdjustment',
                 ).then(result => {});
             },
         };
@@ -227,7 +229,7 @@ const InventoryListing = defineComponent({
                 <div class="space-y-4">
                     <button
                         onClick={() => (this.openDrawer = true)}
-                        class="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200"
+                        class="text-primary-foreground bg-primary hover:bg-primary/90 focus:ring-primary rounded-md border border-transparent px-4 py-2 text-sm font-medium shadow-sm transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-none"
                     >
                         Receive Stock
                     </button>
@@ -251,26 +253,26 @@ const InventoryListing = defineComponent({
                 ></DataTable>
 
                 {/* Drawer */}
-                <fel-drawer show={this.openDrawer} onClose={() => (this.openDrawer = false)}>
+                <Drawer show={this.openDrawer} onClose={() => (this.openDrawer = false)}>
                     {{
                         header: () => 'Receive Stock',
                         body: () => [<StockReceiveForm onClose={() => (this.openDrawer = false)} />],
                     }}
-                </fel-drawer>
+                </Drawer>
 
                 {/* Drawer */}
-                <fel-drawer show={this.openProductDetail} onClose={() => (this.openProductDetail = false)}>
+                <Drawer show={this.openProductDetail} onClose={() => (this.openProductDetail = false)}>
                     {{
                         header: () => 'Product Details',
                         body: () => [<ProductDetail product={this.productDetailItem} onClose={() => (this.openProductDetail = false)} />],
                     }}
-                </fel-drawer>
+                </Drawer>
 
                 {this.openAddProduct && (
-                    <fel-modal onClose={() => (this.openAddProduct = false)} contentWidth="w-1/4">
+                    <Modal onClose={() => (this.openAddProduct = false)} contentWidth="w-1/4">
                         {{
                             header: () => (
-                                <h3 class="text-lg font-medium text-foreground">
+                                <h3 class="text-foreground text-lg font-medium">
                                     {this.choiceProduct.product?.stockItem?.name} ({this.choiceProduct.product.name})
                                 </h3>
                             ),
@@ -278,9 +280,9 @@ const InventoryListing = defineComponent({
                                 return (
                                     <form action="post" class="space-y-4 p-4">
                                         <div class="space-y-2">
-                                            <label class="block text-sm font-medium text-foreground">Product Lot</label>
+                                            <label class="text-foreground block text-sm font-medium">Product Lot</label>
                                             <select
-                                                class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
+                                                class="text-foreground bg-background border-border focus:ring-primary focus:border-primary w-full rounded-md border px-3 py-2 shadow-sm transition-colors duration-200 focus:ring-2 focus:outline-none"
                                                 v-model={this.choiceProduct.stockLotUid}
                                                 aria-label="Product Lot"
                                             >
@@ -293,27 +295,27 @@ const InventoryListing = defineComponent({
                                             </select>
                                         </div>
                                         <div class="space-y-2">
-                                            <label class="block text-sm font-medium text-foreground">Quantity</label>
+                                            <label class="text-foreground block text-sm font-medium">Quantity</label>
                                             <input
-                                                class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
+                                                class="text-foreground bg-background border-border focus:ring-primary focus:border-primary w-full rounded-md border px-3 py-2 shadow-sm transition-colors duration-200 focus:ring-2 focus:outline-none"
                                                 type="number"
                                                 onChange={this.validateMinMax}
                                                 v-model={this.choiceProduct.quantity}
                                                 placeholder="Quantity..."
                                             />
                                         </div>
-                                        <div class="border-t border-border my-4"></div>
+                                        <div class="border-border my-4 border-t"></div>
                                         <button
                                             type="button"
                                             onClick={() => {
                                                 this.inventoryStore.addToBasket(
                                                     this.choiceProduct.product.uid,
                                                     this.choiceProduct.stockLotUid,
-                                                    this.choiceProduct.quantity
+                                                    this.choiceProduct.quantity,
                                                 );
                                                 this.openAddProduct = false;
                                             }}
-                                            class="w-full px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            class="text-primary-foreground bg-primary hover:bg-primary/90 focus:ring-primary w-full rounded-md border border-transparent px-4 py-2 text-sm font-medium shadow-sm transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                                             disabled={!this.choiceProduct.stockLotUid}
                                         >
                                             Add to basket
@@ -322,14 +324,14 @@ const InventoryListing = defineComponent({
                                 );
                             },
                         }}
-                    </fel-modal>
+                    </Modal>
                 )}
 
                 {this.openAdjustProduct && (
-                    <fel-modal onClose={() => (this.openAdjustProduct = false)} contentWidth="w-1/4">
+                    <Modal onClose={() => (this.openAdjustProduct = false)} contentWidth="w-1/4">
                         {{
                             header: () => (
-                                <h3 class="text-lg font-medium text-foreground">
+                                <h3 class="text-foreground text-lg font-medium">
                                     {this.choiceProduct.product?.stockItem?.name} ({this.choiceProduct.product.name})
                                 </h3>
                             ),
@@ -337,9 +339,9 @@ const InventoryListing = defineComponent({
                                 return (
                                     <form action="post" class="space-y-4 p-4">
                                         <div class="space-y-2">
-                                            <label class="block text-sm font-medium text-foreground">Product Lot</label>
+                                            <label class="text-foreground block text-sm font-medium">Product Lot</label>
                                             <select
-                                                class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
+                                                class="text-foreground bg-background border-border focus:ring-primary focus:border-primary w-full rounded-md border px-3 py-2 shadow-sm transition-colors duration-200 focus:ring-2 focus:outline-none"
                                                 v-model={this.choiceProduct.stockLotUid}
                                                 aria-label="Product Lot"
                                             >
@@ -352,9 +354,9 @@ const InventoryListing = defineComponent({
                                             </select>
                                         </div>
                                         <div class="space-y-2">
-                                            <label class="block text-sm font-medium text-foreground">Adjustment Type</label>
+                                            <label class="text-foreground block text-sm font-medium">Adjustment Type</label>
                                             <select
-                                                class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
+                                                class="text-foreground bg-background border-border focus:ring-primary focus:border-primary w-full rounded-md border px-3 py-2 shadow-sm transition-colors duration-200 focus:ring-2 focus:outline-none"
                                                 v-model={this.choiceProduct.type}
                                                 aria-label="Adjustment Type"
                                             >
@@ -364,9 +366,9 @@ const InventoryListing = defineComponent({
                                             </select>
                                         </div>
                                         <div class="space-y-2">
-                                            <label class="block text-sm font-medium text-foreground">Quantity</label>
+                                            <label class="text-foreground block text-sm font-medium">Quantity</label>
                                             <input
-                                                class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
+                                                class="text-foreground bg-background border-border focus:ring-primary focus:border-primary w-full rounded-md border px-3 py-2 shadow-sm transition-colors duration-200 focus:ring-2 focus:outline-none"
                                                 type="number"
                                                 onChange={this.validateMinMax}
                                                 v-model={this.choiceProduct.quantity}
@@ -374,22 +376,22 @@ const InventoryListing = defineComponent({
                                             />
                                         </div>
                                         <div class="space-y-2">
-                                            <label class="block text-sm font-medium text-foreground">Remarks</label>
+                                            <label class="text-foreground block text-sm font-medium">Remarks</label>
                                             <textarea
-                                                class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
+                                                class="text-foreground bg-background border-border focus:ring-primary focus:border-primary w-full rounded-md border px-3 py-2 shadow-sm transition-colors duration-200 focus:ring-2 focus:outline-none"
                                                 rows="3"
                                                 v-model={this.choiceProduct.remarks}
                                                 placeholder="Remarks..."
                                             ></textarea>
                                         </div>
-                                        <div class="border-t border-border my-4"></div>
+                                        <div class="border-border my-4 border-t"></div>
                                         <button
                                             type="button"
                                             onClick={() => {
                                                 this.adjustStock();
                                                 this.openAdjustProduct = false;
                                             }}
-                                            class="w-full px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            class="text-primary-foreground bg-primary hover:bg-primary/90 focus:ring-primary w-full rounded-md border border-transparent px-4 py-2 text-sm font-medium shadow-sm transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                                             disabled={!this.choiceProduct.stockLotUid}
                                         >
                                             Adjust
@@ -398,7 +400,7 @@ const InventoryListing = defineComponent({
                                 );
                             },
                         }}
-                    </fel-modal>
+                    </Modal>
                 )}
             </>
         );

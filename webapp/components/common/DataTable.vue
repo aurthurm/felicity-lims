@@ -90,7 +90,7 @@ const searchFocus = () => {
   emit("onSearchFocus", {})
 }
 const updateFilterStatus = (value: string) => {
-  filterStatus.value = value
+  filterStatus.value = value === SELECT_NONE ? "" : value
 }
 
 // Pagination
@@ -137,6 +137,9 @@ const emit = defineEmits([
   "onFetch",
 ])
 
+// Sentinel for optional Select - reka-ui forbids empty string as SelectItem value
+const SELECT_NONE = "__none__"
+
 // checking
 const normalizeChecked = (value: boolean | "indeterminate") => value === true
 const checkAll = (value: boolean | "indeterminate") => {
@@ -177,7 +180,7 @@ const toCapitalize = (str) => {
           <div v-if="filterable" class="flex items-center gap-2">
             <slot name="pre-filter"></slot>
             <Select
-              :model-value="filterStatus"
+              :model-value="filterStatus || SELECT_NONE"
               @update:model-value="updateFilterStatus"
             >
               <SelectTrigger class="w-[160px]">
@@ -186,8 +189,8 @@ const toCapitalize = (str) => {
               <SelectContent>
                 <SelectItem
                   v-for="filterValue in filterMeta?.filters"
-                  :key="filterValue.value"
-                  :value="filterValue.value"
+                  :key="filterValue.value || SELECT_NONE"
+                  :value="filterValue.value || SELECT_NONE"
                 >
                   {{ toCapitalize(filterValue?.name) }}
                 </SelectItem>
@@ -250,7 +253,7 @@ const toCapitalize = (str) => {
             <TableRow>
               <TableHead v-if="selectable">
                 <Checkbox
-                  :checked="allChecked"
+                  :checked="!!allChecked"
                   @update:checked="checkAll"
                   aria-label="Select all"
                 />
@@ -287,7 +290,7 @@ const toCapitalize = (str) => {
             <TableRow v-for="(entry, entryIdx) in entries || []" :key="entryIdx">
               <TableCell v-if="selectable">
                 <Checkbox
-                  :checked="entry.checked"
+                  :checked="!!entry.checked"
                   @update:checked="(value) => check(entry, value)"
                   aria-label="Select row"
                 />

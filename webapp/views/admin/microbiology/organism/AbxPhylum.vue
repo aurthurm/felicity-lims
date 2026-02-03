@@ -21,6 +21,7 @@ import {
   GetAbxPhylumAllQuery,
   GetAbxPhylumAllQueryVariables
 } from "@/graphql/operations/microbiology.queries";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 
 const VueMultiselect = defineAsyncComponent(
   () => import('vue-multiselect')
@@ -135,36 +136,46 @@ const saveForm = handleSubmit((formValues) => {
 
     <div class="rounded-md border border-border bg-card p-6">
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-border fel-table">
-          <thead>
-            <tr>
-              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</th>
-              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Kingdom</th>
-              <th class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+        <Table class="min-w-full divide-y divide-border">
+          <TableHeader>
+            <TableRow>
+              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</TableHead>
+              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Kingdom</TableHead>
+              <TableHead class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                 <span class="sr-only">Actions</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-border bg-background">
-            <tr v-for="guideline in abxPhylums" :key="guideline?.uid" class="hover:bg-muted/50">
-              <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ guideline?.name }}</td>
-              <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ guideline?.kingdom?.name }}</td>
-              <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody class="divide-y divide-border bg-background">
+            <TableRow v-for="guideline in abxPhylums" :key="guideline?.uid" class="hover:bg-muted/50">
+              <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ guideline?.name }}</TableCell>
+              <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ guideline?.kingdom?.name }}</TableCell>
+              <TableCell class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                 <button 
                   @click="FormManager(false, guideline)"
                   class="text-primary hover:text-primary/80">
                   Edit
                 </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </TableCell>
+            </TableRow>
+            <TableEmpty v-if="!abxPhylums || abxPhylums.length === 0" :colspan="3">
+              <Empty class="border-0 bg-transparent p-0">
+                <EmptyContent>
+                  <EmptyHeader>
+                    <EmptyTitle>No phyla found</EmptyTitle>
+                    <EmptyDescription>Add a phylum to get started.</EmptyDescription>
+                  </EmptyHeader>
+                </EmptyContent>
+              </Empty>
+            </TableEmpty>
+          </TableBody>
+        </Table>
       </div>
     </div>
   </div>
 
   <!-- Phylum Edit Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
+  <Modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -204,7 +215,7 @@ const saveForm = handleSubmit((formValues) => {
         </button>
       </form>
     </template>
-  </fel-modal>
+  </Modal>
 </template>
 
 <style scoped>

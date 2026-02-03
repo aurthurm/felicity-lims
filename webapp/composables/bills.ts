@@ -20,7 +20,7 @@ export default function useBillComposable() {
                     ImpressBillingReportDocument,
                     { billUid },
                     'billInvoiceCreate',
-                    'network-only'
+                    'network-only',
                 );
 
                 if (response) {

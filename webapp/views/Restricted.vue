@@ -2,6 +2,7 @@
 import { useRouter } from 'vue-router'
 import { pages } from "@/router/constants"
 
+defineOptions({ name: 'RestrictedView' })
 // Initialize router
 const router = useRouter()
 

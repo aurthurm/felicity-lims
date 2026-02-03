@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import TabsNav from "@/components/ui/tabs/TabsNav.vue";
   import { ref, computed, defineAsyncComponent } from 'vue';
   const tabReferralLaboratory = defineAsyncComponent(
     () => import('./ReferralLaboratory.vue')
@@ -14,5 +15,5 @@
  </script>
 
 <template>
-  <fel-tabs :tabs="tabs"></fel-tabs>
+  <TabsNav :tabs="tabs"></TabsNav>
 </template>

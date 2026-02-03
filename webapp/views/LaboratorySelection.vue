@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { useLaboratoryContextStore } from "@/stores/laboratory_context";
 import { useAuthStore } from "@/stores/auth";
 import { LaboratoryType } from "@/types/gql";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 
 const contextStore = useLaboratoryContextStore();
 const authStore = useAuthStore();
@@ -211,12 +212,17 @@ onMounted(() => {
             {{ searchQuery ? `Search Results (${filteredLaboratories.length})` : 'All Laboratories' }}
           </h3>
 
-          <div v-if="filteredLaboratories.length === 0" class="text-center py-12">
-            <div class="w-12 h-12 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-              <i class="fas fa-search text-muted-foreground"></i>
-            </div>
-            <p class="text-muted-foreground">No laboratories found matching your search.</p>
-          </div>
+          <Empty v-if="filteredLaboratories.length === 0" class="py-12">
+            <EmptyContent>
+              <EmptyMedia variant="icon">
+                <i class="fas fa-search text-muted-foreground"></i>
+              </EmptyMedia>
+              <EmptyHeader>
+                <EmptyTitle>No laboratories found</EmptyTitle>
+                <EmptyDescription>No laboratories found matching your search.</EmptyDescription>
+              </EmptyHeader>
+            </EmptyContent>
+          </Empty>
 
           <div v-else class="space-y-3">
             <div

@@ -5,12 +5,21 @@
     EditManufacturerDocument, EditManufacturerMutation, EditManufacturerMutationVariables } from '@/graphql/operations/instrument.mutations';
   import { useSetupStore } from '@/stores/setup';
   import  useApiUtil  from '@/composables/api_util';
-  import { useField, useForm } from "vee-validate";
+  import { useForm } from "vee-validate";
   import { object, string } from "yup";
-  const modal = defineAsyncComponent(
-    () => import('@/components/ui/FelModal.vue')
-  )
-
+  import { Button } from "@/components/ui/button";
+  import { Input } from "@/components/ui/input";
+  import { Textarea } from "@/components/ui/textarea";
+  import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+  } from "@/components/ui/form";
+import PageHeading from "@/components/common/PageHeading.vue"
+defineOptions({ name: 'ManufacturersView' })
   const setupStore = useSetupStore();
   const { withClientMutation } = useApiUtil()
   
@@ -24,16 +33,13 @@
     description: string().nullable(),
   });
 
-  const { handleSubmit, errors, resetForm, setValues } = useForm({
+  const { handleSubmit, resetForm, setValues } = useForm({
     validationSchema: formSchema,
     initialValues: {
       name: "",
       description: "",
     },
   });
-
-  const { value: name } = useField<string>("name");
-  const { value: description } = useField<string | null>("description");
 
   setupStore.fetchManufacturers()
   const manufacturers = computed(() => setupStore.getManufacturers)
@@ -83,80 +89,68 @@
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Manufacturers">
-      <fel-button @click="FormManager(true)"> Add Manufacturer</fel-button>
-    </fel-heading>
+    <PageHeading title="Manufacturers">
+      <Button @click="FormManager(true)"> Add Manufacturer</Button>
+    </PageHeading>
 
     <div class="border border-border bg-background rounded-lg shadow-sm p-6">
       <div class="relative w-full overflow-auto">
-        <table class="w-full caption-bottom text-sm fel-table">
-          <thead class="[&_tr]:border-b">
-            <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-              <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Manufacturer</th>
-              <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Description</th>
-              <th class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</th>
-            </tr>
-          </thead>
-          <tbody class="[&_tr:last-child]:border-0">
-            <tr v-for="manufacturer in manufacturers" :key="manufacturer?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-              <td class="p-4 align-middle">{{ manufacturer?.name }}</td>
-              <td class="p-4 align-middle text-primary">{{ manufacturer?.description }}</td>
-              <td class="p-4 align-middle text-right">
-                <button 
-                  @click="FormManager(false, manufacturer)"
-                  class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3"
-                >
+        <Table class="w-full caption-bottom text-sm">
+          <TableHeader class="[&_tr]:border-b">
+            <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Manufacturer</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Description</TableHead>
+              <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody class="[&_tr:last-child]:border-0">
+            <TableRow v-for="manufacturer in manufacturers" :key="manufacturer?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableCell class="p-4 align-middle">{{ manufacturer?.name }}</TableCell>
+              <TableCell class="p-4 align-middle text-primary">{{ manufacturer?.description }}</TableCell>
+              <TableCell class="p-4 align-middle text-right">
+                <Button variant="outline" size="sm" @click="FormManager(false, manufacturer)">
                   Edit
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                </Button>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </div>
     </div>
   </div>
 
   <!-- Manufacturer Edit Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false">
+  <Modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
       <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form @submit.prevent="saveForm" class="space-y-4">
+      <Form @submit="saveForm" class="space-y-4">
         <div class="space-y-4">
-          <div class="space-y-2">
-            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Name
-            </label>
-            <input
-              v-model="name"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              placeholder="Enter manufacturer name..."
-            />
-            <div class="text-sm text-destructive">{{ errors.name }}</div>
-          </div>
-          <div class="space-y-2">
-            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Description
-            </label>
-            <textarea
-              v-model="description"
-              class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              placeholder="Enter manufacturer description..."
-            />
-          </div>
+          <FormField name="name" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Enter manufacturer name..." />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+          <FormField name="description" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea v-bind="componentField" placeholder="Enter manufacturer description..." />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </div>
         <div class="flex justify-end">
-          <button
-            type="submit"
-            class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
-          >
-            Save Changes
-          </button>
+          <Button type="submit">Save Changes</Button>
         </div>
-      </form>
+      </Form>
     </template>
-  </fel-modal>
+  </Modal>
 </template>
-

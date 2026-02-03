@@ -8,19 +8,19 @@ Implementation plan for enabling users to belong to multiple laboratories with l
 
 ### Existing Infrastructure ✅
 
--   `laboratory_user` many-to-many table already exists (migration: 322d323a4bfe)
--   `User.active_laboratory_uid` field already exists (migration: cf889b8db893)
--   Multi-tenant architecture with laboratory-level data isolation
--   Tenant context management system in place
--   Admin interface structure already established
+- `laboratory_user` many-to-many table already exists (migration: 322d323a4bfe)
+- `User.active_laboratory_uid` field already exists (migration: cf889b8db893)
+- Multi-tenant architecture with laboratory-level data isolation
+- Tenant context management system in place
+- Admin interface structure already established
 
 ### Requirements
 
--   Users can be assigned to multiple laboratories
--   Laboratory registration through webapp admin
--   Enhanced user registration with lab assignments
--   Laboratory context switching for active users
--   Backend GraphQL endpoints for lab management
+- Users can be assigned to multiple laboratories
+- Laboratory registration through webapp admin
+- Enhanced user registration with lab assignments
+- Laboratory context switching for active users
+- Backend GraphQL endpoints for lab management
 
 ---
 
@@ -370,8 +370,8 @@ const submitLaboratory = async () => {
 
         <div v-if="selectedLaboratory" class="space-y-6">
             <!-- Add Users Section -->
-            <div class="bg-white p-6 rounded-lg shadow">
-                <h3 class="text-lg font-medium mb-4">Add Users to Laboratory</h3>
+            <div class="rounded-lg bg-white p-6 shadow">
+                <h3 class="mb-4 text-lg font-medium">Add Users to Laboratory</h3>
                 <div class="flex space-x-4">
                     <FelMultiSelect
                         v-model="selectedUsers"
@@ -386,14 +386,14 @@ const submitLaboratory = async () => {
             </div>
 
             <!-- Current Users List -->
-            <div class="bg-white rounded-lg shadow">
-                <div class="p-6 border-b">
+            <div class="rounded-lg bg-white shadow">
+                <div class="border-b p-6">
                     <h3 class="text-lg font-medium">Current Laboratory Users</h3>
                 </div>
 
                 <FelDataTable :data="laboratoryUsers" :columns="userColumns" searchable @action="handleUserAction">
                     <template #active_laboratory="{ row }">
-                        <span :class="row.active_laboratory_uid === selectedLaboratory ? 'text-green-600 font-medium' : 'text-gray-500'">
+                        <span :class="row.active_laboratory_uid === selectedLaboratory ? 'font-medium text-green-600' : 'text-gray-500'">
                             {{ row.active_laboratory_uid === selectedLaboratory ? 'Active' : 'Inactive' }}
                         </span>
                     </template>
@@ -465,7 +465,7 @@ const removeUserFromLab = async (userUid: string) => {
 
         <!-- Laboratory Assignment Section -->
         <div class="laboratory-assignment border-t pt-6">
-            <h3 class="text-lg font-medium mb-4">Laboratory Access</h3>
+            <h3 class="mb-4 text-lg font-medium">Laboratory Access</h3>
 
             <FelMultiSelect
                 v-model="form.laboratory_uids"
@@ -478,7 +478,7 @@ const removeUserFromLab = async (userUid: string) => {
             >
                 <template #option="{ option }">
                     <div class="flex items-center">
-                        <div class="w-3 h-3 rounded-full mr-2 bg-blue-500"></div>
+                        <div class="mr-2 h-3 w-3 rounded-full bg-blue-500"></div>
                         <div>
                             <div class="font-medium">{{ option.name }}</div>
                             <div class="text-sm text-gray-500">
@@ -498,16 +498,16 @@ const removeUserFromLab = async (userUid: string) => {
                 required
             />
 
-            <div class="text-sm text-gray-600 mt-2">
+            <div class="mt-2 text-sm text-gray-600">
                 The user will start with the selected default laboratory active. They can switch between assigned laboratories after login.
             </div>
         </div>
 
         <!-- Role Assignment per Laboratory -->
         <div v-if="form.laboratory_uids?.length" class="roles-assignment">
-            <h4 class="font-medium mb-3">Role Assignment</h4>
+            <h4 class="mb-3 font-medium">Role Assignment</h4>
             <div class="space-y-3">
-                <div v-for="labUid in form.laboratory_uids" :key="labUid" class="flex items-center justify-between p-3 border rounded-md">
+                <div v-for="labUid in form.laboratory_uids" :key="labUid" class="flex items-center justify-between rounded-md border p-3">
                     <div class="flex-1">
                         <div class="font-medium">
                             {{ getLaboratoryName(labUid) }}
@@ -579,7 +579,7 @@ watch(
         } else if (!newLabs.includes(form.active_laboratory_uid)) {
             form.active_laboratory_uid = '';
         }
-    }
+    },
 );
 </script>
 ```
@@ -682,10 +682,10 @@ mutation SwitchActiveLaboratory($laboratory_uid: String!) {
             <!-- Switch Button -->
             <button
                 @click="showSwitcher = !showSwitcher"
-                class="p-2 rounded-md hover:bg-gray-100 transition-colors"
+                class="rounded-md p-2 transition-colors hover:bg-gray-100"
                 :disabled="userLaboratories.length <= 1"
             >
-                <ChevronDownIcon class="w-4 h-4" />
+                <ChevronDownIcon class="h-4 w-4" />
             </button>
         </div>
 
@@ -700,9 +700,9 @@ mutation SwitchActiveLaboratory($laboratory_uid: String!) {
         >
             <div
                 v-if="showSwitcher && userLaboratories.length > 1"
-                class="absolute top-full left-0 mt-2 w-80 bg-white rounded-md shadow-lg z-50 border"
+                class="absolute top-full left-0 z-50 mt-2 w-80 rounded-md border bg-white shadow-lg"
             >
-                <div class="p-3 border-b">
+                <div class="border-b p-3">
                     <h3 class="text-sm font-medium text-gray-900">Switch Laboratory</h3>
                     <p class="text-xs text-gray-500">Select which laboratory to work in</p>
                 </div>
@@ -712,13 +712,13 @@ mutation SwitchActiveLaboratory($laboratory_uid: String!) {
                         v-for="lab in userLaboratories"
                         :key="lab.uid"
                         @click="switchToLaboratory(lab.uid)"
-                        class="flex items-center p-3 hover:bg-gray-50 cursor-pointer transition-colors"
-                        :class="{ 'bg-blue-50 border-l-4 border-blue-500': lab.uid === authStore.activeLaboratory?.uid }"
+                        class="flex cursor-pointer items-center p-3 transition-colors hover:bg-gray-50"
+                        :class="{ 'border-l-4 border-blue-500 bg-blue-50': lab.uid === authStore.activeLaboratory?.uid }"
                     >
                         <div class="flex-1">
                             <div class="flex items-center">
                                 <div
-                                    class="w-3 h-3 rounded-full mr-3"
+                                    class="mr-3 h-3 w-3 rounded-full"
                                     :class="lab.uid === authStore.activeLaboratory?.uid ? 'bg-green-500' : 'bg-gray-300'"
                                 ></div>
                                 <div>
@@ -729,20 +729,20 @@ mutation SwitchActiveLaboratory($laboratory_uid: String!) {
                         </div>
 
                         <div v-if="lab.uid === authStore.activeLaboratory?.uid" class="text-green-600">
-                            <CheckIcon class="w-4 h-4" />
+                            <CheckIcon class="h-4 w-4" />
                         </div>
                     </div>
                 </div>
 
-                <div class="p-3 border-t bg-gray-50">
+                <div class="border-t bg-gray-50 p-3">
                     <div class="text-xs text-gray-500">Current context determines which data you can access</div>
                 </div>
             </div>
         </Transition>
 
         <!-- Loading Overlay -->
-        <div v-if="switching" class="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center rounded-md">
-            <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+        <div v-if="switching" class="bg-opacity-75 absolute inset-0 flex items-center justify-center rounded-md bg-white">
+            <div class="h-4 w-4 animate-spin rounded-full border-b-2 border-blue-600"></div>
         </div>
     </div>
 </template>
@@ -1288,7 +1288,6 @@ export const useLaboratoryStore = defineStore('laboratory', {
     - Create/Update/Delete laboratory mutations
     - Laboratory queries with proper access control
 2. **User-Laboratory Association endpoints**
-
     - Assign/remove users to/from laboratories
     - Switch active laboratory mutation with JWT refresh
 
@@ -1299,13 +1298,11 @@ export const useLaboratoryStore = defineStore('laboratory', {
 ### Phase 2: Frontend Context Switching (Week 2-3) 🔥 HIGH PRIORITY
 
 1. **Laboratory Switcher Component**
-
     - Dropdown with user's assigned laboratories
     - Active laboratory indication
     - Smooth switching with loading states
 
 2. **Auth Store Enhancement**
-
     - Multi-laboratory state management
     - Context switching methods
     - Token refresh handling
@@ -1317,13 +1314,11 @@ export const useLaboratoryStore = defineStore('laboratory', {
 ### Phase 3: Admin Interfaces (Week 3-4) 🟡 MEDIUM PRIORITY
 
 1. **Laboratory Registration Admin**
-
     - Complete laboratory creation form
     - Organization assignment
     - Default settings configuration
 
 2. **Enhanced User Administration**
-
     - Laboratory assignment in user forms
     - Multi-select laboratory picker
     - Laboratory-specific role assignment
@@ -1336,7 +1331,6 @@ export const useLaboratoryStore = defineStore('laboratory', {
 ### Phase 4: Registration Enhancement (Week 4-5) 🟡 MEDIUM PRIORITY
 
 1. **User Registration Form Updates**
-
     - Laboratory assignment during registration
     - Default active laboratory selection
     - Role assignment per laboratory
@@ -1349,13 +1343,11 @@ export const useLaboratoryStore = defineStore('laboratory', {
 ### Phase 5: Advanced Features (Week 5-6) 🟢 LOW PRIORITY
 
 1. **Bulk Operations**
-
     - Bulk user-laboratory assignments
     - Bulk role updates
     - Import/export functionality
 
 2. **Enhanced Security & Validation**
-
     - Laboratory access audit logging
     - Advanced permission validation
     - Context switching rate limiting
@@ -1397,7 +1389,6 @@ CREATE INDEX idx_laboratory_user_user_uid ON laboratory_user(user_uid);
 ### Backend Tests
 
 1. **Unit Tests**
-
     - User-laboratory assignment logic
     - Active laboratory switching validation
     - Laboratory creation with settings
@@ -1410,7 +1401,6 @@ CREATE INDEX idx_laboratory_user_user_uid ON laboratory_user(user_uid);
 ### Frontend Tests
 
 1. **Component Tests**
-
     - Laboratory switcher functionality
     - Registration form validation
     - Admin interface interactions
@@ -1426,22 +1416,22 @@ CREATE INDEX idx_laboratory_user_user_uid ON laboratory_user(user_uid);
 
 ### Access Control
 
--   Users can only see/access their assigned laboratories
--   Laboratory admins can manage users within their laboratory
--   Organization admins can manage all laboratories in their organization
--   Super admins have global access
+- Users can only see/access their assigned laboratories
+- Laboratory admins can manage users within their laboratory
+- Organization admins can manage all laboratories in their organization
+- Super admins have global access
 
 ### Context Validation
 
--   JWT tokens include laboratory context
--   Backend validates laboratory access on every request
--   Context switching requires re-authentication
--   Audit logging for all laboratory assignments and switches
+- JWT tokens include laboratory context
+- Backend validates laboratory access on every request
+- Context switching requires re-authentication
+- Audit logging for all laboratory assignments and switches
 
 ### Data Isolation
 
--   All lab-scoped data filtered by current laboratory context
--   No cross-laboratory data leakage
--   Proper tenant isolation maintained
+- All lab-scoped data filtered by current laboratory context
+- No cross-laboratory data leakage
+- Proper tenant isolation maintained
 
 This comprehensive plan provides a structured approach to implementing multi-laboratory user management while maintaining the existing security and architectural patterns of the Felicity LIMS system.

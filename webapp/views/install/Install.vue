@@ -2,9 +2,20 @@
 import {onBeforeMount, ref, watch} from "vue";
 import axios from "@/composables/axios";
 import { useRouter } from "vue-router";
-import { useField, useForm } from "vee-validate";
+import { useForm } from "vee-validate";
 import {useAuthStore} from "@/stores/auth";
 import { object, string } from "yup";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -27,16 +38,13 @@ const installSchema = object({
   laboratory_name: string().required("Laboratory Name is Required"),
 });
 
-const { handleSubmit, errors } = useForm({
+const { handleSubmit } = useForm({
   validationSchema: installSchema,
   initialValues: {
     organisation_name: "Felicity Diagnostics",
     laboratory_name: "My First Laboratory",
   },
 });
-
-const { value: organisation_name } = useField("organisation_name");
-const { value: laboratory_name } = useField("laboratory_name");
 
 const initInstall = handleSubmit((values) => {
   loading.value = true;
@@ -77,54 +85,41 @@ const initInstall = handleSubmit((values) => {
         <span class="text-foreground font-semibold text-2xl">Install Felicity LIMS</span>
       </div>
 
-      <form class="mt-6 space-y-4" @submit.prevent="initInstall">
-        <div class="space-y-2">
-          <label class="block text-sm font-medium text-foreground">Organisation Name</label>
-          <input
-            type="text"
-            class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
-            v-model="organisation_name"
-            :disabled="loading"
-            placeholder="Enter organisation name"
-          />
-          <div v-if="errors.organisation_name" class="text-sm text-destructive">{{ errors.organisation_name }}</div>
-        </div>
+      <Form class="mt-6 space-y-4" @submit="initInstall">
+        <FormField name="organisation_name" v-slot="{ componentField }">
+          <FormItem>
+            <FormLabel>Organisation Name</FormLabel>
+            <FormControl>
+              <Input v-bind="componentField" :disabled="loading" placeholder="Enter organisation name" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-        <div class="space-y-2">
-          <label class="block text-sm font-medium text-foreground">Laboratory Name</label>
-          <input
-            type="text"
-            class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
-            v-model="laboratory_name"
-            :disabled="loading"
-            placeholder="Enter laboratory name"
-          />
-          <div v-if="errors.laboratory_name" class="text-sm text-destructive">{{ errors.laboratory_name }}</div>
-        </div>
+        <FormField name="laboratory_name" v-slot="{ componentField }">
+          <FormItem>
+            <FormLabel>Laboratory Name</FormLabel>
+            <FormControl>
+              <Input v-bind="componentField" :disabled="loading" placeholder="Enter laboratory name" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
         <div class="pt-4">
-          <button
-            v-if="!loading"
-            type="submit"
-            class="w-full px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200"
-          >
+          <Button v-if="!loading" type="submit" class="w-full">
             Install
-          </button>
+          </Button>
           <div v-else class="text-center">
-            <fel-loader message="Installing felicity lims ..." />
+            <span class="inline-flex items-center gap-2">
+              <Spinner class="size-4" />
+              <span class="text-sm">Installing felicity lims ...</span>
+            </span>
           </div>
         </div>
-      </form>
+      </Form>
     </div>
   </div>
 </template>
 
-<style scoped>
-.space-y-4 > :not([hidden]) ~ :not([hidden]) {
-  margin-top: 1rem;
-}
-
-.space-y-2 > :not([hidden]) ~ :not([hidden]) {
-  margin-top: 0.5rem;
-}
-</style>
+<style scoped></style>

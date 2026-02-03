@@ -7,11 +7,30 @@ import useApiUtil from "@/composables/api_util";
 import useNotifyToast from "@/composables/alert_toast";
 import { EditLaboratoryMutation, EditLaboratoryMutationVariables, EditLaboratoryDocument, EditLaboratorySettingDocument, EditLaboratorySettingMutation, EditLaboratorySettingMutationVariables } from "@/graphql/operations/_mutations";
 import { PaymentStatus } from "@/graphql/schema";
-import { useField, useForm } from "vee-validate";
+import { useForm } from "vee-validate";
 import { boolean, number, object, string } from "yup";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-const FelAsideTabs = defineAsyncComponent(
-    () => import("@/components/ui/tabs/FelTabsAside.vue")
+defineOptions({ name: 'LaboratoryView' })
+const TabsAside = defineAsyncComponent(
+    () => import("@/components/ui/tabs/TabsAside.vue")
 )
 
 const { toastSuccess } = useNotifyToast();
@@ -56,16 +75,6 @@ const {
   },
 });
 
-const { value: name } = useField<string>("name");
-const { value: tagLine } = useField<string | null>("tagLine");
-const { value: labManagerUid } = useField<string | null>("labManagerUid");
-const { value: email } = useField<string | null>("email");
-const { value: emailCc } = useField<string | null>("emailCc");
-const { value: mobilePhone } = useField<string | null>("mobilePhone");
-const { value: businessPhone } = useField<string | null>("businessPhone");
-const { value: address } = useField<string | null>("address");
-const { value: banking } = useField<string | null>("banking");
-const { value: qualityStatement } = useField<string | null>("qualityStatement");
 
 const settingSchema = object({
   defaultRoute: string().nullable(),
@@ -113,23 +122,6 @@ const {
   },
 });
 
-const { value: defaultRoute } = useField<string | null>("defaultRoute");
-const { value: defaultTheme } = useField<string | null>("defaultTheme");
-const { value: passwordLifetime } = useField<number | null>("passwordLifetime");
-const { value: inactivityLogOut } = useField<number | null>("inactivityLogOut");
-const { value: stickerCopies } = useField<number | null>("stickerCopies");
-const { value: allowSelfVerification } = useField<boolean | null>("allowSelfVerification");
-const { value: allowPatientRegistration } = useField<boolean | null>("allowPatientRegistration");
-const { value: allowSampleRegistration } = useField<boolean | null>("allowSampleRegistration");
-const { value: allowWorksheetCreation } = useField<boolean | null>("allowWorksheetCreation");
-const { value: autoReceiveSamples } = useField<boolean | null>("autoReceiveSamples");
-const { value: allowBilling } = useField<boolean | null>("allowBilling");
-const { value: allowAutoBilling } = useField<boolean | null>("allowAutoBilling");
-const { value: processBilledOnly } = useField<boolean | null>("processBilledOnly");
-const { value: minPaymentStatus } = useField<string | null>("minPaymentStatus");
-const { value: minPartialPerentage } = useField<number | null>("minPartialPerentage");
-const { value: currency } = useField<string | null>("currency");
-const { value: paymentTermsDays } = useField<number | null>("paymentTermsDays");
 
 watch(
   () => laboratory.value?.uid,
@@ -226,7 +218,7 @@ const items = [
 </script>
 
 <template>
-  <FelAsideTabs
+  <TabsAside
     title="Settings"
     :items="items"
     v-model="currentTab"
@@ -234,189 +226,317 @@ const items = [
     <section v-if="currentTab === 'general-info'" class="space-y-6">
       <h2 class="text-2xl font-semibold text-foreground">Laboratory Information</h2>
       <hr class="border-border">
-      <form class="space-y-6" @submit.prevent="saveLaboratoryForm">
+      <Form class="space-y-6" @submit="saveLaboratoryForm">
         <div class="grid grid-cols-2 gap-6">
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Laboratory Name</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="name" placeholder="Name ..."
-              :disabled="processing" />
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Tag Line</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="tagLine" placeholder="Tag Line ..."
-              :disabled="processing" />
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Lab Manager</span>
-            <div class="w-full">
-              <select class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="labManagerUid" :disabled="processing">
-                <option></option>
-                <option v-for="user in users" :key="user?.uid" :value="user.uid">
-                  {{ user?.firstName }} {{ user?.lastName }}
-                </option>
-              </select>
-            </div>
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Laboratory Email</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="email" placeholder="Name ..."
-              :disabled="processing" />
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">CC Emails</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="emailCc" placeholder="Name ..."
-              :disabled="processing" />
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Lab Mobile Phone</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="mobilePhone" placeholder="Name ..."
-              :disabled="processing" />
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Lab Business Phone</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="businessPhone" placeholder="Name ..."
-              :disabled="processing" />
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Address</span>
-            <textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="address"
-              placeholder="Address ..." :disabled="processing" />
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Banking Details</span>
-            <textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="banking"
-              placeholder="Banking ..." :disabled="processing" />
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Quality Statement</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="qualityStatement" placeholder="Quality Statement ..."
-              :disabled="processing" />
-          </label>
+          <FormField name="name" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Laboratory Name</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Name ..." :disabled="processing" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="tagLine" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Tag Line</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Tag Line ..." :disabled="processing" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="labManagerUid" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Lab Manager</FormLabel>
+              <FormControl>
+                <Select v-bind="componentField" :disabled="processing">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select lab manager..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Select lab manager...</SelectItem>
+                    <SelectItem v-for="user in users" :key="user?.uid" :value="user.uid">
+                      {{ user?.firstName }} {{ user?.lastName }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="email" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Laboratory Email</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Name ..." :disabled="processing" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="emailCc" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>CC Emails</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Name ..." :disabled="processing" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="mobilePhone" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Lab Mobile Phone</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Name ..." :disabled="processing" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="businessPhone" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Lab Business Phone</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Name ..." :disabled="processing" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="address" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Address</FormLabel>
+              <FormControl>
+                <Textarea v-bind="componentField" placeholder="Address ..." :disabled="processing" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="banking" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Banking Details</FormLabel>
+              <FormControl>
+                <Textarea v-bind="componentField" placeholder="Banking ..." :disabled="processing" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="qualityStatement" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Quality Statement</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Quality Statement ..." :disabled="processing" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </div>
         <hr class="border-border" />
-        <button v-show="!processing" type="submit"
-          class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
-          Update
-        </button>
-      </form>
+        <Button type="submit" :disabled="processing">Update</Button>
+      </Form>
     </section>
 
     <section v-if="currentTab === 'other-settings'" class="space-y-6">
       <h2 class="text-2xl font-semibold text-foreground">Other Settings</h2>
       <hr class="border-border">
-      <form class="space-y-6" @submit.prevent="saveSettingForm">
+      <Form class="space-y-6" @submit="saveSettingForm">
         <div class="grid grid-cols-2 gap-6">
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Default Landing Page</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="defaultRoute" placeholder="Name ..."
-              :disabled="processing" />
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Default Theme</span>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="defaultTheme" placeholder="Name ..."
-              :disabled="processing" />
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Password Lifetime (days)</span>
-            <input type="number" min="0" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="passwordLifetime"
-              placeholder="Name ..." :disabled="processing" />
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Inactivity Auto Logout (minutes)</span>
-            <input type="number" min="0" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="inactivityLogOut"
-              placeholder="Name ..." :disabled="processing" />
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Default Sticker copies</span>
-            <input type="number" min="0" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="stickerCopies"
-              placeholder="Name ..." :disabled="processing" />
-          </label>
-          <span class="block col-span-1"></span>
-          <label class="block col-span-1 space-y-2">
-            <div class="flex items-center space-x-2">
-              <input type="checkbox" class="h-4 w-4 rounded border-input text-primary focus:ring-ring" v-model="allowSelfVerification" :disabled="processing" />
-              <span class="text-sm font-medium text-foreground">Allow self verification</span>
-            </div>
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <div class="flex items-center space-x-2">
-              <input type="checkbox" class="h-4 w-4 rounded border-input text-primary focus:ring-ring" v-model="allowPatientRegistration" :disabled="processing" />
-              <span class="text-sm font-medium text-foreground">Allow patient registration</span>
-            </div>
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <div class="flex items-center space-x-2">
-              <input type="checkbox" class="h-4 w-4 rounded border-input text-primary focus:ring-ring" v-model="allowSampleRegistration" :disabled="processing" />
-              <span class="text-sm font-medium text-foreground">Allow sample registration</span>
-            </div>
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <div class="flex items-center space-x-2">
-              <input type="checkbox" class="h-4 w-4 rounded border-input text-primary focus:ring-ring" v-model="allowWorksheetCreation" :disabled="processing" />
-              <span class="text-sm font-medium text-foreground">Allow worksheet creation</span>
-            </div>
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <div class="flex items-center space-x-2">
-              <input type="checkbox" class="h-4 w-4 rounded border-input text-primary focus:ring-ring" v-model="autoReceiveSamples" :disabled="processing" />
-              <span class="text-sm font-medium text-foreground">Auto receive samples</span>
-            </div>
-          </label>
-          <span class="block col-span-1"></span>
+          <FormField name="defaultRoute" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Default Landing Page</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Name ..." :disabled="processing" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="defaultTheme" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Default Theme</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Name ..." :disabled="processing" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="passwordLifetime" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Password Lifetime (days)</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" type="number" min="0" placeholder="Name ..." :disabled="processing" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="inactivityLogOut" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Inactivity Auto Logout (minutes)</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" type="number" min="0" placeholder="Name ..." :disabled="processing" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="stickerCopies" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Default Sticker copies</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" type="number" min="0" placeholder="Name ..." :disabled="processing" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <div class="col-span-1"></div>
+
+          <FormField name="allowSelfVerification" v-slot="{ value, handleChange }">
+            <FormItem class="flex items-center space-x-2">
+              <FormControl>
+                <Checkbox :checked="value" @update:checked="handleChange" :disabled="processing" />
+              </FormControl>
+              <FormLabel>Allow self verification</FormLabel>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="allowPatientRegistration" v-slot="{ value, handleChange }">
+            <FormItem class="flex items-center space-x-2">
+              <FormControl>
+                <Checkbox :checked="value" @update:checked="handleChange" :disabled="processing" />
+              </FormControl>
+              <FormLabel>Allow patient registration</FormLabel>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="allowSampleRegistration" v-slot="{ value, handleChange }">
+            <FormItem class="flex items-center space-x-2">
+              <FormControl>
+                <Checkbox :checked="value" @update:checked="handleChange" :disabled="processing" />
+              </FormControl>
+              <FormLabel>Allow sample registration</FormLabel>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="allowWorksheetCreation" v-slot="{ value, handleChange }">
+            <FormItem class="flex items-center space-x-2">
+              <FormControl>
+                <Checkbox :checked="value" @update:checked="handleChange" :disabled="processing" />
+              </FormControl>
+              <FormLabel>Allow worksheet creation</FormLabel>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="autoReceiveSamples" v-slot="{ value, handleChange }">
+            <FormItem class="flex items-center space-x-2">
+              <FormControl>
+                <Checkbox :checked="value" @update:checked="handleChange" :disabled="processing" />
+              </FormControl>
+              <FormLabel>Auto receive samples</FormLabel>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <div class="col-span-1"></div>
         </div>
         <hr class="border-border" />
         <div class="grid grid-cols-2 gap-6">
-          <label class="block col-span-1 space-y-2">
-            <div class="flex items-center space-x-2">
-              <input type="checkbox" class="h-4 w-4 rounded border-input text-primary focus:ring-ring" v-model="allowBilling" :disabled="processing" />
-              <span class="text-sm font-medium text-foreground">Enable Sample Billing</span>
-            </div>
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <div class="flex items-center space-x-2">
-              <input type="checkbox" class="h-4 w-4 rounded border-input text-primary focus:ring-ring" v-model="allowAutoBilling" :disabled="processing" />
-              <span class="text-sm font-medium text-foreground">Allow automatic billing on sample registration</span>
-            </div>
-          </label>
-          <label class="block col-span-1 space-y-2"> 
-            <div class="flex items-center space-x-2">
-              <input type="checkbox" class="h-4 w-4 rounded border-input text-primary focus:ring-ring" v-model="processBilledOnly" :disabled="processing" />
-              <span class="text-sm font-medium text-foreground">Only process billed analysis requests</span>
-            </div>
-          </label>
-          <div class="block col-span-1 space-y-2">
-            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Minimum Allowed Payment status
-            </label>
-            <select 
-              v-model="minPaymentStatus"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <option value="">Select Payment Status</option>
-              <option v-for="pstatus in [PaymentStatus.Unpaid, PaymentStatus.Partial, PaymentStatus.Paid]" 
-              :key="pstatus" :value="pstatus">{{ pstatus }}</option>
-            </select>
-          </div>
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Minimum Partial Percentage</span>
-            <input type="number" min="0.0" max="1.0" step="0.1" default="0.5" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-            v-model="minPartialPerentage" :disabled="processing" />
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Currency</span>
-            <input type="text" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="currency" :disabled="processing" />
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Payment Terms (Days)</span>
-            <input type="number" min="0" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" v-model="paymentTermsDays" :disabled="processing" />
-          </label>
+          <FormField name="allowBilling" v-slot="{ value, handleChange }">
+            <FormItem class="flex items-center space-x-2">
+              <FormControl>
+                <Checkbox :checked="value" @update:checked="handleChange" :disabled="processing" />
+              </FormControl>
+              <FormLabel>Enable Sample Billing</FormLabel>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="allowAutoBilling" v-slot="{ value, handleChange }">
+            <FormItem class="flex items-center space-x-2">
+              <FormControl>
+                <Checkbox :checked="value" @update:checked="handleChange" :disabled="processing" />
+              </FormControl>
+              <FormLabel>Allow automatic billing on sample registration</FormLabel>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="processBilledOnly" v-slot="{ value, handleChange }">
+            <FormItem class="flex items-center space-x-2">
+              <FormControl>
+                <Checkbox :checked="value" @update:checked="handleChange" :disabled="processing" />
+              </FormControl>
+              <FormLabel>Only process billed analysis requests</FormLabel>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="minPaymentStatus" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Minimum Allowed Payment status</FormLabel>
+              <FormControl>
+                <Select v-bind="componentField" :disabled="processing">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Payment Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Select Payment Status</SelectItem>
+                    <SelectItem v-for="pstatus in [PaymentStatus.Unpaid, PaymentStatus.Partial, PaymentStatus.Paid]" :key="pstatus" :value="pstatus">
+                      {{ pstatus }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="minPartialPerentage" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Minimum Partial Percentage</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" type="number" min="0.0" max="1.0" step="0.1" :disabled="processing" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="currency" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Currency</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" type="text" :disabled="processing" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="paymentTermsDays" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Payment Terms (Days)</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" type="number" min="0" :disabled="processing" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </div>
         <hr class="border-border" />
-        <button v-show="!processing" type="submit"
-          class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
-          Update
-        </button>
-      </form>
+        <Button type="submit" :disabled="processing">Update</Button>
+      </Form>
     </section>
-  </FelAsideTabs>
+  </TabsAside>
 </template>

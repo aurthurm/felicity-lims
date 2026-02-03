@@ -3,6 +3,7 @@ import { computed, onMounted, ref, watch } from "vue";
 import { useLaboratoryContextStore } from "@/stores/laboratory_context";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter, useRoute } from "vue-router";
+import { Spinner } from "@/components/ui/spinner";
 
 interface Props {
   requireLaboratory?: boolean;
@@ -181,7 +182,10 @@ watch(() => authStore.auth.isAuthenticated, (isAuthenticated) => {
   <div class="laboratory-context-guard">
     <!-- Loading State -->
     <div v-if="isValidating" class="flex items-center justify-center py-12">
-      <fel-loader message="Validating laboratory context..." variant="muted" />
+      <span class="inline-flex items-center gap-2">
+        <Spinner class="size-4" />
+        <span class="text-sm">Validating laboratory context...</span>
+      </span>
     </div>
 
     <!-- Content (when context is valid) -->

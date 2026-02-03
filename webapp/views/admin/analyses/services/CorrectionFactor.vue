@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { computed, ref, toRefs, watch, defineAsyncComponent } from 'vue';
-  import { useField, useForm } from 'vee-validate';
+  import { useForm } from 'vee-validate';
   import * as yup from 'yup';
   import { AddAnalysisCorrectionFactorDocument, AddAnalysisCorrectionFactorMutation, AddAnalysisCorrectionFactorMutationVariables,
     EditAnalysisCorrectionFactorDocument, EditAnalysisCorrectionFactorMutation, EditAnalysisCorrectionFactorMutationVariables } from '@/graphql/operations/analyses.mutations';
@@ -8,10 +8,24 @@
   import { useAnalysisStore } from '@/stores/analysis';
   import { useSetupStore } from '@/stores/setup';
   import  useApiUtil  from '@/composables/api_util';
-  const modal = defineAsyncComponent(
-    () => import('@/components/ui/FelModal.vue')
-  )
-
+  import { Button } from "@/components/ui/button";
+  import { Input } from "@/components/ui/input";
+  import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+  } from "@/components/ui/form";
+  import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select";
+import PageHeading from "@/components/common/PageHeading.vue"
   const analysisStore = useAnalysisStore()
   const  setupStore = useSetupStore()
   const { withClientMutation } = useApiUtil()
@@ -25,7 +39,7 @@
       analysisUid: {
           type: String,
           required: true,
-          default: 0,
+          default: '',
       },
   })
 
@@ -52,10 +66,6 @@
       factor: '',
     },
   });
-
-  const { value: instrumentUid, errorMessage: instrumentError } = useField<string>('instrumentUid');
-  const { value: methodUid, errorMessage: methodError } = useField<string>('methodUid');
-  const { value: factor, errorMessage: factorError } = useField<number | string>('factor');
 
   watch(() => props.analysisUid, (anal, prev) => {
       
@@ -128,43 +138,40 @@
 </script>
 
 <template>
-    <fel-heading title="Correction Factors">
-      <fel-button @click="FormManager(true)">Add Correction Factor</fel-button>
-    </fel-heading>
+    <PageHeading title="Correction Factors">
+      <Button @click="FormManager(true)">Add Correction Factor</Button>
+    </PageHeading>
     
     <div class="overflow-x-auto mt-4">
         <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card text-card-foreground rounded-lg border border-border">
-        <table class="min-w-full fel-table">
-            <thead>
-            <tr>
-                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Instrument</th>
-                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Method</th>
-                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Factor</th>
-                <th class="px-4 py-2 border-b border-border"></th>
-            </tr>
-            </thead>
-            <tbody class="bg-card">
-            <tr v-for="cfactor in analysis?.correctionFactors" :key="cfactor?.uid" class="hover:bg-accent/50">
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+        <Table class="min-w-full">
+            <TableHeader>
+            <TableRow>
+                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Instrument</TableHead>
+                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Method</TableHead>
+                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Factor</TableHead>
+                <TableHead class="px-4 py-2 border-b border-border"></TableHead>
+            </TableRow>
+            </TableHeader>
+            <TableBody class="bg-card">
+            <TableRow v-for="cfactor in analysis?.correctionFactors" :key="cfactor?.uid" class="hover:bg-accent/50">
+                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                   <div class="text-sm text-foreground">{{ instrumentName(cfactor?.instrumentUid) }}</div>
-                </td>
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                </TableCell>
+                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                   <div class="text-sm text-foreground">{{ methodName(cfactor?.methodUid) }}</div>
-                </td>
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                </TableCell>
+                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                   <div class="text-sm text-foreground">{{ cfactor.factor }}</div>
-                </td>
-                <td class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
-                    <button 
-                      @click="FormManager(false, cfactor)" 
-                      class="px-2 py-1 mr-2 border border-border bg-background text-foreground transition-colors duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring hover:bg-accent hover:text-accent-foreground"
-                    >
+                </TableCell>
+                <TableCell class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
+                    <Button variant="outline" size="sm" @click="FormManager(false, cfactor)">
                       Edit
-                    </button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                    </Button>
+                </TableCell>
+            </TableRow>
+            </TableBody>
+        </Table>
         </div>
     </div>
 
@@ -175,57 +182,63 @@
     </template>
 
     <template v-slot:body>
-      <form @submit.prevent="saveForm" class="p-6 space-y-6">
+      <Form @submit="saveForm" class="p-6 space-y-6">
         <div class="space-y-4">
           <div class="grid grid-cols-3 gap-4">
-            <label class="space-y-2">
-              <span class="text-sm font-medium text-muted-foreground">Instrument</span>
-              <select 
-                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="instrumentUid"
-              >
-                <option value="">Select Instrument</option>
-                <option v-for="instrument in instruments" :key="instrument?.uid" :value="instrument.uid">
-                  {{ instrument?.name }}
-                </option>
-              </select>
-              <p v-if="instrumentError" class="text-sm text-destructive">{{ instrumentError }}</p>
-            </label>
-            <label class="space-y-2">
-              <span class="text-sm font-medium text-muted-foreground">Method</span>
-              <select 
-                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="methodUid"
-              >
-                <option value="">Select Method</option>
-                <option v-for="method in methods" :key="method?.uid" :value="method.uid">
-                  {{ method?.name }}
-                </option>
-              </select>
-              <p v-if="methodError" class="text-sm text-destructive">{{ methodError }}</p>
-            </label>
-            <label class="space-y-2">
-              <span class="text-sm font-medium text-muted-foreground">Factor</span>
-              <input
-                type="number"
-                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="factor"
-                placeholder="Factor ..."
-              />
-              <p v-if="factorError" class="text-sm text-destructive">{{ factorError }}</p>
-            </label>
+            <FormField name="instrumentUid" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Instrument</FormLabel>
+                <FormControl>
+                  <Select v-bind="componentField">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Instrument" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Select Instrument</SelectItem>
+                      <SelectItem v-for="instrument in instruments" :key="instrument?.uid" :value="instrument.uid">
+                        {{ instrument?.name }}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="methodUid" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Method</FormLabel>
+                <FormControl>
+                  <Select v-bind="componentField">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Method" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Select Method</SelectItem>
+                      <SelectItem v-for="method in methods" :key="method?.uid" :value="method.uid">
+                        {{ method?.name }}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="factor" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Factor</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" type="number" placeholder="Factor ..." />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
           </div>
         </div>
 
         <div class="pt-4">
-          <button
-            type="submit"
-            class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
-          >
-            Save Form
-          </button>
+          <Button type="submit" class="w-full">Save Form</Button>
         </div>
-      </form>
+      </Form>
     </template>
   </modal>
 

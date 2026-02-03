@@ -306,7 +306,7 @@ export const useEnhancedLaboratoryStore = defineStore('enhancedLaboratory', () =
                 lab =>
                     lab.name.toLowerCase().includes(query) ||
                     lab.code?.toLowerCase().includes(query) ||
-                    lab.email?.toLowerCase().includes(query)
+                    lab.email?.toLowerCase().includes(query),
             );
         }
 
@@ -371,7 +371,7 @@ export const useEnhancedLaboratoryStore = defineStore('enhancedLaboratory', () =
         const totalUsers = Object.values(store.value.laboratoryAnalytics).reduce((sum, analytics) => sum + analytics.total_users, 0);
         const averageCompliance = Object.values(store.value.laboratoryCompliance).reduce(
             (sum, compliance, _, arr) => sum + compliance.overall_score / arr.length,
-            0
+            0,
         );
 
         return {
@@ -419,7 +419,6 @@ export const useEnhancedLaboratoryStore = defineStore('enhancedLaboratory', () =
         if (store.value.errorHistory.length > 50) {
             store.value.errorHistory = store.value.errorHistory.slice(0, 50);
         }
-
     };
 
     const clearErrors = () => {
@@ -454,7 +453,7 @@ export const useEnhancedLaboratoryStore = defineStore('enhancedLaboratory', () =
                         updated_at
                     }
                 }`,
-                {}
+                {},
             );
 
             if (response?.laboratories) {
@@ -514,7 +513,7 @@ export const useEnhancedLaboratoryStore = defineStore('enhancedLaboratory', () =
                 {
                     laboratoryInput: laboratoryData,
                     settingsInput: settingsData,
-                }
+                },
             );
 
             if (response?.createLaboratoryEnhanced) {
@@ -584,7 +583,7 @@ export const useEnhancedLaboratoryStore = defineStore('enhancedLaboratory', () =
                 {
                     laboratoryUid,
                     laboratoryInput: updateData,
-                }
+                },
             );
 
             if (response?.updateLaboratoryEnhanced) {
@@ -646,7 +645,7 @@ export const useEnhancedLaboratoryStore = defineStore('enhancedLaboratory', () =
                     laboratoryUid,
                     forceDelete,
                     reassignUsersTo,
-                }
+                },
             );
 
             if (response?.deleteLaboratoryEnhanced) {
@@ -789,7 +788,7 @@ export const useEnhancedLaboratoryStore = defineStore('enhancedLaboratory', () =
                         updated_at
                     }
                 }`,
-                { laboratoryUid }
+                { laboratoryUid },
             );
 
             if (response?.laboratorySettings) {
@@ -819,7 +818,7 @@ export const useEnhancedLaboratoryStore = defineStore('enhancedLaboratory', () =
                 {
                     laboratoryUid,
                     settingsInput: settingsData,
-                }
+                },
             );
 
             if (response?.updateLaboratorySettings) {
@@ -879,7 +878,7 @@ export const useEnhancedLaboratoryStore = defineStore('enhancedLaboratory', () =
                         }
                     }
                 }`,
-                { laboratoryUid }
+                { laboratoryUid },
             );
 
             if (response?.getLaboratoryAnalytics) {
@@ -940,7 +939,7 @@ export const useEnhancedLaboratoryStore = defineStore('enhancedLaboratory', () =
                         }
                     }
                 }`,
-                { laboratoryUid }
+                { laboratoryUid },
             );
 
             if (response?.validateLaboratoryDependencies) {
@@ -971,7 +970,7 @@ export const useEnhancedLaboratoryStore = defineStore('enhancedLaboratory', () =
     // Laboratory configuration methods
     const fetchLaboratoryConfiguration = async (
         laboratoryUid: string,
-        includeInherited = true
+        includeInherited = true,
     ): Promise<ILaboratoryConfiguration | null> => {
         const cacheKey = `config_${laboratoryUid}`;
 
@@ -996,7 +995,7 @@ export const useEnhancedLaboratoryStore = defineStore('enhancedLaboratory', () =
                         }
                     }
                 }`,
-                { laboratoryUid, includeInherited }
+                { laboratoryUid, includeInherited },
             );
 
             if (response?.getLaboratoryConfiguration) {
@@ -1123,7 +1122,7 @@ export const useEnhancedLaboratoryStore = defineStore('enhancedLaboratory', () =
             } else {
                 resetStore();
             }
-        }
+        },
     );
 
     // Watch for active laboratory changes in auth store
@@ -1140,7 +1139,7 @@ export const useEnhancedLaboratoryStore = defineStore('enhancedLaboratory', () =
                     fetchLaboratoryConfiguration(newActiveLab.uid),
                 ]);
             }
-        }
+        },
     );
 
     // Auto-save to storage on state changes
@@ -1155,7 +1154,7 @@ export const useEnhancedLaboratoryStore = defineStore('enhancedLaboratory', () =
         () => {
             saveToStorage();
         },
-        { deep: true }
+        { deep: true },
     );
 
     // Initialize on store creation

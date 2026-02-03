@@ -3,6 +3,7 @@ import { ref, computed, watch } from 'vue';
 import type { Node } from '@vue-flow/core';
 import Multiselect from 'vue-multiselect';
 import 'vue-multiselect/dist/vue-multiselect.css';
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 
 /**
  * Reflex Node Inspector Component
@@ -171,14 +172,19 @@ const handleDelete = () => {
     </div>
 
     <!-- No Selection State -->
-    <div v-if="!selectedNode" class="inspector-empty">
-      <div class="empty-content">
-        <div class="text-4xl mb-3">👆</div>
-        <p class="text-sm text-muted-foreground text-center">
-          Select a node on the canvas to edit its properties
-        </p>
-      </div>
-    </div>
+    <Empty v-if="!selectedNode" class="inspector-empty">
+      <EmptyContent>
+        <EmptyMedia variant="icon">
+          <span class="text-2xl">👆</span>
+        </EmptyMedia>
+        <EmptyHeader>
+          <EmptyTitle>No node selected</EmptyTitle>
+          <EmptyDescription>
+            Select a node on the canvas to edit its properties.
+          </EmptyDescription>
+        </EmptyHeader>
+      </EmptyContent>
+    </Empty>
 
     <!-- Node Property Forms -->
     <div v-else class="inspector-content">

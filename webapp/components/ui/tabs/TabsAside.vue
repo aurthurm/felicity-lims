@@ -42,7 +42,7 @@ const getComponent = (sectionId: string): any => {
 </script>
 
 <template>
-  <Tabs :value="modelValue" @update:value="updateCurrentSection" class="flex flex-row gap-6">
+  <Tabs :model-value="modelValue" @update:model-value="updateCurrentSection" class="flex flex-row gap-6">
     <aside class="w-48">
       <TabsList class="h-auto flex flex-col items-stretch">
         <span v-if="!hideTitle" class="px-2 pb-2 text-sm font-medium">{{ title }}</span>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { computed, ref, toRefs, watch, defineAsyncComponent } from 'vue';
-  import { useField, useForm } from 'vee-validate';
+  import { useForm } from 'vee-validate';
   import * as yup from 'yup';
   import { AddAnalysisUncertaintyDocument, AddAnalysisUncertaintyMutation, AddAnalysisUncertaintyMutationVariables,
     EditAnalysisUncertaintyDocument, EditAnalysisUncertaintyMutation, EditAnalysisUncertaintyMutationVariables } from '@/graphql/operations/analyses.mutations';
@@ -9,7 +9,26 @@
   import { useSetupStore } from '@/stores/setup';
   import { useAnalysisStore } from '@/stores/analysis';
   import  useApiUtil  from '@/composables/api_util';
+  import { Button } from "@/components/ui/button";
+  import { Input } from "@/components/ui/input";
+  import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+  } from "@/components/ui/form";
+  import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select";
  
+import PageHeading from "@/components/common/PageHeading.vue"
+defineOptions({ name: 'UncertaintyView' })
   const analysisStore = useAnalysisStore()
   const  setupStore = useSetupStore()
   const { withClientMutation } = useApiUtil()
@@ -23,7 +42,7 @@
       analysisUid: {
           type: String,
           required: true,
-          default: 0,
+          default: '',
       },
   })
 
@@ -51,12 +70,6 @@
       value: '',
     },
   });
-
-  const { value: instrumentUid, errorMessage: instrumentError } = useField<string>('instrumentUid');
-  const { value: methodUid, errorMessage: methodError } = useField<string>('methodUid');
-  const { value: min, errorMessage: minError } = useField<number | string>('min');
-  const { value: max, errorMessage: maxError } = useField<number | string>('max');
-  const { value: variance, errorMessage: varianceError } = useField<number | string>('value');
 
   watch(() => props.analysisUid, (anal, prev) => {
       
@@ -135,128 +148,132 @@
 </script>
 
 <template>
-    <fel-heading title="Uncertainty">
-      <fel-button @click="FormManager(true)">Add Uncertainty</fel-button>
-    </fel-heading>
+    <PageHeading title="Uncertainty">
+      <Button @click="FormManager(true)">Add Uncertainty</Button>
+    </PageHeading>
     
     <div class="overflow-x-auto mt-4">
         <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card text-card-foreground rounded-lg border border-border">
-        <table class="min-w-full fel-table">
-            <thead>
-            <tr>
-                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Instrument</th>
-                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Method</th>
-                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Min</th>
-                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Max</th>
-                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Variance (+/-)</th>
-                <th class="px-4 py-2 border-b border-border"></th>
-            </tr>
-            </thead>
-            <tbody class="bg-card">
-            <tr v-for="variance in analysis?.uncertainties" :key="variance?.uid" class="hover:bg-accent/50">
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+        <Table class="min-w-full">
+            <TableHeader>
+            <TableRow>
+                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Instrument</TableHead>
+                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Method</TableHead>
+                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Min</TableHead>
+                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Max</TableHead>
+                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Variance (+/-)</TableHead>
+                <TableHead class="px-4 py-2 border-b border-border"></TableHead>
+            </TableRow>
+            </TableHeader>
+            <TableBody class="bg-card">
+            <TableRow v-for="variance in analysis?.uncertainties" :key="variance?.uid" class="hover:bg-accent/50">
+                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                   <div class="text-sm text-foreground">{{ instrumentName(variance?.instrumentUid) }}</div>
-                </td>
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                </TableCell>
+                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                   <div class="text-sm text-foreground">{{ methodName(variance?.methodUid) }}</div>
-                </td>
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                </TableCell>
+                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                   <div class="text-sm text-foreground">{{ variance.min }}</div>
-                </td>
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                </TableCell>
+                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                   <div class="text-sm text-foreground">{{ variance.max }}</div>
-                </td>
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                </TableCell>
+                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                   <div class="text-sm text-foreground">{{ variance.value }}</div>
-                </td>
-                <td class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
-                    <button @click="FormManager(false, variance)" class="px-2 py-1 mr-2 border border-border bg-background text-foreground transition-colors duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring hover:bg-accent hover:text-accent-foreground">Edit</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                </TableCell>
+                <TableCell class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
+                    <Button variant="outline" size="sm" @click="FormManager(false, variance)">Edit</Button>
+                </TableCell>
+            </TableRow>
+            </TableBody>
+        </Table>
         </div>
     </div>
 
   <!-- Uncertainty Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/4'">
+  <Modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/4'">
     <template v-slot:header>
       <h3 class="text-lg font-bold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form @submit.prevent="saveForm" class="p-6 space-y-6">
+      <Form @submit="saveForm" class="p-6 space-y-6">
         <div class="space-y-4">
           <div class="grid grid-cols-5 gap-4">
-            <label class="space-y-2">
-              <span class="text-sm font-medium text-muted-foreground">Instrument</span>
-              <select 
-                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="instrumentUid"
-              >
-                <option value="">Select Instrument</option>
-                <option v-for="instrument in instruments" :key="instrument?.uid" :value="instrument.uid">
-                  {{ instrument?.name }}
-                </option>
-              </select>
-              <p v-if="instrumentError" class="text-sm text-destructive">{{ instrumentError }}</p>
-            </label>
-            <label class="space-y-2">
-              <span class="text-sm font-medium text-muted-foreground">Method</span>
-              <select 
-                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="methodUid"
-              >
-                <option value="">Select Method</option>
-                <option v-for="method in methods" :key="method?.uid" :value="method.uid">
-                  {{ method?.name }}
-                </option>
-              </select>
-              <p v-if="methodError" class="text-sm text-destructive">{{ methodError }}</p>
-            </label>
-            <label class="space-y-2">
-              <span class="text-sm font-medium text-muted-foreground">Min</span>
-              <input
-                type="number"
-                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="min"
-                placeholder="Value ..."
-              />
-              <p v-if="minError" class="text-sm text-destructive">{{ minError }}</p>
-            </label>
-            <label class="space-y-2">
-              <span class="text-sm font-medium text-muted-foreground">Max</span>
-              <input
-                type="number"
-                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="max"
-                placeholder="Value ..."
-              />
-              <p v-if="maxError" class="text-sm text-destructive">{{ maxError }}</p>
-            </label>
-            <label class="space-y-2">
-              <span class="text-sm font-medium text-muted-foreground">Variance +/-</span>
-              <input
-                type="number"
-                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="variance"
-                placeholder="Value ..."
-              />
-              <p v-if="varianceError" class="text-sm text-destructive">{{ varianceError }}</p>
-            </label>
+            <FormField name="instrumentUid" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Instrument</FormLabel>
+                <FormControl>
+                  <Select v-bind="componentField">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Instrument" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Select Instrument</SelectItem>
+                      <SelectItem v-for="instrument in instruments" :key="instrument?.uid" :value="instrument.uid">
+                        {{ instrument?.name }}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="methodUid" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Method</FormLabel>
+                <FormControl>
+                  <Select v-bind="componentField">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Method" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Select Method</SelectItem>
+                      <SelectItem v-for="method in methods" :key="method?.uid" :value="method.uid">
+                        {{ method?.name }}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="min" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Min</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" type="number" placeholder="Value ..." />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="max" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Max</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" type="number" placeholder="Value ..." />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="value" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Variance +/-</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" type="number" placeholder="Value ..." />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
           </div>
         </div>
 
         <div class="pt-4">
-          <button
-            type="submit"
-            class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
-          >
-            Save Form
-          </button>
+          <Button type="submit" class="w-full">Save Form</Button>
         </div>
-      </form>
+      </Form>
     </template>
-  </fel-modal>
+  </Modal>
 
 </template>

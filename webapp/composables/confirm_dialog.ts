@@ -1,6 +1,6 @@
-import { reactive } from "vue";
+import { reactive } from 'vue';
 
-export type ConfirmDialogVariant = "default" | "destructive";
+export type ConfirmDialogVariant = 'default' | 'destructive';
 
 export interface ConfirmDialogOptions {
     title?: string;
@@ -30,22 +30,22 @@ interface ConfirmDialogState {
 
 const state = reactive<ConfirmDialogState>({
     open: false,
-    title: "",
-    description: "",
-    confirmText: "Confirm",
-    cancelText: "Cancel",
+    title: '',
+    description: '',
+    confirmText: 'Confirm',
+    cancelText: 'Cancel',
     showCancel: true,
-    variant: "default",
+    variant: 'default',
     resolve: undefined,
 });
 
 const resetState = () => {
-    state.title = "";
-    state.description = "";
-    state.confirmText = "Confirm";
-    state.cancelText = "Cancel";
+    state.title = '';
+    state.description = '';
+    state.confirmText = 'Confirm';
+    state.cancelText = 'Cancel';
     state.showCancel = true;
-    state.variant = "default";
+    state.variant = 'default';
     state.resolve = undefined;
 };
 
@@ -58,24 +58,24 @@ const closeDialog = (confirmed: boolean) => {
 };
 
 const openConfirm = (options: ConfirmDialogOptions): Promise<boolean> =>
-    new Promise((resolve) => {
-        state.title = options.title ?? "Confirm";
+    new Promise(resolve => {
+        state.title = options.title ?? 'Confirm';
         state.description = options.description;
-        state.confirmText = options.confirmText ?? "Confirm";
-        state.cancelText = options.cancelText ?? "Cancel";
-        state.variant = options.variant ?? "default";
+        state.confirmText = options.confirmText ?? 'Confirm';
+        state.cancelText = options.cancelText ?? 'Cancel';
+        state.variant = options.variant ?? 'default';
         state.showCancel = true;
         state.resolve = resolve;
         state.open = true;
     });
 
 const openAlert = (options: AlertDialogOptions): Promise<boolean> =>
-    new Promise((resolve) => {
-        state.title = options.title ?? "Notice";
+    new Promise(resolve => {
+        state.title = options.title ?? 'Notice';
         state.description = options.description;
-        state.confirmText = options.confirmText ?? "OK";
-        state.cancelText = "";
-        state.variant = options.variant ?? "default";
+        state.confirmText = options.confirmText ?? 'OK';
+        state.cancelText = '';
+        state.variant = options.variant ?? 'default';
         state.showCancel = false;
         state.resolve = resolve;
         state.open = true;

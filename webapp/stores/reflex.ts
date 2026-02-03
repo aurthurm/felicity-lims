@@ -1,19 +1,11 @@
 import { defineStore } from 'pinia';
 
 import useApiUtil from '@/composables/api_util';
-import {
-    GetAllReflexRulesDocument,
-    GetAllReflexRulesQuery,
-    GetAllReflexRulesQueryVariables,
-} from '@/graphql/operations/reflex.queries';
+import { GetAllReflexRulesDocument, GetAllReflexRulesQuery, GetAllReflexRulesQueryVariables } from '@/graphql/operations/reflex.queries';
 import type { ReflexRuleType } from '@/types/gql';
 
 // New schema imports
-import {
-    GetReflexRuleByUidDocument,
-    GetReflexRuleByUidQuery,
-    GetReflexRuleByUidQueryVariables,
-} from '@/graphql/operations/reflex.queries';
+import { GetReflexRuleByUidDocument, GetReflexRuleByUidQuery, GetReflexRuleByUidQueryVariables } from '@/graphql/operations/reflex.queries';
 import {
     CreateReflexDecisionDocument,
     CreateReflexDecisionMutation,
@@ -98,14 +90,15 @@ export const useReflexStore = defineStore('reflex', {
                 const result = await withClientQuery<GetAllReflexRulesQuery, GetAllReflexRulesQueryVariables>(
                     GetAllReflexRulesDocument,
                     {},
-                    'reflexRuleAll'
+                    'reflexRuleAll',
                 );
 
                 if (result && typeof result === 'object' && 'items' in result) {
                     this.reflexRules = result.items as ReflexRuleType[];
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingReflexRules = false;
             }
         },
@@ -126,14 +119,15 @@ export const useReflexStore = defineStore('reflex', {
                 const result = await withClientQuery<GetReflexRuleByUidQuery, GetReflexRuleByUidQueryVariables>(
                     GetReflexRuleByUidDocument,
                     { uid },
-                    'reflexRuleByUid'
+                    'reflexRuleByUid',
                 );
 
                 if (result && typeof result === 'object') {
                     this.reflexRule = result;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingReflexRule = false;
             }
         },
@@ -146,12 +140,9 @@ export const useReflexStore = defineStore('reflex', {
          */
         async createReflexTrigger(payload: any): Promise<any> {
             try {
-                const result = await withClientMutation<
-                    CreateReflexTriggerMutation,
-                    CreateReflexTriggerMutationVariables
-                >(
+                const result = await withClientMutation<CreateReflexTriggerMutation, CreateReflexTriggerMutationVariables>(
                     CreateReflexTriggerDocument,
-                    { payload }
+                    { payload },
                 );
 
                 if (result && result.__typename === 'ReflexTriggerType') {
@@ -179,20 +170,15 @@ export const useReflexStore = defineStore('reflex', {
          */
         async createReflexDecision(payload: any): Promise<any> {
             try {
-                const result = await withClientMutation<
-                    CreateReflexDecisionMutation,
-                    CreateReflexDecisionMutationVariables
-                >(
+                const result = await withClientMutation<CreateReflexDecisionMutation, CreateReflexDecisionMutationVariables>(
                     CreateReflexDecisionDocument,
-                    { payload }
+                    { payload },
                 );
 
                 if (result && result.__typename === 'ReflexDecisionType') {
                     // Update local state
                     if (this.reflexRule) {
-                        const trigger = this.reflexRule.reflexTriggers?.find(
-                            (t: any) => t.uid === payload.reflex_trigger_uid
-                        );
+                        const trigger = this.reflexRule.reflexTriggers?.find((t: any) => t.uid === payload.reflex_trigger_uid);
                         if (trigger) {
                             if (!trigger.decisions) {
                                 trigger.decisions = [];
@@ -218,12 +204,9 @@ export const useReflexStore = defineStore('reflex', {
          */
         async updateReflexDecision(uid: string, payload: any): Promise<any> {
             try {
-                const result = await withClientMutation<
-                    UpdateReflexDecisionMutation,
-                    UpdateReflexDecisionMutationVariables
-                >(
+                const result = await withClientMutation<UpdateReflexDecisionMutation, UpdateReflexDecisionMutationVariables>(
                     UpdateReflexDecisionDocument,
-                    { uid, payload }
+                    { uid, payload },
                 );
 
                 if (result && result.__typename === 'ReflexDecisionType') {
@@ -302,19 +285,17 @@ export const useReflexStore = defineStore('reflex', {
             const { nodes, edges } = graph;
 
             // Group nodes by type
-            const triggerNodes = nodes.filter((n) => n.type === 'trigger');
-            const decisionNodes = nodes.filter((n) => n.type === 'decision');
-            const ruleNodes = nodes.filter((n) => n.type === 'rule');
-            const actionNodes = nodes.filter((n) => n.type === 'action');
-            const ruleNodeMap = new Map(ruleNodes.map((rule) => [rule.id, rule]));
-            const actionNodeMap = new Map(actionNodes.map((action) => [action.id, action]));
+            const triggerNodes = nodes.filter(n => n.type === 'trigger');
+            const decisionNodes = nodes.filter(n => n.type === 'decision');
+            const ruleNodes = nodes.filter(n => n.type === 'rule');
+            const actionNodes = nodes.filter(n => n.type === 'action');
+            const ruleNodeMap = new Map(ruleNodes.map(rule => [rule.id, rule]));
+            const actionNodeMap = new Map(actionNodes.map(action => [action.id, action]));
             const ruleEdges = edges.filter(
-                (e) =>
-                    nodes.find((n) => n.id === e.source && n.type === 'rule') &&
-                    nodes.find((n) => n.id === e.target && n.type === 'rule')
+                e => nodes.find(n => n.id === e.source && n.type === 'rule') && nodes.find(n => n.id === e.target && n.type === 'rule'),
             );
             const ruleAdjacency = new Map<string, string[]>();
-            ruleEdges.forEach((edge) => {
+            ruleEdges.forEach(edge => {
                 const list = ruleAdjacency.get(edge.source) ?? [];
                 list.push(edge.target);
                 ruleAdjacency.set(edge.source, list);
@@ -330,43 +311,37 @@ export const useReflexStore = defineStore('reflex', {
                         chains.push(nextPath);
                         return;
                     }
-                    nextRules.forEach((nextId) => dfs(nextId, nextPath));
+                    nextRules.forEach(nextId => dfs(nextId, nextPath));
                 };
                 dfs(startId, []);
                 return chains.length > 0 ? chains : [[startId]];
             };
 
             // Build triggers with nested decisions
-            const triggers = triggerNodes.map((trigger) => {
+            const triggers = triggerNodes.map(trigger => {
                 // Find decisions connected to this trigger
-                const connectedDecisionIds = edges
-                    .filter((e) => e.source === trigger.id)
-                    .map((e) => e.target);
+                const connectedDecisionIds = edges.filter(e => e.source === trigger.id).map(e => e.target);
 
                 const decisions = decisionNodes
-                    .filter((d) => connectedDecisionIds.includes(d.id))
-                    .map((decision) => {
+                    .filter(d => connectedDecisionIds.includes(d.id))
+                    .map(decision => {
                         // Find rules connected to this decision (OR roots)
                         const connectedRuleIds = edges
-                            .filter(
-                                (e) =>
-                                    e.source === decision.id &&
-                                    nodes.find((n) => n.id === e.target && n.type === 'rule')
-                            )
-                            .map((e) => e.target);
+                            .filter(e => e.source === decision.id && nodes.find(n => n.id === e.target && n.type === 'rule'))
+                            .map(e => e.target);
 
                         // Build rule groups: each root rule creates a rule group (OR),
                         // chaining rules (rule -> rule) are AND within the group.
-                        const ruleGroups = connectedRuleIds.flatMap((ruleId) => {
+                        const ruleGroups = connectedRuleIds.flatMap(ruleId => {
                             const chains = buildRuleChains(ruleId);
-                            return chains.map((chain) => {
+                            return chains.map(chain => {
                                 return {
                                     description: decision.data.description || 'Rule group',
                                     priority: 0,
                                     rules: chain
-                                        .map((ruleChainId) => ruleNodeMap.get(ruleChainId))
+                                        .map(ruleChainId => ruleNodeMap.get(ruleChainId))
                                         .filter((rule): rule is any => Boolean(rule))
-                                        .map((rule) => ({
+                                        .map(rule => ({
                                             analysis_uid: rule.data.analysis_uid,
                                             operator: rule.data.operator,
                                             value: rule.data.value,
@@ -379,26 +354,22 @@ export const useReflexStore = defineStore('reflex', {
                         // Find actions connected to this decision or its rule chains
                         const connectedActionIds = new Set(
                             edges
-                                .filter(
-                                    (e) =>
-                                        e.source === decision.id &&
-                                        nodes.find((n) => n.id === e.target && n.type === 'action')
-                                )
-                                .map((e) => e.target)
+                                .filter(e => e.source === decision.id && nodes.find(n => n.id === e.target && n.type === 'action'))
+                                .map(e => e.target),
                         );
 
                         const addAnalyses = Array.from(connectedActionIds)
-                            .map((actionId) => actionNodeMap.get(actionId))
+                            .map(actionId => actionNodeMap.get(actionId))
                             .filter((action): action is any => Boolean(action) && action.data.actionType === 'add')
-                            .map((action) => ({
+                            .map(action => ({
                                 analysis_uid: action.data.analysis_uid,
                                 count: action.data.count || 1,
                             }));
 
                         const finalizeAnalyses = Array.from(connectedActionIds)
-                            .map((actionId) => actionNodeMap.get(actionId))
+                            .map(actionId => actionNodeMap.get(actionId))
                             .filter((action): action is any => Boolean(action) && action.data.actionType === 'finalize')
-                            .map((action) => ({
+                            .map(action => ({
                                 analysis_uid: action.data.analysis_uid,
                                 value: action.data.value,
                             }));
@@ -476,7 +447,6 @@ export const useReflexStore = defineStore('reflex', {
          * @param edges - Vue Flow edges (define relationships)
          */
         async saveReflexRule(ruleUid: string, nodes: any[], edges: any[]): Promise<any> {
-
             try {
                 // Convert Vue Flow format to GraphQL input format (camelCase for GraphQL)
                 const graphNodes = nodes.map(node => {
@@ -502,14 +472,10 @@ export const useReflexStore = defineStore('reflex', {
                     edges: graphEdges,
                 };
 
-
-                const result = await withClientMutation<
-                    SaveReflexRuleGraphMutation,
-                    SaveReflexRuleGraphMutationVariables
-                >(
+                const result = await withClientMutation<SaveReflexRuleGraphMutation, SaveReflexRuleGraphMutationVariables>(
                     SaveReflexRuleGraphDocument,
                     { uid: ruleUid, graph },
-                    'saveReflexRuleGraph'
+                    'saveReflexRuleGraph',
                 );
 
                 if (result && result.__typename === 'ReflexRuleType') {
@@ -531,7 +497,6 @@ export const useReflexStore = defineStore('reflex', {
          * @param isActive - true = published, false = draft
          */
         async togglePublish(ruleUid: string, isActive: boolean): Promise<void> {
-
             try {
                 // Get current rule data for name (required field)
                 const currentRule = this.getReflexRule;
@@ -539,20 +504,14 @@ export const useReflexStore = defineStore('reflex', {
                     throw new Error('Rule not loaded. Cannot toggle publish status.');
                 }
 
-                const result = await withClientMutation<
-                    EditReflexRuleMutation,
-                    EditReflexRuleMutationVariables
-                >(
-                    EditReflexRuleDocument,
-                    {
-                        uid: ruleUid,
-                        payload: {
-                            name: currentRule.name,
-                            description: currentRule.description || '',
-                            is_active: isActive,
-                        },
-                    }
-                );
+                const result = await withClientMutation<EditReflexRuleMutation, EditReflexRuleMutationVariables>(EditReflexRuleDocument, {
+                    uid: ruleUid,
+                    payload: {
+                        name: currentRule.name,
+                        description: currentRule.description || '',
+                        is_active: isActive,
+                    },
+                });
 
                 if (result && result.__typename === 'ReflexRuleType') {
                     // Update local state

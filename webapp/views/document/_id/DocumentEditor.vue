@@ -2,6 +2,8 @@
 import {computed, defineAsyncComponent, onMounted, ref} from 'vue';
 import {useRoute} from 'vue-router';
 import useApiUtil from '@/composables/api_util';
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import { Spinner } from "@/components/ui/spinner";
 import {
   GetDocumentVersionByBidDocument,
   GetDocumentVersionByBidQuery,
@@ -50,11 +52,19 @@ onMounted(() => {
 <template>
   <div class="h-screen bg-background pb-6 overflow-y-scroll">
     <div v-if="isFetching" class="flex items-center justify-center h-full">
-      <fel-loader message="Loading Document..."/>
+      <span class="inline-flex items-center gap-2">
+        <Spinner class="size-4" />
+        <span class="text-sm">Loading Document...</span>
+      </span>
     </div>
-    <div v-else-if="!document" class="text-center text-muted-foreground">
-      <p>No document found</p>
-    </div>
+    <Empty v-else-if="!document">
+      <EmptyContent>
+        <EmptyHeader>
+          <EmptyTitle>No document found</EmptyTitle>
+          <EmptyDescription>Try refreshing or choose another document.</EmptyDescription>
+        </EmptyHeader>
+      </EmptyContent>
+    </Empty>
     <component
         v-else
         :is="UmoEditor"

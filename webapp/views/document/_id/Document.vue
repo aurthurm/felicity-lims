@@ -1,4 +1,5 @@
 <script setup lang="ts">
+defineOptions({ name: 'DocumentView' })
 // This is a layout component that renders child routes for document editing
 </script>
 

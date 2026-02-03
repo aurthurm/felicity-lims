@@ -3,7 +3,7 @@ import { defineConfig } from 'vite';
 import tsConfigPaths from 'vite-tsconfig-paths';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import path from 'path';
-import tailwindcss from "@tailwindcss/vite";
+import tailwindcss from '@tailwindcss/vite';
 
 /**
  * https://vitejs.dev/config/

@@ -1,21 +1,25 @@
 <script setup lang="ts">
-import Swal from "sweetalert2";
-import { defineAsyncComponent, onMounted, ref, computed } from "vue";
+import { onMounted, ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import useApiUtil  from "@/composables/api_util";
 import { useAnalysisStore} from "@/stores/analysis";
 import { useSampleStore } from "@/stores/sample";
+import { useConfirmDialog } from "@/composables/confirm_dialog";
 import {
   EditSampleApplyTemplateDocument, EditSampleApplyTemplateMutation, EditSampleApplyTemplateMutationVariables, SampleManageAnalysisDocument, SampleManageAnalysisMutation, SampleManageAnalysisMutationVariables
 } from "@/graphql/operations/analyses.mutations";
-const accordion = defineAsyncComponent(
-    () => import('@/components/ui/FelAccordion.vue')
-  )
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 const { withClientMutation } = useApiUtil();
 const route = useRoute();
 const analysisStore = useAnalysisStore()
 const sampleStore = useSampleStore();
 const analysesServices = computed(() => analysisStore.getAnalysesServices)
+const { confirm } = useConfirmDialog();
 
 onMounted(() => {
   analysisStore.fetchAnalysesTemplates()
@@ -31,23 +35,20 @@ const templateUid = ref<string>();
 
 const applyTemplate = async () => {
   try {
-    Swal.fire({
+    const confirmed = await confirm({
       title: "Are you sure?",
-      text: "You want to apply this template to add analyses?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "hsl(var(--primary))",
-      cancelButtonColor: "hsl(var(--destructive))",
-      confirmButtonText: "Yes, apply now!",
-      cancelButtonText: "No, cancel apply!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        withClientMutation<EditSampleApplyTemplateMutation, EditSampleApplyTemplateMutationVariables>(EditSampleApplyTemplateDocument,
-          { uid: route.params.sampleUid as string, analysisTemplateUid: templateUid.value as string },
-          "samplesApplyTemplate"
-        ).then((result) => changeTab("analysis-results"));
-      }
+      description: "You want to apply this template to add analyses?",
+      confirmText: "Yes, apply now!",
+      cancelText: "No, cancel apply!",
+      variant: "destructive",
     });
+    if (!confirmed) return;
+    await withClientMutation<EditSampleApplyTemplateMutation, EditSampleApplyTemplateMutationVariables>(
+      EditSampleApplyTemplateDocument,
+      { uid: route.params.sampleUid as string, analysisTemplateUid: templateUid.value as string },
+      "samplesApplyTemplate"
+    );
+    changeTab("analysis-results");
   } catch {}
 };
 
@@ -57,23 +58,40 @@ onMounted(() => {
   selectedAnalyses.value = [...sampleStore.analysisResults?.map((result) => result.analysisUid!)];
 });
 
-const selectAnalysis = (uid: string) => {
-  if (selectedAnalyses.value.includes(uid)) {
-    selectedAnalyses.value = selectedAnalyses.value.filter((id) => id !== uid);
-  } else {
-    selectedAnalyses.value = [...selectedAnalyses.value, uid];
+const selectAnalysis = (uid: string, checked?: boolean) => {
+  const hasUid = selectedAnalyses.value.includes(uid)
+  if (checked === true && !hasUid) {
+    selectedAnalyses.value = [...selectedAnalyses.value, uid]
+    return
+  }
+  if (checked === false && hasUid) {
+    selectedAnalyses.value = selectedAnalyses.value.filter((id) => id !== uid)
+    return
+  }
+  if (checked === undefined) {
+    selectedAnalyses.value = hasUid
+      ? selectedAnalyses.value.filter((id) => id !== uid)
+      : [...selectedAnalyses.value, uid]
   }
 };
 
 const isSelectedAnalysis = (uid: string) => selectedAnalyses.value.includes(uid);
 const isSelectedCategory = (analyses) => analyses.every((analysis) => isSelectedAnalysis(analysis.uid));
 
-const selectCategory = (analyses) => {
-  if(analyses.every((analysis) => isSelectedAnalysis(analysis.uid))) {
+const selectCategory = (analyses, checked?: boolean) => {
+  if (checked === true) {
+    analyses.forEach((analysis) => selectAnalysis(analysis.uid, true))
+    return
+  }
+  if (checked === false) {
+    analyses.forEach((analysis) => selectAnalysis(analysis.uid, false))
+    return
+  }
+  if (analyses.every((analysis) => isSelectedAnalysis(analysis.uid))) {
     analyses.forEach((analysis) => selectAnalysis(analysis.uid))
   } else {
     analyses.forEach((analysis) => {
-      if(!isSelectedAnalysis(analysis.uid)) {
+      if (!isSelectedAnalysis(analysis.uid)) {
         selectAnalysis(analysis.uid)
       }
     })
@@ -87,23 +105,20 @@ const applyChanges = async () => {
   const add = selectedAnalyses.value.filter((uid) => !sampleStore.analysisResults?.map((result) => result.analysisUid!).includes(uid));
 
   try {
-    Swal.fire({
+    const confirmed = await confirm({
       title: "Are you sure?",
-      text: "You want to apply these changes to the analyses?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "hsl(var(--primary))",
-      cancelButtonColor: "hsl(var(--destructive))",
-      confirmButtonText: "Yes, apply now!",
-      cancelButtonText: "No, cancel apply!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        withClientMutation<SampleManageAnalysisMutation, SampleManageAnalysisMutationVariables>(SampleManageAnalysisDocument,
-          { sampleUid: route.params.sampleUid as string, payload: { cancel, add} },
-          "manageAnalyses"
-        ).then((result) => changeTab("analysis-results"));
-      }
+      description: "You want to apply these changes to the analyses?",
+      confirmText: "Yes, apply now!",
+      cancelText: "No, cancel apply!",
+      variant: "destructive",
     });
+    if (!confirmed) return;
+    await withClientMutation<SampleManageAnalysisMutation, SampleManageAnalysisMutationVariables>(
+      SampleManageAnalysisDocument,
+      { sampleUid: route.params.sampleUid as string, payload: { cancel, add } },
+      "manageAnalyses"
+    );
+    changeTab("analysis-results");
   } catch {}
 };
 
@@ -151,50 +166,48 @@ const applyChanges = async () => {
 
         <div class="max-h-[540px] overflow-y-auto rounded-md border border-border">
           <div class="w-full">
-            <accordion v-for="(category, idx) in analysesServices" :key="idx">
-              <template v-slot:title>{{ category[0] }}</template>
-              <template v-slot:body>
+            <Accordion v-for="(category, idx) in analysesServices" :key="idx" type="single" collapsible>
+              <AccordionItem :value="String(category[0])">
+                <AccordionTrigger>{{ category[0] }}</AccordionTrigger>
+                <AccordionContent>
                 <div class="overflow-x-auto">
-                  <table class="w-full fel-table">
-                    <thead>
-                      <tr class="border-b border-border bg-muted/50">
-                        <th class="px-4 py-2 text-left">
-                          <input 
-                            type="checkbox" 
-                            :checked="isSelectedCategory(category[1])" 
-                            @change="selectCategory(category[1])"
-                            class="rounded border-input"
+                  <Table class="w-full">
+                    <TableHeader>
+                      <TableRow class="border-b border-border bg-muted/50">
+                        <TableHead class="px-4 py-2 text-left">
+                          <Checkbox 
+                            :checked="isSelectedCategory(category[1])"
+                            @update:checked="(value) => selectCategory(category[1], value)"
                           />
-                        </th>
-                        <th class="px-4 py-2 text-left text-sm font-medium text-foreground">Analysis</th>
-                        <th class="px-4 py-2 text-left text-sm font-medium text-foreground">Keyword</th>
-                        <th class="px-4 py-2 text-left text-sm font-medium text-foreground">Description</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr 
+                        </TableHead>
+                        <TableHead class="px-4 py-2 text-left text-sm font-medium text-foreground">Analysis</TableHead>
+                        <TableHead class="px-4 py-2 text-left text-sm font-medium text-foreground">Keyword</TableHead>
+                        <TableHead class="px-4 py-2 text-left text-sm font-medium text-foreground">Description</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow 
                         v-for="service in category[1]" 
                         :key="service?.uid" 
                         v-motion-slide-right
                         class="border-b border-border hover:bg-muted/50 transition-colors duration-200"
                       >
-                        <td class="px-4 py-2">
-                          <input 
-                            type="checkbox" 
-                            :checked="isSelectedAnalysis(service?.uid)" 
-                            @change="selectAnalysis(service?.uid)"
-                            class="rounded border-input"
+                        <TableCell class="px-4 py-2">
+                          <Checkbox 
+                            :checked="isSelectedAnalysis(service?.uid)"
+                            @update:checked="(value) => selectAnalysis(service?.uid, value)"
                           />
-                        </td>
-                        <td class="px-4 py-2 text-sm text-foreground">{{ service?.name }}</td>
-                        <td class="px-4 py-2 text-sm text-muted-foreground">{{ service?.keyword }}</td>
-                        <td class="px-4 py-2 text-sm text-muted-foreground">{{ service?.description }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                        </TableCell>
+                        <TableCell class="px-4 py-2 text-sm text-foreground">{{ service?.name }}</TableCell>
+                        <TableCell class="px-4 py-2 text-sm text-muted-foreground">{{ service?.keyword }}</TableCell>
+                        <TableCell class="px-4 py-2 text-sm text-muted-foreground">{{ service?.description }}</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
                 </div>
-              </template>
-            </accordion>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
         </div>
 

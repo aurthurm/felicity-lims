@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, computed, defineAsyncComponent } from "vue";
-import { useField, useForm } from "vee-validate";
+import { useForm } from "vee-validate";
 import * as yup from "yup";
 import { ProfileType, AnalysisType } from "@/types/gql";
 import {
@@ -13,7 +13,34 @@ import { useSetupStore } from "@/stores/setup";
 import { useAnalysisStore } from "@/stores/analysis";
 import { useSampleStore } from "@/stores/sample";
 import useApiUtil  from "@/composables/api_util";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
+import PageHeading from "@/components/common/PageHeading.vue"
 const VueMultiselect = defineAsyncComponent(
   () => import("vue-multiselect")
 )
@@ -65,12 +92,6 @@ const { handleSubmit, resetForm, setValues } = useForm({
   },
 });
 
-const { value: name, errorMessage: nameError } = useField<string>("name");
-const { value: keyword, errorMessage: keywordError } = useField<string | null>("keyword");
-const { value: description, errorMessage: descriptionError } = useField<string | null>("description");
-const { value: departmentUid, errorMessage: departmentError } = useField<string | null>("departmentUid");
-const { value: sampleTypesField, errorMessage: sampleTypesError } = useField<any[]>("sampleTypes");
-const { value: active } = useField<boolean>("active");
 
 function addAnalysisProfile(payload: { name: string; keyword: string | null; description: string | null; departmentUid: string | null; sampleTypes: string[]; active: boolean }): void {
   withClientMutation<AddAnalysisProfileMutation, AddAnalysisProfileMutationVariables>(
@@ -196,11 +217,6 @@ const { handleSubmit: handleMappingSubmit, resetForm: resetMappingForm, setValue
   },
 });
 
-const { value: codingStandardUid, errorMessage: codingStandardError } = useField<string>("codingStandardUid");
-const { value: mappingName, errorMessage: mappingNameError } = useField<string>("name");
-const { value: mappingCode, errorMessage: mappingCodeError } = useField<string>("code");
-const { value: mappingDescription, errorMessage: mappingDescriptionError } = useField<string | null>("description");
-
 function addMapping(payload: { profileUid: string; codingStandardUid: string; name: string; code: string; description: string | null }): void {
   withClientMutation<AddProfileMappingMutation, AddProfileMappingMutationVariables>(
     AddProfileMappingDocument,
@@ -260,9 +276,9 @@ const saveMappingForm = handleMappingSubmit((values) => {
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Analyses Profiles">
-      <fel-button @click="FormManager(true)">Add Analyses Profile</fel-button>
-    </fel-heading>
+    <PageHeading title="Analyses Profiles">
+      <Button @click="FormManager(true)">Add Analyses Profile</Button>
+    </PageHeading>
 
     <div class="grid grid-cols-12 gap-6">
       <!-- Profiles List -->
@@ -277,8 +293,7 @@ const saveMappingForm = handleMappingSubmit((values) => {
                 v-for="profile in analysesProfiles"
                 :key="profile.uid"
                 @click.prevent.stop="selectProfile(profile)"
-                :class="[
-                  'rounded-md p-2 cursor-pointer transition-colors duration-200',
+                :class="['rounded-md p-2 cursor-pointer transition-colors duration-200',
                   profile?.uid === analysisProfile?.uid 
                     ? 'bg-accent text-accent-foreground' 
                     : 'hover:bg-accent/50'
@@ -335,8 +350,7 @@ const saveMappingForm = handleMappingSubmit((values) => {
               <button
                 v-for="tab in tabs"
                 :key="tab"
-                :class="[
-                  'px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+                :class="['px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
                   currentTab === tab
                     ? 'border-b-2 border-primary text-foreground'
                     : 'text-muted-foreground hover:text-foreground'
@@ -355,38 +369,36 @@ const saveMappingForm = handleMappingSubmit((values) => {
               <div v-if="currentTab === 'analyses-services'" class="space-y-6">
                 <div class="grid grid-cols-3 gap-6">
                   <div v-for="category in analysesServices" :key="category[0]" class="space-y-4">
-                    <fel-accordion>
-                      <template v-slot:title>
-                        <span class="text-sm font-medium">{{ category[0] }}</span>
-                      </template>
-                      <template v-slot:body>
+                    <Accordion type="single" collapsible>
+                      <AccordionItem :value="String(category[0])">
+                        <AccordionTrigger>
+                          <span class="text-sm font-medium">{{ category[0] }}</span>
+                        </AccordionTrigger>
+                        <AccordionContent>
                         <ul class="space-y-2 pt-2">
                           <li v-for="service in category[1]" :key="service?.uid" class="flex items-start space-x-2">
                             <div class="flex items-center h-5">
-                              <input
-                                type="checkbox"
-                                :id="`toggle-${service?.uid}`"
-                                v-model="service.checked"
-                                class="h-4 w-4 rounded border-input bg-background text-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                              />
+                            <Checkbox
+                              :id="`toggle-${service?.uid}`"
+                              :checked="service.checked"
+                              @update:checked="(value) => service.checked = value"
+                            />
                             </div>
                             <label :for="`toggle-${service?.uid}`" class="text-sm text-foreground">
                               {{ service?.name }}
                             </label>
                           </li>
                         </ul>
-                      </template>
-                    </fel-accordion>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
                   </div>
                 </div>
 
                 <div class="flex justify-end pt-4">
-                  <button
-                    @click="updateProfile()"
-                    class="inline-flex items-center justify-center bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
-                  >
+                  <Button @click="updateProfile()">
                     Update Profile
-                  </button>
+                  </Button>
                 </div>
               </div>
 
@@ -394,47 +406,44 @@ const saveMappingForm = handleMappingSubmit((values) => {
               <div v-if="currentTab === 'mappings'" class="space-y-6">
                 <div class="flex justify-between items-center">
                   <h3 class="text-lg font-medium text-foreground">Concept Mappings</h3>
-                  <button
-                    @click="MappingFormManager(true)"
-                    class="inline-flex items-center justify-center bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
-                  >
+                  <Button @click="MappingFormManager(true)">
                     <span class="mr-2">+</span> Add Mapping
-                  </button>
+                  </Button>
                 </div>
 
                 <div class="overflow-hidden rounded-lg border border-border">
-                  <table class="w-full fel-table">
-                    <thead>
-                      <tr class="border-b border-border bg-muted/50">
-                        <th class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">Name</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">Code</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">Standard</th>
-                        <th class="px-6 py-3 text-right text-sm font-medium text-muted-foreground">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="mapping in mappings" :key="mapping.uid" class="hover:bg-accent/50 transition-colors duration-200">
-                        <td class="px-6 py-4 whitespace-nowrap border-b border-border">
+                  <Table class="w-full">
+                    <TableHeader>
+                      <TableRow class="border-b border-border bg-muted/50">
+                        <TableHead class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">Name</TableHead>
+                        <TableHead class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">Code</TableHead>
+                        <TableHead class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">Standard</TableHead>
+                        <TableHead class="px-6 py-3 text-right text-sm font-medium text-muted-foreground">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow v-for="mapping in mappings" :key="mapping.uid" class="hover:bg-accent/50 transition-colors duration-200">
+                        <TableCell class="px-6 py-4 whitespace-nowrap border-b border-border">
                           <div class="font-medium text-foreground">{{ mapping?.name }}</div>
                           <div class="text-sm text-muted-foreground" v-if="mapping?.description">{{ mapping?.description }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap border-b border-border text-sm text-foreground">
+                        </TableCell>
+                        <TableCell class="px-6 py-4 whitespace-nowrap border-b border-border text-sm text-foreground">
                           {{ mapping?.code }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap border-b border-border text-sm text-foreground">
+                        </TableCell>
+                        <TableCell class="px-6 py-4 whitespace-nowrap border-b border-border text-sm text-foreground">
                           {{ mapping?.codingStandard?.name }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right border-b border-border">
+                        </TableCell>
+                        <TableCell class="px-6 py-4 whitespace-nowrap text-right border-b border-border">
                           <button 
                             @click="MappingFormManager(false, mapping)"
                             class="inline-flex items-center px-3 py-1.5 border border-input bg-background text-foreground text-sm font-medium transition-colors duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring hover:bg-accent hover:text-accent-foreground"
                           >
                             Edit
                           </button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
                 </div>
               </div>
 
@@ -449,176 +458,190 @@ const saveMappingForm = handleMappingSubmit((values) => {
 
       <!-- Empty State -->
       <section v-else class="col-span-9">
-        <div class="rounded-lg border border-border bg-card p-6 flex flex-col items-center justify-center space-y-4 min-h-[400px]">
-          <div class="text-4xl text-muted-foreground">📋</div>
-          <h3 class="text-lg font-medium text-foreground">No Profile Selected</h3>
-          <p class="text-sm text-muted-foreground">Select a profile from the list to view its details</p>
-        </div>
+        <Empty class="min-h-[400px] bg-card">
+          <EmptyContent>
+            <EmptyMedia variant="icon">
+              <span class="text-2xl">📋</span>
+            </EmptyMedia>
+            <EmptyHeader>
+              <EmptyTitle>No profile selected</EmptyTitle>
+              <EmptyDescription>Select a profile from the list to view its details.</EmptyDescription>
+            </EmptyHeader>
+          </EmptyContent>
+        </Empty>
       </section>
     </div>
   </div>
 
   <!-- Profile Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false">
+  <Modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form @submit.prevent="saveForm" class="p-6 space-y-6">
+      <Form @submit="saveForm" class="p-6 space-y-6">
         <div class="space-y-4">
-          <label class="space-y-2">
-            <span class="text-sm font-medium text-muted-foreground">Profile Name</span>
-            <input
-              v-model="name"
-              type="text"
-              class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
-              placeholder="Enter profile name"
-            />
-            <p v-if="nameError" class="text-sm text-destructive">{{ nameError }}</p>
-          </label>
+          <FormField name="name" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Profile Name</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Enter profile name" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <label class="space-y-2">
-            <span class="text-sm font-medium text-muted-foreground">Keyword</span>
-            <input
-              v-model="keyword"
-              type="text"
-              class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
-              placeholder="Enter keyword"
-            />
-            <p v-if="keywordError" class="text-sm text-destructive">{{ keywordError }}</p>
-          </label>
+          <FormField name="keyword" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Keyword</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Enter keyword" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <label class="space-y-2">
-            <span class="text-sm font-medium text-muted-foreground">Department</span>
-            <select
-              v-model="departmentUid"
-              class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-            >
-              <option value="">Select department</option>
-              <option v-for="department in departments" :key="department.uid" :value="department.uid">
-                {{ department.name }}
-              </option>
-            </select>
-            <p v-if="departmentError" class="text-sm text-destructive">{{ departmentError }}</p>
-          </label>
+          <FormField name="departmentUid" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Department</FormLabel>
+              <FormControl>
+                <Select v-bind="componentField">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select department" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Select department</SelectItem>
+                    <SelectItem v-for="department in departments" :key="department.uid" :value="department.uid">
+                      {{ department.name }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <label class="space-y-2">
-            <span class="text-sm font-medium text-muted-foreground">Sample Types</span>
-            <VueMultiselect
-              v-model="sampleTypesField"
-              :options="sampleTypes"
-              :multiple="true"
-              track-by="uid"
-              label="name"
-              placeholder="Select sample types"
-              class="multiselect-primary"
-            />
-            <p v-if="sampleTypesError" class="text-sm text-destructive">{{ sampleTypesError }}</p>
-          </label>
+          <FormField name="sampleTypes" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Sample Types</FormLabel>
+              <FormControl>
+                <VueMultiselect
+                  v-bind="componentField"
+                  :options="sampleTypes"
+                  :multiple="true"
+                  track-by="uid"
+                  label="name"
+                  placeholder="Select sample types"
+                  class="multiselect-primary"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <label class="space-y-2">
-            <span class="text-sm font-medium text-muted-foreground">Description</span>
-            <textarea
-              v-model="description"
-              rows="3"
-              class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground resize-none"
-              placeholder="Enter profile description"
-            ></textarea>
-            <p v-if="descriptionError" class="text-sm text-destructive">{{ descriptionError }}</p>
-          </label>
+          <FormField name="description" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea
+                  v-bind="componentField"
+                  rows="3"
+                  placeholder="Enter profile description"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <div class="flex items-center space-x-2">
-            <input 
-              type="checkbox" 
-              id="isActive"
-              v-model="active"
-              class="h-4 w-4 rounded border-input bg-background text-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-            />
-            <label for="isActive" class="text-sm font-medium text-muted-foreground">Active</label>
-          </div>
+          <FormField name="active" v-slot="{ value, handleChange }">
+            <FormItem class="flex items-center space-x-2">
+              <FormControl>
+                <Checkbox :checked="value" @update:checked="handleChange" />
+              </FormControl>
+              <FormLabel>Active</FormLabel>
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </div>
 
         <div class="pt-4">
-          <button
-            type="submit"
-            class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
-          >
+          <Button type="submit" class="w-full">
             Save Changes
-          </button>
+          </Button>
         </div>
-      </form>
+      </Form>
     </template>
-  </fel-modal>
+  </Modal>
 
   <!-- Mapping Form Modal -->
-  <fel-modal v-if="showMappingModal" @close="showMappingModal = false">
+  <Modal v-if="showMappingModal" @close="showMappingModal = false">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">{{ mappingFormTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form @submit.prevent="saveMappingForm" class="p-6 space-y-6">
+      <Form @submit="saveMappingForm" class="p-6 space-y-6">
         <div class="space-y-4">
-          <label class="space-y-2">
-            <span class="text-sm font-medium text-muted-foreground">Coding Standard</span>
-            <select
-              v-model="codingStandardUid"
-              class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-            >
-              <option value="">Select standard</option>
-              <option v-for="standard in analysisStore.codingStandards" :key="standard.uid" :value="standard.uid">
-                {{ standard.name }}
-              </option>
-            </select>
-            <p v-if="codingStandardError" class="text-sm text-destructive">{{ codingStandardError }}</p>
-          </label>
+          <FormField name="codingStandardUid" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Coding Standard</FormLabel>
+              <FormControl>
+                <Select v-bind="componentField">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select standard" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Select standard</SelectItem>
+                    <SelectItem v-for="standard in analysisStore.codingStandards" :key="standard.uid" :value="standard.uid">
+                      {{ standard.name }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <label class="space-y-2">
-            <span class="text-sm font-medium text-muted-foreground">Name</span>
-            <input
-              v-model="mappingName"
-              type="text"
-              class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
-              placeholder="Enter mapping name"
-            />
-            <p v-if="mappingNameError" class="text-sm text-destructive">{{ mappingNameError }}</p>
-          </label>
+          <FormField name="name" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Enter mapping name" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <label class="space-y-2">
-            <span class="text-sm font-medium text-muted-foreground">Code</span>
-            <input
-              v-model="mappingCode"
-              type="text"
-              class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
-              placeholder="Enter mapping code"
-            />
-            <p v-if="mappingCodeError" class="text-sm text-destructive">{{ mappingCodeError }}</p>
-          </label>
+          <FormField name="code" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Code</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Enter mapping code" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <label class="space-y-2">
-            <span class="text-sm font-medium text-muted-foreground">Description</span>
-            <textarea
-              v-model="mappingDescription"
-              rows="3"
-              class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground resize-none"
-              placeholder="Enter mapping description"
-            ></textarea>
-            <p v-if="mappingDescriptionError" class="text-sm text-destructive">{{ mappingDescriptionError }}</p>
-          </label>
+          <FormField name="description" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea v-bind="componentField" rows="3" placeholder="Enter mapping description" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </div>
 
         <div class="pt-4">
-          <button
-            type="submit"
-            class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
-          >
+          <Button type="submit" class="w-full">
             Save Changes
-          </button>
+          </Button>
         </div>
-      </form>
+      </Form>
     </template>
-  </fel-modal>
+  </Modal>
 
 </template>
 

@@ -3,350 +3,342 @@ import type * as Types from '../schema';
 import gql from 'graphql-tag';
 import * as Urql from '@urql/vue';
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-export type GetSampleGroupByStatusQueryVariables = Types.Exact<{ [key: string]: never; }>;
+export type GetSampleGroupByStatusQueryVariables = Types.Exact<{ [key: string]: never }>;
 
+export type GetSampleGroupByStatusQuery = { __typename?: 'Query' } & {
+    countSampleGroupByStatus: { __typename?: 'GroupedCounts' } & {
+        data: Array<{ __typename: 'GroupCount' } & Pick<Types.GroupCount, 'group' | 'count'>>;
+    };
+};
 
-export type GetSampleGroupByStatusQuery = (
-  { __typename?: 'Query' }
-  & { countSampleGroupByStatus: (
-    { __typename?: 'GroupedCounts' }
-    & { data: Array<(
-      { __typename: 'GroupCount' }
-      & Pick<Types.GroupCount, 'group' | 'count'>
-    )> }
-  ) }
-);
+export type GetExtrasGroupByStatusQueryVariables = Types.Exact<{ [key: string]: never }>;
 
-export type GetExtrasGroupByStatusQueryVariables = Types.Exact<{ [key: string]: never; }>;
+export type GetExtrasGroupByStatusQuery = { __typename?: 'Query' } & {
+    countExtrasGroupByStatus: { __typename?: 'GroupedCounts' } & {
+        data: Array<{ __typename: 'GroupCount' } & Pick<Types.GroupCount, 'group' | 'count'>>;
+    };
+};
 
+export type GetAnalysisGroupByStatusQueryVariables = Types.Exact<{ [key: string]: never }>;
 
-export type GetExtrasGroupByStatusQuery = (
-  { __typename?: 'Query' }
-  & { countExtrasGroupByStatus: (
-    { __typename?: 'GroupedCounts' }
-    & { data: Array<(
-      { __typename: 'GroupCount' }
-      & Pick<Types.GroupCount, 'group' | 'count'>
-    )> }
-  ) }
-);
+export type GetAnalysisGroupByStatusQuery = { __typename?: 'Query' } & {
+    countAnalyteGroupByStatus: { __typename?: 'GroupedCounts' } & {
+        data: Array<{ __typename: 'GroupCount' } & Pick<Types.GroupCount, 'group' | 'count'>>;
+    };
+};
 
-export type GetAnalysisGroupByStatusQueryVariables = Types.Exact<{ [key: string]: never; }>;
+export type GetWorksheetGroupByStatusQueryVariables = Types.Exact<{ [key: string]: never }>;
 
-
-export type GetAnalysisGroupByStatusQuery = (
-  { __typename?: 'Query' }
-  & { countAnalyteGroupByStatus: (
-    { __typename?: 'GroupedCounts' }
-    & { data: Array<(
-      { __typename: 'GroupCount' }
-      & Pick<Types.GroupCount, 'group' | 'count'>
-    )> }
-  ) }
-);
-
-export type GetWorksheetGroupByStatusQueryVariables = Types.Exact<{ [key: string]: never; }>;
-
-
-export type GetWorksheetGroupByStatusQuery = (
-  { __typename?: 'Query' }
-  & { countWorksheetGroupByStatus: (
-    { __typename?: 'GroupedCounts' }
-    & { data: Array<(
-      { __typename: 'GroupCount' }
-      & Pick<Types.GroupCount, 'group' | 'count'>
-    )> }
-  ) }
-);
+export type GetWorksheetGroupByStatusQuery = { __typename?: 'Query' } & {
+    countWorksheetGroupByStatus: { __typename?: 'GroupedCounts' } & {
+        data: Array<{ __typename: 'GroupCount' } & Pick<Types.GroupCount, 'group' | 'count'>>;
+    };
+};
 
 export type GetAnalysisGroupByInstrumentQueryVariables = Types.Exact<{
-  startDate: Types.Scalars['String']['input'];
-  endDate: Types.Scalars['String']['input'];
+    startDate: Types.Scalars['String']['input'];
+    endDate: Types.Scalars['String']['input'];
 }>;
 
-
-export type GetAnalysisGroupByInstrumentQuery = (
-  { __typename?: 'Query' }
-  & { countAnalyteGroupByInstrument: (
-    { __typename?: 'GroupedCounts' }
-    & { data: Array<(
-      { __typename: 'GroupCount' }
-      & Pick<Types.GroupCount, 'group' | 'count'>
-    )> }
-  ) }
-);
+export type GetAnalysisGroupByInstrumentQuery = { __typename?: 'Query' } & {
+    countAnalyteGroupByInstrument: { __typename?: 'GroupedCounts' } & {
+        data: Array<{ __typename: 'GroupCount' } & Pick<Types.GroupCount, 'group' | 'count'>>;
+    };
+};
 
 export type SampleProcessPeformanceQueryVariables = Types.Exact<{
-  startDate: Types.Scalars['String']['input'];
-  endDate: Types.Scalars['String']['input'];
+    startDate: Types.Scalars['String']['input'];
+    endDate: Types.Scalars['String']['input'];
 }>;
 
-
-export type SampleProcessPeformanceQuery = (
-  { __typename?: 'Query' }
-  & { sampleProcessPerformance: (
-    { __typename: 'ProcessStatistics' }
-    & { data: Array<(
-      { __typename?: 'ProcessData' }
-      & Pick<Types.ProcessData, 'process'>
-      & { counts?: Types.Maybe<(
-        { __typename?: 'ProcessCounts' }
-        & Pick<
-          Types.ProcessCounts,
-          | 'totalSamples'
-          | 'totalLate'
-          | 'totalNotLate'
-          | 'processAverage'
-          | 'avgExtraDays'
-        >
-      )> }
-    )> }
-  ) }
-);
+export type SampleProcessPeformanceQuery = { __typename?: 'Query' } & {
+    sampleProcessPerformance: { __typename: 'ProcessStatistics' } & {
+        data: Array<
+            { __typename?: 'ProcessData' } & Pick<Types.ProcessData, 'process'> & {
+                    counts?: Types.Maybe<
+                        { __typename?: 'ProcessCounts' } & Pick<
+                            Types.ProcessCounts,
+                            'totalSamples' | 'totalLate' | 'totalNotLate' | 'processAverage' | 'avgExtraDays'
+                        >
+                    >;
+                }
+        >;
+    };
+};
 
 export type GetAnalysisProcessPeformanceQueryVariables = Types.Exact<{
-  process: Types.Scalars['String']['input'];
-  startDate: Types.Scalars['String']['input'];
-  endDate: Types.Scalars['String']['input'];
+    process: Types.Scalars['String']['input'];
+    startDate: Types.Scalars['String']['input'];
+    endDate: Types.Scalars['String']['input'];
 }>;
 
-
-export type GetAnalysisProcessPeformanceQuery = (
-  { __typename?: 'Query' }
-  & { analysisProcessPerformance: (
-    { __typename: 'ProcessStatistics' }
-    & { data: Array<(
-      { __typename?: 'ProcessData' }
-      & Pick<Types.ProcessData, 'process'>
-      & { groups?: Types.Maybe<Array<(
-        { __typename?: 'ProcessCounts' }
-        & Pick<
-          Types.ProcessCounts,
-          | 'totalSamples'
-          | 'totalLate'
-          | 'totalNotLate'
-          | 'processAverage'
-          | 'avgExtraDays'
-          | 'service'
-        >
-      )>> }
-    )> }
-  ) }
-);
+export type GetAnalysisProcessPeformanceQuery = { __typename?: 'Query' } & {
+    analysisProcessPerformance: { __typename: 'ProcessStatistics' } & {
+        data: Array<
+            { __typename?: 'ProcessData' } & Pick<Types.ProcessData, 'process'> & {
+                    groups?: Types.Maybe<
+                        Array<
+                            { __typename?: 'ProcessCounts' } & Pick<
+                                Types.ProcessCounts,
+                                'totalSamples' | 'totalLate' | 'totalNotLate' | 'processAverage' | 'avgExtraDays' | 'service'
+                            >
+                        >
+                    >;
+                }
+        >;
+    };
+};
 
 export type SampleGroupByActionQueryVariables = Types.Exact<{
-  startDate: Types.Scalars['String']['input'];
-  endDate: Types.Scalars['String']['input'];
+    startDate: Types.Scalars['String']['input'];
+    endDate: Types.Scalars['String']['input'];
 }>;
 
+export type SampleGroupByActionQuery = { __typename?: 'Query' } & {
+    countSampleGroupByAction: { __typename: 'GroupedData' } & {
+        data: Array<
+            { __typename: 'GroupData' } & Pick<Types.GroupData, 'group'> & {
+                    counts?: Types.Maybe<Array<{ __typename: 'GroupCount' } & Pick<Types.GroupCount, 'group' | 'count'>>>;
+                }
+        >;
+    };
+};
 
-export type SampleGroupByActionQuery = (
-  { __typename?: 'Query' }
-  & { countSampleGroupByAction: (
-    { __typename: 'GroupedData' }
-    & { data: Array<(
-      { __typename: 'GroupData' }
-      & Pick<Types.GroupData, 'group'>
-      & { counts?: Types.Maybe<Array<(
-        { __typename: 'GroupCount' }
-        & Pick<Types.GroupCount, 'group' | 'count'>
-      )>> }
-    )> }
-  ) }
-);
+export type GetSampleLaggardsQueryVariables = Types.Exact<{ [key: string]: never }>;
 
-export type GetSampleLaggardsQueryVariables = Types.Exact<{ [key: string]: never; }>;
-
-
-export type GetSampleLaggardsQuery = (
-  { __typename?: 'Query' }
-  & { sampleLaggards: (
-    { __typename: 'LaggardStatistics' }
-    & { data: Array<(
-      { __typename: 'LaggardData' }
-      & Pick<Types.LaggardData, 'category'>
-      & { counts?: Types.Maybe<(
-        { __typename: 'LaggardCounts' }
-        & Pick<
-          Types.LaggardCounts,
-          | 'totalIncomplete'
-          | 'totalDelayed'
-          | 'totalNotDelayed'
-          | 'lessThanTen'
-          | 'tenToTwenty'
-          | 'twentyToThirty'
-          | 'graterThanThirty'
-        >
-      )> }
-    )> }
-  ) }
-);
-
+export type GetSampleLaggardsQuery = { __typename?: 'Query' } & {
+    sampleLaggards: { __typename: 'LaggardStatistics' } & {
+        data: Array<
+            { __typename: 'LaggardData' } & Pick<Types.LaggardData, 'category'> & {
+                    counts?: Types.Maybe<
+                        { __typename: 'LaggardCounts' } & Pick<
+                            Types.LaggardCounts,
+                            | 'totalIncomplete'
+                            | 'totalDelayed'
+                            | 'totalNotDelayed'
+                            | 'lessThanTen'
+                            | 'tenToTwenty'
+                            | 'twentyToThirty'
+                            | 'graterThanThirty'
+                        >
+                    >;
+                }
+        >;
+    };
+};
 
 export const GetSampleGroupByStatusDocument = gql`
     query getSampleGroupByStatus {
-  countSampleGroupByStatus {
-    data {
-      __typename
-      group
-      count
+        countSampleGroupByStatus {
+            data {
+                __typename
+                group
+                count
+            }
+        }
     }
-  }
-}
-    `;
+`;
 
-export function useGetSampleGroupByStatusQuery(options?: Omit<Urql.UseQueryArgs<never, GetSampleGroupByStatusQueryVariables | undefined>, 'query'>) {
-  return Urql.useQuery<GetSampleGroupByStatusQuery, GetSampleGroupByStatusQueryVariables | undefined>({ query: GetSampleGroupByStatusDocument, variables: undefined, ...options });
-};
+export function useGetSampleGroupByStatusQuery(
+    options?: Omit<Urql.UseQueryArgs<never, GetSampleGroupByStatusQueryVariables | undefined>, 'query'>,
+) {
+    return Urql.useQuery<GetSampleGroupByStatusQuery, GetSampleGroupByStatusQueryVariables | undefined>({
+        query: GetSampleGroupByStatusDocument,
+        variables: undefined,
+        ...options,
+    });
+}
 export const GetExtrasGroupByStatusDocument = gql`
     query getExtrasGroupByStatus {
-  countExtrasGroupByStatus {
-    data {
-      __typename
-      group
-      count
+        countExtrasGroupByStatus {
+            data {
+                __typename
+                group
+                count
+            }
+        }
     }
-  }
-}
-    `;
+`;
 
-export function useGetExtrasGroupByStatusQuery(options?: Omit<Urql.UseQueryArgs<never, GetExtrasGroupByStatusQueryVariables | undefined>, 'query'>) {
-  return Urql.useQuery<GetExtrasGroupByStatusQuery, GetExtrasGroupByStatusQueryVariables | undefined>({ query: GetExtrasGroupByStatusDocument, variables: undefined, ...options });
-};
+export function useGetExtrasGroupByStatusQuery(
+    options?: Omit<Urql.UseQueryArgs<never, GetExtrasGroupByStatusQueryVariables | undefined>, 'query'>,
+) {
+    return Urql.useQuery<GetExtrasGroupByStatusQuery, GetExtrasGroupByStatusQueryVariables | undefined>({
+        query: GetExtrasGroupByStatusDocument,
+        variables: undefined,
+        ...options,
+    });
+}
 export const GetAnalysisGroupByStatusDocument = gql`
     query getAnalysisGroupByStatus {
-  countAnalyteGroupByStatus {
-    data {
-      __typename
-      group
-      count
+        countAnalyteGroupByStatus {
+            data {
+                __typename
+                group
+                count
+            }
+        }
     }
-  }
-}
-    `;
+`;
 
-export function useGetAnalysisGroupByStatusQuery(options?: Omit<Urql.UseQueryArgs<never, GetAnalysisGroupByStatusQueryVariables | undefined>, 'query'>) {
-  return Urql.useQuery<GetAnalysisGroupByStatusQuery, GetAnalysisGroupByStatusQueryVariables | undefined>({ query: GetAnalysisGroupByStatusDocument, variables: undefined, ...options });
-};
+export function useGetAnalysisGroupByStatusQuery(
+    options?: Omit<Urql.UseQueryArgs<never, GetAnalysisGroupByStatusQueryVariables | undefined>, 'query'>,
+) {
+    return Urql.useQuery<GetAnalysisGroupByStatusQuery, GetAnalysisGroupByStatusQueryVariables | undefined>({
+        query: GetAnalysisGroupByStatusDocument,
+        variables: undefined,
+        ...options,
+    });
+}
 export const GetWorksheetGroupByStatusDocument = gql`
     query getWorksheetGroupByStatus {
-  countWorksheetGroupByStatus {
-    data {
-      __typename
-      group
-      count
+        countWorksheetGroupByStatus {
+            data {
+                __typename
+                group
+                count
+            }
+        }
     }
-  }
-}
-    `;
+`;
 
-export function useGetWorksheetGroupByStatusQuery(options?: Omit<Urql.UseQueryArgs<never, GetWorksheetGroupByStatusQueryVariables | undefined>, 'query'>) {
-  return Urql.useQuery<GetWorksheetGroupByStatusQuery, GetWorksheetGroupByStatusQueryVariables | undefined>({ query: GetWorksheetGroupByStatusDocument, variables: undefined, ...options });
-};
+export function useGetWorksheetGroupByStatusQuery(
+    options?: Omit<Urql.UseQueryArgs<never, GetWorksheetGroupByStatusQueryVariables | undefined>, 'query'>,
+) {
+    return Urql.useQuery<GetWorksheetGroupByStatusQuery, GetWorksheetGroupByStatusQueryVariables | undefined>({
+        query: GetWorksheetGroupByStatusDocument,
+        variables: undefined,
+        ...options,
+    });
+}
 export const GetAnalysisGroupByInstrumentDocument = gql`
     query getAnalysisGroupByInstrument($startDate: String!, $endDate: String!) {
-  countAnalyteGroupByInstrument(startDate: $startDate, endDate: $endDate) {
-    data {
-      __typename
-      group
-      count
+        countAnalyteGroupByInstrument(startDate: $startDate, endDate: $endDate) {
+            data {
+                __typename
+                group
+                count
+            }
+        }
     }
-  }
-}
-    `;
+`;
 
-export function useGetAnalysisGroupByInstrumentQuery(options?: Omit<Urql.UseQueryArgs<never, GetAnalysisGroupByInstrumentQueryVariables | undefined>, 'query'>) {
-  return Urql.useQuery<GetAnalysisGroupByInstrumentQuery, GetAnalysisGroupByInstrumentQueryVariables | undefined>({ query: GetAnalysisGroupByInstrumentDocument, variables: undefined, ...options });
-};
+export function useGetAnalysisGroupByInstrumentQuery(
+    options?: Omit<Urql.UseQueryArgs<never, GetAnalysisGroupByInstrumentQueryVariables | undefined>, 'query'>,
+) {
+    return Urql.useQuery<GetAnalysisGroupByInstrumentQuery, GetAnalysisGroupByInstrumentQueryVariables | undefined>({
+        query: GetAnalysisGroupByInstrumentDocument,
+        variables: undefined,
+        ...options,
+    });
+}
 export const SampleProcessPeformanceDocument = gql`
     query SampleProcessPeformance($startDate: String!, $endDate: String!) {
-  sampleProcessPerformance(startDate: $startDate, endDate: $endDate) {
-    __typename
-    data {
-      process
-      counts {
-        totalSamples
-        totalLate
-        totalNotLate
-        processAverage
-        avgExtraDays
-      }
+        sampleProcessPerformance(startDate: $startDate, endDate: $endDate) {
+            __typename
+            data {
+                process
+                counts {
+                    totalSamples
+                    totalLate
+                    totalNotLate
+                    processAverage
+                    avgExtraDays
+                }
+            }
+        }
     }
-  }
-}
-    `;
+`;
 
-export function useSampleProcessPeformanceQuery(options?: Omit<Urql.UseQueryArgs<never, SampleProcessPeformanceQueryVariables | undefined>, 'query'>) {
-  return Urql.useQuery<SampleProcessPeformanceQuery, SampleProcessPeformanceQueryVariables | undefined>({ query: SampleProcessPeformanceDocument, variables: undefined, ...options });
-};
+export function useSampleProcessPeformanceQuery(
+    options?: Omit<Urql.UseQueryArgs<never, SampleProcessPeformanceQueryVariables | undefined>, 'query'>,
+) {
+    return Urql.useQuery<SampleProcessPeformanceQuery, SampleProcessPeformanceQueryVariables | undefined>({
+        query: SampleProcessPeformanceDocument,
+        variables: undefined,
+        ...options,
+    });
+}
 export const GetAnalysisProcessPeformanceDocument = gql`
     query getAnalysisProcessPeformance($process: String!, $startDate: String!, $endDate: String!) {
-  analysisProcessPerformance(
-    process: $process
-    startDate: $startDate
-    endDate: $endDate
-  ) {
-    __typename
-    data {
-      process
-      groups {
-        totalSamples
-        totalLate
-        totalNotLate
-        processAverage
-        avgExtraDays
-        service
-      }
+        analysisProcessPerformance(process: $process, startDate: $startDate, endDate: $endDate) {
+            __typename
+            data {
+                process
+                groups {
+                    totalSamples
+                    totalLate
+                    totalNotLate
+                    processAverage
+                    avgExtraDays
+                    service
+                }
+            }
+        }
     }
-  }
-}
-    `;
+`;
 
-export function useGetAnalysisProcessPeformanceQuery(options?: Omit<Urql.UseQueryArgs<never, GetAnalysisProcessPeformanceQueryVariables | undefined>, 'query'>) {
-  return Urql.useQuery<GetAnalysisProcessPeformanceQuery, GetAnalysisProcessPeformanceQueryVariables | undefined>({ query: GetAnalysisProcessPeformanceDocument, variables: undefined, ...options });
-};
+export function useGetAnalysisProcessPeformanceQuery(
+    options?: Omit<Urql.UseQueryArgs<never, GetAnalysisProcessPeformanceQueryVariables | undefined>, 'query'>,
+) {
+    return Urql.useQuery<GetAnalysisProcessPeformanceQuery, GetAnalysisProcessPeformanceQueryVariables | undefined>({
+        query: GetAnalysisProcessPeformanceDocument,
+        variables: undefined,
+        ...options,
+    });
+}
 export const SampleGroupByActionDocument = gql`
     query SampleGroupByAction($startDate: String!, $endDate: String!) {
-  countSampleGroupByAction(startDate: $startDate, endDate: $endDate) {
-    __typename
-    data {
-      __typename
-      group
-      counts {
-        __typename
-        group
-        count
-      }
+        countSampleGroupByAction(startDate: $startDate, endDate: $endDate) {
+            __typename
+            data {
+                __typename
+                group
+                counts {
+                    __typename
+                    group
+                    count
+                }
+            }
+        }
     }
-  }
-}
-    `;
+`;
 
-export function useSampleGroupByActionQuery(options?: Omit<Urql.UseQueryArgs<never, SampleGroupByActionQueryVariables | undefined>, 'query'>) {
-  return Urql.useQuery<SampleGroupByActionQuery, SampleGroupByActionQueryVariables | undefined>({ query: SampleGroupByActionDocument, variables: undefined, ...options });
-};
+export function useSampleGroupByActionQuery(
+    options?: Omit<Urql.UseQueryArgs<never, SampleGroupByActionQueryVariables | undefined>, 'query'>,
+) {
+    return Urql.useQuery<SampleGroupByActionQuery, SampleGroupByActionQueryVariables | undefined>({
+        query: SampleGroupByActionDocument,
+        variables: undefined,
+        ...options,
+    });
+}
 export const GetSampleLaggardsDocument = gql`
     query getSampleLaggards {
-  sampleLaggards {
-    __typename
-    data {
-      __typename
-      category
-      counts {
-        __typename
-        totalIncomplete
-        totalDelayed
-        totalNotDelayed
-        lessThanTen
-        tenToTwenty
-        twentyToThirty
-        graterThanThirty
-      }
+        sampleLaggards {
+            __typename
+            data {
+                __typename
+                category
+                counts {
+                    __typename
+                    totalIncomplete
+                    totalDelayed
+                    totalNotDelayed
+                    lessThanTen
+                    tenToTwenty
+                    twentyToThirty
+                    graterThanThirty
+                }
+            }
+        }
     }
-  }
-}
-    `;
+`;
 
 export function useGetSampleLaggardsQuery(options?: Omit<Urql.UseQueryArgs<never, GetSampleLaggardsQueryVariables | undefined>, 'query'>) {
-  return Urql.useQuery<GetSampleLaggardsQuery, GetSampleLaggardsQueryVariables | undefined>({ query: GetSampleLaggardsDocument, variables: undefined, ...options });
-};
+    return Urql.useQuery<GetSampleLaggardsQuery, GetSampleLaggardsQueryVariables | undefined>({
+        query: GetSampleLaggardsDocument,
+        variables: undefined,
+        ...options,
+    });
+}

@@ -3,7 +3,10 @@ import { defineAsyncComponent, ref } from "vue";
 import useShipmentComposable from "@/composables/shipment";
 import { useShipmentStore } from "@/stores/shipment";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Spinner } from "@/components/ui/spinner";
 
+defineOptions({ name: 'ManifestView' })
 const loadongMeta = ref(false);
 
 const { shipment } = useShipmentStore()
@@ -13,7 +16,10 @@ const manifestDownloader = async (report_uid) => await downloadManifest(report_u
 
 <template>
   <div class="space-y-6">
-    <fel-loader v-if="loadongMeta" :message="'Loading your manifest report ...'" />
+    <span v-if="loadongMeta" class="inline-flex items-center gap-2">
+      <Spinner class="size-4" />
+      <span class="text-sm">Loading your manifest report ...</span>
+    </span>
     <section v-else class="space-y-4">
       <div v-if="shipment?.jsonContent" class="flex justify-start">
         <div class="bg-background rounded-lg border border-border p-4 w-full max-w-md shadow-sm">
@@ -29,19 +35,10 @@ const manifestDownloader = async (report_uid) => await downloadManifest(report_u
           </div>
         </div>
       </div>
-      <div v-else class="rounded-md bg-destructive/10 p-4">
-        <div class="flex">
-          <div class="shrink-0">
-            <FontAwesomeIcon class="h-5 w-5 text-destructive" icon="fa-circle-exclamation" />
-          </div>
-          <div class="ml-3">
-            <h3 class="text-sm font-medium text-destructive">No Manifest Available</h3>
-            <div class="mt-2 text-sm text-destructive/90">
-              This shipment has no Manifest Report
-            </div>
-          </div>
-        </div>
-      </div>
+      <Alert v-else variant="destructive">
+        <AlertTitle>No Manifest Available</AlertTitle>
+        <AlertDescription>This shipment has no Manifest Report.</AlertDescription>
+      </Alert>
     </section>
   </div>
 </template>

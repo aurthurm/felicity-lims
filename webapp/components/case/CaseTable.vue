@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 interface Case {
   id: string;
   type: string;
@@ -23,31 +24,31 @@ const emit = defineEmits<{
 <template>
   <div class="overflow-x-auto mt-4" role="region" aria-label="Cases table">
     <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card border border-border rounded-lg">
-      <table class="min-w-full divide-y divide-border fel-table">
-        <thead class="bg-muted/50">
-          <tr>
-            <th scope="col" class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">ID</th>
-            <th scope="col" class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Case Type</th>
-            <th scope="col" class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Created</th>
-            <th scope="col" class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Creator</th>
-            <th scope="col" class="px-4 py-3 text-right text-sm font-medium text-muted-foreground">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="bg-card divide-y divide-border">
-          <tr v-for="case_ in cases" :key="case_.id" class="hover:bg-muted/50">
-            <td class="px-4 py-3 whitespace-nowrap">
+      <Table class="min-w-full divide-y divide-border">
+        <TableHeader class="bg-muted/50">
+          <TableRow>
+            <TableHead scope="col" class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">ID</TableHead>
+            <TableHead scope="col" class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Case Type</TableHead>
+            <TableHead scope="col" class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Created</TableHead>
+            <TableHead scope="col" class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Creator</TableHead>
+            <TableHead scope="col" class="px-4 py-3 text-right text-sm font-medium text-muted-foreground">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody class="bg-card divide-y divide-border">
+          <TableRow v-for="case_ in cases" :key="case_.id" class="hover:bg-muted/50">
+            <TableCell class="px-4 py-3 whitespace-nowrap">
               <div class="text-sm text-card-foreground">{{ case_.id }}</div>
-            </td>
-            <td class="px-4 py-3 whitespace-nowrap">
+            </TableCell>
+            <TableCell class="px-4 py-3 whitespace-nowrap">
               <div class="text-sm text-primary">{{ case_.type }}</div>
-            </td>
-            <td class="px-4 py-3 whitespace-nowrap">
+            </TableCell>
+            <TableCell class="px-4 py-3 whitespace-nowrap">
               <div class="text-sm text-primary">{{ case_.created }}</div>
-            </td>
-            <td class="px-4 py-3 whitespace-nowrap">
+            </TableCell>
+            <TableCell class="px-4 py-3 whitespace-nowrap">
               <div class="text-sm text-primary">{{ case_.creator }}</div>
-            </td>
-            <td class="px-4 py-3 whitespace-nowrap text-right text-sm">
+            </TableCell>
+            <TableCell class="px-4 py-3 whitespace-nowrap text-right text-sm">
               <button 
                 @click="emit('view', case_.id)"
                 class="px-3 py-1.5 mr-2 border border-destructive text-destructive rounded-md transition-colors hover:bg-destructive hover:text-destructive-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
@@ -62,16 +63,20 @@ const emit = defineEmits<{
               >
                 Cancel
               </button>
-            </td>
-          </tr>
-          <tr v-if="cases.length === 0">
-            <td colspan="5" class="px-4 py-8 text-center text-sm text-muted-foreground">
-              No cases found
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </TableCell>
+          </TableRow>
+          <TableEmpty v-if="cases.length === 0" :colspan="5">
+            <Empty class="border-0 bg-transparent p-0">
+              <EmptyContent>
+                <EmptyHeader>
+                  <EmptyTitle>No cases found</EmptyTitle>
+                  <EmptyDescription>Create a case to get started.</EmptyDescription>
+                </EmptyHeader>
+              </EmptyContent>
+            </Empty>
+          </TableEmpty>
+        </TableBody>
+      </Table>
     </div>
   </div>
 </template>
-

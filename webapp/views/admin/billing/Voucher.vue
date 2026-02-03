@@ -6,10 +6,24 @@ import { storeToRefs } from "pinia"
 import { useBillingStore } from "@/stores/billing";
 import useApiUtil  from "@/composables/api_util";
 import { VoucherType } from "@/types/gql";
-import { useField, useForm } from "vee-validate";
+import { useForm } from "vee-validate";
 import { object, string, boolean, number, date } from "yup";
 import { formatDate } from "@/utils";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
+import PageHeading from "@/components/common/PageHeading.vue"
+defineOptions({ name: 'VoucherView' })
 const VoucherCodes = defineAsyncComponent(
   () => import("./VoucherCodes.vue")
 )
@@ -35,22 +49,13 @@ const voucherSchema = object({
   oncePerOrder: boolean().default(true),
 });
 
-const { handleSubmit, errors, setFieldValue } = useForm({
+const { handleSubmit, setFieldValue, values } = useForm({
   validationSchema: voucherSchema,
   initialValues: {
     "oncePerCustomer": true,
     "oncePerOrder": true,
   } as any,
 });
-
-const { value: uid } = useField<string>("uid");
-const { value: name } = useField<string>("name");
-const { value: startDate } = useField("startDate");
-const { value: endDate } = useField("endDate");
-const { value: usageLimit } = useField("usageLimit");
-const { value: used } = useField("used");
-const { value: oncePerCustomer } = useField("oncePerCustomer");
-const { value: oncePerOrder } = useField("oncePerOrder");
 
 const submitVoucherForm = handleSubmit((values) => {
   if (!values.uid) addVoucher(values as VoucherType);
@@ -74,6 +79,7 @@ let setVoucherToNull = () => {
   setFieldValue("startDate", undefined)
   setFieldValue("endDate", undefined)
   setFieldValue("usageLimit", undefined)
+  setFieldValue("used", undefined)
   setFieldValue("oncePerCustomer", true)
   setFieldValue("oncePerOrder", true)
 };
@@ -111,9 +117,9 @@ const updateVoucher = (vocher: VoucherType) => {
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Vouchers">
-      <fel-button @click="newVoucher">Add Voucher</fel-button>
-    </fel-heading>
+    <PageHeading title="Vouchers">
+      <Button @click="newVoucher">Add Voucher</Button>
+    </PageHeading>
 
     <div class="rounded-lg border border-border bg-card p-6">
       <div class="grid grid-cols-12 gap-6">
@@ -121,153 +127,155 @@ const updateVoucher = (vocher: VoucherType) => {
           :variants="{ custom: { scale: 2 } }" :delay="400"
           class="col-span-3 overflow-y-auto overscroll-contain voucher-scroll">
           <div v-if="fetchingVouchers" class="rounded-lg border border-border bg-card p-4">
-            <fel-loader message="Fetching vouchers ..." />
+            <span class="inline-flex items-center gap-2">
+              <Spinner class="size-4" />
+              <span class="text-sm">Fetching vouchers ...</span>
+            </span>
           </div>
           <div v-else class="space-y-2">
-            <button v-for="voucher in vouchers" :key="voucher.uid" @click="selectVoucher(voucher)" 
+            <Button v-for="voucher in vouchers" :key="voucher.uid" @click="selectVoucher(voucher)" 
               class="w-full flex items-center p-4 rounded-lg border transition-colors hover:bg-accent hover:text-accent-foreground"
               :class="[
-                voucher.uid === uid 
+                voucher.uid === values.uid 
                   ? 'border-primary bg-primary/10' 
                   : 'border-border bg-card'
-              ]">
+              ]"
+              variant="ghost"
+              type="button"
+            >
               <div class="grow">
                 <div class="flex justify-between items-center">
                   <span class="font-medium text-foreground">{{ voucher.name }}</span>
                   <span class="text-sm text-muted-foreground">{{ voucher.used }} of {{ voucher.usageLimit }}</span>
                 </div>
               </div>
-            </button>
+            </Button>
           </div>
         </section>
 
-        <section v-if="vouchers?.length > 0 && uid" v-motion :initial="{ opacity: 0, y: -100 }"
+        <section v-if="vouchers?.length > 0 && values.uid" v-motion :initial="{ opacity: 0, y: -100 }"
           :enter="{ opacity: 1, y: 0, scale: 1 }" :variants="{ custom: { scale: 2 } }" :delay="400" 
           class="col-span-9 space-y-6">
           
           <div class="rounded-lg border border-border bg-card p-6" v-motion-slide-top>
             <div class="flex justify-between items-center mb-4">
-              <h4 class="text-lg font-semibold text-foreground">{{ name?.toUpperCase() }}</h4>
-              <button @click="showModal = true" 
-                class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9">
+              <h4 class="text-lg font-semibold text-foreground">{{ values.name?.toUpperCase() }}</h4>
+              <Button variant="outline" size="icon" @click="showModal = true">
                 <font-awesome-icon icon="pen" class="text-muted-foreground" />
-              </button>
+              </Button>
             </div>
             
             <div class="grid grid-cols-3 gap-8">
               <div class="space-y-4">
                 <div class="flex justify-between items-center">
                   <span class="text-sm font-medium text-muted-foreground">Start Date:</span> 
-                  <span class="text-sm text-foreground">{{ startDate }}</span>
+                  <span class="text-sm text-foreground">{{ values.startDate }}</span>
                 </div>
                 <div class="flex justify-between items-center">
                   <span class="text-sm font-medium text-muted-foreground">End Date:</span> 
-                  <span class="text-sm text-foreground">{{ endDate }}</span>
+                  <span class="text-sm text-foreground">{{ values.endDate }}</span>
                 </div>
               </div>
               <div class="space-y-4">
                 <div class="flex justify-between items-center">
                   <span class="text-sm font-medium text-muted-foreground">Usage Limit:</span> 
-                  <span class="text-sm text-foreground">{{ usageLimit }}</span>
+                  <span class="text-sm text-foreground">{{ values.usageLimit }}</span>
                 </div>
                 <div class="flex justify-between items-center">
                   <span class="text-sm font-medium text-muted-foreground">Used:</span> 
-                  <span class="text-sm text-foreground">{{ used }}</span>
+                  <span class="text-sm text-foreground">{{ values.used }}</span>
                 </div>
               </div>
               <div class="space-y-4">
                 <div class="flex justify-between items-center">
                   <span class="text-sm font-medium text-muted-foreground">Once per customer:</span> 
-                  <span class="text-sm text-foreground">{{ oncePerCustomer ? "Yes" : "No" }}</span>
+                  <span class="text-sm text-foreground">{{ values.oncePerCustomer ? "Yes" : "No" }}</span>
                 </div>
                 <div class="flex justify-between items-center">
                   <span class="text-sm font-medium text-muted-foreground">Once per order:</span> 
-                  <span class="text-sm text-foreground">{{ oncePerOrder ? "Yes" : "No" }}</span>
+                  <span class="text-sm text-foreground">{{ values.oncePerOrder ? "Yes" : "No" }}</span>
                 </div>
               </div>
             </div>
           </div>
-          <VoucherCodes :voucherUid="uid" />
+          <VoucherCodes :voucherUid="values.uid" />
         </section>
       </div>
     </div>
 
     <!-- Voucher Form Modal -->
-    <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/6'">
+    <Modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/6'">
       <template v-slot:header>
         <h3 class="text-lg font-semibold text-foreground">Voucher Form</h3>
       </template>
       <template v-slot:body>
-        <form class="space-y-6">
+        <Form class="space-y-6" @submit="submitVoucherForm">
           <div class="grid grid-cols-4 gap-4">
-            <label class="block col-span-2 space-y-2">
-              <span class="text-sm font-medium text-foreground">Voucher Name</span>
-              <input
-                :class="['form-input w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50', {'border-destructive animate-pulse': errors.name }]"
-                type="text"
-                v-model="name"
-                placeholder="Name ..."
-              />
-            </label>
-            <label class="block col-span-1 space-y-2">
-              <span class="text-sm font-medium text-foreground">Start Date</span>
-              <input
-                :class="['form-input w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50', {'border-destructive animate-pulse': errors.startDate }]"
-                type="date"
-                v-model="startDate"
-              />
-            </label>
-            <label class="block col-span-1 space-y-2">
-              <span class="text-sm font-medium text-foreground">End Date</span>
-              <input
-                :class="['form-input w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50', {'border-destructive animate-pulse': errors.endDate }]"
-                type="date"
-                v-model="endDate"
-              />
-            </label>
+            <FormField name="name" v-slot="{ componentField }">
+              <FormItem class="col-span-2">
+                <FormLabel>Voucher Name</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" placeholder="Name ..." />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="startDate" v-slot="{ componentField }">
+              <FormItem class="col-span-1">
+                <FormLabel>Start Date</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" type="date" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="endDate" v-slot="{ componentField }">
+              <FormItem class="col-span-1">
+                <FormLabel>End Date</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" type="date" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
           </div>
           <div class="grid grid-cols-4 gap-4">
-            <label class="block col-span-2 space-y-2">
-              <span class="text-sm font-medium text-foreground">Usage Limit</span>
-              <input
-                :class="['form-input w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50', {'border-destructive animate-pulse': errors.usageLimit }]"
-                type="number"
-                min="1"
-                v-model="usageLimit"
-              />
-            </label>
+            <FormField name="usageLimit" v-slot="{ componentField }">
+              <FormItem class="col-span-2">
+                <FormLabel>Usage Limit</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" type="number" min="1" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
           </div>
           <div class="grid grid-cols-2 gap-4">
-            <label class="flex items-center space-x-2">
-              <input
-                class="form-checkbox h-4 w-4 rounded border-input text-primary focus:ring-primary"
-                type="checkbox"
-                v-model="oncePerCustomer"
-                checked
-              />
-              <span class="text-sm font-medium text-foreground">Once Per Customer</span>
-            </label>
-            <label class="flex items-center space-x-2">
-              <input
-                class="form-checkbox h-4 w-4 rounded border-input text-primary focus:ring-primary"
-                type="checkbox"
-                v-model="oncePerOrder"
-                checked
-              />
-              <span class="text-sm font-medium text-foreground">Once Per Order</span>
-            </label>
+            <FormField name="oncePerCustomer" v-slot="{ value, handleChange }">
+              <FormItem class="flex items-center space-x-2">
+                <FormControl>
+                  <Checkbox :checked="value" @update:checked="handleChange" />
+                </FormControl>
+                <FormLabel>Once Per Customer</FormLabel>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="oncePerOrder" v-slot="{ value, handleChange }">
+              <FormItem class="flex items-center space-x-2">
+                <FormControl>
+                  <Checkbox :checked="value" @update:checked="handleChange" />
+                </FormControl>
+                <FormLabel>Once Per Order</FormLabel>
+                <FormMessage />
+              </FormItem>
+            </FormField>
           </div>
 
           <div class="flex justify-end">
-            <button 
-              type="submit"
-              class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2"
-              @click.prevent="submitVoucherForm">
-              Save Voucher
-            </button>
+            <Button type="submit">Save Voucher</Button>
           </div>
-        </form>
+        </Form>
       </template>
-    </fel-modal>
+    </Modal>
   </div>
 </template>

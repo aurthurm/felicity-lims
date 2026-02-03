@@ -47,7 +47,7 @@ export default function useFormUtils<T extends Record<string, any>>(options: For
             state.value.isDirty = true;
             onChange?.(newValues as T);
         },
-        { deep: true }
+        { deep: true },
     );
 
     // Field operations
@@ -166,7 +166,7 @@ export default function useFormUtils<T extends Record<string, any>>(options: For
                     callback(newValue, oldValue);
                 }
             },
-            { deep: true, immediate: true }
+            { deep: true, immediate: true },
         );
     };
 

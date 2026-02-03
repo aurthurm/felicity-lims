@@ -396,7 +396,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
             const res = await withClientMutation<TokenRefreshMutation, TokenRefreshMutationVariables>(
                 TokenRefreshDocument,
                 { refreshToken: auth.value.refresh },
-                'refresh'
+                'refresh',
             );
 
             if (!res) {
@@ -443,7 +443,6 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
                 return;
             }
 
-
             auth.value.refreshTokenTimeout = setTimeout(refreshToken, timeout);
         } catch {}
     };
@@ -458,7 +457,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
             const res = await withClientMutation<AuthenticateUserMutation, AuthenticateUserMutationVariables>(
                 AuthenticateUserDocument,
                 payload,
-                'authenticateUser'
+                'authenticateUser',
             );
 
             if (!res) {
@@ -477,7 +476,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
                     username: payload.username,
                     success: true,
                 },
-                'low'
+                'low',
             );
 
             // Update analytics
@@ -499,7 +498,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
                     success: false,
                     error: errorMessage,
                 },
-                'medium'
+                'medium',
             );
 
             return false;
@@ -522,7 +521,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
             const res = await withClientMutation<SwitchActiveLaboratoryMutation, SwitchActiveLaboratoryMutationVariables>(
                 SwitchActiveLaboratoryDocument,
                 { laboratoryUid },
-                'switchActiveLaboratory'
+                'switchActiveLaboratory',
             );
 
             if (!res) {
@@ -572,7 +571,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
                         newLaboratory: laboratoryUid,
                         laboratoryName: newLab.name,
                     },
-                    'low'
+                    'low',
                 );
             }
 
@@ -587,7 +586,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
                     success: false,
                     error: String(err),
                 },
-                'medium'
+                'medium',
             );
 
             return false;
@@ -753,7 +752,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
     const recordSecurityEvent = async (
         type: IAuthAnalytics['securityEvents'][0]['type'],
         details: Record<string, any>,
-        severity: 'low' | 'medium' | 'high'
+        severity: 'low' | 'medium' | 'high',
     ) => {
         const event = {
             type,
@@ -891,7 +890,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
             await withClientMutation<RequestPassResetMutation, RequestPassResetMutationVariables>(
                 RequestPassResetDocument,
                 { email },
-                'requestPasswordReset'
+                'requestPasswordReset',
             );
 
             setReceivedResetToken(true);
@@ -909,7 +908,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
             const res = await withClientMutation<ValidatePassResetTokenMutation, ValidatePassResetTokenMutationVariables>(
                 ValidatePassResetTokenDocument,
                 { token },
-                'validatePasswordResetToken'
+                'validatePasswordResetToken',
             );
 
             auth.value.resetData = {
@@ -937,7 +936,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
                     password,
                     passwordc,
                 },
-                'resetPassword'
+                'resetPassword',
             );
 
             setForgotPassword(false);
@@ -969,7 +968,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
                 }
             }
         },
-        { deep: true }
+        { deep: true },
     );
 
     // Watch for route changes to update session activity
@@ -977,7 +976,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
         () => router.currentRoute.value.path,
         () => {
             updateSessionActivity();
-        }
+        },
     );
 
     return {

@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router';
 import { DocumentType } from '@/types/gql';
 import DocumentCard from './DocumentCard.vue'
 import { ref } from 'vue';
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 
 defineProps<{documents: DocumentType[]}>()
 
@@ -49,32 +50,32 @@ function toggleView() {
     </div>
 
     <div v-else class="overflow-x-auto rounded-lg border border-border bg-card">
-      <table class="min-w-full divide-y divide-border fel-table">
-        <thead class="bg-muted/50">
-          <tr>
-            <th scope="col" class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Name</th>
-            <th scope="col" class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Created At</th>
-            <th scope="col" class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Updated At</th>
-            <th scope="col" class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-border bg-card">
-          <tr 
+      <Table class="min-w-full divide-y divide-border">
+        <TableHeader class="bg-muted/50">
+          <TableRow>
+            <TableHead scope="col" class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Name</TableHead>
+            <TableHead scope="col" class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Created At</TableHead>
+            <TableHead scope="col" class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Updated At</TableHead>
+            <TableHead scope="col" class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody class="divide-y divide-border bg-card">
+          <TableRow 
             v-for="doc in documents" 
             :key="doc.uid" 
             class="hover:bg-accent/50 transition-colors"
           >
-            <td 
+            <TableCell 
               class="px-4 py-3 text-sm font-medium text-card-foreground cursor-pointer hover:text-accent-foreground" 
               @click.stop="handleEdit(doc)"
               role="button"
               :aria-label="`Edit document: ${doc.name}`"
             >
               {{ doc.name }}
-            </td>
-            <td class="px-4 py-3 text-sm text-muted-foreground">{{ formatDate(doc.createdAt) }}</td>
-            <td class="px-4 py-3 text-sm text-muted-foreground">{{ formatDate(doc.updatedAt) }}</td>
-            <td class="px-4 py-3 text-sm">
+            </TableCell>
+            <TableCell class="px-4 py-3 text-sm text-muted-foreground">{{ formatDate(doc.createdAt) }}</TableCell>
+            <TableCell class="px-4 py-3 text-sm text-muted-foreground">{{ formatDate(doc.updatedAt) }}</TableCell>
+            <TableCell class="px-4 py-3 text-sm">
               <button 
                 @click.stop="handleEdit(doc)"
                 class="inline-flex items-center justify-center rounded-full h-8 w-8 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 hover:bg-accent hover:text-accent-foreground"
@@ -82,15 +83,20 @@ function toggleView() {
               >
                 <Edit class="w-4 h-4" aria-hidden="true" />
               </button>
-            </td>
-          </tr>
-          <tr v-if="documents.length === 0">
-            <td colspan="4" class="px-4 py-8 text-center text-sm text-muted-foreground">
-              No documents found
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </TableCell>
+          </TableRow>
+          <TableEmpty v-if="documents.length === 0" :colspan="4">
+            <Empty class="border-0 bg-transparent p-0">
+              <EmptyContent>
+                <EmptyHeader>
+                  <EmptyTitle>No documents found</EmptyTitle>
+                  <EmptyDescription>Try adjusting your filters or add a new document.</EmptyDescription>
+                </EmptyHeader>
+              </EmptyContent>
+            </Empty>
+          </TableEmpty>
+        </TableBody>
+      </Table>
     </div>
   </div>
 </template>

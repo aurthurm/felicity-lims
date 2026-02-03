@@ -231,7 +231,9 @@ fieldset[disabled] .multiselect {
     -webkit-transition: -webkit-transform 0.2s ease;
     transition: -webkit-transform 0.2s ease;
     transition: transform 0.2s ease;
-    transition: transform 0.2s ease, -webkit-transform 0.2s ease;
+    transition:
+        transform 0.2s ease,
+        -webkit-transform 0.2s ease;
 }
 .multiselect__select:before {
     position: relative;

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import TabsNav from "@/components/ui/tabs/TabsNav.vue";
   import { ref, computed, defineAsyncComponent } from 'vue';
   const Voucher = defineAsyncComponent(
     () => import('./Voucher.vue')
@@ -15,7 +16,7 @@
 
 
 <template>
-  <fel-tabs :tabs="tabs" />
+  <TabsNav :tabs="tabs" />
 </template>
 
 

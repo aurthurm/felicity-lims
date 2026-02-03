@@ -78,7 +78,7 @@ axiosInstance.interceptors.request.use(
     error => {
         toastError(`Request failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
         return Promise.reject(error);
-    }
+    },
 );
 
 // Response Interceptor
@@ -130,7 +130,7 @@ axiosInstance.interceptors.response.use(
                     },
                     {
                         baseURL: GQL_BASE_URL,
-                    }
+                    },
                 );
 
                 // Update localStorage with new auth data
@@ -148,7 +148,7 @@ axiosInstance.interceptors.response.use(
         const errorMessage = err.response?.data?.message || err.message || 'An error occurred';
         toastError(errorMessage);
         return Promise.reject(err);
-    }
+    },
 );
 
 export default axiosInstance;

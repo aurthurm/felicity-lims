@@ -1,6 +1,8 @@
 import { defineComponent, ref, computed, defineAsyncComponent } from 'vue';
 import { useSampleStore } from '@/stores/sample';
 import { useSetupStore } from '@/stores/setup';
+import TabsNav from '@/components/ui/tabs/TabsNav.vue';
+import PageHeading from '@/components/common/PageHeading.vue';
 const StockCategory = defineAsyncComponent(() => import('./StockCategory'));
 const StockItem = defineAsyncComponent(() => import('./StockItem'));
 const StockUnit = defineAsyncComponent(() => import('./StockUnit'));
@@ -28,8 +30,8 @@ const InventoryHome = defineComponent({
         const { tabs } = this.exposed;
         return (
             <div class="space-y-6">
-                <fel-heading title="Inventory Management" />
-                <fel-tabs tabs={tabs} />
+                <PageHeading title="Inventory Management" />
+                <TabsNav tabs={tabs} />
             </div>
         );
     },

@@ -1,64 +1,59 @@
-# UI Migration Plan (shadcn-vue)
+# UI Migration Plan (shadcn-vue) — Reassessment
 
-Principles:
-- Use shadcn-vue defaults as-is.
-- Avoid custom styling except layout (rows/columns/grids/spacing).
-- Preserve existing component APIs during adapter phase to avoid large view changes.
+Date: 2026-01-31
 
-## Phase 0 — Inventory & Mapping
-- [ ] Build component mapping table (Fel* → shadcn-vue primitives)
-- [ ] Identify high-usage views and prioritize migration order
-- [ ] Validate shadcn components are imported and available
+## Scope
 
-## Phase 1 — Component Adapters (Fel* wrappers)
-- [ ] FelButton → ui/button
-- [ ] FelModal → ui/dialog
-- [ ] FelDrawer → ui/sheet (or ui/drawer if required)
-- [ ] FelTabs + FelTabsAside → ui/tabs
-- [ ] FelSelect → ui/select
-- [ ] FelLoader → ui/spinner
-- [ ] FelBadge → ui/badge
-- [ ] FelAccordion → ui/accordion
-- [ ] FelInputTags → ui/tags-input
-- [ ] FelAutoComplete → ui/command + ui/popover
+Reassess the entire webapp for any remaining UI migration work to shadcn-vue. The focus is on legacy UI primitives and adapter coverage, not feature-level components.
 
-## Phase 2 — Navigation & Layout
-- [ ] NavigationMain → ui/sidebar + ui/navigation-menu (where applicable)
-- [ ] Breadcrumbs → ui/breadcrumb
-- [ ] Layout shells updated to use shadcn defaults
+## Findings
 
-## Phase 3 — Tables & Lists
-- [ ] FelDataTable → ui/table (preserve sorting/filter/pagination logic)
-- [ ] Pagination → ui/pagination
-- [ ] Replace ad-hoc tables where they bypass FelDataTable
+### 1) Adapter coverage is complete
 
-## Phase 4 — Forms & Inputs
-- [ ] EnhancedFormInput → ui/input
-- [ ] EnhancedFormSelect → ui/select
-- [ ] FelProtectedInput → ui/input (retain behavior)
-- [ ] Switches → ui/switch
-- [ ] Checkboxes → ui/checkbox
-- [ ] Radio groups → ui/radio-group
-- [ ] Form wrappers → ui/form (label, description, message)
+All legacy Fel\* primitives are now wrappers over shadcn-vue components:
 
-## Phase 5 — Feedback & Overlays
-- [ ] Alerts → ui/alert
-- [ ] Confirm dialogs → ui/alert-dialog
-- [ ] Toasts → ui/sonner
-- [ ] Tooltips → ui/tooltip
-- [ ] Popovers → ui/popover
-- [ ] Empty states → ui/empty
+- FelButton → ui/button
+- FelModal → ui/dialog
+- FelDrawer → ui/sheet (drawer fallback)
+- FelTabs / FelTabsAside → ui/tabs
+- FelSelect → ui/select
+- FelSwitch → ui/switch
+- FelLoader → ui/spinner
+- FelAccordion → ui/accordion
+- FelBadge → ui/badge
+- FelInputTags → ui/tags-input
+- FelAutoComplete → ui/command + ui/popover
+- FelDataTable → ui/table + ui/pagination
+- FelProtectedInput → ui/input
 
-## Phase 6 — Feature Screens
-- [ ] Admin listings (users, labs, inventory, etc.)
-- [ ] Dashboard views
-- [ ] Reflex editor UI chrome (non-canvas)
-- [ ] Inventory flows
-- [ ] Patient & client flows
-- [ ] Billing flows
+### 2) No legacy primitives remain
 
-## Phase 7 — Cleanup & QA
-- [ ] Remove unused custom CSS
-- [ ] Remove deprecated components
-- [ ] Run lint + smoke checks
-- [ ] Accessibility and focus state review
+Search for removed/legacy primitives found nothing:
+
+- EnhancedFormInput / EnhancedFormSelect: none
+- Base\* input/button/select patterns: none
+
+### 3) Feature components still present (expected)
+
+These are higher-level components that are not direct shadcn replacements, but they already rely on shadcn tokens or Fel\* adapters:
+
+- FelNotification, FelAuditLog
+- FelSampleListing, FelAnalyisRequestListing
+- FelTreeItem, FelInbox, FelJsonPreViewer
+- FelPageHeading, FelAdminBreadCrumb, FelLink, FelFooterMain
+- FelTaskCard, FelBoardCard
+
+## Remaining Migration Work
+
+**None required for the base UI migration.** All primitives and shared adapters are aligned with shadcn-vue.
+
+## Optional Follow-ups (if desired)
+
+1. Adapter retirement: gradually replace Fel\* wrappers with direct shadcn usage in views to reduce indirection.
+2. Form consistency: standardize on ui/form wrappers in newer or frequently modified forms for consistent validation and layout.
+3. Visual QA sweep: verify spacing/typography for feature components that don’t directly map to shadcn primitives (e.g., FelInbox, FelTreeItem).
+
+## Ongoing Guidance
+
+- New screens should use shadcn-vue primitives directly.
+- Existing views can keep Fel\* adapters unless we explicitly decide to deprecate them.

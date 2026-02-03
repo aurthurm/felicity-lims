@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import TabsNav from "@/components/ui/tabs/TabsNav.vue";
 import useApiUtil from "@/composables/api_util";
 import { GetGrindPostersByBoardDocument, GetGrindPostersByBoardQuery, GetGrindPostersByBoardQueryVariables } from "@/graphql/operations/grind.queries";
 import { GrindBoardType, GrindPosterType } from "@/types/gql";
 import { computed, defineAsyncComponent, PropType, ref, toRef, watch } from "vue";
 
+defineOptions({ name: 'BoardView' })
 const { withClientQuery } = useApiUtil();
 
 const props = defineProps({
@@ -52,7 +54,7 @@ const tabs = computed(() => [
     
     <div class="border-t border-border my-4"></div>
 
-    <fel-tabs 
+    <TabsNav 
       :tabs="tabs" 
       initial-tab="board-view"
       class="mt-4"

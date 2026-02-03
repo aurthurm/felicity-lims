@@ -1,16 +1,25 @@
 <script setup lang="ts">
   import { ref, computed, defineAsyncComponent } from 'vue';
-  import { useField, useForm } from 'vee-validate';
+  import { useForm } from 'vee-validate';
   import * as yup from 'yup';
   import { ReferralLaboratoryType } from '@/types/gql'
   import { AddReferralLaboratoryDocument, AddReferralLaboratoryMutation, AddReferralLaboratoryMutationVariables,
     EditReferralLaboratoryDocument, EditReferralLaboratoryMutation, EditReferralLaboratoryMutationVariables } from '@/graphql/operations/shipment.mutations';
   import { useShipmentStore } from '@/stores/shipment';
   import  useApiUtil  from '@/composables/api_util';
-  const modal = defineAsyncComponent(
-    () => import("@/components/ui/FelModal.vue")
-  )
-
+  import { Button } from "@/components/ui/button";
+  import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+  import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+  } from "@/components/ui/form";
+import PageHeading from "@/components/common/PageHeading.vue"
   const shipmentStore = useShipmentStore();
   const { withClientMutation } = useApiUtil()
   
@@ -41,14 +50,6 @@
       isReference: false,
     },
   });
-
-  const { value: name, errorMessage: nameError } = useField<string>('name');
-  const { value: code, errorMessage: codeError } = useField<string | null>('code');
-  const { value: url, errorMessage: urlError } = useField<string | null>('url');
-  const { value: username, errorMessage: usernameError } = useField<string | null>('username');
-  const { value: password, errorMessage: passwordError } = useField<string | null>('password');
-  const { value: isReferral } = useField<boolean>('isReferral');
-  const { value: isReference } = useField<boolean>('isReference');
 
   shipmentStore.fetchReferralLaboratories();
   const referralLaboratories = computed(() => shipmentStore.getReferalLaboratories)
@@ -112,64 +113,66 @@
 
 <template>
   <div>
-    <fel-heading title="Referral Labs">
-      <fel-button @click="FormManager(true)">Add Referral Laboratory</fel-button>
-    </fel-heading>
+    <PageHeading title="Referral Labs">
+      <Button @click="FormManager(true)">Add Referral Laboratory</Button>
+    </PageHeading>
 
     <div class="overflow-x-auto mt-4">
       <div class="align-middle inline-block min-w-full rounded-lg shadow-md bg-card p-6">
-        <table class="min-w-full fel-table">
-          <thead class="bg-muted">
-            <tr>
-              <th class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Name</th>
-              <th class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Code</th>
-              <th class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">URL</th>
-              <th class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Is Referral</th>
-              <th class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Is Reference</th>
-              <th class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Has Username</th>
-              <th class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Has Password</th>
-              <th class="px-3 py-3 border-b border-border"></th>
-            </tr>
-          </thead>
-          <tbody class="bg-background divide-y divide-border">
-            <tr v-for="laboratory in referralLaboratories" :key="laboratory?.uid" class="hover:bg-muted/50 transition-colors">
-              <td class="px-3 py-2 text-sm text-foreground wrap-break-word">
+        <Table class="min-w-full">
+          <TableHeader class="bg-muted">
+            <TableRow>
+              <TableHead class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Name</TableHead>
+              <TableHead class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Code</TableHead>
+              <TableHead class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">URL</TableHead>
+              <TableHead class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Is Referral</TableHead>
+              <TableHead class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Is Reference</TableHead>
+              <TableHead class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Has Username</TableHead>
+              <TableHead class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Has Password</TableHead>
+              <TableHead class="px-3 py-3 border-b border-border"></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody class="bg-background divide-y divide-border">
+            <TableRow v-for="laboratory in referralLaboratories" :key="laboratory?.uid" class="hover:bg-muted/50 transition-colors">
+              <TableCell class="px-3 py-2 text-sm text-foreground wrap-break-word">
                 {{ laboratory?.name }}
-              </td>
-              <td class="px-3 py-2 text-sm text-foreground wrap-break-word">
+              </TableCell>
+              <TableCell class="px-3 py-2 text-sm text-foreground wrap-break-word">
                 {{ laboratory?.code }}
-              </td>
-              <td class="px-3 py-2 text-sm text-foreground wrap-break-word">
+              </TableCell>
+              <TableCell class="px-3 py-2 text-sm text-foreground wrap-break-word">
                 {{ laboratory?.url }}
-              </td>
-              <td class="px-3 py-2 text-sm text-foreground">
+              </TableCell>
+              <TableCell class="px-3 py-2 text-sm text-foreground">
                  {{ laboratory?.isReferral ? 'Yes' : 'No' }}
-              </td>
-              <td class="px-3 py-2 text-sm text-foreground">
+              </TableCell>
+              <TableCell class="px-3 py-2 text-sm text-foreground">
                  {{ laboratory?.isReference ? 'Yes' : 'No' }}
-              </td>
-              <td class="px-3 py-2 text-sm text-foreground">
+              </TableCell>
+              <TableCell class="px-3 py-2 text-sm text-foreground">
                  {{ !!laboratory?.username ? "Yes" : "No" }}
-              </td>
-              <td class="px-3 py-2 text-sm text-foreground">
+              </TableCell>
+              <TableCell class="px-3 py-2 text-sm text-foreground">
                  {{ !!laboratory?.password ? "Yes" : "No" }}
-              </td>
-              <td class="px-3 py-2 text-right text-sm">
-                <button
-                  @click="FormManager(false, laboratory)"
-                  class="rounded-md border border-secondary px-2 py-1 text-xs font-medium text-secondary transition-colors hover:bg-secondary hover:text-secondary-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1"
-                 >
+              </TableCell>
+              <TableCell class="px-3 py-2 text-right text-sm">
+                <Button variant="outline" size="sm" @click="FormManager(false, laboratory)">
                    Edit
-                 </button>
-              </td>
-            </tr>
-            <tr v-if="!referralLaboratories || referralLaboratories.length === 0">
-               <td :colspan="8" class="px-3 py-4 text-center text-sm text-muted-foreground">
-                 No referral laboratories found.
-               </td>
-             </tr>
-          </tbody>
-        </table>
+                </Button>
+              </TableCell>
+            </TableRow>
+            <TableEmpty v-if="!referralLaboratories || referralLaboratories.length === 0" :colspan="8">
+              <Empty class="border-0 bg-transparent p-0">
+                <EmptyContent>
+                  <EmptyHeader>
+                    <EmptyTitle>No referral laboratories found</EmptyTitle>
+                    <EmptyDescription>Add a referral laboratory to get started.</EmptyDescription>
+                  </EmptyHeader>
+                </EmptyContent>
+              </Empty>
+            </TableEmpty>
+          </TableBody>
+        </Table>
       </div>
     </div>
   </div>
@@ -180,95 +183,84 @@
     </template>
 
     <template v-slot:body>
-      <form @submit.prevent="saveForm" class="p-4 space-y-6">
+      <Form @submit="saveForm" class="p-4 space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <label class="block col-span-1">
-            <span class="text-sm font-medium text-foreground">Laboratory Name</span>
-            <input
-              class="mt-1 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
-              v-model="name"
-              placeholder="Name ..."
-            />
-            <p v-if="nameError" class="mt-1 text-sm text-destructive">{{ nameError }}</p>
-          </label>
-          <label class="block col-span-1">
-            <span class="text-sm font-medium text-foreground">Code</span>
-            <input
-              class="mt-1 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
-              v-model="code"
-              placeholder="Code ..."
-            />
-            <p v-if="codeError" class="mt-1 text-sm text-destructive">{{ codeError }}</p>
-          </label>
-          <label class="block col-span-1 md:col-span-2">
-            <span class="text-sm font-medium text-foreground">URL</span>
-            <input
-              class="mt-1 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
-              v-model="url"
-              placeholder="https://example.com ..."
-              type="url"
-            />
-            <p v-if="urlError" class="mt-1 text-sm text-destructive">{{ urlError }}</p>
-          </label>
-          <label class="block col-span-1">
-            <span class="text-sm font-medium text-foreground">Username</span>
-            <input
-              class="mt-1 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
-              v-model="username"
-              placeholder="Optional username ..."
-              autocomplete="off"
-            />
-            <p v-if="usernameError" class="mt-1 text-sm text-destructive">{{ usernameError }}</p>
-          </label>
-          <label class="block col-span-1">
-            <span class="text-sm font-medium text-foreground">Password</span>
-            <input
-              class="mt-1 block w-full rounded-lg border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
-              v-model="password"
-              placeholder="Optional password ..."
-              type="password"
-              autocomplete="new-password"
-            />
-            <p v-if="passwordError" class="mt-1 text-sm text-destructive">{{ passwordError }}</p>
-          </label>
+          <FormField name="name" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Laboratory Name</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Name ..." />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <label for="isReferralToggle" class="flex items-center cursor-pointer col-span-1">
-            <div class="relative">
-              <input
-                type="checkbox"
-                id="isReferralToggle"
-                v-model="isReferral"
-                class="sr-only peer"
-              />
-              <div class="block h-6 w-10 rounded-full bg-muted peer-checked:bg-primary transition"></div>
-              <div class="absolute left-1 top-1 h-4 w-4 rounded-full bg-background border border-border transition-transform peer-checked:translate-x-full"></div>
-            </div>
-            <span class="ml-3 text-sm font-medium text-foreground">Is Referral</span>
-          </label>
+          <FormField name="code" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Code</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Code ..." />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <label for="isReferenceToggle" class="flex items-center cursor-pointer col-span-1">
-             <div class="relative">
-              <input
-                type="checkbox"
-                id="isReferenceToggle"
-                v-model="isReference"
-                class="sr-only peer"
-              />
-               <div class="block h-6 w-10 rounded-full bg-muted peer-checked:bg-primary transition"></div>
-               <div class="absolute left-1 top-1 h-4 w-4 rounded-full bg-background border border-border transition-transform peer-checked:translate-x-full"></div>
-             </div>
-             <span class="ml-3 text-sm font-medium text-foreground">Is Reference</span>
-           </label>
+          <FormField name="url" v-slot="{ componentField }">
+            <FormItem class="md:col-span-2">
+              <FormLabel>URL</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" type="url" placeholder="https://example.com ..." />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="username" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Username</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Optional username ..." autocomplete="off" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="password" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" type="password" placeholder="Optional password ..." autocomplete="new-password" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="isReferral" v-slot="{ value, handleChange }">
+            <FormItem class="flex items-center space-x-2">
+              <FormControl>
+                <Switch :checked="value" @update:checked="handleChange" />
+              </FormControl>
+              <FormLabel>Is Referral</FormLabel>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField name="isReference" v-slot="{ value, handleChange }">
+            <FormItem class="flex items-center space-x-2">
+              <FormControl>
+                <Switch :checked="value" @update:checked="handleChange" />
+              </FormControl>
+              <FormLabel>Is Reference</FormLabel>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
         </div>
         <hr class="border-t border-border" />
-        <button
-          type="submit"
-          class="w-full rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-        >
+        <Button type="submit" class="w-full">
           Save Laboratory
-        </button>
-      </form>
+        </Button>
+      </Form>
     </template>
   </modal>
 </template>

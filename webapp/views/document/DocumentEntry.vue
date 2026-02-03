@@ -3,7 +3,7 @@ import { ref, onMounted, defineAsyncComponent } from 'vue';
 import { useDocumentStore } from '@/stores/document';
 import { Folder } from 'lucide-vue-next';
 import { storeToRefs } from 'pinia';
-
+import PageHeading from "@/components/common/PageHeading.vue"
 // Lazy load components
 const FolderNavigation = defineAsyncComponent(
   () => import('@/components/document/FolderNavigation.vue')
@@ -36,7 +36,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <fel-heading title="Documents" />
+    <PageHeading title="Documents" />
 
     <div class="flex overflow-hidden">
       <!-- Sidebar -->

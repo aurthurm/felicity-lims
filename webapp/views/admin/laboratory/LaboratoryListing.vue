@@ -7,10 +7,27 @@ import { useSetupStore } from "@/stores/setup";
 import useApiUtil from "@/composables/api_util";
 import useNotifyToast from "@/composables/alert_toast";
 import { AddLaboratoryDocument, AddLaboratoryMutation, AddLaboratoryMutationVariables, EditLaboratoryDocument, EditLaboratoryMutation, EditLaboratoryMutationVariables } from "@/graphql/operations/_mutations";
-import { useField, useForm } from "vee-validate";
+import { useForm } from "vee-validate";
 import { object, string } from "yup";
-
-
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import PageHeading from "@/components/common/PageHeading.vue"
 const { toastSuccess, toastError } = useNotifyToast();
 const { withClientQuery, withClientMutation } = useApiUtil();
 const router = useRouter();
@@ -50,7 +67,7 @@ const formSchema = object({
   businessPhone: string().nullable(),
 });
 
-const { handleSubmit, errors, resetForm, setValues } = useForm({
+const { handleSubmit, resetForm, setValues } = useForm({
   validationSchema: formSchema,
   initialValues: {
     name: "",
@@ -58,10 +75,6 @@ const { handleSubmit, errors, resetForm, setValues } = useForm({
     businessPhone: "",
   },
 });
-
-const { value: name } = useField<string>("name");
-const { value: labManagerUid } = useField<string | null>("labManagerUid");
-const { value: businessPhone } = useField<string | null>("businessPhone");
 
 function FormManager(create: boolean, obj: any):void {
     formAction.value = create;
@@ -106,92 +119,98 @@ function FormManager(create: boolean, obj: any):void {
 
 <template>
   <div class="space-y-6">
-      <fel-heading title="Laboratories" description="Manage your laboratories and their details.">
-          <fel-button @click="FormManager(true, null)">Add Laboratory</fel-button>
-      </fel-heading>
+      <PageHeading title="Laboratories" description="Manage your laboratories and their details.">
+          <Button @click="FormManager(true, null)">Add Laboratory</Button>
+      </PageHeading>
 
       <div class="rounded-md border bg-card">
           <div class="relative w-full overflow-auto">
-              <table class="w-full caption-bottom text-sm fel-table">
-                  <thead class="[&_tr]:border-b">
-                      <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                          <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Name</th>
-                          <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Manager</th>
-                          <!-- <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Location</th> -->
-                          <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Contact Phone</th>
-                          <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground"></th>
-                      </tr>
-                  </thead>
-                  <tbody class="[&_tr:last-child]:border-0">
-                      <tr v-for="lab in laboratories" :key="lab?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                          <td class="px-4 py-2 align-middle">{{ lab?.name }}</td>
-                          <td class="px-4 py-2 align-middle">{{ getManagerName(lab) }}</td>
-                          <!-- <td class="px-4 py-2 align-middle"></td> -->
-                          <td class="px-4 py-2 align-middle">{{ lab?.businessPhone }}</td>
-                          <td class="px-4 py-2 align-middle text-right">
-                              <button @click="FormManager(false, lab)" 
-                                  class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
+              <Table class="w-full caption-bottom text-sm">
+                  <TableHeader class="[&_tr]:border-b">
+                      <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                          <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Name</TableHead>
+                          <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Manager</TableHead>
+                          <!-- <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Location</TableHead> -->
+                          <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Contact Phone</TableHead>
+                          <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground"></TableHead>
+                      </TableRow>
+                  </TableHeader>
+                  <TableBody class="[&_tr:last-child]:border-0">
+                      <TableRow v-for="lab in laboratories" :key="lab?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                          <TableCell class="px-4 py-2 align-middle">{{ lab?.name }}</TableCell>
+                          <TableCell class="px-4 py-2 align-middle">{{ getManagerName(lab) }}</TableCell>
+                          <!-- <TableCell class="px-4 py-2 align-middle"></TableCell> -->
+                          <TableCell class="px-4 py-2 align-middle">{{ lab?.businessPhone }}</TableCell>
+                          <TableCell class="px-4 py-2 align-middle text-right">
+                              <Button variant="outline" size="sm" @click="FormManager(false, lab)">
                                   Edit
-                              </button>
-                          </td>
-                      </tr>
-                  </tbody>
-              </table>
+                              </Button>
+                          </TableCell>
+                      </TableRow>
+                      <TableEmpty v-if="!laboratories || laboratories.length === 0" :colspan="4">
+                        <Empty class="border-0 bg-transparent p-0">
+                          <EmptyContent>
+                            <EmptyHeader>
+                              <EmptyTitle>No laboratories found</EmptyTitle>
+                              <EmptyDescription>Add a laboratory to get started.</EmptyDescription>
+                            </EmptyHeader>
+                          </EmptyContent>
+                        </Empty>
+                      </TableEmpty>
+                  </TableBody>
+              </Table>
           </div>
       </div>
   </div>
 
   <!-- Location Edit Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false">
+  <Modal v-if="showModal" @close="showModal = false">
       <template v-slot:header>
           <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
       </template>
 
       <template v-slot:body>
-          <form class="space-y-6" @submit.prevent="saveForm">
-              <div class="space-y-2">
-                  <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                      Laboratory Name
-                  </label>
-                  <input
-                      class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                      v-model="name"
-                      placeholder="Name ..."
-                  />
-                  <div class="text-sm text-destructive">{{ errors.name }}</div>
-              </div>
-              <div class="space-y-2">
-                <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                  Lab Manager
-                </label>
-                <select 
-                  v-model="labManagerUid"
-                  class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  <option value="">Select Manager</option>
-                  <option v-for="user in users" :key="user?.uid" :value="user.uid">
-                    {{ user?.firstName }} {{ user?.lastName }}
-                  </option>
-                </select>
-              </div>
-              <div class="space-y-2">
-                  <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                      Business Phone
-                  </label>
-                  <input
-                      class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                      v-model="businessPhone"
-                      placeholder="Business Phone ..."
-                  />
-              </div>
+          <Form class="space-y-6" @submit="saveForm">
+              <FormField name="name" v-slot="{ componentField }">
+                  <FormItem>
+                      <FormLabel>Laboratory Name</FormLabel>
+                      <FormControl>
+                          <Input v-bind="componentField" placeholder="Name ..." />
+                      </FormControl>
+                      <FormMessage />
+                  </FormItem>
+              </FormField>
+              <FormField name="labManagerUid" v-slot="{ componentField }">
+                  <FormItem>
+                      <FormLabel>Lab Manager</FormLabel>
+                      <FormControl>
+                          <Select v-bind="componentField">
+                              <SelectTrigger>
+                                  <SelectValue placeholder="Select Manager" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                  <SelectItem value="">Select Manager</SelectItem>
+                                  <SelectItem v-for="user in users" :key="user?.uid" :value="user.uid">
+                                    {{ user?.firstName }} {{ user?.lastName }}
+                                  </SelectItem>
+                              </SelectContent>
+                          </Select>
+                      </FormControl>
+                      <FormMessage />
+                  </FormItem>
+              </FormField>
+              <FormField name="businessPhone" v-slot="{ componentField }">
+                  <FormItem>
+                      <FormLabel>Business Phone</FormLabel>
+                      <FormControl>
+                          <Input v-bind="componentField" placeholder="Business Phone ..." />
+                      </FormControl>
+                      <FormMessage />
+                  </FormItem>
+              </FormField>
               <hr class="border-border" />
-              <button
-                  type="submit"
-                  class="inline-flex w-full items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
-              >
-                  Save Form
-              </button>
-          </form>
+              <Button type="submit" class="w-full">Save Form</Button>
+          </Form>
       </template>
-  </fel-modal>
+  </Modal>
 </template>

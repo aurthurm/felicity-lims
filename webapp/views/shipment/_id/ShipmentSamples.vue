@@ -2,11 +2,9 @@
 import { useRoute } from "vue-router";
 import { ref, computed, reactive, defineAsyncComponent } from "vue";
 import { SampleType } from "@/types/gql";
+import { Button } from "@/components/ui/button";
 import useShipmentComposable from "@/composables/shipment";
 import { useShipmentStore } from "@/stores/shipment";
-const FButton = defineAsyncComponent(
-  () => import("@/components/ui/buttons/FelButton.vue")
-)
 
 const shipmentStore = useShipmentStore();
 const route = useRoute();
@@ -150,13 +148,13 @@ const sampleManager = (action: string) => {
           </div>
 
           <div>
-            <FButton 
+            <Button 
               @click.prevent="applyChanges()" 
               :color="'sky-800'" 
               class="h-10 px-4"
             >
               Apply
-            </FButton>
+            </Button>
           </div>
         </div>
       </form>
@@ -175,61 +173,56 @@ const sampleManager = (action: string) => {
     <!-- Sample Table View -->
     <div class="rounded-md border border-border">
       <div class="overflow-x-auto">
-        <table class="w-full fel-table">
-          <thead>
-            <tr class="border-b border-border bg-muted/50">
-              <th
+        <Table class="w-full">
+          <TableHeader>
+            <TableRow class="border-b border-border bg-muted/50">
+              <TableHead
                 class="h-10 px-4 text-left align-middle font-medium text-muted-foreground"
                 v-show="shipment?.state === 'preperation'"
               >
-                <input
-                  type="checkbox"
-                  class="h-4 w-4 rounded border-input text-primary focus:ring-primary"
-                  @change="toggleCheckAll()"
-                  v-model="allChecked"
+                <Checkbox
+                  :checked="allChecked"
+                  @update:checked="(value) => { allChecked = value; toggleCheckAll(); }"
                 />
-              </th>
-              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground"></th>
-              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Sample ID</th>
-              <th 
+              </TableHead>
+              <TableHead class="h-10 px-4 text-left align-middle font-medium text-muted-foreground"></TableHead>
+              <TableHead class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Sample ID</TableHead>
+              <TableHead 
                 v-show="shipment?.incoming"
                 class="h-10 px-4 text-left align-middle font-medium text-muted-foreground"
               >
                 External SID
-              </th>
-              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Client Request Id</th>
-              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Date Collected</th>
-              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Analysis</th>
-              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Status</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-border">
-            <tr
+              </TableHead>
+              <TableHead class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Client Request Id</TableHead>
+              <TableHead class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Date Collected</TableHead>
+              <TableHead class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Analysis</TableHead>
+              <TableHead class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody class="divide-y divide-border">
+            <TableRow
               v-for="shipped in shipment?.shippedSamples"
               :key="shipped.sampleUid"
               v-motion-slide-right
               class="hover:bg-muted/50"
             >
-              <td class="p-4 align-middle" v-show="shipment?.state === 'preperation'">
-                <input
-                  type="checkbox"
-                  class="h-4 w-4 rounded border-input text-primary focus:ring-primary"
-                  v-model="shipped.checked"
-                  @change="checkCheck()"
+              <TableCell class="p-4 align-middle" v-show="shipment?.state === 'preperation'">
+                <Checkbox
+                  :checked="shipped.checked"
+                  @update:checked="(value) => { shipped.checked = value; checkCheck(); }"
                 />
-              </td>
-              <td class="p-4 align-middle">
+              </TableCell>
+              <TableCell class="p-4 align-middle">
                 <span
                   v-if="shipped.sample?.priority ?? 0 > 0"
-                  :class="[
-                    'text-sm',
+                  :class="['text-sm',
                     { 'text-destructive': shipped.sample?.priority ?? 0 > 1 }
                   ]"
                 >
                   <font-awesome-icon icon="fa-star" />
                 </span>
-              </td>
-              <td class="p-4 align-middle">
+              </TableCell>
+              <TableCell class="p-4 align-middle">
                 <div class="text-sm font-medium">
                   <router-link
                     v-if="shipped.sample?.analysisRequest?.patient?.uid"
@@ -246,32 +239,32 @@ const sampleManager = (action: string) => {
                   </router-link>
                   <div v-else>{{ shipped.sample?.sampleId }}</div>
                 </div>
-              </td>
-              <td 
+              </TableCell>
+              <TableCell 
                 v-show="shipment?.incoming"
                 class="p-4 align-middle"
               >
                 <div class="text-sm">{{ shipped.extSampleId }}</div>
-              </td>
-              <td class="p-4 align-middle">
+              </TableCell>
+              <TableCell class="p-4 align-middle">
                 <div class="text-sm">{{ shipped.sample?.analysisRequest?.clientRequestId }}</div>
-              </td>
-              <td class="p-4 align-middle">
+              </TableCell>
+              <TableCell class="p-4 align-middle">
                 <div class="text-sm">{{ shipped.sample?.dateCollected }}</div>
-              </td>
-              <td class="p-4 align-middle">
+              </TableCell>
+              <TableCell class="p-4 align-middle">
                 <div class="text-sm">tests</div>
-              </td>
-              <td class="p-4 align-middle">
+              </TableCell>
+              <TableCell class="p-4 align-middle">
                 <span
                   class="inline-flex items-center rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary"
                 >
                   {{ shipped.sample?.status || "unknown" }}
                 </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </div>
     </div>
 

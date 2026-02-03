@@ -6,6 +6,9 @@ import CommentForm from './CommentForm.vue';
 import CommentList from './CommentList.vue';
 import { RequestPolicy } from '@urql/vue';
 import { GrindErrandDiscussionType } from '@/types/gql';
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Spinner } from "@/components/ui/spinner";
 
 interface Props {
     errandUid: string;
@@ -77,13 +80,17 @@ function setEditingComment(discussion: GrindErrandDiscussionType | null) {
     <div role="region" aria-label="Comments section">
         <!-- Loading state -->
         <div v-if="isLoading" class="flex items-center justify-center py-4">
-            <fel-loader message="Loading comments..." variant="muted" size="sm" />
+            <span class="inline-flex items-center gap-2">
+                <Spinner class="size-3" />
+                <span class="text-xs">Loading comments...</span>
+            </span>
         </div>
 
         <!-- Error state -->
-        <div v-else-if="error" class="p-4 border border-destructive bg-destructive/10 text-destructive rounded-md" role="alert">
-            {{ error }}
-        </div>
+        <Alert v-else-if="error" variant="destructive">
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{{ error }}</AlertDescription>
+        </Alert>
 
         <!-- Content -->
         <div v-else>
@@ -108,9 +115,14 @@ function setEditingComment(discussion: GrindErrandDiscussionType | null) {
             />
 
             <!-- Empty state -->
-            <div v-else class="text-center py-8 text-muted-foreground">
-                <p>No comments yet. Be the first to comment!</p>
-            </div>
+            <Empty v-else class="py-8">
+                <EmptyContent>
+                    <EmptyHeader>
+                        <EmptyTitle>No comments yet</EmptyTitle>
+                        <EmptyDescription>Be the first to comment!</EmptyDescription>
+                    </EmptyHeader>
+                </EmptyContent>
+            </Empty>
         </div>
     </div>
 </template>

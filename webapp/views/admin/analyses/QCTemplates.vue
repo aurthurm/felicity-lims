@@ -1,13 +1,25 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue';
-  import { useField, useForm } from 'vee-validate';
+  import { useForm } from 'vee-validate';
   import * as yup from 'yup';
   import { IQCTemplateType, IQCLevelType } from '@/types/gql';
   import { AddQcTemplateDocument, AddQcTemplateMutation, AddQcTemplateMutationVariables,
     EditQcTemplateDocument, EditQcTemplateMutation, EditQcTemplateMutationVariables } from '@/graphql/operations/analyses.mutations';
   import { useAnalysisStore } from '@/stores/analysis';
   import  useApiUtil  from '@/composables/api_util';
+  import { Button } from "@/components/ui/button";
+  import { Input } from "@/components/ui/input";
+  import { Textarea } from "@/components/ui/textarea";
+  import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+  } from "@/components/ui/form";
 
+import PageHeading from "@/components/common/PageHeading.vue"
   const analysisStore = useAnalysisStore()
   const { withClientMutation } = useApiUtil()
   
@@ -32,11 +44,6 @@
       departments: [],
     },
   });
-
-  const { value: name, errorMessage: nameError } = useField<string>('name');
-  const { value: description, errorMessage: descriptionError } = useField<string | null>('description');
-  const { value: qcLevelsField, errorMessage: qcLevelsError } = useField<IQCLevelType[]>('qcLevels');
-  const { value: departments } = useField<any[]>('departments');
 
   analysisStore.fetchQCLevels();
   analysisStore.fetchQCTemplates();
@@ -110,111 +117,105 @@
 
 <template>
     <div>
-      <fel-heading title="QC Templates">
-        <fel-button @click="FormManager(true)">Add QC Template</fel-button>
-      </fel-heading>
+      <PageHeading title="QC Templates">
+        <Button @click="FormManager(true)">Add QC Template</Button>
+      </PageHeading>
 
         <div class="rounded-md border bg-card p-6 shadow-sm">
             <div class="overflow-x-auto">
-                <table class="w-full fel-table">
-                    <thead>
-                    <tr class="border-b border-border bg-muted/50">
-                        <th class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">QC Template Name</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">Quality Control level(s)</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">Department(s)</th>
-                        <th class="px-6 py-3 text-right text-sm font-medium text-muted-foreground">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="templt in qcTemplates" :key="templt?.uid" class="hover:bg-accent/50 transition-colors duration-200">
-                        <td class="px-6 py-4 whitespace-nowrap border-b border-border">
+                <Table class="w-full">
+                    <TableHeader>
+                    <TableRow class="border-b border-border bg-muted/50">
+                        <TableHead class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">QC Template Name</TableHead>
+                        <TableHead class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">Quality Control level(s)</TableHead>
+                        <TableHead class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">Department(s)</TableHead>
+                        <TableHead class="px-6 py-3 text-right text-sm font-medium text-muted-foreground">Actions</TableHead>
+                    </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                    <TableRow v-for="templt in qcTemplates" :key="templt?.uid" class="hover:bg-accent/50 transition-colors duration-200">
+                        <TableCell class="px-6 py-4 whitespace-nowrap border-b border-border">
                           <div class="font-medium text-foreground">{{ templt?.name }}</div>
                           <div class="text-sm text-muted-foreground" v-if="templt?.description">{{ templt?.description }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap border-b border-border">
+                        </TableCell>
+                        <TableCell class="px-6 py-4 whitespace-nowrap border-b border-border">
                           <div class="text-sm text-foreground">{{ levelsNames(templt?.qcLevels ?? []) }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap border-b border-border">
+                        </TableCell>
+                        <TableCell class="px-6 py-4 whitespace-nowrap border-b border-border">
                           <div class="text-sm text-foreground">{{ templt?.category }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right border-b border-border">
-                            <button 
-                              @click="FormManager(false, templt)" 
-                              class="inline-flex items-center px-3 py-1.5 border border-border bg-background text-foreground text-sm font-medium transition-colors duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring hover:bg-accent hover:text-accent-foreground"
-                            >
+                        </TableCell>
+                        <TableCell class="px-6 py-4 whitespace-nowrap text-right border-b border-border">
+                            <Button variant="outline" size="sm" @click="FormManager(false, templt)">
                               Edit
-                            </button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                            </Button>
+                        </TableCell>
+                    </TableRow>
+                    </TableBody>
+                </Table>
             </div>
         </div>
     </div>
 
     <!-- QC Template Form Modal -->
-    <fel-modal v-if="showModal" @close="showModal = false">
+    <Modal v-if="showModal" @close="showModal = false">
         <template v-slot:header>
           <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
         </template>
 
         <template v-slot:body>
-          <form @submit.prevent="saveForm" class="p-6 space-y-6">
+          <Form @submit="saveForm" class="p-6 space-y-6">
             <div class="space-y-4">
-              <div class="space-y-2">
-                <label for="name" class="text-sm font-medium text-muted-foreground">QC Template Name</label>
-                <input
-                  id="name"
-                  class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
-                  v-model="name"
-                  placeholder="Enter template name"
-                />
-                <p v-if="nameError" class="text-sm text-destructive">{{ nameError }}</p>
-              </div>
-              <div class="space-y-2">
-                <label for="description" class="text-sm font-medium text-muted-foreground">Description</label>
-                <textarea
-                  id="description"
-                  class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground resize-none"
-                  v-model="description"
-                  placeholder="Enter template description"
-                  rows="3"
-                />
-                <p v-if="descriptionError" class="text-sm text-destructive">{{ descriptionError }}</p>
-              </div>
-              <div class="space-y-2">
-                <label for="controlLevels" class="text-sm font-medium text-muted-foreground">Quality Control Sample Levels</label>
-                <select 
-                  name="controlLevels" 
-                  id="controlLevels" 
-                  v-model="qcLevelsField"
-                  class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring" 
-                  multiple
-                >
-                  <option disabled value="">Select QC Levels</option>
-                  <option  
-                    v-for="level in qcLevels"
-                    :key="level.uid"
-                    :value="level"
-                    class="py-1"
-                  >
-                    {{ level.level }}
-                  </option>
-                </select>
-                <p class="text-xs text-muted-foreground mt-1">Hold Ctrl/Cmd to select multiple levels</p>
-                <p v-if="qcLevelsError" class="text-sm text-destructive">{{ qcLevelsError }}</p>
-              </div>
+              <FormField name="name" v-slot="{ componentField }">
+                <FormItem>
+                  <FormLabel>QC Template Name</FormLabel>
+                  <FormControl>
+                    <Input v-bind="componentField" placeholder="Enter template name" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+              <FormField name="description" v-slot="{ componentField }">
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea v-bind="componentField" placeholder="Enter template description" rows="3" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+              <FormField name="qcLevels" v-slot="{ componentField }">
+                <FormItem>
+                  <FormLabel>Quality Control Sample Levels</FormLabel>
+                  <FormControl>
+                    <select 
+                      id="controlLevels" 
+                      class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      multiple
+                      v-bind="componentField"
+                    >
+                      <option disabled value="">Select QC Levels</option>
+                      <option  
+                        v-for="level in qcLevels"
+                        :key="level.uid"
+                        :value="level"
+                        class="py-1"
+                      >
+                        {{ level.level }}
+                      </option>
+                    </select>
+                  </FormControl>
+                  <p class="text-xs text-muted-foreground mt-1">Hold Ctrl/Cmd to select multiple levels</p>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
             </div>
 
             <div class="pt-4">
-              <button
-                type="submit"
-                class="w-full inline-flex items-center justify-center bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-              >
+              <Button type="submit" class="w-full">
                 Save Changes
-              </button>
+              </Button>
             </div>
-          </form>
+          </Form>
         </template>
-    </fel-modal>
+    </Modal>
 </template>

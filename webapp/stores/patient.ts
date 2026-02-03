@@ -61,7 +61,7 @@ export const usePatientStore = defineStore('patient', {
                 const result = await withClientQuery<IdentificationTypesQuery, IdentificationTypesQueryVariables>(
                     IdentificationTypesDocument,
                     {},
-                    'identificationAll'
+                    'identificationAll',
                 );
 
                 if (result && Array.isArray(result)) {
@@ -100,7 +100,7 @@ export const usePatientStore = defineStore('patient', {
                 const result = await withClientQuery<GetAllPatientsQuery, GetAllPatientsQueryVariables>(
                     GetAllPatientsDocument,
                     { ...params, sortBy: ['-uid'] },
-                    undefined
+                    undefined,
                 );
 
                 if (result && typeof result === 'object' && 'patientAll' in result) {
@@ -122,7 +122,8 @@ export const usePatientStore = defineStore('patient', {
                     this.patientPageInfo = page?.pageInfo;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingPatients = false;
             }
         },
@@ -160,14 +161,15 @@ export const usePatientStore = defineStore('patient', {
                 const result = await withClientQuery<GetPatientByUidQuery, GetPatientByUidQueryVariables>(
                     GetPatientByUidDocument,
                     { uid },
-                    'patientByUid'
+                    'patientByUid',
                 );
 
                 if (result && typeof result === 'object') {
                     this.patient = result as PatientType;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingPatient = false;
             }
         },
@@ -194,7 +196,7 @@ export const usePatientStore = defineStore('patient', {
                 const result = await withClientQuery<SearchPatientsQuery, SearchPatientsQueryVariables>(
                     SearchPatientsDocument,
                     { queryString },
-                    'patientSearch'
+                    'patientSearch',
                 );
 
                 if (result && Array.isArray(result)) {

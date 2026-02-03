@@ -4,17 +4,7 @@ import useApiUtil from './api_util';
 import { DepartmentType, UserPreferenceType } from '@/types/gql';
 import { GetUserPreferencesDocument, GetUserPreferencesQuery, GetUserPreferencesQueryVariables } from '@/graphql/operations/_queries';
 
-export type ThemeVariant =
-  | 'light'
-  | 'dark'
-  | 'black-and-white'
-  | 'sterile'
-  | 'clinical-blue'
-  | 'emergency-red'
-  | 'sterile-green'
-  | 'warm-neutral'
-  | 'cool-slate'
-  | 'corporate-navy';
+export type ThemeVariant = 'light' | 'dark' | 'system';
 
 interface UserPreference {
     departments?: DepartmentType[];
@@ -38,18 +28,21 @@ export default function userPreferenceComposable() {
      */
     function applyTheme(themeValue: ThemeVariant): void {
         try {
-            // Determine if dark mode should be active for dark class
-            const isDark = themeValue === 'dark' || themeValue === 'emergency-red' || themeValue === 'cool-slate';
+            // Resolve effective theme (system uses prefers-color-scheme)
+            const effectiveTheme =
+                themeValue === 'system'
+                    ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+                    : themeValue;
 
             // Apply dark class to document
-            if (isDark) {
+            if (effectiveTheme === 'dark') {
                 document.documentElement.classList.add('dark');
             } else {
                 document.documentElement.classList.remove('dark');
             }
 
             // Set data-theme attribute for CSS theme selection
-            document.documentElement.setAttribute('data-theme', themeValue);
+            document.documentElement.setAttribute('data-theme', effectiveTheme);
 
             // Save to localStorage
             localStorage.setItem('theme', themeValue);
@@ -75,10 +68,12 @@ export default function userPreferenceComposable() {
     /**
      * Load theme from localStorage, defaulting to light
      */
+    const VALID_THEMES: ThemeVariant[] = ['light', 'dark', 'system'];
+
     function loadPreferredTheme(): void {
         try {
             const savedTheme = localStorage.getItem('theme');
-            const theme = (savedTheme as ThemeVariant) || 'light';
+            const theme = (VALID_THEMES.includes(savedTheme as ThemeVariant) ? savedTheme : 'light') as ThemeVariant;
             applyTheme(theme);
         } catch (error) {
             toastError(`Failed to load preferred theme: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -93,7 +88,7 @@ export default function userPreferenceComposable() {
             if (preference.departments) {
                 state.departments = preference.departments;
             }
-            if (preference.theme) {
+            if (preference.theme && VALID_THEMES.includes(preference.theme as ThemeVariant)) {
                 applyTheme(preference.theme as ThemeVariant);
             }
             if (preference.expandedMenu !== undefined && preference.expandedMenu !== null) {
@@ -110,7 +105,7 @@ export default function userPreferenceComposable() {
     /**
      * Update a single preference
      */
-    function updatePreference<K extends keyof typeof state>(key: K, value: typeof state[K]): void {
+    function updatePreference<K extends keyof typeof state>(key: K, value: (typeof state)[K]): void {
         try {
             state[key] = value;
 
@@ -165,7 +160,7 @@ export default function userPreferenceComposable() {
             const data = await withClientQuery<GetUserPreferencesQuery, GetUserPreferencesQueryVariables>(
                 GetUserPreferencesDocument,
                 {},
-                'userPreferences'
+                'userPreferences',
             );
 
             if (data) {

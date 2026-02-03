@@ -17,8 +17,25 @@ import { useLocationStore } from "@/stores/location";
 import { usePatientStore } from "@/stores/patient";
 import { formatDate, isNullOrWs } from "@/utils";
 import dayjs from "dayjs";
-import { useField, useForm } from "vee-validate";
+import { useForm } from "vee-validate";
 import { PatientType, ClientType } from "@/types/gql";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface IPatientIdentificationForm {
     identificationUid: string;
@@ -73,6 +90,9 @@ onMounted(async () => {
   await patientStore.fetchIdentifications();
 });
 
+// Sentinel for optional Select placeholder - reka-ui forbids empty string as SelectItem value
+const SELECT_NONE = "__none__";
+
 // Patient
 const { patient, navigate } = toRefs(props);
 
@@ -83,15 +103,15 @@ const estimateDays = ref(0);
 
 const estimateDOB = () => {
   const estimate = dayjs().subtract(estimateYears.value, 'year').subtract(estimateMonths.value, 'month',).subtract(estimateDays.value, 'day');
-  dateOfBirth.value = estimate.format('YYYY-MM-DD');
-  age.value = estimateYears.value;
+  setFieldValue("dateOfBirth", estimate.format('YYYY-MM-DD'));
+  setFieldValue("age", estimateYears.value);
 }
 
 const calculateAge = () => {
   var now = (new Date()).getFullYear();
-  if (dateOfBirth.value) {
-    const born = new Date(dateOfBirth.value as any).getFullYear()
-    age.value = now - born;
+  if (values.dateOfBirth) {
+    const born = new Date(values.dateOfBirth as any).getFullYear()
+    setFieldValue("age", now - born);
   }
 }
 
@@ -121,7 +141,7 @@ const patientSchema = yup.object({
   ).nullable(),
 });
 
-const { handleSubmit, errors } = useForm({
+const { handleSubmit, values, setFieldValue } = useForm({
   validationSchema: patientSchema,
   initialValues: {
     uid: patient?.value?.uid,
@@ -146,22 +166,6 @@ const { handleSubmit, errors } = useForm({
     identifications: patient?.value?.identifications ?? [],
   } as any,
 });
-
-const { value: clientPatientId } = useField("clientPatientId");
-const { value: firstName } = useField("firstName");
-const { value: middleName } = useField("middleName");
-const { value: lastName } = useField("lastName");
-const { value: client } = useField<ClientType>("client");
-const { value: gender } = useField("gender");
-const { value: age } = useField("age");
-const { value: dateOfBirth } = useField("dateOfBirth");
-const { value: ageDobEstimated } = useField<boolean>("ageDobEstimated");
-const { value: phoneMobile } = useField("phoneMobile");
-const { value: consentSms } = useField<boolean>("consentSms");
-const { value: districtUid } = useField<string>("districtUid");
-const { value: provinceUid } = useField<string>("provinceUid");
-const { value: countryUid } = useField<string>("countryUid");
-const { value: identifications } = useField<IPatientIdentificationForm[]>("identifications");
 
 const submitPatientForm = handleSubmit((values) => {
   if (!values.uid) addPatient(values as PatientType);
@@ -235,238 +239,331 @@ function updatePatient(payload: PatientType) {
 }
 
 
-function getProvinces(event: Event) {
-  locationsStore.filterProvincesByCountry(countryUid.value);
+function getProvinces(countryUid?: string) {
+  const uid = countryUid ?? values.countryUid;
+  if (uid) locationsStore.filterProvincesByCountry(uid);
 }
 
-function getDistricts(event: Event) {
-  locationsStore.filterDistrictsByProvince(provinceUid.value);
+function getDistricts(provinceUid?: string) {
+  const uid = provinceUid ?? values.provinceUid;
+  if (uid) locationsStore.filterDistrictsByProvince(uid);
 }
 
 function addIdentifier() {
-  identifications.value.push({ identificationUid: "", value: "" })
+  const current = (values.identifications ?? []) as IPatientIdentificationForm[];
+  setFieldValue("identifications", [...current, { identificationUid: "", value: "" }]);
 }
 
 function removeIdentifier(index: number) {
-  identifications.value.splice(index, 1)
+  const current = (values.identifications ?? []) as IPatientIdentificationForm[];
+  setFieldValue("identifications", current.filter((_, idx) => idx !== index));
 }
 </script>
 
 <template>
-  <form @submit.prevent="submitPatientForm"
-    autocomplete="off" role="form" aria-label="Patient Information Form">
-    <label class="flex whitespace-nowrap w-full">
-      <span class="text-foreground w-4/12">Patient Unique Identifier</span>
-      <div class="w-full">
-        <input class="form-input mt-1 block w-full" v-model="clientPatientId" placeholder="Patient Unique Identifier" 
-          aria-label="Patient Unique Identifier" aria-required="true" />
-        <div class="text-destructive w-4/12" role="alert">{{ errors.clientPatientId }}</div>
-      </div>
-    </label>
+  <Form
+    class="space-y-6"
+    autocomplete="off"
+    role="form"
+    aria-label="Patient Information Form"
+    @submit="submitPatientForm"
+  >
+    <div class="grid grid-cols-2 gap-6">
+      <FormField name="clientPatientId" v-slot="{ componentField }">
+        <FormItem class="col-span-2">
+          <FormLabel>Patient Unique Identifier</FormLabel>
+          <FormControl>
+            <Input v-bind="componentField" placeholder="Patient Unique Identifier" />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
 
-    <label class="flex whitespace-nowrap w-full">
-      <span class="text-foreground w-4/12">First Name</span>
-      <div class="w-full">
-        <input class="form-input mt-1 w-full" v-model="firstName" placeholder="First Name" 
-          aria-label="First Name" aria-required="true" />
-        <div class="text-destructive w-4/12" role="alert">{{ errors.firstName }}</div>
-      </div>
-    </label>
+      <FormField name="firstName" v-slot="{ componentField }">
+        <FormItem>
+          <FormLabel>First Name</FormLabel>
+          <FormControl>
+            <Input v-bind="componentField" placeholder="First Name" />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
 
-    <label class="flex whitespace-nowrap mb-2 w-full">
-      <span class="text-foreground w-4/12">Middle Name</span>
-      <div class="w-full">
-        <input class="form-input mt-1 w-full" v-model="middleName" placeholder="Middle Name" 
-          aria-label="Middle Name" />
-        <div class="text-destructive w-4/12" role="alert">{{ errors.middleName }}</div>
-      </div>
-    </label>
+      <FormField name="middleName" v-slot="{ componentField }">
+        <FormItem>
+          <FormLabel>Middle Name</FormLabel>
+          <FormControl>
+            <Input v-bind="componentField" placeholder="Middle Name" />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
 
-    <label class="flex whitespace-nowrap w-full">
-      <span class="text-foreground w-4/12">Last Name</span>
-      <div class="w-full">
-        <input class="form-input mt-1 w-full" v-model="lastName" placeholder="Last Name" 
-          aria-label="Last Name" aria-required="true" />
-        <div class="text-destructive w-4/12" role="alert">{{ errors.lastName }}</div>
-      </div>
-    </label>
+      <FormField name="lastName" v-slot="{ componentField }">
+        <FormItem>
+          <FormLabel>Last Name</FormLabel>
+          <FormControl>
+            <Input v-bind="componentField" placeholder="Last Name" />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
 
-    <label class="flex whitespace-nowrap my-2 w-full">
-      <span class="text-foreground w-4/12">Age/DOB Estimated?</span>
-      <div class="w-full flex justify-between items-center">
-        <input type="checkbox" class="form-checkbox text-primary" v-model="ageDobEstimated" 
-          aria-label="Age/DOB Estimated" />
-        <div class="flex justify-start items-center gap-x-2 ml-4" v-show="ageDobEstimated">
-          <label for="estimateYears">
-            <span class="mr-1">Years</span>
-            <input name="estimateYears" type="number" min=0 class="form-input w-24 py-0 text-primary"
-              v-model="estimateYears" @change="estimateDOB()" @keyup="estimateDOB()" 
-              aria-label="Estimated Years" />
-          </label>
-          <label for="estimateMonths">
-            <span class="mr-1">Months</span>
-            <input name="estimateMonths" type="number" min=0 max=12 class="form-input w-24 py-0 text-primary"
-              v-model="estimateMonths" @change="estimateDOB()" @keyup="estimateDOB()" 
-              aria-label="Estimated Months" />
-          </label>
-          <label for="estimateDays">
-            <span class="mr-1">Days</span>
-            <input name="estimateDays" type="number" min=0 max=365 class="form-input w-24 py-0 text-primary"
-              v-model="estimateDays" @change="estimateDOB()" @keyup="estimateDOB()" 
-              aria-label="Estimated Days" />
-          </label>
-        </div>
-        <div class="text-destructive w-4/12" role="alert">{{ errors.ageDobEstimated }}</div>
-      </div>
-    </label>
+      <FormField name="gender" v-slot="{ componentField }">
+        <FormItem>
+          <FormLabel>Gender</FormLabel>
+          <FormControl>
+            <Select v-bind="componentField">
+              <SelectTrigger>
+                <SelectValue placeholder="Select gender" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem v-for="sex of state.genders" :key="sex" :value="sex">
+                  {{ sex }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
 
-    <label class="flex whitespace-nowrap mb-2 w-full">
-      <span class="text-foreground w-4/12">Date of Birth</span>
-      <div class="w-full">
-        <VueDatePicker 
-        class="z-60 disabled:bg-muted" 
-        v-model="dateOfBirth" 
-        :disabled="ageDobEstimated" 
-        @closed="calculateAge()"
-        :max-date="maxDate"
-        aria-label="Date of Birth"></VueDatePicker>
-        <div class="text-destructive w-4/12" role="alert">{{ errors.dateOfBirth }}</div>
-      </div>
-    </label>
+      <FormField name="phoneMobile" v-slot="{ componentField }">
+        <FormItem>
+          <FormLabel>Mobile Number</FormLabel>
+          <FormControl>
+            <Input v-bind="componentField" placeholder="Mobile Number" />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
 
-    <label class="flex whitespace-nowrap mb-2 w-full">
-      <span class="text-foreground w-4/12">Age</span>
-      <div class="w-full">
-        <input class="form-input mt-1 w-full disabled:bg-muted" type="number" v-model="age" placeholder="Age"
-          disabled aria-label="Age" />
-        <div class="text-destructive w-4/12" role="alert">{{ errors.age }}</div>
-      </div>
-    </label>
+      <FormField name="consentSms" v-slot="{ value, handleChange }">
+        <FormItem class="flex items-center space-x-2">
+          <FormControl>
+            <Checkbox :checked="!!value" @update:checked="handleChange" />
+          </FormControl>
+          <FormLabel>Consent to SMS</FormLabel>
+          <FormMessage />
+        </FormItem>
+      </FormField>
 
-    <label class="flex whitespace-nowrap mb-2 w-full">
-      <span class="text-foreground w-4/12">Gender</span>
-      <div class="w-full">
-        <select class="form-select mt-1 w-full" v-model="gender" aria-label="Gender" aria-required="true">
-          <option value=""></option>
-          <option v-for="sex of state.genders" :key="sex" :value="sex">
-            {{ sex }}
-          </option>
-        </select>
-        <div class="text-destructive w-4/12" role="alert">{{ errors.gender }}</div>
-      </div>
-    </label>
+      <FormField name="ageDobEstimated" v-slot="{ value, handleChange }">
+        <FormItem class="col-span-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <FormControl>
+                <Checkbox :checked="!!value" @update:checked="handleChange" />
+              </FormControl>
+              <FormLabel>Age/DOB Estimated?</FormLabel>
+            </div>
+            <div class="flex items-center gap-2" v-show="values.ageDobEstimated">
+              <label class="flex items-center gap-2">
+                <span>Years</span>
+                <Input
+                  type="number"
+                  min="0"
+                  class="w-24"
+                  v-model="estimateYears"
+                  @change="estimateDOB()"
+                  @keyup="estimateDOB()"
+                />
+              </label>
+              <label class="flex items-center gap-2">
+                <span>Months</span>
+                <Input
+                  type="number"
+                  min="0"
+                  max="12"
+                  class="w-24"
+                  v-model="estimateMonths"
+                  @change="estimateDOB()"
+                  @keyup="estimateDOB()"
+                />
+              </label>
+              <label class="flex items-center gap-2">
+                <span>Days</span>
+                <Input
+                  type="number"
+                  min="0"
+                  max="365"
+                  class="w-24"
+                  v-model="estimateDays"
+                  @change="estimateDOB()"
+                  @keyup="estimateDOB()"
+                />
+              </label>
+            </div>
+          </div>
+          <FormMessage />
+        </FormItem>
+      </FormField>
 
-    <label class="flex whitespace-nowrap mb-2 w-full">
-      <span class="text-foreground w-4/12">Mobile Number</span>
-      <div class="w-full">
-        <input class="form-input mt-1 w-full" v-model="phoneMobile" placeholder="Mobile Number" 
-          aria-label="Mobile Number" />
-        <div class="text-destructive w-4/12" role="alert">{{ errors.phoneMobile }}</div>
-      </div>
-    </label>
+      <FormField name="dateOfBirth" v-slot="{ componentField }">
+        <FormItem>
+          <FormLabel>Date of Birth</FormLabel>
+          <FormControl>
+            <VueDatePicker
+              class="z-60 disabled:bg-muted"
+              v-bind="componentField"
+              :disabled="values.ageDobEstimated"
+              @closed="calculateAge()"
+              :max-date="maxDate"
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
 
-    <label class="flex whitespace-nowrap mb-2 w-full">
-      <span class="text-foreground w-4/12">Consent to SMS</span>
-      <div class="w-full">
-        <input type="checkbox" class="form-checkbox text-primary" v-model="consentSms" 
-          aria-label="Consent to SMS" />
-        <div class="text-destructive w-4/12" role="alert">{{ errors.consentSms }}</div>
-      </div>
-    </label>
+      <FormField name="age" v-slot="{ componentField }">
+        <FormItem>
+          <FormLabel>Age</FormLabel>
+          <FormControl>
+            <Input v-bind="componentField" type="number" disabled />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
 
-    <label class="flex whitespace-nowrap mb-2 w-full">
-      <span class="text-foreground w-4/12">Primary Referrer</span>
-      <div class="w-full">
-        <VueMultiselect placeholder="Select a Primary Referrer" v-model="client" :options="state.clients"
-          :searchable="true" label="name" track-by="uid" aria-label="Primary Referrer" aria-required="true">
-        </VueMultiselect>
-        <div class="text-destructive w-4/12" role="alert">{{ errors.client }}</div>
-      </div>
-    </label>
+      <FormField name="client" v-slot="{ componentField }">
+        <FormItem class="col-span-2">
+          <FormLabel>Primary Referrer</FormLabel>
+          <FormControl>
+            <VueMultiselect
+              v-bind="componentField"
+              placeholder="Select a Primary Referrer"
+              :options="state.clients"
+              :searchable="true"
+              label="name"
+              track-by="uid"
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
 
-    <label class="flex whitespace-nowrap mb-2 w-full">
-      <span class="text-foreground w-4/12 flex justify-between items-center">
-        <span class="mr-4">Extra Ids:</span>
-        <div>
-          <button type="button"
-            class="relative px-1 mr-2 mt-4 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-            @click="addIdentifier()"
-            aria-label="Add Extra Identifier">
-            Add
-          </button>
-        </div>
-      </span>
-      <div class="w-full border-border">
-        <div class="flex justify-around items-center w-full" v-for="(identication, index) of identifications" :key="index">
-          <span>Identification</span>
-          <select class="form-select mt-1" v-model="identication.identificationUid" 
-            :aria-label="'Identification Type ' + (index + 1)">
-            <option value=""></option>
-            <option v-for="identifier of patientStore.identifications" :key="identifier.uid" :value="identifier.uid">
-              {{ identifier.name }}
-            </option>
-          </select>
-          <span>Value</span>
-          <input type="text" class="form-input text-primary" v-model="identication.value" 
-            :aria-label="'Identification Value ' + (index + 1)" />
-          <button type="button" class="p-2 text-destructive" @click.prevent="removeIdentifier(index)"
-            :aria-label="'Remove Identification ' + (index + 1)">X</button>
-        </div>
-      </div>
-    </label>
-
-    <hr class="my-2" />
-
-    <div class="grid grid-cols-3 gap-x-4 mb-4">
-      <div class="col-span-1">
-        <label class="flex gap-x-2 items-center whitespace-nowrap w-full">
-          <span class="text-foreground w-4/12">Country</span>
-          <select class="form-select mt-1 w-full" v-model="countryUid" @change="getProvinces($event)"
-            aria-label="Country">
-            <option :value="null"></option>
-            <option v-for="country in state.countries" :key="country.uid" :value="country.uid">
-              {{ country.name }}
-            </option>
-          </select>
-        </label>
-        <div class="text-destructive w-4/12" role="alert">{{ errors.countryUid }}</div>
-      </div>
-
-      <div class="col-span-1">
-        <label class="flex gap-x-2 items-center whitespace-nowrap col-span-1 w-full">
-          <span class="text-foreground w-4/12">Province</span>
-          <select class="form-select mt-1 w-full" v-model="provinceUid" @change="getDistricts($event)"
-            aria-label="Province">
-            <option :value="null"></option>
-            <option v-for="province in state.provinces" :key="province.uid" :value="province.uid">
-              {{ province.name }}
-            </option>
-          </select>
-        </label>
-        <div class="text-destructive w-4/12" role="alert">{{ errors.provinceUid }}</div>
-      </div>
-
-      <div class="col-span-1">
-        <label class="flex gap-x-2 items-center whitespace-nowrap col-span-1 w-full">
-          <span class="text-foreground w-4/12">District</span>
-          <select class="form-select mt-1 w-full" v-model="districtUid" aria-label="District">
-            <option :value="null"></option>
-            <option v-for="district in state.districts" :key="district.uid" :value="district.uid">
-              {{ district.name }}
-            </option>
-          </select>
-        </label>
-        <div class="text-destructive w-4/12" role="alert">{{ errors.districtUid }}</div>
-      </div>
+      <FormField name="identifications" v-slot="{ value }">
+        <FormItem class="col-span-2">
+          <div class="flex items-center justify-between">
+            <FormLabel>Extra IDs</FormLabel>
+            <Button type="button" variant="outline" size="sm" @click="addIdentifier">
+              Add
+            </Button>
+          </div>
+          <FormControl>
+            <div class="space-y-3">
+              <div
+                v-for="(identification, index) in (value || [])"
+                :key="index"
+                class="grid grid-cols-[1fr_1fr_auto] items-center gap-4"
+              >
+                <Select
+                  :model-value="identification.identificationUid || SELECT_NONE"
+                  @update:model-value="(v) => setFieldValue(`identifications.${index}.identificationUid`, v === SELECT_NONE ? '' : v)"
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Identification" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem :value="SELECT_NONE">Select Identification</SelectItem>
+                    <SelectItem v-for="identifier of patientStore.identifications" :key="identifier.uid" :value="identifier.uid">
+                      {{ identifier.name }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <Input
+                  :model-value="identification.value"
+                  placeholder="Value"
+                  @update:model-value="(input) => setFieldValue(`identifications.${index}.value`, input)"
+                />
+                <Button type="button" variant="ghost" @click.prevent="removeIdentifier(index)">
+                  X
+                </Button>
+              </div>
+            </div>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
     </div>
 
-    <hr />
-    <button type="submit"
-      class="-mb-4 w-1/5 border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:ring-2 focus:ring-primary"
-      aria-label="Save Patient Information">
-      Save Patient
-    </button>
-  </form>
+    <hr class="border-border" />
+
+    <div class="grid grid-cols-3 gap-6">
+      <FormField name="countryUid" v-slot="{ componentField }">
+        <FormItem>
+          <FormLabel>Country</FormLabel>
+          <FormControl>
+            <Select
+              :model-value="componentField.modelValue || SELECT_NONE"
+              @update:model-value="(v) => { const val = v === SELECT_NONE ? '' : v; componentField['onUpdate:modelValue']?.(val); getProvinces(val); }"
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select country" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem :value="SELECT_NONE">Select country</SelectItem>
+                <SelectItem v-for="country in state.countries" :key="country.uid" :value="country.uid">
+                  {{ country.name }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+
+      <FormField name="provinceUid" v-slot="{ componentField }">
+        <FormItem>
+          <FormLabel>Province</FormLabel>
+          <FormControl>
+            <Select
+              :model-value="componentField.modelValue || SELECT_NONE"
+              @update:model-value="(v) => { const val = v === SELECT_NONE ? '' : v; componentField['onUpdate:modelValue']?.(val); getDistricts(val); }"
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select province" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem :value="SELECT_NONE">Select province</SelectItem>
+                <SelectItem v-for="province in state.provinces" :key="province.uid" :value="province.uid">
+                  {{ province.name }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+
+      <FormField name="districtUid" v-slot="{ componentField }">
+        <FormItem>
+          <FormLabel>District</FormLabel>
+          <FormControl>
+            <Select
+              :model-value="componentField.modelValue || SELECT_NONE"
+              @update:model-value="(v) => componentField['onUpdate:modelValue']?.(v === SELECT_NONE ? '' : v)"
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select district" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem :value="SELECT_NONE">Select district</SelectItem>
+                <SelectItem v-for="district in state.districts" :key="district.uid" :value="district.uid">
+                  {{ district.name }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+    </div>
+
+    <div class="flex justify-end">
+      <Button type="submit">Save Patient</Button>
+    </div>
+  </Form>
 </template>
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>

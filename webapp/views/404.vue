@@ -2,6 +2,7 @@
 import { useRouter } from 'vue-router';
 import { pages } from '@/router/constants';
 
+defineOptions({ name: 'NotFoundView' })
 const router = useRouter();
 const goHome = () => router.push({ name: pages.DASHBOARD });
 </script>

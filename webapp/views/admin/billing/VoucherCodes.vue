@@ -6,8 +6,20 @@ import { storeToRefs } from "pinia"
 import { useBillingStore } from "@/stores/billing";
 import useApiUtil  from "@/composables/api_util";
 import { VoucherCodeType } from "@/types/gql";
-import { useField, useForm } from "vee-validate";
+import { useForm } from "vee-validate";
 import { object, string, boolean, number } from "yup";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 const props = defineProps({
   voucherUid: String
@@ -41,20 +53,13 @@ const codeSchema = object({
   isActive: boolean().default(true),
 });
 
-const { handleSubmit, errors, setFieldValue } = useForm({
+const { handleSubmit, setFieldValue, values } = useForm({
   validationSchema: codeSchema,
   initialValues: {
     "isActive": true,
     "voucherUid": props.voucherUid
   } as any,
 });
-
-const { value: uid } = useField("uid");
-const { value: voucherUid } = useField("voucherUid");
-const { value: code } = useField<string>("code");
-const { value: usageLimit } = useField("usageLimit");
-const { value: used } = useField("used");
-const { value: isActive } = useField("isActive");
 
 const submitVoucherForm = handleSubmit((values) => {
   if (!values.uid) addVoucherCode(values as VoucherCodeType);
@@ -90,7 +95,7 @@ const addVoucherCode = (vcode: VoucherCodeType) => {
 const updateVoucherCode = (vocher: VoucherCodeType) => {
   delete vocher['uid'];
   delete vocher['used'];
-  withClientMutation<EditVoucherCodeMutation, EditVoucherCodeMutationVariables>(EditVoucherCodeDocument, { uid: uid?.value, payload: vocher },"updateVoucherCode")
+  withClientMutation<EditVoucherCodeMutation, EditVoucherCodeMutationVariables>(EditVoucherCodeDocument, { uid: values.uid, payload: vocher },"updateVoucherCode")
   .then((result) => billingStore.updateVoucherCode(result))
   .finally(() => (showModal.value = false));
 };
@@ -105,16 +110,17 @@ const updateVoucherCode = (vocher: VoucherCodeType) => {
 <template>
   <div class="space-y-6">
     <div v-if="fetchingVoucherCodes" class="rounded-lg border border-border bg-card p-4">
-      <fel-loader message="Fetching voucher codes ..." />
+      <span class="inline-flex items-center gap-2">
+        <Spinner class="size-4" />
+        <span class="text-sm">Fetching voucher codes ...</span>
+      </span>
     </div>
     <section v-else class="space-y-6">
       <div class="flex justify-between items-center">
         <h4 class="text-lg font-semibold text-foreground">Voucher Codes</h4>
-        <button
-          class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2"
-          @click="newVoucherCode">
+        <Button @click="newVoucherCode">
           Add Voucher Code
-        </button>
+        </Button>
       </div>
       
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -127,64 +133,57 @@ const updateVoucherCode = (vocher: VoucherCodeType) => {
               <h5 class="font-medium text-foreground">{{ vcode.code }}</h5>
               <p class="text-sm text-muted-foreground">{{ vcode.used }} of {{ vcode.usageLimit }}</p>
             </div>
-            <button 
-              class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9"
-              @click="editCode(vcode)">
+            <Button variant="outline" size="icon" @click="editCode(vcode)">
               <font-awesome-icon icon="pen" class="text-muted-foreground" />
-            </button>
+            </Button>
           </div>
         </div>
       </div>
     </section>
 
     <!-- Voucher Code Form Modal -->
-    <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/6'">
+    <Modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/6'">
       <template v-slot:header>
         <h3 class="text-lg font-semibold text-foreground">Voucher Code Form</h3>
       </template>
       <template v-slot:body>
-        <form class="space-y-6">
+        <Form class="space-y-6" @submit="submitVoucherForm">
           <div class="grid grid-cols-2 gap-4">
-            <label class="space-y-2">
-              <span class="text-sm font-medium text-foreground">Voucher Code</span>
-              <input
-                :class="['form-input w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50', {'border-destructive animate-pulse': errors.code }]"
-                type="text"
-                v-model="code"
-                placeholder="Code ..."
-              />
-            </label>
-            <label class="space-y-2">
-              <span class="text-sm font-medium text-foreground">Usage Limit</span>
-              <input
-                :class="['form-input w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50', {'border-destructive animate-pulse': errors.usageLimit }]"
-                type="number"
-                min="1"
-                v-model="usageLimit"
-              />
-            </label>
+            <FormField name="code" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Voucher Code</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" placeholder="Code ..." />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="usageLimit" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Usage Limit</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" type="number" min="1" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
           </div>
           
-          <div class="flex items-center space-x-2">
-            <input
-              class="form-checkbox h-4 w-4 rounded border-input text-primary focus:ring-primary"
-              type="checkbox"
-              v-model="isActive"
-              checked
-            />
-            <label class="text-sm font-medium text-foreground">Is Active</label>
-          </div>
+          <FormField name="isActive" v-slot="{ value, handleChange }">
+            <FormItem class="flex items-center space-x-2">
+              <FormControl>
+                <Checkbox :checked="value" @update:checked="handleChange" />
+              </FormControl>
+              <FormLabel>Is Active</FormLabel>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
           <div class="flex justify-end">
-            <button 
-              type="submit"
-              class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2"
-              @click.prevent="submitVoucherForm">
-              Save Voucher Code
-            </button>
+            <Button type="submit">Save Voucher Code</Button>
           </div>
-        </form>
+        </Form>
       </template>
-    </fel-modal>
+    </Modal>
   </div>
 </template>

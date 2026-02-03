@@ -1,23 +1,24 @@
 <script setup lang="ts">
-  import { ref, reactive, computed, defineAsyncComponent } from 'vue';
-  import { useField, useForm } from 'vee-validate';
+  import { ref, reactive, computed } from 'vue';
+  import { useForm } from 'vee-validate';
   import * as yup from 'yup';
   import { useUserStore } from '@/stores/user';
   import  useApiUtil  from '@/composables/api_util';
   import { AddGroupDocument, AddGroupMutation, AddGroupMutationVariables, EditGroupDocument, EditGroupMutation, EditGroupMutationVariables, UpdateGroupsAndPermissionsDocument, UpdateGroupsAndPermissionsMutation, UpdateGroupsAndPermissionsMutationVariables, } from '@/graphql/operations/_mutations';
   import { GroupType, PermissionType } from '@/types/gql';
   import * as shield from '@/guards'
+  import { Button } from "@/components/ui/button";
+  import { Input } from "@/components/ui/input";
+  import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+  } from "@/components/ui/form";
 
-  const FelSwitch = defineAsyncComponent(
-    () => import("@/components/ui/switch/FelSwitch.vue")
-  )
-  const modal = defineAsyncComponent(
-    () =>import('@/components/ui/FelModal.vue')
-  )
-  const accordion = defineAsyncComponent(
-    () =>import('@/components/ui/FelAccordion.vue')
-  )
-
+defineOptions({ name: 'GroupsView' })
   const pages = [
     shield.pages.ADMINISTRATION,
     shield.pages.DASHBOARD,
@@ -64,9 +65,6 @@
       pages: [],
     },
   });
-
-  const { value: name, errorMessage: nameError } = useField<string>('name');
-  const { value: pagesField, errorMessage: pagesError } = useField<string[]>('pages');
 
   function selectGroup(group: GroupType): void {
     const pgs = group.pages as string;
@@ -152,94 +150,83 @@
   <div class="space-y-6">
     <div class="flex items-center justify-between">
       <h2 class="text-2xl font-semibold text-foreground">Groups</h2>
-      <button
-        @click="FormManager(true)"
-        class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
-      >
+      <Button @click="FormManager(true)">
         Add Group
-      </button>
+      </Button>
     </div>
 
     <div class="border border-border bg-card rounded-lg shadow-sm">
       <div class="relative w-full overflow-auto">
-        <table class="w-full caption-bottom text-sm fel-table">
-          <thead class="[&_tr]:border-b">
-            <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-              <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Group Name</th>
-              <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Access Pages</th>
-              <th class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</th>
-            </tr>
-          </thead>
-          <tbody class="[&_tr:last-child]:border-0">
-            <tr v-for="group in groups" :key="group.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-              <td class="px-4 py-2 align-middle">{{ group.name }}</td>
-              <td class="px-4 py-2 align-middle text-primary">{{ group.pages }}</td>
-              <td class="px-4 py-2 align-middle text-right">
-                <button
-                  @click="FormManager(false, group)"
-                  class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3"
-                >
+        <Table class="w-full caption-bottom text-sm">
+          <TableHeader class="[&_tr]:border-b">
+            <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Group Name</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Access Pages</TableHead>
+              <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody class="[&_tr:last-child]:border-0">
+            <TableRow v-for="group in groups" :key="group.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableCell class="px-4 py-2 align-middle">{{ group.name }}</TableCell>
+              <TableCell class="px-4 py-2 align-middle text-primary">{{ group.pages }}</TableCell>
+              <TableCell class="px-4 py-2 align-middle text-right">
+                <Button variant="outline" size="sm" @click="FormManager(false, group)">
                   Edit
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                </Button>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </div>
     </div>
   </div>
 
   <!-- Group Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false">
+  <Modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
       <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form @submit.prevent="saveForm" class="space-y-4">
+      <Form @submit="saveForm" class="space-y-4">
         <div class="space-y-4">
-          <div class="space-y-2">
-            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Group Name
-            </label>
-            <input
-              v-model="name"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              placeholder="Enter group name..."
-            />
-            <p v-if="nameError" class="text-sm text-destructive">{{ nameError }}</p>
-          </div>
-          <div class="space-y-2">
-            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Pages
-            </label>
-            <select 
-              v-model="pagesField"
-              multiple
-              :size="pages.length"
-              class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <option 
-                v-for="page in pages"
-                :key="page"
-                :value="page"
-                class="py-1"
-              >
-                {{ page }}
-              </option>
-            </select>
-            <p v-if="pagesError" class="text-sm text-destructive">{{ pagesError }}</p>
-          </div>
+          <FormField name="name" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Group Name</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Enter group name..." />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+          <FormField name="pages" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Pages</FormLabel>
+              <FormControl>
+                <select 
+                  multiple
+                  :size="pages.length"
+                  class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  v-bind="componentField"
+                >
+                  <option 
+                    v-for="page in pages"
+                    :key="page"
+                    :value="page"
+                    class="py-1"
+                  >
+                    {{ page }}
+                  </option>
+                </select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </div>
         <div class="flex justify-end">
-          <button
-            type="submit"
-            class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
-          >
-            Save Changes
-          </button>
+          <Button type="submit">Save Changes</Button>
         </div>
-      </form>
+      </Form>
     </template>
-  </fel-modal>
+  </Modal>
 </template>

@@ -3,6 +3,7 @@ import { onMounted, ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import useSampleComposable from "@/composables/samples"
 
+defineOptions({ name: 'BarcodeView' })
 // Initialize route and composables
 const route = useRoute()
 const { barcodeSamples } = useSampleComposable()

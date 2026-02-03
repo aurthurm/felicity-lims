@@ -3,10 +3,13 @@ import { computed, reactive } from "vue";
 import { useRoute } from "vue-router";
 import { useShipmentStore } from "@/stores/shipment";
 import useShipmentComposable from "@/composables/shipment"
+import { useConfirmDialog } from "@/composables/confirm_dialog";
 
+defineOptions({ name: 'ShipmentView' })
 const route = useRoute();
 const shipmentStore = useShipmentStore();
 const { actionShipment } = useShipmentComposable()
+const { alert } = useConfirmDialog();
 
 shipmentStore.fetchReferralLaboratories();
 shipmentStore.fetchShipmentByUid(route.params.shipmentUid as string);
@@ -38,7 +41,12 @@ const canRetryDispatch = computed(() => {
 });
 const shipmentActor = (action: string) => {
   if (!shipment.value?.incoming && !(shipment.value?.laboratory?.url && shipment.value?.laboratory?.password && shipment.value?.laboratory?.username && shipment.value?.courier)) {
-    alert("The External Laboratory has missing information or the courier missing");
+    alert({
+      title: "Missing Information",
+      description: "The External Laboratory has missing information or the courier missing.",
+      confirmText: "OK",
+      variant: "destructive",
+    });
     return;
   }
   actionShipment(shipment.value?.uid, action)

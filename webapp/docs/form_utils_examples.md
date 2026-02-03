@@ -225,25 +225,21 @@ const handleFileUpload = async (event: Event) => {
 ## Best Practices
 
 1. **Type Safety**
-
     - Always define interfaces for your form values
     - Use TypeScript generics when creating the form
     - Validate all API responses against your types
 
 2. **Error Handling**
-
     - Show field errors only after they've been touched
     - Provide clear error messages
     - Handle both validation and submission errors
 
 3. **Performance**
-
     - Use debounce for search inputs
     - Use throttle for API calls
     - Avoid unnecessary re-renders
 
 4. **User Experience**
-
     - Show loading states during submissions
     - Provide feedback for all user actions
     - Clear error messages when fields are corrected
@@ -261,14 +257,13 @@ const handleFileUpload = async (event: Event) => {
 }
 
 .form-label {
-    @apply block text-sm font-medium text-gray-700 mb-1;
+    @apply mb-1 block text-sm font-medium text-gray-700;
 }
 
 .form-input,
 .form-select,
 .form-textarea {
-    @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm 
-           focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm;
+    @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm;
 }
 
 .error {
@@ -276,25 +271,24 @@ const handleFileUpload = async (event: Event) => {
 }
 
 .error-message {
-    @apply text-sm text-red-500 mt-1;
+    @apply mt-1 text-sm text-red-500;
 }
 
 .btn {
-    @apply px-4 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply rounded-md px-4 py-2 text-sm font-medium focus:ring-2 focus:ring-offset-2 focus:outline-none;
 }
 
 .btn-primary {
-    @apply bg-indigo-600 text-white hover:bg-indigo-700 
-           focus:ring-indigo-500 disabled:opacity-50;
+    @apply bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500 disabled:opacity-50;
 }
 ```
 
 This example demonstrates a complete implementation of form handling using the `useFormUtils` composable, including:
 
--   Type-safe form handling
--   Validation
--   Error handling
--   Field tracking
--   Performance optimization
--   User experience considerations
--   Styling with Tailwind CSS
+- Type-safe form handling
+- Validation
+- Error handling
+- Field tracking
+- Performance optimization
+- User experience considerations
+- Styling with Tailwind CSS

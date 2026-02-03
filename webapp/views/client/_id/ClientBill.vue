@@ -4,6 +4,8 @@ import { useBillingStore } from "@/stores/billing";
 import { storeToRefs } from "pinia";
 import { parseDate } from "@/utils";
 import { TestBillType } from "@/types/gql";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import { Spinner } from "@/components/ui/spinner";
 
 const props = defineProps({
   clientUid: String
@@ -40,7 +42,10 @@ const selectTestBill = (tb: TestBillType) => {
         :variants="{ custom: { scale: 2 } }" :delay="400"
         class="col-span-3 overflow-y-auto overscroll-contain billing-scroll">
         <div v-if="fetchingBills" class="py-4 text-center bg-background w-full mb-2 rounded-lg shadow-sm border border-border">
-          <fel-loader message="Fetching bills ..." />
+          <span class="inline-flex items-center gap-2">
+            <Spinner class="size-4" />
+            <span class="text-sm">Fetching bills ...</span>
+          </span>
         </div>
         <div v-else>
           <ul class="space-y-2" v-if="bills?.length > 0">
@@ -57,9 +62,14 @@ const selectTestBill = (tb: TestBillType) => {
               </div>
             </li>
           </ul>
-          <div v-else class="py-4 text-center bg-background w-full mb-2 rounded-lg shadow-sm border border-border">
-            No bills found for this client.
-          </div>
+          <Empty v-else class="bg-background w-full mb-2 shadow-sm border border-border">
+            <EmptyContent>
+              <EmptyHeader>
+                <EmptyTitle>No bills found</EmptyTitle>
+                <EmptyDescription>No bills found for this client.</EmptyDescription>
+              </EmptyHeader>
+            </EmptyContent>
+          </Empty>
         </div>
       </section>
 
@@ -68,11 +78,14 @@ const selectTestBill = (tb: TestBillType) => {
         <div v-if="testBill.uid">
           <BillDetail :customerUid="props.clientUid!" :testBill="testBill" />
         </div>
-        <div v-else class="w-full">
-          <div class="py-4 text-center bg-background w-full mb-2 rounded-lg shadow-sm border border-border">
-            No bill selected.
-          </div>
-        </div>
+        <Empty v-else class="bg-background w-full mb-2 shadow-sm border border-border">
+          <EmptyContent>
+            <EmptyHeader>
+              <EmptyTitle>No bill selected</EmptyTitle>
+              <EmptyDescription>Select a bill to view details.</EmptyDescription>
+            </EmptyHeader>
+          </EmptyContent>
+        </Empty>
       </section>
     </div>
   </div>

@@ -80,7 +80,7 @@ export default function useSampleComposable() {
                 const response = await withClientMutation<CancelSamplesMutation, CancelSamplesMutationVariables>(
                     CancelSamplesDocument,
                     { samples: uids },
-                    'cancelSamples'
+                    'cancelSamples',
                 );
 
                 if (response?.samples?.length > 0) {
@@ -106,7 +106,7 @@ export default function useSampleComposable() {
                 const response = await withClientMutation<CloneSamplesMutation, CloneSamplesMutationVariables>(
                     CloneSamplesDocument,
                     { samples: uids },
-                    'cloneSamples'
+                    'cloneSamples',
                 );
 
                 if (response?.samples?.length > 0) {
@@ -128,7 +128,7 @@ export default function useSampleComposable() {
                 const response = await withClientMutation<ReInstateSamplesMutation, ReInstateSamplesMutationVariables>(
                     ReInstateSamplesDocument,
                     { samples: uids },
-                    'reInstateSamples'
+                    'reInstateSamples',
                 );
 
                 if (response?.samples?.length > 0) {
@@ -154,7 +154,7 @@ export default function useSampleComposable() {
                 const response = await withClientMutation<ReceiveSamplesMutation, ReceiveSamplesMutationVariables>(
                     ReceiveSamplesDocument,
                     { samples: uids },
-                    'receiveSamples'
+                    'receiveSamples',
                 );
 
                 if (response?.samples?.length > 0) {
@@ -180,7 +180,7 @@ export default function useSampleComposable() {
                 const response = await withClientMutation<RecoverSamplesMutation, RecoverSamplesMutationVariables>(
                     RecoverSamplesDocument,
                     { sampleUids },
-                    'recoverSamples'
+                    'recoverSamples',
                 );
 
                 if (response?.samples?.length > 0) {
@@ -205,7 +205,7 @@ export default function useSampleComposable() {
                 const response: SampleListingType = await withClientMutation<PublishSamplesMutation, PublishSamplesMutationVariables>(
                     PublishSamplesDocument,
                     { samples },
-                    'publishSamples'
+                    'publishSamples',
                 );
 
                 if (response?.samples?.length > 0) {
@@ -230,7 +230,7 @@ export default function useSampleComposable() {
                 const response = await withClientQuery<ImpressSampleReportsQuery, ImpressSampleReportsQueryVariables>(
                     ImpressSampleReportsDocument,
                     { sampleIds },
-                    'impressReportsDownload'
+                    'impressReportsDownload',
                 );
 
                 if (response) {
@@ -255,7 +255,7 @@ export default function useSampleComposable() {
                 const response = await withClientQuery<ImpressSampleReportQuery, ImpressSampleReportQueryVariables>(
                     ImpressSampleReportDocument,
                     { impressUid },
-                    'impressReportDownload'
+                    'impressReportDownload',
                 );
 
                 if (response) {
@@ -276,7 +276,7 @@ export default function useSampleComposable() {
             const response = await withClientQuery<BarcodeSamplesQuery, BarcodeSamplesQueryVariables>(
                 BarcodeSamplesDocument,
                 { sampleUids },
-                'barcodeSamples'
+                'barcodeSamples',
             );
             return response || [];
         } catch (error) {
@@ -294,7 +294,7 @@ export default function useSampleComposable() {
                 const response = await withClientMutation<PrintSamplesMutation, PrintSamplesMutationVariables>(
                     PrintSamplesDocument,
                     { samples: uids },
-                    'printSamples'
+                    'printSamples',
                 );
 
                 if (response?.message) {
@@ -315,7 +315,7 @@ export default function useSampleComposable() {
                 const response = await withClientMutation<VerifySamplesMutation, VerifySamplesMutationVariables>(
                     VerifySamplesDocument,
                     { samples: uids },
-                    'verifySamples'
+                    'verifySamples',
                 );
 
                 if (response?.samples?.length > 0) {
@@ -341,7 +341,7 @@ export default function useSampleComposable() {
                 const response = await withClientMutation<RejectSamplesMutation, RejectSamplesMutationVariables>(
                     RejectSamplesDocument,
                     { samples },
-                    'rejectSamples'
+                    'rejectSamples',
                 );
 
                 if (response?.message) {
@@ -362,7 +362,7 @@ export default function useSampleComposable() {
                 const response = await withClientMutation<InvalidateSamplesMutation, InvalidateSamplesMutationVariables>(
                     InvalidateSamplesDocument,
                     { samples: uids },
-                    'invalidateSamples'
+                    'invalidateSamples',
                 );
 
                 if (response?.samples?.length > 0) {
@@ -391,7 +391,7 @@ export default function useSampleComposable() {
                 const response = await withClientMutation<StoreSamplesMutation, StoreSamplesMutationVariables>(
                     StoreSamplesDocument,
                     { payload: params },
-                    'storeSamples'
+                    'storeSamples',
                 );
 
                 if (response?.samples?.length > 0) {

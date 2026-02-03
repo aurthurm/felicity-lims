@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Button } from "@/components/ui/button";
 import { defineAsyncComponent, onMounted, ref } from 'vue';
 import { useForm, useField } from 'vee-validate';
 import * as yup from 'yup';
@@ -25,7 +26,8 @@ import {
 } from "@/graphql/operations/microbiology.queries";
 import { addListsUnique } from '@/utils';
 import { AbxOrganismCursorPage } from '@/graphql/schema';
-
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import PageHeading from "@/components/common/PageHeading.vue"
 const { withClientMutation, withClientQuery } = useApiUtil()
 
 const showModal = ref<boolean>(false);
@@ -184,46 +186,56 @@ function filterOrganisms() {
 </script>
 
 <template>
-  <fel-heading title="AST Panels">
-    <fel-button @click="FormManager(true)">Add Panel</fel-button>      
-  </fel-heading>
+  <PageHeading title="AST Panels">
+    <Button @click="FormManager(true)">Add Panel</Button>      
+  </PageHeading>
 
   <div class="overflow-x-auto">
     <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard rounded-lg">
-      <table class="min-w-full divide-y divide-border fel-table">
-        <thead>
-          <tr>
-            <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</th>
-            <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Description</th>
-            <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Organisms</th>
-            <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Antibiotics</th>
-            <th class="px-3 py-3.5"></th>
-          </tr>
-        </thead>
-        <tbody class="bg-background divide-y divide-border">
-          <tr v-for="panel in panels" :key="panel?.uid">
-            <td class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">{{ panel?.name }}</td>
-            <td class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">{{ panel?.description }}</td>
-            <td class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">
+      <Table class="min-w-full divide-y divide-border">
+        <TableHeader>
+          <TableRow>
+            <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</TableHead>
+            <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Description</TableHead>
+            <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Organisms</TableHead>
+            <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Antibiotics</TableHead>
+            <TableHead class="px-3 py-3.5"></TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody class="bg-background divide-y divide-border">
+          <TableRow v-for="panel in panels" :key="panel?.uid">
+            <TableCell class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">{{ panel?.name }}</TableCell>
+            <TableCell class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">{{ panel?.description }}</TableCell>
+            <TableCell class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">
               {{ panel?.organisms?.map(org => org.name).join(', ') }}
-            </td>
-            <td class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">
+            </TableCell>
+            <TableCell class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">
               {{ panel?.antibiotics?.map(abx => abx.name).join(', ') }}
-            </td>
-            <td class="px-3 py-3.5 whitespace-nowrap text-right text-sm">
+            </TableCell>
+            <TableCell class="px-3 py-3.5 whitespace-nowrap text-right text-sm">
               <button @click="FormManager(false, panel)"
                       class="px-3 py-1.5 bg-primary text-primary-foreground rounded-sm transition duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
                 Edit
               </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </TableCell>
+          </TableRow>
+          <TableEmpty v-if="!panels || panels.length === 0" :colspan="5">
+            <Empty class="border-0 bg-transparent p-0">
+              <EmptyContent>
+                <EmptyHeader>
+                  <EmptyTitle>No AST panels found</EmptyTitle>
+                  <EmptyDescription>Add a panel to get started.</EmptyDescription>
+                </EmptyHeader>
+              </EmptyContent>
+            </Empty>
+          </TableEmpty>
+        </TableBody>
+      </Table>
     </div>
   </div>
 
   <!-- Panel Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
+  <Modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -266,11 +278,13 @@ function filterOrganisms() {
               </label>
               <div class="border border-border rounded-md p-2 h-64 overflow-y-auto">
                 <div v-for="org in filteredOrganisms" :key="org.uid" class="flex items-center py-1">
-                  <input
-                      type="checkbox"
-                      :value="org.uid"
-                      v-model="selectedOrganisms"
-                      class="rounded border-border text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary/50"
+                  <Checkbox
+                      :checked="selectedOrganisms.includes(org.uid)"
+                      @update:checked="(value) => {
+                        selectedOrganisms = value
+                          ? (selectedOrganisms.includes(org.uid) ? selectedOrganisms : [...selectedOrganisms, org.uid])
+                          : selectedOrganisms.filter((uid) => uid !== org.uid);
+                      }"
                   />
                   <span class="ml-2 text-sm text-foreground">{{ org.name }}</span>
                 </div>
@@ -313,11 +327,13 @@ function filterOrganisms() {
               </label>
               <div class="border border-border rounded-md p-2 h-64 overflow-y-auto">
                 <div v-for="abx in filteredAntibiotics" :key="abx.uid" class="flex items-center py-1">
-                  <input
-                      type="checkbox"
-                      :value="abx.uid"
-                      v-model="selectedAntibiotics"
-                      class="rounded border-border text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary/50"
+                  <Checkbox
+                      :checked="selectedAntibiotics.includes(abx.uid)"
+                      @update:checked="(value) => {
+                        selectedAntibiotics = value
+                          ? (selectedAntibiotics.includes(abx.uid) ? selectedAntibiotics : [...selectedAntibiotics, abx.uid])
+                          : selectedAntibiotics.filter((uid) => uid !== abx.uid);
+                      }"
                   />
                   <span class="ml-2 text-sm text-foreground">{{ abx.name }}</span>
                 </div>
@@ -357,7 +373,7 @@ function filterOrganisms() {
         </div>
       </form>
     </template>
-  </fel-modal>
+  </Modal>
 </template>
 
 <style scoped>

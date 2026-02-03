@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import TabsNav from "@/components/ui/tabs/TabsNav.vue";
 import { defineAsyncComponent } from "vue"
-
+import PageHeading from "@/components/common/PageHeading.vue"
+defineOptions({ name: 'DashboardView' })
 // Define dashboard tabs
 const tabs = [
   {
@@ -48,7 +50,7 @@ const tabs = [
 
 <template>
   <div class="">
-    <fel-heading title="Dashboard" />
-    <fel-tabs :tabs="tabs" />
+    <PageHeading title="Dashboard" />
+    <TabsNav :tabs="tabs" initial-tab="overview" />
   </div>
 </template>

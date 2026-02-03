@@ -1,16 +1,17 @@
 <script setup lang="ts">
+import TabsNav from "@/components/ui/tabs/TabsNav.vue";
 import { computed, defineAsyncComponent } from "vue";
 import { useRoute } from "vue-router"
 
 // Lazy load components
 const tabSamples = defineAsyncComponent(
-    () => import('@/components/sample/FelSampleListing.vue')
+    () => import('@/components/sample/SampleListing.vue')
 )
 const tabContacts = defineAsyncComponent(
     () => import('./ContactTable.vue')
 )
 const tabLogs = defineAsyncComponent(
-    () => import('@/components/audit/FelAuditLog.vue')
+    () => import('@/components/audit/AuditLog.vue')
 )
 const tabBills = defineAsyncComponent(
     () => import("./ClientBill.vue")
@@ -52,7 +53,7 @@ const tabs = [
 </script>
 
 <template>
-  <fel-tabs :tabs="tabs" initial-tab="samples" />
+  <TabsNav :tabs="tabs" initial-tab="samples" />
 </template>
 
 <style lang="postcss"></style>

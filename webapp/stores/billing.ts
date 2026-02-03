@@ -130,14 +130,15 @@ export const useBillingStore = defineStore('billing', {
                 const result = await withClientQuery<GetPiceForProfileQuery, GetPiceForProfileQueryVariables>(
                     GetPiceForProfileDocument,
                     { profileUid },
-                    'priceForProfile'
+                    'priceForProfile',
                 );
 
                 if (result) {
                     this.profilePrice = result as unknown as ProfilePriceType;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingPrice = false;
             }
         },
@@ -152,14 +153,15 @@ export const useBillingStore = defineStore('billing', {
                 const result = await withClientQuery<GetDiscountForProfileQuery, GetDiscountForProfileQueryVariables>(
                     GetDiscountForProfileDocument,
                     { profileUid },
-                    'discountForProfile'
+                    'discountForProfile',
                 );
 
                 if (result) {
                     this.profileDiscount = result as unknown as ProfileDiscountType;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingDiscount = false;
             }
         },
@@ -175,14 +177,15 @@ export const useBillingStore = defineStore('billing', {
                 const result = await withClientQuery<GetPriceForAnalysisQuery, GetPriceForAnalysisQueryVariables>(
                     GetPriceForAnalysisDocument,
                     { analysisUid },
-                    'priceForAnalysis'
+                    'priceForAnalysis',
                 );
 
                 if (result) {
                     this.analysisPrice = result as unknown as AnalysisPriceType;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingPrice = false;
             }
         },
@@ -197,14 +200,15 @@ export const useBillingStore = defineStore('billing', {
                 const result = await withClientQuery<GetDiscountForAnalysisQuery, GetDiscountForAnalysisQueryVariables>(
                     GetDiscountForAnalysisDocument,
                     { analysisUid },
-                    'discountForAnalysis'
+                    'discountForAnalysis',
                 );
 
                 if (result) {
                     this.analysisDiscount = result as unknown as AnalysisDiscountType;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingDiscount = false;
             }
         },
@@ -216,14 +220,15 @@ export const useBillingStore = defineStore('billing', {
                 const result = await withClientQuery<GetAllVouchersQuery, GetAllVouchersQueryVariables>(
                     GetAllVouchersDocument,
                     {},
-                    'voucherAll'
+                    'voucherAll',
                 );
 
                 if (result && Array.isArray(result)) {
                     this.vouchers = result as unknown as VoucherType[];
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingVouchers = false;
             }
         },
@@ -238,7 +243,7 @@ export const useBillingStore = defineStore('billing', {
                 const result = await withClientQuery<GetVoucherByUidQuery, GetVoucherByUidQueryVariables>(
                     GetVoucherByUidDocument,
                     { uid },
-                    'voucherByUid'
+                    'voucherByUid',
                 );
 
                 if (result && typeof result === 'object' && 'uid' in result) {
@@ -252,7 +257,8 @@ export const useBillingStore = defineStore('billing', {
                     }
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingVoucher = false;
             }
         },
@@ -267,7 +273,7 @@ export const useBillingStore = defineStore('billing', {
                 const result = await withClientQuery<GetVoucherCodesQuery, GetVoucherCodesQueryVariables>(
                     GetVoucherCodesDocument,
                     { voucherUid },
-                    'voucherCodes'
+                    'voucherCodes',
                 );
 
                 if (result && Array.isArray(result)) {
@@ -282,7 +288,8 @@ export const useBillingStore = defineStore('billing', {
                     }
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingVoucherCodes = false;
             }
         },
@@ -354,14 +361,15 @@ export const useBillingStore = defineStore('billing', {
                 const result = await withClientQuery<GetBillsForPatientQuery, GetBillsForPatientQueryVariables>(
                     GetBillsForPatientDocument,
                     { patientUid },
-                    'billsForPatient'
+                    'billsForPatient',
                 );
 
                 if (result && Array.isArray(result)) {
                     this.bills = result as unknown as TestBillType[];
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingBills = false;
             }
         },
@@ -376,14 +384,15 @@ export const useBillingStore = defineStore('billing', {
                 const result = await withClientQuery<GetBillsForClientQuery, GetBillsForClientQueryVariables>(
                     GetBillsForClientDocument,
                     { clientUid },
-                    'billsForClient'
+                    'billsForClient',
                 );
 
                 if (result && Array.isArray(result)) {
                     this.bills = result as unknown as TestBillType[];
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingBills = false;
             }
         },
@@ -401,14 +410,15 @@ export const useBillingStore = defineStore('billing', {
                 const result = await withClientQuery<GetBillTransactionsQuery, GetBillTransactionsQueryVariables>(
                     GetBillTransactionsDocument,
                     { billUid },
-                    'billTransactions'
+                    'billTransactions',
                 );
 
                 if (result && Array.isArray(result)) {
                     this.transactions = result as unknown as TestBillTransactionType[];
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingTransactions = false;
             }
         },
@@ -460,7 +470,7 @@ export const useBillingStore = defineStore('billing', {
                         clientUid: params.clientUid || undefined,
                         sortBy: params.sortBy || ['-uid'],
                     },
-                    'searchBills'
+                    'searchBills',
                 );
 
                 if (result && typeof result === 'object' && 'items' in result) {
@@ -475,7 +485,8 @@ export const useBillingStore = defineStore('billing', {
                     };
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingBills = false;
             }
         },
@@ -492,9 +503,9 @@ export const useBillingStore = defineStore('billing', {
                     GetBatchPricesDocument,
                     {
                         profileUids: profileUids || [],
-                        analysisUids: analysisUids || []
+                        analysisUids: analysisUids || [],
                     },
-                    'pricesForBatch'
+                    'pricesForBatch',
                 );
 
                 if (result && typeof result === 'object') {
@@ -519,7 +530,8 @@ export const useBillingStore = defineStore('billing', {
                     }
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingPrices = false;
             }
         },

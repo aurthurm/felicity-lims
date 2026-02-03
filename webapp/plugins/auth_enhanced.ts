@@ -106,7 +106,7 @@ function setupNavigationGuards(
         loginRoute: string;
         laboratorySelectionRoute: string;
         homeRoute: string;
-    }
+    },
 ) {
     router.beforeEach(async (to, from, next) => {
         const authStore = useEnhancedAuthStore();
@@ -144,7 +144,7 @@ function setupNavigationGuards(
                     attemptedRoute: to.path,
                     fromRoute: from.path,
                 },
-                'medium'
+                'medium',
             );
 
             next({
@@ -173,7 +173,7 @@ function setupNavigationGuards(
                     requestedLaboratory: requiredLaboratory,
                     availableLaboratories: auth.laboratoryContext.availableLaboratories.map(lab => lab.uid),
                 },
-                'high'
+                'high',
             );
 
             next({
@@ -192,7 +192,7 @@ function setupNavigationGuards(
                     requiredPermission,
                     route: to.path,
                 },
-                'medium'
+                'medium',
             );
 
             next({
@@ -216,7 +216,7 @@ function setupNavigationGuards(
                         userRoles,
                         route: to.path,
                     },
-                    'medium'
+                    'medium',
                 );
 
                 next({
@@ -242,7 +242,7 @@ function setupNavigationGuards(
                     fromRoute: from.path,
                     laboratory: guardContext.activeLaboratory?.uid,
                 },
-                'low'
+                'low',
             );
         }
 
@@ -311,7 +311,7 @@ function setupSessionMonitoring(warningMinutes: number) {
         window.dispatchEvent(
             new CustomEvent('session-warning', {
                 detail: { timeRemaining },
-            })
+            }),
         );
     };
 
@@ -348,7 +348,7 @@ function setupAnalytics() {
                 lineno: event.lineno,
                 colno: event.colno,
             },
-            'low'
+            'low',
         );
     });
 
@@ -359,7 +359,7 @@ function setupAnalytics() {
             {
                 reason: event.reason?.toString() || 'Unknown',
             },
-            'medium'
+            'medium',
         );
     });
 }
@@ -373,7 +373,6 @@ function setupBiometricAuth() {
         return;
     }
 
-
     // Additional biometric setup would go here
     // This is a placeholder for future implementation
 }
@@ -383,7 +382,6 @@ function setupBiometricAuth() {
  */
 function setupErrorHandling(app: App) {
     app.config.errorHandler = (err, instance, info) => {
-
         // Record error in analytics
         const authStore = useEnhancedAuthStore();
         authStore.recordSecurityEvent(
@@ -393,7 +391,7 @@ function setupErrorHandling(app: App) {
                 info,
                 component: instance?.$options.name || 'Unknown',
             },
-            'medium'
+            'medium',
         );
     };
 }
@@ -420,7 +418,7 @@ function setupPerformanceMonitoring() {
                             domContentLoaded: navigationEntry.domContentLoadedEventEnd - navigationEntry.domContentLoadedEventStart,
                             firstContentfulPaint: navigationEntry.loadEventEnd - navigationEntry.fetchStart,
                         },
-                        'low'
+                        'low',
                     );
                 }
             }

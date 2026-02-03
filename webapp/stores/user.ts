@@ -76,7 +76,7 @@ export const useUserStore = defineStore('user', {
                 const resp = await withClientQuery<GroupsAndPermissionsQuery, GroupsAndPermissionsQueryVariables>(
                     GroupsAndPermissionsDocument,
                     {},
-                    undefined
+                    undefined,
                 );
 
                 if (resp && typeof resp === 'object') {

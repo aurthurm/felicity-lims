@@ -20,12 +20,12 @@ export const useNoticeStore = defineStore('notice', {
             fetchingNotices: false,
             filterBy: 'all',
             filters: ['all', 'active', 'expired'],
-        } as {
+        }) as {
             notices: ExtNoticeType[];
             fetchingNotices: boolean;
             filterBy: string;
             filters: string[];
-        }),
+        },
     getters: {
         getNotices: state => state.notices,
         getActiveNotices: state => state.notices?.filter(n => !n.expired),
@@ -40,7 +40,7 @@ export const useNoticeStore = defineStore('notice', {
                 const payload = await withClientQuery<GetNoticesByCreatorUidQuery, GetNoticesByCreatorUidQueryVariables>(
                     GetNoticesByCreatorUidDocument,
                     { uid },
-                    'noticesByCreator'
+                    'noticesByCreator',
                 );
 
                 // Check if payload is an array before mapping

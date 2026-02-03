@@ -7,7 +7,9 @@ import { formatDate, resetForm, stringToColor, getUserInitials } from '@/utils'
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { PropType, reactive, ref } from 'vue'
 import { VueDraggable } from 'vue-draggable-plus'
+import { useConfirmDialog } from "@/composables/confirm_dialog";
 
+defineOptions({ name: 'PosterView' })
 const props = defineProps({
     poster: {
         type: Object as PropType<GrindPosterType>,
@@ -17,6 +19,7 @@ const props = defineProps({
 
 const { withClientMutation } = useApiUtil();
 const poster = ref<GrindPosterType>(props.poster);
+const { alert } = useConfirmDialog();
 
 function onUpdate() {}
 
@@ -54,7 +57,12 @@ const openCreateErrandForm = () => {
 const saveErrandForm = () => {
     showErrandModal.value = false;
     if(!poster.value.uid) {
-      alert("Errand must belong to a listing")
+      alert({
+        title: "Missing Listing",
+        description: "Errand must belong to a listing.",
+        confirmText: "OK",
+        variant: "destructive",
+      })
       return;
     }
     withClientMutation<AddGrindErrandMutation, AddGrindErrandMutationVariables>(
@@ -183,7 +191,7 @@ const saveErrandForm = () => {
     </VueDraggable>
 
     <!-- Create/Edit Errand Modal -->
-    <fel-modal 
+    <Modal 
       v-if="showErrandModal" 
       @close="showErrandModal = false" 
       content-width="w-full max-w-2xl"
@@ -267,7 +275,7 @@ const saveErrandForm = () => {
           </div>
         </form>
       </template>
-    </fel-modal>
+    </Modal>
   </div>
 </template>
 

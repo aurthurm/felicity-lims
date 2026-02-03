@@ -316,8 +316,7 @@ export function useEnhancedLaboratory() {
         // This would set up WebSocket or Server-Sent Events subscription
 
         // Return unsubscribe function
-        return () => {
-        };
+        return () => {};
     };
 
     // Watchers for automatic behaviors
@@ -338,7 +337,7 @@ export function useEnhancedLaboratory() {
                 validateRouteAccess();
             }
         },
-        { immediate: true }
+        { immediate: true },
     );
 
     return {

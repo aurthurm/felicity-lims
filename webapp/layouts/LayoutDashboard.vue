@@ -1,37 +1,40 @@
 <script setup lang="ts">
-import {defineAsyncComponent} from 'vue'
-import {useFullscreen} from '@vueuse/core'
+import { defineAsyncComponent } from 'vue'
+import { useFullscreen } from '@vueuse/core'
 import { VITE_USE_MEGA_MENU } from '@/conf'
+import {
+  Sidebar,
+  SidebarInset,
+  SidebarProvider,
+} from '@/components/ui/sidebar'
 
 const HeaderMain = defineAsyncComponent(() => import('@/components/nav/NavigationMain.vue'))
 const SideBar = defineAsyncComponent(() => import('@/components/nav/NavigationSidebar.vue'))
-const FelNotification = defineAsyncComponent(() => import('@/components/notification/FelNotification.vue'))
+const RightSidebar = defineAsyncComponent(() => import('@/components/nav/NavigationRightSidebar.vue'))
 
-const {toggle} = useFullscreen()
-
-// onMounted(() => toggle())
-
-// Async components
+useFullscreen()
 </script>
 
 <template>
-  <div v-if="VITE_USE_MEGA_MENU"
-  class="font-roboto antialiased min-h-screen flex flex-col">
-    <header-main/>
-    <main class="px-8 pt-4 flex-1">
-      <slot/>
-    </main>
-  </div>
-  <div v-else class="min-h-screen flex flex-col">
+  <div v-if="VITE_USE_MEGA_MENU" class="min-h-screen flex flex-col">
     <header-main />
-    <div class="flex flex-row flex-1">
-      <div class="bg-primary">
-        <side-bar />
-      </div>
-      <main class="px-8 pt-4 flex-1">
+    <div class="flex flex-1 min-h-0">
+      <main class="flex-1 min-w-0 px-8 pt-4">
         <slot />
       </main>
+      <RightSidebar class="shrink-0" />
     </div>
   </div>
-  <fel-notification/>
+  <SidebarProvider v-else>
+    <Sidebar collapsible="icon">
+      <side-bar />
+    </Sidebar>
+    <SidebarInset class="min-w-0">
+      <header-main :show-sidebar-toggle="true" />
+      <main class="flex-1 px-8 pt-4">
+        <slot />
+      </main>
+    </SidebarInset>
+    <RightSidebar class="shrink-0" />
+  </SidebarProvider>
 </template>

@@ -81,14 +81,15 @@ export const useShipmentStore = defineStore('shipment', {
                 const result = await withClientQuery<GetAllReferralLaboratoriesQuery, GetAllReferralLaboratoriesQueryVariables>(
                     GetAllReferralLaboratoriesDocument,
                     {},
-                    'referralLaboratoryAll'
+                    'referralLaboratoryAll',
                 );
 
                 if (result && Array.isArray(result)) {
                     this.laboratories = result;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingLaboratories = false;
             }
         },
@@ -114,7 +115,7 @@ export const useShipmentStore = defineStore('shipment', {
                 const result = await withClientQuery<GetAllShipmentsQuery, GetAllShipmentsQueryVariables>(
                     GetAllShipmentsDocument,
                     params,
-                    undefined
+                    undefined,
                 );
 
                 if (result && typeof result === 'object' && 'shipmentAll' in result) {
@@ -131,7 +132,8 @@ export const useShipmentStore = defineStore('shipment', {
                     this.shipmentPageInfo = page.pageInfo;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingShipments = false;
             }
         },
@@ -144,7 +146,7 @@ export const useShipmentStore = defineStore('shipment', {
                 const result = await withClientQuery<GetShipmentByUidQuery, GetShipmentByUidQueryVariables>(
                     GetShipmentByUidDocument,
                     { shipmentUid: uid },
-                    'shipmentByUid'
+                    'shipmentByUid',
                 );
 
                 if (result && typeof result === 'object') {
@@ -175,7 +177,7 @@ export const useShipmentStore = defineStore('shipment', {
                 const result = await withClientMutation<UpdateShipmentMutation, UpdateShipmentMutationVariables>(
                     UpdateShipmentDocument,
                     payload,
-                    'updateShipment'
+                    'updateShipment',
                 );
 
                 if (result && typeof result === 'object') {
@@ -216,7 +218,7 @@ export const useShipmentStore = defineStore('shipment', {
                 const result = await withClientQuery<GetSamplesForShipmentAssignQuery, GetSamplesForShipmentAssignQueryVariables>(
                     GetSamplesForShipmentAssignDocument,
                     params,
-                    undefined
+                    undefined,
                 );
 
                 if (result && typeof result === 'object' && 'samplesForShipmentAssign' in result) {
@@ -237,7 +239,8 @@ export const useShipmentStore = defineStore('shipment', {
                     this.samplePageInfo = page.pageInfo;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingSamples = false;
             }
         },

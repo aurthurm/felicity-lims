@@ -1,6 +1,6 @@
 import { defineAsyncComponent, defineComponent, ref, h } from 'vue';
 import { useInventoryStore } from '@/stores/inventory';
-const DataTable = defineAsyncComponent(() => import('@/components/ui/datatable/FelDataTable.vue'));
+const DataTable = defineAsyncComponent(() => import('@/components/common/DataTable.vue'));
 
 const InventoryAdjustments = defineComponent({
     name: 'stock-adjustments',
@@ -77,7 +77,7 @@ const InventoryAdjustments = defineComponent({
                         {
                             innerHTML: `${adjustment?.adjustmentBy?.firstName ?? '---'} ${adjustment?.adjustmentBy?.lastName ?? ''}`,
                         },
-                        []
+                        [],
                     );
                 },
             },

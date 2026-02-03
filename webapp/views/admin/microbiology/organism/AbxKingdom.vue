@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Button } from "@/components/ui/button";
 import { onMounted, ref} from 'vue';
 import { useForm, useField } from 'vee-validate';
 import * as yup from 'yup';
@@ -18,7 +19,8 @@ import {
   GetAbxKingdomAllQuery,
   GetAbxKingdomAllQueryVariables
 } from "@/graphql/operations/microbiology.queries";
-
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import PageHeading from "@/components/common/PageHeading.vue"
 const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
@@ -104,40 +106,50 @@ const saveForm = handleSubmit((formValues) => {
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Kingdoms">
-      <fel-button @click="FormManager(true)">Add Kingdom</fel-button>
-    </fel-heading>
+    <PageHeading title="Kingdoms">
+      <Button @click="FormManager(true)">Add Kingdom</Button>
+    </PageHeading>
 
     <div class="rounded-md border border-border shadow-sm bg-card p-6">
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-border fel-table">
-          <thead>
-            <tr>
-              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</th>
-              <th class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+        <Table class="min-w-full divide-y divide-border">
+          <TableHeader>
+            <TableRow>
+              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</TableHead>
+              <TableHead class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                 <span class="sr-only">Actions</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-border bg-background">
-            <tr v-for="guideline in abxKingdoms" :key="guideline?.uid" class="hover:bg-muted/50">
-              <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ guideline?.name }}</td>
-              <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody class="divide-y divide-border bg-background">
+            <TableRow v-for="guideline in abxKingdoms" :key="guideline?.uid" class="hover:bg-muted/50">
+              <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ guideline?.name }}</TableCell>
+              <TableCell class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                 <button 
                   @click="FormManager(false, guideline)"
                   class="text-primary hover:text-primary/80">
                   Edit
                 </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </TableCell>
+            </TableRow>
+            <TableEmpty v-if="!abxKingdoms || abxKingdoms.length === 0" :colspan="2">
+              <Empty class="border-0 bg-transparent p-0">
+                <EmptyContent>
+                  <EmptyHeader>
+                    <EmptyTitle>No kingdoms found</EmptyTitle>
+                    <EmptyDescription>Add a kingdom to get started.</EmptyDescription>
+                  </EmptyHeader>
+                </EmptyContent>
+              </Empty>
+            </TableEmpty>
+          </TableBody>
+        </Table>
       </div>
     </div>
   </div>
 
   <!-- Kingdom Edit Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
+  <Modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -165,7 +177,7 @@ const saveForm = handleSubmit((formValues) => {
         </button>
       </form>
     </template>
-  </fel-modal>
+  </Modal>
 </template>
 
 

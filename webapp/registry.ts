@@ -1,26 +1,32 @@
-import {App, markRaw} from 'vue';
-import {VueDatePicker} from '@vuepic/vue-datepicker';
+import { App, markRaw } from 'vue';
+import { VueDatePicker } from '@vuepic/vue-datepicker';
 import LayoutDashboard from '@/layouts/LayoutDashboard.vue';
 import LayoutEmpty from '@/layouts/LayoutEmpty.vue';
 import LayoutMobile from '@/layouts/LayoutMobile.vue';
-import FelPageHeading from '@/components/common/FelPageHeading.vue';
-import FelModal from '@/components/ui/FelModal.vue';
-import FelButton from '@/components/ui/buttons/FelButton.vue';
-import FelLoader from '@/components/ui/spinners/FelLoader.vue';
-import FelTabs from '@/components/ui/tabs/FelTabs.vue';
-import FelAccordion from '@/components/ui/FelAccordion.vue';
+import Modal from '@/components/ui/Modal.vue';
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableEmpty,
+    TableFooter,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 
-import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
-import {MotionPlugin} from '@vueuse/motion';
-import VueSweetalert2 from 'vue-sweetalert2';
-import Notifications from '@kyvg/vue3-notification';
-import FloatingVue from 'floating-vue';
-import {urqlClient} from './urql';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { MotionPlugin } from '@vueuse/motion';
+
+import { urqlClient } from './urql';
 import urql from '@urql/vue';
-import {CkeditorPlugin} from '@ckeditor/ckeditor5-vue';
+import { CkeditorPlugin } from '@ckeditor/ckeditor5-vue';
 import router from './router';
-import {createPinia} from 'pinia';
-import FelDrawer from './components/ui/FelDrawer.vue';
+import { createPinia } from 'pinia';
+import Drawer from './components/ui/Drawer.vue';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Switch } from '@/components/ui/switch';
 
 // Register global components
 export const registerComponents = (app: App) => {
@@ -29,25 +35,28 @@ export const registerComponents = (app: App) => {
     app.component('default-layout', LayoutDashboard);
     app.component('empty-layout', LayoutEmpty);
     app.component('mobile-layout', LayoutMobile);
-    app.component('fel-heading', FelPageHeading);
-    app.component('fel-modal', FelModal);
-    app.component('fel-button', FelButton);
-    app.component('fel-loader', FelLoader);
-    app.component('fel-tabs', FelTabs);
-    app.component('fel-accordion', FelAccordion);
-    app.component('fel-drawer', FelDrawer);
+    app.component('Modal', Modal);
+    app.component('Drawer', Drawer);
+    app.component('Checkbox', Checkbox);
+    app.component('Switch', Switch);
+    app.component('Table', Table);
+    app.component('TableBody', TableBody);
+    app.component('TableCaption', TableCaption);
+    app.component('TableCell', TableCell);
+    app.component('TableEmpty', TableEmpty);
+    app.component('TableFooter', TableFooter);
+    app.component('TableHead', TableHead);
+    app.component('TableHeader', TableHeader);
+    app.component('TableRow', TableRow);
 };
 
 // Register plugins and global state
 export const registerPlugins = (app: App) => {
     const pinia = createPinia();
-    pinia.use(({store}) => {
+    pinia.use(({ store }) => {
         store.router = markRaw(router);
     });
-    app.use(VueSweetalert2);
-    app.use(Notifications);
     app.use(CkeditorPlugin);
-    app.use(FloatingVue);
     app.use(MotionPlugin);
     app.use(pinia);
     app.use(router);

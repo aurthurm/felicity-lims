@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Button } from "@/components/ui/button";
   import { ref, reactive, computed, defineAsyncComponent, onMounted, h } from 'vue';
   import { storeToRefs } from 'pinia'
   import { RouterLink } from "vue-router";
@@ -11,11 +12,12 @@
   import { AddQcRequestDocument, AddQcRequestMutation, AddQcRequestMutationVariables } from '@/graphql/operations/analyses.mutations';
   import { parseDate } from '@/utils';
 
+import PageHeading from "@/components/common/PageHeading.vue"
   const VueMultiselect = defineAsyncComponent(
     () => import('vue-multiselect')
   )
   const DataTable = defineAsyncComponent(
-    () => import('@/components/ui/datatable/FelDataTable.vue')
+    () => import('@/components/common/DataTable.vue')
   )
 
  type IQCRequestType = {
@@ -251,19 +253,19 @@
 </script>
 
 <template>
-  <fel-heading title="Reference Runs (QC)">
+  <PageHeading title="Reference Runs (QC)">
     <div class="flex justify-start items-start gap-x-4">
-      <fel-button
+      <Button
         v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SAMPLE)"
         @click.prevent="showModal = !showModal">
         Add Reference Runs
-      </fel-button>
+      </Button>
       <router-link to="/quality-control/charts" id="control-charts"
       class="px-4 py-2 bg-accent text-accent-foreground rounded-md hover:bg-accent/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent/50">
         View Run Charts
       </router-link>
     </div>
-  </fel-heading>
+  </PageHeading>
 
   <div class="rounded-lg border border-border bg-card shadow-sm p-6">
     <DataTable 
@@ -290,7 +292,7 @@
     </DataTable>
   </div>
 
-  <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-4/5'">
+  <Modal v-if="showModal" @close="showModal = false" :contentWidth="'w-4/5'">
     <template v-slot:header>
       <h3>Create QC Analyses Requests</h3>
     </template>
@@ -396,7 +398,7 @@
         </button>
       </form>
     </template>
-  </fel-modal>
+  </Modal>
 
 
 </template>

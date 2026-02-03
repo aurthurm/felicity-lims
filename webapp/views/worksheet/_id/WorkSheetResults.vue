@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
-import { ref, computed, reactive, defineAsyncComponent } from "vue";
+import { ref, computed, reactive } from "vue";
 import { isNullOrWs } from "@/utils";
 import { AnalysisResultType, AnalysisType } from "@/types/gql";
 import useWorkSheetComposable from "@/composables/worksheet";
@@ -9,15 +9,18 @@ import { useWorksheetStore } from "@/stores/worksheet";
 import { useUserStore } from "@/stores/user";
 import { useSetupStore } from "@/stores/setup";
 import * as shield from "@/guards";
-const FButton = defineAsyncComponent(
-  () => import("@/components/ui/buttons/FelButton.vue")
-)
-const FelSelect = defineAsyncComponent(
-  () => import("@/components/ui/select/FelSelect.vue")
-)
-const FelSwitch = defineAsyncComponent(
-  () => import("@/components/ui/switch/FelSwitch.vue")
-)
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectItemText,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { Switch } from "@/components/ui/switch";
 
 const worksheetStore = useWorksheetStore();
 const setupStore = useSetupStore();
@@ -49,6 +52,9 @@ const form = reactive({
   instrumentUid: null,
   methodUid: null,
 });
+
+const toSelectValue = (value: string | number | null): string | undefined =>
+  value != null ? String(value) : undefined;
 
 const applying = ref<boolean>(false);
 const applyChanges = () => {
@@ -253,55 +259,64 @@ const printBarCodes = async () => {
     <!-- Actions Bar -->
     <div class="flex items-center justify-between bg-background rounded-lg shadow-sm p-4">
       <div class="flex items-center space-x-4">
-        <FButton 
+        <Button 
           v-show="can_submit && shield.hasRights(shield.actions.SUBMIT, shield.objects.ANALYSIS)" 
           @click="submitResults()" 
-          :loading="submitting"
-          variant="primary"
+          :disabled="submitting"
           size="sm"
         >
+          <Spinner v-if="submitting" class="mr-2 size-4" />
           Submit Results
-        </FButton>
-        <FButton 
+        </Button>
+        <Button 
           v-show="can_approve && shield.hasRights(shield.actions.VERIFY, shield.objects.ANALYSIS)" 
           @click="approveResults()" 
-          :loading="approving"
-          variant="primary"
+          :disabled="approving"
           size="sm"
         >
+          <Spinner v-if="approving" class="mr-2 size-4" />
           Approve Results
-        </FButton>
-        <FButton 
+        </Button>
+        <Button 
           v-show="can_retract && shield.hasRights(shield.actions.RETRACT, shield.objects.ANALYSIS)" 
           @click="retractResults()" 
-          :loading="retracting"
+          :disabled="retracting"
           variant="destructive"
           size="sm"
         >
+          <Spinner v-if="retracting" class="mr-2 size-4" />
           Retract Results
-        </FButton>
-        <FButton 
+        </Button>
+        <Button 
           v-show="can_retest && shield.hasRights(shield.actions.RETEST, shield.objects.ANALYSIS)" 
           @click="retestResults()" 
-          :loading="retesting"
+          :disabled="retesting"
           variant="secondary"
           size="sm"
         >
+          <Spinner v-if="retesting" class="mr-2 size-4" />
           Retest
-        </FButton>
-        <FButton 
+        </Button>
+        <Button 
           v-show="can_unassign && shield.hasRights(shield.actions.UNASSIGN, shield.objects.ANALYSIS)" 
           @click="unAssignSamples()" 
-          :loading="unassigning"
+          :disabled="unassigning"
           variant="secondary"
           size="sm"
         >
+          <Spinner v-if="unassigning" class="mr-2 size-4" />
           Unassign
-        </FButton>
+        </Button>
       </div>
       <div class="flex items-center space-x-4">
-        <FelSwitch v-model="viewDetail" label="View Detail" />
-        <FelSwitch v-model="barcodes" label="Print Barcodes" />
+        <label class="text-sm font-medium flex items-center gap-x-2">
+          <Switch :checked="viewDetail" @update:checked="(value) => viewDetail = value" />
+          <span>View Detail</span>
+        </label>
+        <label class="text-sm font-medium flex items-center gap-x-2">
+          <Switch :checked="barcodes" @update:checked="(value) => barcodes = value" />
+          <span>Print Barcodes</span>
+        </label>
       </div>
     </div>
 
@@ -311,84 +326,111 @@ const printBarCodes = async () => {
         <div class="grid grid-cols-3 gap-4">
           <label class="block space-y-2">
             <span class="text-sm font-medium text-foreground">Analyst</span>
-            <FelSelect 
-              v-model="form.analystUid"
-              :options="userStore.getUsers"
-              option-label="firstName"
-              option-value="uid"
-              placeholder="Select Analyst"
-              class="w-full"
-            />
+            <Select
+              :model-value="toSelectValue(form.analystUid)"
+              @update:model-value="(value) => form.analystUid = value"
+            >
+              <SelectTrigger class="w-full">
+                <SelectValue placeholder="Select Analyst" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem
+                    v-for="user in userStore.getUsers"
+                    :key="user?.uid"
+                    :value="String(user?.uid)"
+                  >
+                    <SelectItemText>{{ user?.firstName }}</SelectItemText>
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </label>
           <label class="block space-y-2">
             <span class="text-sm font-medium text-foreground">Instrument</span>
-            <FelSelect 
-              v-model="form.instrumentUid"
-              :options="setupStore.getLaboratoryInstruments"
-              option-label="name"
-              option-value="uid"
-              placeholder="Select Instrument"
-              class="w-full"
-            />
+            <Select
+              :model-value="toSelectValue(form.instrumentUid)"
+              @update:model-value="(value) => form.instrumentUid = value"
+            >
+              <SelectTrigger class="w-full">
+                <SelectValue placeholder="Select Instrument" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem
+                    v-for="instrument in setupStore.getLaboratoryInstruments"
+                    :key="instrument?.uid"
+                    :value="String(instrument?.uid)"
+                  >
+                    <SelectItemText>{{ instrument?.name }}</SelectItemText>
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </label>
           <label class="block space-y-2">
             <span class="text-sm font-medium text-foreground">Method</span>
-            <FelSelect 
-              v-model="form.methodUid"
-              :options="setupStore.getMethods"
-              option-label="name"
-              option-value="uid"
-              placeholder="Select Method"
-              class="w-full"
-            />
+            <Select
+              :model-value="toSelectValue(form.methodUid)"
+              @update:model-value="(value) => form.methodUid = value"
+            >
+              <SelectTrigger class="w-full">
+                <SelectValue placeholder="Select Method" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem
+                    v-for="method in setupStore.getMethods"
+                    :key="method?.uid"
+                    :value="String(method?.uid)"
+                  >
+                    <SelectItemText>{{ method?.name }}</SelectItemText>
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </label>
         </div>
         <div class="mt-4 flex justify-end">
-          <FButton 
+          <Button 
             @click="applyChanges()" 
-            :loading="applying"
-            variant="primary"
+            :disabled="applying"
             size="sm"
           >
+            <Spinner v-if="applying" class="mr-2 size-4" />
             Apply Changes
-          </FButton>
+          </Button>
         </div>
       </div>
 
       <div class="overflow-x-auto">
-        <table class="w-full fel-table">
-          <thead class="bg-muted">
-            <tr>
-              <th class="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                <input
-                  type="checkbox"
-                  v-model="allChecked"
+        <Table class="w-full">
+          <TableHeader class="bg-muted">
+            <TableRow>
+              <TableHead class="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                <Checkbox :checked="allChecked" @update:checked="(value) => allChecked = value"
                   @click="toggleCheckAll()"
-                  class="rounded border-input text-primary focus:ring-primary"
                 />
-              </th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Sample ID</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Client Sample ID</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Analysis</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Result</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-border">
-            <tr v-for="result in worksheet?.analysisResults" :key="result.uid" :class="getResultRowColor(result)">
-              <td class="px-4 py-3 whitespace-nowrap">
-                <input
-                  type="checkbox"
-                  v-model="result.checked"
+              </TableHead>
+              <TableHead class="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Sample ID</TableHead>
+              <TableHead class="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Client Sample ID</TableHead>
+              <TableHead class="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Analysis</TableHead>
+              <TableHead class="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Result</TableHead>
+              <TableHead class="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody class="divide-y divide-border">
+            <TableRow v-for="result in worksheet?.analysisResults" :key="result.uid" :class="getResultRowColor(result)">
+              <TableCell class="px-4 py-3 whitespace-nowrap">
+                <Checkbox :checked="result.checked" @update:checked="(value) => result.checked = value"
                   @click="checkCheck()"
                   :disabled="isDisabledRowCheckBox(result)"
-                  class="rounded border-input text-primary focus:ring-primary"
                 />
-              </td>
-              <td class="px-4 py-3 whitespace-nowrap">{{ result.sample?.sampleId }}</td>
-              <td class="px-4 py-3 whitespace-nowrap">{{ result.sample?.clientSampleId }}</td>
-              <td class="px-4 py-3 whitespace-nowrap">{{ result.analysis?.name }}</td>
-              <td class="px-4 py-3 whitespace-nowrap">
+              </TableCell>
+              <TableCell class="px-4 py-3 whitespace-nowrap">{{ result.sample?.sampleId }}</TableCell>
+              <TableCell class="px-4 py-3 whitespace-nowrap">{{ result.sample?.clientSampleId }}</TableCell>
+              <TableCell class="px-4 py-3 whitespace-nowrap">{{ result.analysis?.name }}</TableCell>
+              <TableCell class="px-4 py-3 whitespace-nowrap">
                 <input
                   v-if="isEditable(result)"
                   type="text"
@@ -396,20 +438,19 @@ const printBarCodes = async () => {
                   class="w-full px-2 py-1 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
                 <span v-else>{{ result.result }}</span>
-              </td>
-              <td class="px-4 py-3 whitespace-nowrap">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" :class="{
-                  'bg-primary/10 text-primary': result.status === 'pending',
+              </TableCell>
+              <TableCell class="px-4 py-3 whitespace-nowrap">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" :class="{'bg-primary/10 text-primary': result.status === 'pending',
                   'bg-warning/10 text-warning': result.status === 'awaiting',
                   'bg-success/10 text-success': result.status === 'approved',
                   'bg-destructive/10 text-destructive': result.status === 'retracted'
                 }">
                   {{ result.status }}
                 </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </div>
     </div>
   </div>

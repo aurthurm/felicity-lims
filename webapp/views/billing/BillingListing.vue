@@ -1,11 +1,21 @@
 <script setup lang="ts">
+import Drawer from "@/components/ui/Drawer.vue";
 import { ref, reactive, computed, h, defineAsyncComponent, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { useBillingStore } from "@/stores/billing";
 import { TestBillType } from "@/types/gql";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
 
 const DataTable = defineAsyncComponent(
-  () => import("@/components/ui/datatable/FelDataTable.vue")
+  () => import("@/components/common/DataTable.vue")
 );
 
 const BillDetail = defineAsyncComponent(
@@ -287,41 +297,50 @@ const countNone = computed(
 <template>
   <div class="space-y-6">
     <!-- Filters -->
-    <div class="rounded-lg border border-border bg-card shadow-sm p-4">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Billing Type Filter -->
-        <div>
-          <label class="block text-sm font-medium text-foreground mb-2">Billing Type</label>
-          <select
-            :value="selectedPartial"
-            @change="(e) => handlePartialFilter((e.target as HTMLSelectElement).value)"
-            class="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-          >
-            <option value="all">All Types</option>
-            <option value="complete">Complete Bills</option>
-            <option value="partial">Partial Bills</option>
-          </select>
-        </div>
+    <Card>
+      <CardContent class="pt-6">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div class="space-y-2">
+            <Label for="billing-type">Billing Type</Label>
+            <Select
+              :model-value="selectedPartial ?? 'all'"
+              @update:model-value="(v) => handlePartialFilter(v as string)"
+            >
+              <SelectTrigger id="billing-type" class="w-full">
+                <SelectValue placeholder="All Types" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="complete">Complete Bills</SelectItem>
+                <SelectItem value="partial">Partial Bills</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-        <!-- Bill Status Filter -->
-        <div>
-          <label class="block text-sm font-medium text-foreground mb-2">Bill Status</label>
-          <select
-            :value="selectedIsActive"
-            @change="(e) => handleIsActiveFilter((e.target as HTMLSelectElement).value)"
-            class="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-          >
-            <option value="all">All Status</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </select>
+          <div class="space-y-2">
+            <Label for="bill-status">Bill Status</Label>
+            <Select
+              :model-value="selectedIsActive ?? 'all'"
+              @update:model-value="(v) => handleIsActiveFilter(v as string)"
+            >
+              <SelectTrigger id="bill-status" class="w-full">
+                <SelectValue placeholder="All Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
 
     <!-- Data Table -->
-    <div class="rounded-lg border border-border bg-card shadow-sm p-6">
-      <DataTable
+    <Card>
+      <CardContent class="pt-6">
+        <DataTable
         :columns="tableColumns"
         :data="bills"
         :toggleColumns="true"
@@ -338,11 +357,12 @@ const countNone = computed(
         @onPaginate="showMoreBills"
         :selectable="false"
       />
-    </div>
+      </CardContent>
+    </Card>
   </div>
 
   <!-- Bill Detail Drawer -->
-  <fel-drawer :show="showBillDetail" @close="closeBillDetail" :content-width="'w-2/4'">
+  <Drawer :show="showBillDetail" @close="closeBillDetail" :content-width="'w-2/4'">
     <template v-slot:header>
       <span>Bill Details</span>
     </template>
@@ -353,5 +373,5 @@ const countNone = computed(
         :testBill="selectedBill as TestBillType"
       />
     </template>
-  </fel-drawer>
+  </Drawer>
 </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue';
-  import { useField, useForm } from 'vee-validate';
+  import { useForm } from 'vee-validate';
   import * as yup from 'yup';
   import { AnalysisCategoryType } from '@/types/gql';
   import { AddAnalysisCategoryDocument, AddAnalysisCategoryMutation, AddAnalysisCategoryMutationVariables,
@@ -8,7 +8,26 @@
   import { useSetupStore } from '@/stores/setup';
   import { useAnalysisStore } from '@/stores/analysis';
   import  useApiUtil  from '@/composables/api_util';
+  import { Button } from "@/components/ui/button";
+  import { Input } from "@/components/ui/input";
+  import { Textarea } from "@/components/ui/textarea";
+  import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+  } from "@/components/ui/form";
+  import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select";
 
+import PageHeading from "@/components/common/PageHeading.vue"
   const analysisStore = useAnalysisStore()
   const  setupStore = useSetupStore()
   const { withClientMutation } = useApiUtil()
@@ -34,11 +53,6 @@
       active: true,
     },
   });
-
-  const { value: name, errorMessage: nameError } = useField<string>('name');
-  const { value: description, errorMessage: descriptionError } = useField<string | null>('description');
-  const { value: departmentUid, errorMessage: departmentError } = useField<string | null>('departmentUid');
-  const { value: active } = useField<boolean>('active');
 
   const departments = computed<any[]>(() => setupStore.getDepartments);
 
@@ -96,95 +110,94 @@
 </script>
 
 <template>
-  <fel-heading title="Analyses Categories">
-    <fel-button @click="FormManager(true, null)">Add Analyses Category</fel-button>
-  </fel-heading>
+  <PageHeading title="Analyses Categories">
+    <Button @click="FormManager(true, null)">Add Analyses Category</Button>
+  </PageHeading>
 
   <div class="overflow-x-auto mt-4">
       <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card text-card-foreground rounded-lg border border-border">
-      <table class="min-w-full fel-table">
-          <thead>
-          <tr>
-              <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Category Name</th>
-              <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Department</th>
-              <th class="px-4 py-2 border-b border-border"></th>
-          </tr>
-          </thead>
-          <tbody class="bg-card">
-          <tr v-for="category in analysesCategories" :key="category?.uid" class="hover:bg-accent/50">
-              <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+      <Table class="min-w-full">
+          <TableHeader>
+          <TableRow>
+              <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Category Name</TableHead>
+              <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Department</TableHead>
+              <TableHead class="px-4 py-2 border-b border-border"></TableHead>
+          </TableRow>
+          </TableHeader>
+          <TableBody class="bg-card">
+          <TableRow v-for="category in analysesCategories" :key="category?.uid" class="hover:bg-accent/50">
+              <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                 <div class="text-sm text-foreground">{{ category?.name }}</div>
-              </td>
-              <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+              </TableCell>
+              <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                 <div class="text-sm text-foreground">{{ category?.department?.name }}</div>
-              </td>
-              <td class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
-                  <button 
-                    @click="FormManager(false, category)" 
-                    class="px-2 py-1 mr-2 border border-border bg-background text-foreground transition-colors duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring hover:bg-accent hover:text-accent-foreground"
-                  >
+              </TableCell>
+              <TableCell class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
+                  <Button variant="outline" size="sm" @click="FormManager(false, category)">
                     Edit
-                  </button>
-              </td>
-          </tr>
-          </tbody>
-      </table>
+                  </Button>
+              </TableCell>
+          </TableRow>
+          </TableBody>
+      </Table>
       </div>
   </div>
 
   <!-- Location Edit Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false">
+  <Modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
       <h3 class="text-lg font-bold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form @submit.prevent="saveForm" class="p-6 space-y-6">
+      <Form @submit="saveForm" class="p-6 space-y-6">
         <div class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
-            <label class="col-span-2 space-y-2">
-              <span class="text-sm font-medium text-muted-foreground">Category Name</span>
-              <input
-                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="name"
-                placeholder="Name ..."
-              />
-              <p v-if="nameError" class="text-sm text-destructive">{{ nameError }}</p>
-            </label>
-            <label class="col-span-1 space-y-2">
-              <span class="text-sm font-medium text-muted-foreground">Department</span>
-              <select 
-                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="departmentUid"
-              >
-                <option value="">Select Department</option>
-                <option v-for="department in departments" :key="department.uid" :value="department?.uid">{{ department.name }}</option>
-              </select>
-              <p v-if="departmentError" class="text-sm text-destructive">{{ departmentError }}</p>
-            </label>
-            <label class="col-span-2 space-y-2">
-              <span class="text-sm font-medium text-muted-foreground">Description</span>
-              <textarea
-                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="description"
-                placeholder="Description ..."
-                rows="3"
-              />
-              <p v-if="descriptionError" class="text-sm text-destructive">{{ descriptionError }}</p>
-            </label>
+            <FormField name="name" v-slot="{ componentField }">
+              <FormItem class="col-span-2">
+                <FormLabel>Category Name</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" placeholder="Name ..." />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="departmentUid" v-slot="{ componentField }">
+              <FormItem class="col-span-1">
+                <FormLabel>Department</FormLabel>
+                <FormControl>
+                  <Select v-bind="componentField">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Department" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Select Department</SelectItem>
+                      <SelectItem v-for="department in departments" :key="department.uid" :value="department?.uid">
+                        {{ department.name }}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="description" v-slot="{ componentField }">
+              <FormItem class="col-span-2">
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <Textarea v-bind="componentField" placeholder="Description ..." rows="3" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
           </div>
         </div>
 
         <div class="pt-4">
-          <button
-            type="submit"
-            class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
-          >
-            Save Form
-          </button>
+          <Button type="submit" class="w-full">Save Form</Button>
         </div>
-      </form>
+      </Form>
     </template>
-  </fel-modal>
+  </Modal>
 
 </template>

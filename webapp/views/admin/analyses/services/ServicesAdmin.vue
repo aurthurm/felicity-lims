@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Button } from "@/components/ui/button";
   import { ref, reactive, computed, defineAsyncComponent, watch } from 'vue';
   import { useRoute } from 'vue-router';
   import { AnalysisType } from '@/types/gql';
@@ -11,11 +12,15 @@
   import { useSampleStore } from '@/stores/sample';
   import  useApiUtil  from '@/composables/api_util';
 import { mutateForm, resetForm } from '@/utils';
+  import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+  } from "@/components/ui/accordion";
+import PageHeading from "@/components/common/PageHeading.vue"
   const VueMultiselect = defineAsyncComponent(
     () => import('vue-multiselect')
-  )
-  const accordion = defineAsyncComponent(
-    () => import('@/components/ui/FelAccordion.vue')
   )
   const ResultOptions = defineAsyncComponent(
     () => import('./ResultOptions.vue')
@@ -203,16 +208,17 @@ function saveMappingForm(): void {
 
 <template>
   <div>
-    <fel-heading title="Analyses Services">
-      <fel-button @click="FormManager(true)">Add Analyses Service</fel-button>
-    </fel-heading>
+    <PageHeading title="Analyses Services">
+      <Button @click="FormManager(true)">Add Analyses Service</Button>
+    </PageHeading>
 
     <div class="grid grid-cols-12 gap-4 mt-2">
       <section class="col-span-2 overflow-y-scroll overscroll-contain max-h-[540px] bg-card text-card-foreground rounded-lg border border-border p-4">
         <div class="w-full">
-            <accordion v-for="category in analysesServices" :key="category[0]">
-              <template v-slot:title>{{ category[0] }}</template>
-              <template v-slot:body>
+            <Accordion v-for="category in analysesServices" :key="category[0]" type="single" collapsible>
+              <AccordionItem :value="String(category[0])">
+                <AccordionTrigger>{{ category[0] }}</AccordionTrigger>
+                <AccordionContent>
                   <div>
                     <ul>
                       <li 
@@ -220,14 +226,12 @@ function saveMappingForm(): void {
                       :key="service?.uid" 
                       class="cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors duration-200"
                       @click="selectAnalysisService(service)"
-                      :class="[
-                        { 'bg-accent text-accent-foreground': service.uid === analysisService.uid },
+                      :class="[ {'bg-accent text-accent-foreground': service.uid === analysisService.uid },
                       ]"
                       >
                         <div class="grow p-2">
                           <div 
-                            :class="[
-                            'font-medium text-muted-foreground hover:text-foreground flex justify-between',
+                            :class="['font-medium text-muted-foreground hover:text-foreground flex justify-between',
                               { 'text-foreground font-medium': service.uid === analysisService.uid },
                             ]"
                           >
@@ -238,8 +242,9 @@ function saveMappingForm(): void {
                       </li>
                     </ul>
                   </div>
-              </template>
-            </accordion>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
         </div>
       </section>
 
@@ -330,8 +335,7 @@ function saveMappingForm(): void {
             <a
               v-for="tab in tabs"
               :key="tab"
-              :class="[
-                'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-2 px-4 rounded-lg transition-colors duration-200',
+              :class="['no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-2 px-4 rounded-lg transition-colors duration-200',
                 { 'bg-primary text-primary-foreground': currentTab === tab },
                 { 'hover:bg-accent hover:text-accent-foreground': currentTab !== tab }
               ]"
@@ -375,38 +379,38 @@ function saveMappingForm(): void {
             <hr class="border-border my-2" />
             <div class="overflow-x-auto mt-4">
               <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card text-card-foreground rounded-lg border border-border">
-                <table class="min-w-full fel-table">
-                    <thead>
-                    <tr>
-                        <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Coding Standard</th>
-                        <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Name</th>
-                        <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Code</th>
-                        <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Description</th>
-                        <th class="px-4 py-2 border-b border-border"></th>
-                    </tr>
-                    </thead>
-                    <tbody class="bg-card">
-                    <tr v-for="mapp in mappings" :key="mapp" class="hover:bg-accent/50">
-                        <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <Table class="min-w-full">
+                    <TableHeader>
+                    <TableRow>
+                        <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Coding Standard</TableHead>
+                        <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Name</TableHead>
+                        <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Code</TableHead>
+                        <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Description</TableHead>
+                        <TableHead class="px-4 py-2 border-b border-border"></TableHead>
+                    </TableRow>
+                    </TableHeader>
+                    <TableBody class="bg-card">
+                    <TableRow v-for="mapp in mappings" :key="mapp" class="hover:bg-accent/50">
+                        <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                           <div class="flex items-center">
                             <div class="text-sm text-foreground">{{ mapp.codingStandard?.name }}</div>
                           </div>
-                        </td>
-                        <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                        </TableCell>
+                        <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                           <div class="text-sm text-foreground">{{ mapp.name }}</div>
-                        </td>
-                        <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                        </TableCell>
+                        <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                           <div class="text-sm text-foreground">{{ mapp.code }}</div>
-                        </td>
-                        <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                        </TableCell>
+                        <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                           <div class="text-sm text-foreground">{{ mapp.description }}</div>
-                        </td>
-                        <td class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
+                        </TableCell>
+                        <TableCell class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
                             <button @click="MappingFormManager(false, mapp)" class="px-2 py-1 mr-2 border border-border bg-background text-foreground transition-colors duration-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-ring hover:bg-accent hover:text-accent-foreground">Edit</button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                        </TableCell>
+                    </TableRow>
+                    </TableBody>
+                </Table>
               </div>
             </div>
         </div>
@@ -424,7 +428,7 @@ function saveMappingForm(): void {
 
 
   <!-- AnaltsisService Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
+  <Modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
     <template v-slot:header>
       <h3 class="text-lg font-bold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -547,26 +551,17 @@ function saveMappingForm(): void {
     
         <div class="col-span-4 flex justify-between">
           <label class="block col-span-2 my-2">
-            <input
-              type="checkbox"
-              v-model="analysisService.active"
-              class="rounded border-input text-primary focus:ring-primary"
+            <Checkbox :checked="analysisService.active" @update:checked="(value) => analysisService.active = value"
             />
             <span class="text-muted-foreground ml-4">Is Active</span>
           </label>
           <label class="block col-span-2 my-2">
-            <input
-              type="checkbox"
-              v-model="analysisService.internalUse"
-              class="rounded border-input text-primary focus:ring-primary"
+            <Checkbox :checked="analysisService.internalUse" @update:checked="(value) => analysisService.internalUse = value"
             />
             <span class="text-muted-foreground ml-4">Internal Use</span>
           </label>
           <label class="block col-span-2 my-2">
-            <input
-              type="checkbox"
-              v-model="analysisService.selfVerification"
-              class="rounded border-input text-primary focus:ring-primary"
+            <Checkbox :checked="analysisService.selfVerification" @update:checked="(value) => analysisService.selfVerification = value"
             />
             <span class="text-muted-foreground ml-4">Allow Self Verifaction</span>
           </label>
@@ -581,12 +576,12 @@ function saveMappingForm(): void {
         </button>
       </form>
     </template>
-  </fel-modal>
+  </Modal>
 
 
 
     <!-- MappingForm Modal -->
-    <fel-modal v-if="showMappingModal" @close="showMappingModal = false">
+    <Modal v-if="showMappingModal" @close="showMappingModal = false">
     <template v-slot:header>
       <h3 class="text-lg font-bold text-foreground">{{ mappingFormTitle }}</h3>
     </template>
@@ -646,7 +641,7 @@ function saveMappingForm(): void {
         </button>
       </form>
     </template>
-  </fel-modal>
+  </Modal>
 
 
 </template>

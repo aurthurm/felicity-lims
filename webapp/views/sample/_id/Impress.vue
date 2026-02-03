@@ -5,8 +5,11 @@ import useApiUtil from "@/composables/api_util";
 import useSampleComposable from "@/composables/samples";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { ImpressSamplesMetaQuery, ImpressSamplesMetaQueryVariables, ImpressSamplesMetaDocument } from "@/graphql/operations/analyses.queries";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import { Spinner } from "@/components/ui/spinner";
+defineOptions({ name: 'ImpressView' })
 const JsonPreViewer = defineAsyncComponent(
-  () => import("@/components/ui/FelJsonPreViewer.vue")
+  () => import("@/components/common/JsonPreViewer.vue")
 )
 
 const { withClientQuery } = useApiUtil();
@@ -39,7 +42,10 @@ const impressDownloader = async (report_uid) => await downloadImpress(report_uid
 
 <template>
   <div class="space-y-6">
-    <fel-loader v-if="loadingMeta" :message="'Loading your reports ...'" />
+    <span v-if="loadingMeta" class="inline-flex items-center gap-2">
+      <Spinner class="size-4" />
+      <span class="text-sm">Loading your reports ...</span>
+    </span>
     
     <section v-else class="space-y-6">
       <div v-if="impressMeta.length > 0" class="grid grid-cols-12 gap-6">
@@ -91,12 +97,14 @@ const impressDownloader = async (report_uid) => await downloadImpress(report_uid
         </div>
       </div>
       
-      <div 
-        v-else 
-        class="bg-destructive/10 text-destructive px-4 py-3 rounded-lg text-sm"
-      >
-        This sample has no Impress Reports
-      </div>
+      <Empty v-else class="bg-destructive/5 border border-destructive/30">
+        <EmptyContent>
+          <EmptyHeader>
+            <EmptyTitle>No Impress Reports</EmptyTitle>
+            <EmptyDescription>This sample has no Impress Reports.</EmptyDescription>
+          </EmptyHeader>
+        </EmptyContent>
+      </Empty>
     </section>
   </div>
 </template>

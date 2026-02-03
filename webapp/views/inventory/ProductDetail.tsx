@@ -9,6 +9,8 @@ import {
     GetAllStockAdjustmentsQuery,
     GetAllStockAdjustmentsQueryVariables,
 } from '@/graphql/operations/inventory.queries';
+import { Table, TableBody, TableCell, TableEmpty, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from '@/components/ui/empty';
 import { parseDate } from '@/utils';
 
 const ProductDetail = defineComponent({
@@ -32,7 +34,7 @@ const ProductDetail = defineComponent({
                     withClientQuery<GetAllStockLotsQuery, GetAllStockLotsQueryVariables>(
                         GetAllStockLotsDocument,
                         { productUid: newUid },
-                        'stockLots'
+                        'stockLots',
                     ).then(result => {
                         stockLots.value = result as StockLotType[];
                     });
@@ -45,12 +47,12 @@ const ProductDetail = defineComponent({
                             sortBy: ['-uid'],
                             productUid: newUid,
                         },
-                        'stockAdjustmentAll'
+                        'stockAdjustmentAll',
                     ).then(paging => {
                         stockAdjustments.value = (paging as StockAdjustmentCursorPage).items || [];
                     });
                 }
-            }
+            },
         );
 
         // Tabs
@@ -72,21 +74,21 @@ const ProductDetail = defineComponent({
         return (
             <>
                 <div class="space-y-4">
-                    <h3 class="text-lg font-medium text-foreground">Stock Item: {this.props.product?.stockItem?.name}</h3>
-                    <p class="text-sm text-muted-foreground">{this.props.product?.stockItem?.description}</p>
-                    <div class="border-t border-border my-4"></div>
+                    <h3 class="text-foreground text-lg font-medium">Stock Item: {this.props.product?.stockItem?.name}</h3>
+                    <p class="text-muted-foreground text-sm">{this.props.product?.stockItem?.description}</p>
+                    <div class="border-border my-4 border-t"></div>
 
-                    <h3 class="text-lg font-medium text-foreground">Stock Variant: {this.props.product?.name}</h3>
-                    <p class="text-sm text-muted-foreground">{this.props.product?.description}</p>
-                    <div class="border-t border-border my-4"></div>
+                    <h3 class="text-foreground text-lg font-medium">Stock Variant: {this.props.product?.name}</h3>
+                    <p class="text-muted-foreground text-sm">{this.props.product?.description}</p>
+                    <div class="border-border my-4 border-t"></div>
 
-                    <nav class="flex justify-between bg-background shadow-md rounded-md">
+                    <nav class="bg-background flex justify-between rounded-md shadow-md">
                         <div class="flex justify-start">
                             {this.inventoryTabs?.map(tab => (
                                 <a
                                     key={tab}
                                     class={[
-                                        'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-2 px-4 rounded-md transition-colors duration-200',
+                                        'text-muted-foreground rounded-md px-4 py-2 text-xs font-bold tracking-wide uppercase no-underline transition-colors duration-200',
                                         {
                                             'bg-primary text-primary-foreground': this.currentTab === tab,
                                             'hover:bg-muted': this.currentTab !== tab,
@@ -103,75 +105,111 @@ const ProductDetail = defineComponent({
                     <div class="pt-4">
                         {this.currentTab === 'stock-lots' && (
                             <>
-                                <div class="overflow-hidden bg-background shadow-md rounded-lg">
-                                    <table class="min-w-full divide-y divide-border fel-table">
-                                        <thead class="bg-muted">
-                                            <tr>
-                                                <th class="px-4 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
+                                <div class="bg-background overflow-hidden rounded-lg shadow-md">
+                                    <Table class="divide-border min-w-full divide-y">
+                                        <TableHeader class="bg-muted">
+                                            <TableRow>
+                                                <TableHead class="text-foreground px-4 py-3 text-left text-xs font-medium tracking-wider uppercase">
                                                     Lot Number
-                                                </th>
-                                                <th class="px-4 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
+                                                </TableHead>
+                                                <TableHead class="text-foreground px-4 py-3 text-left text-xs font-medium tracking-wider uppercase">
                                                     Quantity
-                                                </th>
-                                                <th class="px-4 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
+                                                </TableHead>
+                                                <TableHead class="text-foreground px-4 py-3 text-left text-xs font-medium tracking-wider uppercase">
                                                     Expiry Date
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="bg-background divide-y divide-border">
-                                            {this.stockLots?.map(lot => (
-                                                <tr key={lot.uid} class="hover:bg-muted transition-colors duration-150">
-                                                    <td class="px-4 py-3 text-sm text-foreground">{lot.lotNumber}</td>
-                                                    <td class="px-4 py-3 text-sm text-foreground">{lot.quantity}</td>
-                                                    <td class="px-4 py-3 text-sm text-foreground">{parseDate(lot.expiryDate, false)}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                                </TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody class="bg-background divide-border divide-y">
+                                            {this.stockLots.length === 0 ? (
+                                                <TableEmpty colspan={3}>
+                                                    <Empty class="border-0 bg-transparent p-0">
+                                                        <EmptyContent>
+                                                            <EmptyHeader>
+                                                                <EmptyTitle>No stock lots available</EmptyTitle>
+                                                                <EmptyDescription>
+                                                                    Lots will appear here once stock is received.
+                                                                </EmptyDescription>
+                                                            </EmptyHeader>
+                                                        </EmptyContent>
+                                                    </Empty>
+                                                </TableEmpty>
+                                            ) : (
+                                                this.stockLots.map(lot => (
+                                                    <TableRow key={lot.uid} class="hover:bg-muted transition-colors duration-150">
+                                                        <TableCell class="text-foreground px-4 py-3 text-sm">{lot.lotNumber}</TableCell>
+                                                        <TableCell class="text-foreground px-4 py-3 text-sm">{lot.quantity}</TableCell>
+                                                        <TableCell class="text-foreground px-4 py-3 text-sm">
+                                                            {parseDate(lot.expiryDate, false)}
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))
+                                            )}
+                                        </TableBody>
+                                    </Table>
                                 </div>
                             </>
                         )}
                         {this.currentTab === 'ledger' && (
                             <>
-                                <div class="overflow-hidden bg-background shadow-md rounded-lg">
-                                    <table class="min-w-full divide-y divide-border fel-table">
-                                        <thead class="bg-muted">
-                                            <tr>
-                                                <th class="px-4 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
+                                <div class="bg-background overflow-hidden rounded-lg shadow-md">
+                                    <Table class="divide-border min-w-full divide-y">
+                                        <TableHeader class="bg-muted">
+                                            <TableRow>
+                                                <TableHead class="text-foreground px-4 py-3 text-left text-xs font-medium tracking-wider uppercase">
                                                     Date
-                                                </th>
-                                                <th class="px-4 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
+                                                </TableHead>
+                                                <TableHead class="text-foreground px-4 py-3 text-left text-xs font-medium tracking-wider uppercase">
                                                     Lot
-                                                </th>
-                                                <th class="px-4 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
+                                                </TableHead>
+                                                <TableHead class="text-foreground px-4 py-3 text-left text-xs font-medium tracking-wider uppercase">
                                                     Transaction Type
-                                                </th>
-                                                <th class="px-4 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
+                                                </TableHead>
+                                                <TableHead class="text-foreground px-4 py-3 text-left text-xs font-medium tracking-wider uppercase">
                                                     Quantity
-                                                </th>
-                                                <th class="px-4 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">
+                                                </TableHead>
+                                                <TableHead class="text-foreground px-4 py-3 text-left text-xs font-medium tracking-wider uppercase">
                                                     By
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="bg-background divide-y divide-border">
-                                            {this.stockAdjustments?.map(adjustment => (
-                                                <>
-                                                    <tr key={adjustment.uid} class="hover:bg-muted transition-colors duration-150">
-                                                        <td class="px-4 py-3 text-sm text-foreground">
+                                                </TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody class="bg-background divide-border divide-y">
+                                            {this.stockAdjustments.length === 0 ? (
+                                                <TableEmpty colspan={5}>
+                                                    <Empty class="border-0 bg-transparent p-0">
+                                                        <EmptyContent>
+                                                            <EmptyHeader>
+                                                                <EmptyTitle>No adjustments recorded</EmptyTitle>
+                                                                <EmptyDescription>
+                                                                    Ledger activity will appear here after updates.
+                                                                </EmptyDescription>
+                                                            </EmptyHeader>
+                                                        </EmptyContent>
+                                                    </Empty>
+                                                </TableEmpty>
+                                            ) : (
+                                                this.stockAdjustments.map(adjustment => (
+                                                    <TableRow key={adjustment.uid} class="hover:bg-muted transition-colors duration-150">
+                                                        <TableCell class="text-foreground px-4 py-3 text-sm">
                                                             {parseDate(adjustment?.adjustmentDate)}
-                                                        </td>
-                                                        <td class="px-4 py-3 text-sm text-foreground">{adjustment?.stockLot?.lotNumber}</td>
-                                                        <td class="px-4 py-3 text-sm text-foreground">{adjustment?.adjustmentType}</td>
-                                                        <td class="px-4 py-3 text-sm text-foreground">{adjustment?.adjust}</td>
-                                                        <td class="px-4 py-3 text-sm text-foreground">
+                                                        </TableCell>
+                                                        <TableCell class="text-foreground px-4 py-3 text-sm">
+                                                            {adjustment?.stockLot?.lotNumber}
+                                                        </TableCell>
+                                                        <TableCell class="text-foreground px-4 py-3 text-sm">
+                                                            {adjustment?.adjustmentType}
+                                                        </TableCell>
+                                                        <TableCell class="text-foreground px-4 py-3 text-sm">
+                                                            {adjustment?.adjust}
+                                                        </TableCell>
+                                                        <TableCell class="text-foreground px-4 py-3 text-sm">
                                                             {adjustment?.adjustmentBy?.firstName}
-                                                        </td>
-                                                    </tr>
-                                                </>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))
+                                            )}
+                                        </TableBody>
+                                    </Table>
                                 </div>
                             </>
                         )}

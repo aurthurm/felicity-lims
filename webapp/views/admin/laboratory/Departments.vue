@@ -1,7 +1,17 @@
 <script setup lang="ts">
   import { ref, computed, defineAsyncComponent } from 'vue';
-  import { useField, useForm } from "vee-validate";
+  import { useForm } from "vee-validate";
   import { object, string } from "yup";
+  import { Button } from "@/components/ui/button";
+  import { Input } from "@/components/ui/input";
+  import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+  } from "@/components/ui/form";
   import { AddDepartmentDocument, AddDepartmentMutation, AddDepartmentMutationVariables,
     EditDepartmentDocument, EditDepartmentMutation, EditDepartmentMutationVariables } from '@/graphql/operations/_mutations';
   import { DepartmentType } from '@/types/gql';
@@ -9,6 +19,8 @@
   import { useSetupStore } from '@/stores/setup';
   import  useApiUtil  from '@/composables/api_util';
 
+import PageHeading from "@/components/common/PageHeading.vue"
+defineOptions({ name: 'DepartmentsView' })
   const setupStore = useSetupStore()
   const { withClientMutation } = useApiUtil()
   
@@ -21,14 +33,12 @@
     name: string().required("Department name is required"),
   });
 
-  const { handleSubmit, errors, resetForm, setValues } = useForm({
+  const { handleSubmit, resetForm, setValues } = useForm({
     validationSchema: formSchema,
     initialValues: {
       name: "",
     },
   });
-
-  const { value: name } = useField<string>("name");
 
   setupStore.fetchDepartments({})
   const departments = computed(() => setupStore.getDepartments)
@@ -64,62 +74,55 @@
 
 <template>
     <div class="space-y-6">
-        <fel-heading title="Departments">
-            <fel-button @click="FormManager(true, null)">Add Department</fel-button>
-        </fel-heading>
+        <PageHeading title="Departments">
+            <Button @click="FormManager(true, null)">Add Department</Button>
+        </PageHeading>
 
         <div class="rounded-md border bg-card">
             <div class="relative w-full overflow-auto">
-                <table class="w-full caption-bottom text-sm fel-table">
-                    <thead class="[&_tr]:border-b">
-                        <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                            <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Name</th>
-                            <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground"></th>
-                        </tr>
-                    </thead>
-                    <tbody class="[&_tr:last-child]:border-0">
-                        <tr v-for="dept in departments" :key="dept?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                            <td class="px-4 py-2 align-middle">{{ dept?.name }}</td>
-                            <td class="px-4 py-2 align-middle text-right">
+                <Table class="w-full caption-bottom text-sm">
+                    <TableHeader class="[&_tr]:border-b">
+                        <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                            <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Name</TableHead>
+                            <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground"></TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody class="[&_tr:last-child]:border-0">
+                        <TableRow v-for="dept in departments" :key="dept?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                            <TableCell class="px-4 py-2 align-middle">{{ dept?.name }}</TableCell>
+                            <TableCell class="px-4 py-2 align-middle text-right">
                                 <button @click="FormManager(false, dept)" 
                                     class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
                                     Edit
                                 </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                            </TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
             </div>
         </div>
     </div>
 
     <!-- Location Edit Form Modal -->
-    <fel-modal v-if="showModal" @close="showModal = false">
+    <Modal v-if="showModal" @close="showModal = false">
         <template v-slot:header>
             <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
         </template>
 
         <template v-slot:body>
-            <form class="space-y-6" @submit.prevent="saveForm">
-                <div class="space-y-2">
-                    <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                        Department Name
-                    </label>
-                    <input
-                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                        v-model="name"
-                        placeholder="Name ..."
-                    />
-                    <div class="text-sm text-destructive">{{ errors.name }}</div>
-                </div>
+            <Form class="space-y-6" @submit="saveForm">
+                <FormField name="name" v-slot="{ componentField }">
+                    <FormItem>
+                        <FormLabel>Department Name</FormLabel>
+                        <FormControl>
+                            <Input v-bind="componentField" placeholder="Name ..." />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                </FormField>
                 <hr class="border-border" />
-                <button
-                    type="submit"
-                    class="inline-flex w-full items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
-                >
-                    Save Form
-                </button>
-            </form>
+                <Button type="submit" class="w-full">Save Form</Button>
+            </Form>
         </template>
-    </fel-modal>
+    </Modal>
 </template>

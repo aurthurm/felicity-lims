@@ -27,7 +27,7 @@ export const useAuditLogStore = defineStore('auditlog', {
                 const result = await withClientQuery<GetAuditLogsQuery, GetAuditLogsQueryVariables>(
                     GetAuditLogsDocument,
                     params,
-                    'auditLogsFilter'
+                    'auditLogsFilter',
                 );
 
                 if (result && Array.isArray(result)) {

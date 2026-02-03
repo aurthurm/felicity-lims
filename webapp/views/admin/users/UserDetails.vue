@@ -1,12 +1,31 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
-import { useField, useForm } from "vee-validate";
+import { useForm } from "vee-validate";
 import * as yup from "yup";
 import { useRoute, useRouter } from "vue-router";
 import { UserType, GroupType, LaboratoryType } from "@/types/gql";
 import { useUserStore } from "@/stores/user";
 import useApiUtil from "@/composables/api_util";
 import useNotifyToast from "@/composables/alert_toast";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 
 // Mock GraphQL operations - these would need to be generated from the backend schema
 interface UserQuery {
@@ -186,7 +205,7 @@ const userSchema = yup.object({
   activeLaboratoryUid: yup.string().trim().nullable(),
 });
 
-const { handleSubmit, resetForm, setValues } = useForm({
+const { handleSubmit, resetForm, setValues, values, setFieldValue } = useForm({
   validationSchema: userSchema,
   initialValues: {
     firstName: "",
@@ -199,15 +218,6 @@ const { handleSubmit, resetForm, setValues } = useForm({
     activeLaboratoryUid: "",
   },
 });
-
-const { value: firstName, errorMessage: firstNameError } = useField<string>("firstName");
-const { value: lastName, errorMessage: lastNameError } = useField<string>("lastName");
-const { value: email, errorMessage: emailError } = useField<string>("email");
-const { value: userName } = useField<string | null>("userName");
-const { value: isActive } = useField<boolean>("isActive");
-const { value: isBlocked } = useField<boolean>("isBlocked");
-const { value: laboratoryUids } = useField<string[]>("laboratoryUids");
-const { value: activeLaboratoryUid } = useField<string | null>("activeLaboratoryUid");
 
 // Tabs
 const activeTab = ref("overview");
@@ -372,24 +382,24 @@ const saveLabAssignments = handleSubmit(async (values) => {
 });
 
 const addLaboratory = (labUid: string) => {
-  if (!laboratoryUids.value.includes(labUid)) {
-    laboratoryUids.value.push(labUid);
-    
-    // Auto-set as active if it's the first lab
-    if (laboratoryUids.value.length === 1) {
-      activeLaboratoryUid.value = labUid;
+  if (!values.laboratoryUids.includes(labUid)) {
+    const next = [...values.laboratoryUids, labUid];
+    setFieldValue("laboratoryUids", next);
+
+    if (next.length === 1) {
+      setFieldValue("activeLaboratoryUid", labUid);
     }
   }
 };
 
 const removeLaboratory = (labUid: string) => {
-  const index = laboratoryUids.value.indexOf(labUid);
+  const index = values.laboratoryUids.indexOf(labUid);
   if (index > -1) {
-    laboratoryUids.value.splice(index, 1);
-    
-    // Reset active lab if it was the removed one
-    if (activeLaboratoryUid.value === labUid) {
-      activeLaboratoryUid.value = laboratoryUids.value[0] || "";
+    const next = values.laboratoryUids.filter((uid) => uid !== labUid);
+    setFieldValue("laboratoryUids", next);
+
+    if (values.activeLaboratoryUid === labUid) {
+      setFieldValue("activeLaboratoryUid", next[0] || "");
     }
   }
 };
@@ -409,12 +419,9 @@ onMounted(() => {
     <!-- Header -->
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-4">
-        <button 
-          @click="goBack"
-          class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10"
-        >
+        <Button variant="outline" size="icon" @click="goBack" type="button">
           <i class="fas fa-arrow-left"></i>
-        </button>
+        </Button>
         <div>
           <h2 class="text-2xl font-semibold text-foreground">
             {{ user ? `${user.firstName} ${user.lastName}` : "User Details" }}
@@ -424,34 +431,36 @@ onMounted(() => {
       </div>
       
       <div class="flex items-center space-x-2">
-        <button
+        <Button
           v-if="!isEditing && activeTab === 'overview'"
           @click="toggleEdit"
-          class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
+          variant="outline"
+          type="button"
         >
           <i class="fas fa-edit mr-2"></i>
           Edit User
-        </button>
+        </Button>
         
         <div v-if="isEditing && activeTab === 'overview'" class="flex items-center space-x-2">
-          <button
+          <Button
             @click="toggleEdit"
             :disabled="saving"
-            class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
+            variant="outline"
+            type="button"
           >
             Cancel
-          </button>
+          </Button>
           
-          <button
+          <Button
             @click="saveUser"
             :disabled="saving"
-            class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+            type="button"
           >
             <span v-if="saving" class="mr-2">
               <i class="fas fa-spinner fa-spin"></i>
             </span>
             {{ saving ? "Saving..." : "Save Changes" }}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -467,7 +476,7 @@ onMounted(() => {
     </div>
 
     <!-- User Details -->
-    <div v-else-if="user" class="space-y-6">
+    <Form v-else-if="user" class="space-y-6">
       <!-- Tabs -->
       <div class="flex space-x-1 border-b border-border">
         <button
@@ -512,56 +521,51 @@ onMounted(() => {
           <h3 class="text-lg font-medium text-foreground">Basic Information</h3>
           
           <div class="grid grid-cols-2 gap-6">
-            <div class="space-y-2">
-              <label class="text-sm font-medium text-foreground">First Name</label>
-              <input
-                v-if="isEditing"
-                v-model="firstName"
-                type="text"
-                required
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              />
-              <p v-if="firstNameError" class="text-sm text-destructive">{{ firstNameError }}</p>
-              <div v-else class="p-3 bg-muted/50 rounded-md">
-                <span class="text-sm">{{ user.firstName || "-" }}</span>
-              </div>
-            </div>
+            <FormField name="firstName" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>First Name</FormLabel>
+                <FormControl v-if="isEditing">
+                  <Input v-bind="componentField" type="text" required />
+                </FormControl>
+                <FormMessage v-if="isEditing" />
+                <div v-else class="p-3 bg-muted/50 rounded-md">
+                  <span class="text-sm">{{ user.firstName || "-" }}</span>
+                </div>
+              </FormItem>
+            </FormField>
 
-            <div class="space-y-2">
-              <label class="text-sm font-medium text-foreground">Last Name</label>
-              <input
-                v-if="isEditing"
-                v-model="lastName"
-                type="text"
-                required
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              />
-              <p v-if="lastNameError" class="text-sm text-destructive">{{ lastNameError }}</p>
-              <div v-else class="p-3 bg-muted/50 rounded-md">
-                <span class="text-sm">{{ user.lastName || "-" }}</span>
-              </div>
-            </div>
+            <FormField name="lastName" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Last Name</FormLabel>
+                <FormControl v-if="isEditing">
+                  <Input v-bind="componentField" type="text" required />
+                </FormControl>
+                <FormMessage v-if="isEditing" />
+                <div v-else class="p-3 bg-muted/50 rounded-md">
+                  <span class="text-sm">{{ user.lastName || "-" }}</span>
+                </div>
+              </FormItem>
+            </FormField>
 
-            <div class="space-y-2">
-              <label class="text-sm font-medium text-foreground">Email Address</label>
-              <input
-                v-if="isEditing"
-                v-model="email"
-                type="email"
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              />
-              <p v-if="emailError" class="text-sm text-destructive">{{ emailError }}</p>
-              <div v-else class="p-3 bg-muted/50 rounded-md">
-                <span class="text-sm">{{ user.email || "-" }}</span>
-              </div>
-            </div>
+            <FormField name="email" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Email Address</FormLabel>
+                <FormControl v-if="isEditing">
+                  <Input v-bind="componentField" type="email" />
+                </FormControl>
+                <FormMessage v-if="isEditing" />
+                <div v-else class="p-3 bg-muted/50 rounded-md">
+                  <span class="text-sm">{{ user.email || "-" }}</span>
+                </div>
+              </FormItem>
+            </FormField>
 
-            <div class="space-y-2">
-              <label class="text-sm font-medium text-foreground">Username</label>
+            <FormItem>
+              <FormLabel>Username</FormLabel>
               <div class="p-3 bg-muted/50 rounded-md">
                 <span class="text-sm">{{ user.userName || "-" }}</span>
               </div>
-            </div>
+            </FormItem>
           </div>
         </div>
 
@@ -571,23 +575,25 @@ onMounted(() => {
           
           <div class="flex items-center space-x-6">
             <div v-if="isEditing" class="flex items-center space-x-6">
-              <label class="flex items-center space-x-2">
-                <input
-                v-model="isActive"
-                type="checkbox"
-                class="h-4 w-4 text-primary focus:ring-ring border-gray-300 rounded"
-              />
-                <span class="text-sm font-medium text-foreground">Active User</span>
-              </label>
+              <FormField name="isActive" v-slot="{ value, handleChange }">
+                <FormItem class="flex items-center space-x-2">
+                  <FormControl>
+                    <Switch :checked="value" @update:checked="handleChange" />
+                  </FormControl>
+                  <FormLabel>Active User</FormLabel>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
               
-              <label class="flex items-center space-x-2">
-                <input
-                v-model="isBlocked"
-                type="checkbox"
-                class="h-4 w-4 text-destructive focus:ring-ring border-gray-300 rounded"
-              />
-                <span class="text-sm font-medium text-foreground">Blocked</span>
-              </label>
+              <FormField name="isBlocked" v-slot="{ value, handleChange }">
+                <FormItem class="flex items-center space-x-2">
+                  <FormControl>
+                    <Switch :checked="value" @update:checked="handleChange" />
+                  </FormControl>
+                  <FormLabel>Blocked</FormLabel>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
             </div>
             
             <div v-else class="flex items-center space-x-4">
@@ -645,59 +651,75 @@ onMounted(() => {
         <div class="space-y-4">
           <div class="flex items-center justify-between">
             <h3 class="text-lg font-medium text-foreground">Laboratory Assignments</h3>
-            <button
+            <Button
               @click="saveLabAssignments"
               :disabled="saving"
-              class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+              type="button"
             >
               <span v-if="saving" class="mr-2">
                 <i class="fas fa-spinner fa-spin"></i>
               </span>
               {{ saving ? "Saving..." : "Save Changes" }}
-            </button>
+            </Button>
           </div>
           
           <!-- Active Laboratory -->
-          <div class="space-y-2">
-            <label class="text-sm font-medium text-foreground">Default Active Laboratory</label>
-            <select
-              v-model="activeLaboratoryUid"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <option value="">Select default laboratory...</option>
-              <option v-for="labUid in laboratoryUids" :key="labUid" :value="labUid">
-                {{ getLaboratoryName(labUid) }}
-              </option>
-            </select>
-          </div>
+          <FormField name="activeLaboratoryUid" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Default Active Laboratory</FormLabel>
+              <FormControl>
+                <Select v-bind="componentField">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select default laboratory..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Select default laboratory...</SelectItem>
+                    <SelectItem v-for="labUid in values.laboratoryUids" :key="labUid" :value="labUid">
+                      {{ getLaboratoryName(labUid) }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
           <!-- Assigned Laboratories -->
           <div class="space-y-2">
             <label class="text-sm font-medium text-foreground">Assigned Laboratories</label>
             <div class="space-y-2">
-              <div v-for="labUid in laboratoryUids" :key="labUid" class="flex items-center justify-between p-3 border border-input rounded-md">
+              <div v-for="labUid in values.laboratoryUids" :key="labUid" class="flex items-center justify-between p-3 border border-input rounded-md">
                 <div class="flex items-center space-x-3">
                   <div class="w-3 h-3 rounded-full bg-primary"></div>
                   <div>
                     <div class="font-medium text-sm">{{ getLaboratoryName(labUid) }}</div>
                     <div class="text-xs text-muted-foreground">
-                      {{ labUid === activeLaboratoryUid ? "Active Laboratory" : "Access Granted" }}
+                      {{ labUid === values.activeLaboratoryUid ? "Active Laboratory" : "Access Granted" }}
                     </div>
                   </div>
                 </div>
-                <button
+                <Button
                   @click="removeLaboratory(labUid)"
-                  class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-destructive hover:text-destructive-foreground h-8 w-8"
+                  variant="ghost"
+                  size="icon"
+                  type="button"
                   title="Remove Access"
                 >
                   <i class="fas fa-times"></i>
-                </button>
+                </Button>
               </div>
               
-              <div v-if="laboratoryUids.length === 0" class="p-8 text-center text-muted-foreground">
-                <i class="fas fa-building mb-2 block text-2xl"></i>
-                No laboratories assigned
-              </div>
+              <Empty v-if="values.laboratoryUids.length === 0" class="border-0 bg-transparent p-0">
+                <EmptyContent>
+                  <EmptyMedia variant="icon">
+                    <i class="fas fa-building text-muted-foreground"></i>
+                  </EmptyMedia>
+                  <EmptyHeader>
+                    <EmptyTitle>No laboratories assigned</EmptyTitle>
+                    <EmptyDescription>Assign a laboratory to grant access.</EmptyDescription>
+                  </EmptyHeader>
+                </EmptyContent>
+              </Empty>
             </div>
           </div>
         </div>
@@ -715,13 +737,15 @@ onMounted(() => {
                   <div class="text-xs text-muted-foreground">{{ lab.code }} - {{ lab.email }}</div>
                 </div>
               </div>
-              <button
+              <Button
                 @click="addLaboratory(lab.uid)"
-                class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 w-8"
+                variant="ghost"
+                size="icon"
+                type="button"
                 title="Grant Access"
               >
                 <i class="fas fa-plus"></i>
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -747,9 +771,14 @@ onMounted(() => {
                     </div>
                   </div>
                 </div>
-                <div v-else class="text-sm text-muted-foreground">
-                  No global permissions assigned
-                </div>
+                <Empty v-else class="border-0 bg-transparent p-0">
+                  <EmptyContent>
+                    <EmptyHeader>
+                      <EmptyTitle>No global permissions</EmptyTitle>
+                      <EmptyDescription>Add a group to grant global permissions.</EmptyDescription>
+                    </EmptyHeader>
+                  </EmptyContent>
+                </Empty>
               </div>
             </div>
 
@@ -769,22 +798,32 @@ onMounted(() => {
                     </div>
                   </div>
                 </div>
-                <div v-else class="text-sm text-muted-foreground">
-                  No laboratory-specific permissions assigned
-                </div>
+                <Empty v-else class="border-0 bg-transparent p-0">
+                  <EmptyContent>
+                    <EmptyHeader>
+                      <EmptyTitle>No laboratory-specific permissions</EmptyTitle>
+                      <EmptyDescription>Assign permissions to a laboratory.</EmptyDescription>
+                    </EmptyHeader>
+                  </EmptyContent>
+                </Empty>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </Form>
 
     <!-- Error State -->
-    <div v-else class="flex items-center justify-center py-12">
-      <div class="text-center">
-        <i class="fas fa-exclamation-triangle text-2xl mb-4 text-destructive"></i>
-        <p class="text-muted-foreground">User not found</p>
-      </div>
-    </div>
+    <Empty v-else class="py-12">
+      <EmptyContent>
+        <EmptyMedia variant="icon">
+          <i class="fas fa-exclamation-triangle text-destructive"></i>
+        </EmptyMedia>
+        <EmptyHeader>
+          <EmptyTitle>User not found</EmptyTitle>
+          <EmptyDescription>Check the user ID and try again.</EmptyDescription>
+        </EmptyHeader>
+      </EmptyContent>
+    </Empty>
   </div>
 </template>

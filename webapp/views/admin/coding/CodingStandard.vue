@@ -5,12 +5,20 @@
     EditCodingStandardDocument, EditCodingStandardMutation, EditCodingStandardMutationVariables } from '@/graphql/operations/analyses.mutations';
   import { useAnalysisStore } from '@/stores/analysis';
   import  useApiUtil  from '@/composables/api_util';
-  import { useField, useForm } from "vee-validate";
+  import { useForm } from "vee-validate";
   import { object, string } from "yup";
-  const modal = defineAsyncComponent(
-  () => import("@/components/ui/FelModal.vue")
-)
-
+  import { Button } from "@/components/ui/button";
+  import { Input } from "@/components/ui/input";
+  import { Textarea } from "@/components/ui/textarea";
+  import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+  } from "@/components/ui/form";
+import PageHeading from "@/components/common/PageHeading.vue"
   const analyisStore = useAnalysisStore()
   const { withClientMutation } = useApiUtil()
   
@@ -24,16 +32,13 @@
     description: string().nullable(),
   });
 
-  const { handleSubmit, errors, resetForm, setValues } = useForm({
+  const { handleSubmit, resetForm, setValues } = useForm({
     validationSchema: formSchema,
     initialValues: {
       name: "",
       description: "",
     },
   });
-
-  const { value: name } = useField<string>("name");
-  const { value: description } = useField<string | null>("description");
 
   analyisStore.fetchCodingStandards();
   const codindStandards = computed(() => analyisStore.getCodingStandards)
@@ -82,79 +87,73 @@
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Coding Standards">
-      <fel-button @click="FormManager(true)">Add Coding Standard</fel-button>
-    </fel-heading>
+    <PageHeading title="Coding Standards">
+      <Button @click="FormManager(true)">Add Coding Standard</Button>
+    </PageHeading>
 
     <div class="rounded-lg border border-border bg-card p-6">
       <div class="overflow-x-auto">
-        <table class="w-full fel-table">
-          <thead>
-            <tr class="border-b border-border">
-              <th class="px-4 py-3 text-left text-sm font-medium text-foreground">Standard</th>
-              <th class="px-4 py-3 text-left text-sm font-medium text-foreground">Description</th>
-              <th class="px-4 py-3 text-right text-sm font-medium text-foreground">Actions</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-border">
-            <tr v-for="standard in codindStandards" :key="standard?.uid" class="hover:bg-accent/50">
-              <td class="px-4 py-3">
+        <Table class="w-full">
+          <TableHeader>
+            <TableRow class="border-b border-border">
+              <TableHead class="px-4 py-3 text-left text-sm font-medium text-foreground">Standard</TableHead>
+              <TableHead class="px-4 py-3 text-left text-sm font-medium text-foreground">Description</TableHead>
+              <TableHead class="px-4 py-3 text-right text-sm font-medium text-foreground">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody class="divide-y divide-border">
+            <TableRow v-for="standard in codindStandards" :key="standard?.uid" class="hover:bg-accent/50">
+              <TableCell class="px-4 py-3">
                 <div class="text-sm text-foreground">{{ standard?.name }}</div>
-              </td>
-              <td class="px-4 py-3">
+              </TableCell>
+              <TableCell class="px-4 py-3">
                 <div class="text-sm text-muted-foreground">{{ standard?.description }}</div>
-              </td>
-              <td class="px-4 py-3 text-right">
-                <button 
-                  class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
-                  @click="FormManager(false, standard)">
+              </TableCell>
+              <TableCell class="px-4 py-3 text-right">
+                <Button variant="outline" size="sm" @click="FormManager(false, standard)">
                   Edit
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                </Button>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </div>
     </div>
 
     <!-- Form Modal -->
-    <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/6'">
+    <Modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/6'">
       <template v-slot:header>
         <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
       </template>
 
-      <template v-slot:body>
-        <form class="space-y-6" @submit.prevent="saveForm">
+    <template v-slot:body>
+        <Form class="space-y-6" @submit="saveForm">
           <div class="space-y-4">
-            <label class="space-y-2">
-              <span class="text-sm font-medium text-foreground">Standard Name</span>
-              <input
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="name"
-                placeholder="Name ..."
-              />
-              <div class="text-sm text-destructive">{{ errors.name }}</div>
-            </label>
-            <label class="space-y-2">
-              <span class="text-sm font-medium text-foreground">Description</span>
-              <textarea
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 min-h-[100px]"
-                v-model="description"
-                placeholder="Description ..."
-              />
-            </label>
+            <FormField name="name" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Standard Name</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" placeholder="Name ..." />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="description" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <Textarea v-bind="componentField" placeholder="Description ..." />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
           </div>
 
           <div class="flex justify-end">
-            <button
-              type="submit"
-              class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2"
-            >
-              Save Form
-            </button>
+            <Button type="submit">Save Form</Button>
           </div>
-        </form>
-      </template>
-    </fel-modal>
-  </div>
+        </Form>
+    </template>
+  </Modal>
+</div>
 </template>

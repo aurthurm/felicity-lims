@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import modal from "@/components/ui/FelModal.vue";
 import { ref, reactive, computed, h, defineAsyncComponent } from "vue";
 import { storeToRefs } from "pinia";
 import { useRoute } from "vue-router";
@@ -7,11 +6,31 @@ import { RouterLink } from "vue-router";
 import { useShipmentStore } from "@/stores/shipment";
 import useApiUtil  from "@/composables/api_util";
 import { AddShipmentDocument, AddShipmentMutation, AddShipmentMutationVariables } from "@/graphql/operations/shipment.mutations";
-import { useField, useForm } from "vee-validate";
+import { useForm } from "vee-validate";
 import { object, string, number } from "yup";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
+import PageHeading from "@/components/common/PageHeading.vue"
 const DataTable = defineAsyncComponent(
-  () => import("@/components/ui/datatable/FelDataTable.vue")
+  () => import("@/components/common/DataTable.vue")
 )
 
 const shipmentStore = useShipmentStore();
@@ -147,7 +166,7 @@ const shipmentSchema = object({
   count: number()
 });
 
-const { handleSubmit, errors } = useForm({
+const { handleSubmit } = useForm({
   validationSchema: shipmentSchema,
   initialValues: {
     laboratoryUid: undefined,
@@ -156,11 +175,6 @@ const { handleSubmit, errors } = useForm({
     count: 1
   },
 });
-
-const { value: laboratoryUid } = useField("laboratoryUid");
-const { value: comment } = useField("comment");
-const { value: courier } = useField("courier");
-const { value: count } = useField("count");
 
 const saveForm = handleSubmit((values) => {
   showModal.value = false;
@@ -175,7 +189,7 @@ function showMoreShipments(opts: any): void {
   shipmentParams.before = shipmentPageInfo?.value?.endCursor ?? "";
   shipmentParams.text = opts.filterText;
   shipmentParams.status = opts.filterStatus;
-  shipmentParams.incoming =  viewIncoming.value,
+  shipmentParams.incoming = viewIncoming.value;
   shipmentParams.filterAction = false;
   shipmentStore.fetcShipments(shipmentParams);
 }
@@ -185,7 +199,7 @@ function searchShipments(opts: any): void {
   shipmentParams.before = "";
   shipmentParams.text = opts.filterText;
   shipmentParams.status = opts.filterStatus;
-  shipmentParams.incoming =  viewIncoming.value,
+  shipmentParams.incoming = viewIncoming.value;
   shipmentParams.filterAction = true;
   shipmentStore.clearShipment()
   shipmentStore.fetcShipments(shipmentParams);
@@ -199,12 +213,12 @@ const countNone = computed(
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Shipments">
-      <fel-button @click="showModal = true">Create New</fel-button>
-    </fel-heading>
+    <PageHeading title="Shipments">
+      <Button @click="showModal = true">Create New</Button>
+    </PageHeading>
 
     <div class="flex items-center space-x-4 mb-4">
-      <fel-button
+      <Button
         @click="viewIncoming = !viewIncoming"
         :class="[viewIncoming
             ? 'bg-primary text-primary-foreground hover:bg-primary/90'
@@ -213,7 +227,7 @@ const countNone = computed(
         :aria-pressed="viewIncoming"
       >
         {{ viewIncoming ? 'Incoming' : 'Outgoing' }}
-      </fel-button>
+      </Button>
     </div>
 
     <div class="bg-card rounded-lg shadow-sm p-6">
@@ -239,8 +253,9 @@ const countNone = computed(
       :selectable="false"
       >
         <template v-slot:pre-filter>
-          <label class="flex">
-            <input type="checkbox" v-model="viewIncoming"> <span class="mx-2">InBound</span>
+          <label class="flex items-center">
+            <Checkbox :checked="viewIncoming" @update:checked="(value) => viewIncoming = value" />
+            <span class="mx-2">InBound</span>
           </label>
         </template>
         <template v-slot:footer> </template>
@@ -248,85 +263,68 @@ const countNone = computed(
     </div>
   </div>
 
-  <fel-modal v-if="showModal" @close="showModal = false" >
+  <Modal v-if="showModal" @close="showModal = false" >
     <template v-slot:header>
       <h3 class="text-lg font-medium leading-6 text-foreground">Create New Shipment</h3>
     </template>
 
-    <template v-slot:validation>
-      <div v-if="errors.length" class="bg-destructive/10 text-destructive p-4 rounded-md mb-4">
-        <ul class="list-disc list-inside space-y-1">
-          <li v-for="(error, index) in errors" :key="index" class="text-sm">
-            {{ error }}
-          </li>
-        </ul>
-      </div>
-    </template>
-
     <template v-slot:body>
-      <form action="post" class="space-y-6">
+      <Form class="space-y-6" @submit="saveForm">
         <div class="grid grid-cols-3 gap-6">
-          <div class="col-span-1">
-            <label class="block space-y-1.5">
-              <span class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">External Laboratory</span>
-              <select 
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="laboratoryUid"
-              >
-                <option v-for="laboratory in shipmentStore.laboratories" :key="laboratory.uid" :value="laboratory.uid">
-                  {{ laboratory.name }}
-                </option>
-              </select>
-            </label>
-          </div>
+          <FormField name="laboratoryUid" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>External Laboratory</FormLabel>
+              <FormControl>
+                <Select v-bind="componentField">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a laboratory" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem v-for="laboratory in shipmentStore.laboratories" :key="laboratory.uid" :value="laboratory.uid">
+                      {{ laboratory.name }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
           
-          <div class="col-span-1">
-            <label class="block space-y-1.5">
-              <span class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Courier</span>
-              <input 
-                type="text" 
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="courier" 
-              />
-            </label>
-          </div>
+          <FormField name="courier" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Courier</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Courier" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <div class="col-span-1">
-            <label class="block space-y-1.5">
-              <span class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">How Many</span>
-              <input 
-                type="number" 
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="count" 
-                min="1" 
-                default="1"
-              />
-            </label>
-          </div>
+          <FormField name="count" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>How Many</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" type="number" min="1" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </div>
 
-        <div>
-          <label class="block space-y-1.5">
-            <span class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Comment</span>
-            <textarea
-              class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              rows="2"
-              placeholder="Notes ..."
-              v-model="comment"
-            />
-          </label>
-        </div>
+        <FormField name="comment" v-slot="{ componentField }">
+          <FormItem>
+            <FormLabel>Comment</FormLabel>
+            <FormControl>
+              <Textarea v-bind="componentField" rows="2" placeholder="Notes ..." />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
         <div class="border-t border-border pt-4">
-          <button 
-            type="button" 
-            @click.prevent="saveForm()"
-            class="inline-flex w-full items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4"
-          >
-            Create Shipment
-          </button>
+          <Button type="submit" class="w-full">Create Shipment</Button>
         </div>
-      </form>
+      </Form>
     </template>
-  </fel-modal>
+  </Modal>
 </template>

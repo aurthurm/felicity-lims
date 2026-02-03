@@ -48,7 +48,7 @@ const resultInterceptorExchange: Exchange =
         pipe(
             ops$,
             forward,
-            tap(operationResult => {})
+            tap(operationResult => {}),
         );
 
 export const urqlClient = createClient({

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import Drawer from "@/components/ui/Drawer.vue";
+import { Button } from "@/components/ui/button";
 import { reactive, computed, defineAsyncComponent, ref } from "vue";
 import type { PropType } from 'vue'
 import { useSampleStore } from "@/stores/sample";
@@ -10,6 +12,7 @@ import {
   ArResultInputType,
 } from "@/types/gql";
 import { isNullOrWs, parseDate } from "@/utils";
+import { Spinner } from "@/components/ui/spinner";
 
 import * as shield from "@/guards";
 import { NotificationObjectType } from "@/graphql/schema";
@@ -274,52 +277,51 @@ const retestResults = () =>
 
     <div class="rounded-lg border border-border bg-background shadow-sm">
       <div v-if="fetchingResults" class="p-6 text-center">
-        <fel-loader message="Fetching analytes ..." />
+        <span class="inline-flex items-center gap-2">
+          <Spinner class="size-4" />
+          <span class="text-sm">Fetching analytes ...</span>
+        </span>
       </div>
       <div v-else class="overflow-x-auto">
-        <table class="w-full fel-table">
-          <thead>
-            <tr class="border-b border-border bg-muted/50">
-              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
-                <input 
-                  type="checkbox" 
-                  @change="toggleCheckAll" 
-                  v-model="state.allChecked"
-                  class="rounded border-input text-primary focus:ring-primary" 
+        <Table class="w-full">
+          <TableHeader>
+            <TableRow class="border-b border-border bg-muted/50">
+              <TableHead class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                <Checkbox
+                  :checked="state.allChecked"
+                  @update:checked="(value) => { state.allChecked = value; toggleCheckAll(); }"
                 />
-              </th>
-              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground"></th>
-              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Analysis</th>
-              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Instrument</th>
-              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Method</th>
-              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Analyst</th>
-              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Reviewer(s)</th>
-              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Interim</th>
-              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Result</th>
-              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Retest</th>
-              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Due Date</th>
-              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Submitted</th>
-              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Approved</th>
-              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Status</th>
-              <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Reportable</th>
-              <th class="px-4 py-3"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr 
+              </TableHead>
+              <TableHead class="px-4 py-3 text-left text-sm font-medium text-muted-foreground"></TableHead>
+              <TableHead class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Analysis</TableHead>
+              <TableHead class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Instrument</TableHead>
+              <TableHead class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Method</TableHead>
+              <TableHead class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Analyst</TableHead>
+              <TableHead class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Reviewer(s)</TableHead>
+              <TableHead class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Interim</TableHead>
+              <TableHead class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Result</TableHead>
+              <TableHead class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Retest</TableHead>
+              <TableHead class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Due Date</TableHead>
+              <TableHead class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Submitted</TableHead>
+              <TableHead class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Approved</TableHead>
+              <TableHead class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Status</TableHead>
+              <TableHead class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Reportable</TableHead>
+              <TableHead class="px-4 py-3"></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow 
               v-for="result in analysisResults" 
               :key="result.uid" 
-              :class="[getResultRowColor(result), 'hover:bg-muted/50 transition-colors duration-200']"
+              :class="[getResultRowColor(result),'hover:bg-muted/50 transition-colors duration-200']"
               v-motion-slide-right
             >
-              <td class="px-4 py-3 border-b border-border">
+              <TableCell class="px-4 py-3 border-b border-border">
                 <div class="flex items-center space-x-2">
-                  <input 
-                    type="checkbox" 
-                    v-model="result.checked" 
-                    @change="checkCheck(result)"
+                  <Checkbox
+                    :checked="result.checked"
                     :disabled="isDisabledRowCheckBox(result)"
-                    class="rounded border-input text-primary focus:ring-primary" 
+                    @update:checked="(value) => { result.checked = value; checkCheck(result); }"
                   />
                   <font-awesome-icon 
                     v-if="result.status === 'pending'"
@@ -332,9 +334,9 @@ const retestResults = () =>
                     class="text-xs text-warning"
                   />
                 </div>
-              </td>
-              <td class="px-4 py-3 border-b border-border"></td>
-              <td class="px-4 py-3 border-b border-border">
+              </TableCell>
+              <TableCell class="px-4 py-3 border-b border-border"></TableCell>
+              <TableCell class="px-4 py-3 border-b border-border">
                 <div class="flex items-center space-x-2">
                   <button
                     type="button"
@@ -345,8 +347,8 @@ const retestResults = () =>
                   </button>
                   <span class="font-medium">{{ result.analysis?.name }}</span>
                 </div>
-              </td>
-              <td class="px-4 py-3 border-b border-border">
+              </TableCell>
+              <TableCell class="px-4 py-3 border-b border-border">
                 <div v-if="!isEditable(result)" class="text-sm text-foreground">
                   {{ result.laboratoryInstrument?.labName || "---" }}
                 </div>
@@ -367,8 +369,8 @@ const retestResults = () =>
                     </option>
                   </template>
                 </select>
-              </td>
-              <td class="px-4 py-3 border-b border-border">
+              </TableCell>
+              <TableCell class="px-4 py-3 border-b border-border">
                 <div v-if="!isEditable(result)" class="text-sm text-foreground">
                   {{ result.method?.name || "---" }}
                 </div>
@@ -387,20 +389,20 @@ const retestResults = () =>
                     {{ method.name }}
                   </option>
                 </select>
-              </td>
-              <td class="px-4 py-3 border-b border-border">
+              </TableCell>
+              <TableCell class="px-4 py-3 border-b border-border">
                 <span class="text-sm text-foreground">
                   {{ `${result.submittedBy?.firstName ?? '--'} ${result.submittedBy?.lastName ?? '--'}` }}
                 </span>
-              </td>
-              <td class="px-4 py-3 border-b border-border">
+              </TableCell>
+              <TableCell class="px-4 py-3 border-b border-border">
                 <div class="text-sm text-foreground space-x-1">
                   <span v-for="reviewer in result.verifiedBy" :key="reviewer.uid">
                     {{ `${reviewer?.firstName ?? '--'} ${reviewer?.lastName ?? '--'},` }}
                   </span>
                 </div>
-              </td>
-              <td class="px-4 py-3 border-b border-border">
+              </TableCell>
+              <TableCell class="px-4 py-3 border-b border-border">
                 <div v-if="!isEditable(result) || result?.analysis?.interims?.length === 0" class="text-sm text-foreground">
                   ---
                 </div>
@@ -419,8 +421,8 @@ const retestResults = () =>
                     {{ interim.value }}
                   </option>
                 </select>
-              </td>
-              <td class="px-4 py-3 border-b border-border">
+              </TableCell>
+              <TableCell class="px-4 py-3 border-b border-border">
                 <div v-if="!isEditable(result)" class="text-sm text-foreground">
                   {{ result?.result }}
                 </div>
@@ -445,8 +447,8 @@ const retestResults = () =>
                     {{ option.value }}
                   </option>
                 </select>
-              </td>
-              <td class="px-4 py-3 border-b border-border">
+              </TableCell>
+              <TableCell class="px-4 py-3 border-b border-border">
                 <div class="text-sm">
                   <font-awesome-icon 
                     v-if="result?.retest" 
@@ -459,21 +461,20 @@ const retestResults = () =>
                     class="text-destructive"
                   />
                 </div>
-              </td>
-              <td class="px-4 py-3 border-b border-border">
+              </TableCell>
+              <TableCell class="px-4 py-3 border-b border-border">
                 <span class="text-sm text-foreground">{{ parseDate(result?.dueDate) }}</span>
-              </td>
-              <td class="px-4 py-3 border-b border-border">
+              </TableCell>
+              <TableCell class="px-4 py-3 border-b border-border">
                 <span class="text-sm text-foreground">{{ parseDate(result?.dateSubmitted) }}</span>
-              </td>
-              <td class="px-4 py-3 border-b border-border">
+              </TableCell>
+              <TableCell class="px-4 py-3 border-b border-border">
                 <span class="text-sm text-foreground">{{ parseDate(result?.dateVerified) }}</span>
-              </td>
-              <td class="px-4 py-3 border-b border-border">
+              </TableCell>
+              <TableCell class="px-4 py-3 border-b border-border">
                 <span 
                   class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                  :class="{
-                    'bg-primary/10 text-primary': result.status === 'pending',
+                  :class="{'bg-primary/10 text-primary': result.status === 'pending',
                     'bg-warning/10 text-warning': result.status === 'resulted',
                     'bg-success/10 text-success': result.status === 'approved',
                     'bg-destructive/10 text-destructive': result.status === 'cancelled' || result.status === 'retracted'
@@ -481,8 +482,8 @@ const retestResults = () =>
                 >
                   {{ result.status }}
                 </span>
-              </td>
-              <td class="px-4 py-3 border-b border-border">
+              </TableCell>
+              <TableCell class="px-4 py-3 border-b border-border">
                 <div class="text-sm">
                   <font-awesome-icon 
                     v-if="result?.reportable" 
@@ -497,67 +498,67 @@ const retestResults = () =>
                     aria-label="Not reportable"
                   />
                 </div>
-              </td>
-              <td class="px-4 py-3 border-b border-border"></td>
-            </tr>
-          </tbody>
-        </table>
+              </TableCell>
+              <TableCell class="px-4 py-3 border-b border-border"></TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </div>
     </div>
 
     <div class="flex items-center space-x-4 pt-4">
-      <fel-button 
+      <Button 
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_cancel"
         key="cancel" 
         @click.prevent="cancelResults" 
         :color="'destructive'"
       >
         Cancel
-      </fel-button>
-      <fel-button 
+      </Button>
+      <Button 
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_reinstate"
         key="reinstate" 
         @click.prevent="reInstateResults" 
         :color="'warning'"
       >
         Re-Instate
-      </fel-button>
-      <fel-button 
+      </Button>
+      <Button 
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_submit"
         key="submit" 
         @click.prevent="submitResults" 
         :color="'primary'"
       >
         Submit
-      </fel-button>
-      <fel-button 
+      </Button>
+      <Button 
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_retract"
         key="retract" 
         @click.prevent="retractResults" 
         :color="'warning'"
       >
         Retract
-      </fel-button>
-      <fel-button 
+      </Button>
+      <Button 
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_approve"
         key="verify" 
         @click.prevent="approveResults" 
         :color="'success'"
       >
         Verify
-      </fel-button>
-      <fel-button 
+      </Button>
+      <Button 
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_retest"
         key="retest" 
         @click.prevent="retestResults" 
         :color="'warning'"
       >
         Retest
-      </fel-button>
+      </Button>
     </div>
   </div>
 
-  <fel-drawer :show="viewInfo" @close="viewInfo = false" :content-width="'w-2/4'">
+  <Drawer :show="viewInfo" @close="viewInfo = false" :content-width="'w-2/4'">
     <template v-slot:header>
       <h3 class="text-lg font-semibold text-foreground">Result Information</h3>
     </template>
@@ -567,5 +568,5 @@ const retestResults = () =>
         <ResultDetail v-if="viewResultInfo?.uid" :analysisResultesultUid="viewResultInfo?.uid" />
       </div>
     </template>
-  </fel-drawer>
+  </Drawer>
 </template>

@@ -12,11 +12,28 @@ import { GetOrdersByBillUidDocument, GetOrdersByBillUidQuery, GetOrdersByBillUid
 import useApiUtil from "@/composables/api_util";
 import useBillComposable from "@/composables/bills";
 import useNotifyToast from "@/composables/alert_toast";
-import { useField, useForm } from "vee-validate";
+import { useForm } from "vee-validate";
 import { object, string, number } from "yup";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const DataTable = defineAsyncComponent(
-  () => import("@/components/ui/datatable/FelDataTable.vue")
+  () => import("@/components/common/DataTable.vue")
 )
 const props = defineProps({
   customerUid: {
@@ -79,16 +96,12 @@ const transactionSchema = object({
   notes: string(),
 });
 
-const { handleSubmit, errors, setFieldValue } = useForm({
+const { handleSubmit, setFieldValue, values } = useForm({
   validationSchema: transactionSchema,
   initialValues: {
     testBillUid: props.testBill?.uid
   } as any,
 });
-
-const { value: kind } = useField("kind");
-const { value: amount } = useField("amount");
-const { value: notes } = useField("notes");
 
 const processing = ref(false);
 const submitTransactionForm = handleSubmit((values) => {
@@ -216,6 +229,12 @@ const applyVoucher = () => {
   showVoucherModal.value = true;
 }
 
+watch(showConfirmTransactionModal, (open) => {
+  if (!open) return;
+  setFieldValue("kind", confirmTransaction.value?.kind ?? "");
+  setFieldValue("notes", confirmTransaction.value?.notes ?? "");
+});
+
 const submitVoucherCodeForm = () => {
   processing.value = true;
   withClientMutation<ApplyBillVoucherMutation, ApplyBillVoucherMutationVariables>(ApplyBillVoucherDocument, {payload: {
@@ -279,11 +298,12 @@ const invoice = async (bill: TestBillType) => await downloadInvoice(bill.uid);
       <div class="space-y-4">
         <div class="flex justify-between items-center">
           <h4 class="text-lg font-semibold text-foreground">Order Items</h4>
-          <button
-              class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
-              @click.prevent="invoice(testBill)">
+          <Button
+              @click.prevent="invoice(testBill)"
+              type="button"
+          >
               Invoice
-          </button>
+          </Button>
         </div>
         <ul class="bg-background rounded-lg shadow-sm p-6 space-y-4">
           <li class="space-y-2" v-for="order in orders" :key="order.uid">
@@ -305,16 +325,18 @@ const invoice = async (bill: TestBillType) => await downloadInvoice(bill.uid);
         <div class="flex justify-between items-center">
           <h4 class="text-lg font-semibold text-foreground">Transactions</h4>
           <div class="space-x-4">
-            <button v-show="testBill.isActive"
-              class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
-              @click.prevent="newTransaction">
+            <Button v-show="testBill.isActive"
+              @click.prevent="newTransaction"
+              type="button"
+            >
               Add Transaction
-            </button>
-            <button v-show="testBill.isActive"
-              class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
-              @click.prevent="applyVoucher">
+            </Button>
+            <Button v-show="testBill.isActive"
+              @click.prevent="applyVoucher"
+              type="button"
+            >
               Apply Voucher
-            </button>
+            </Button>
           </div>
         </div>
         <div class="bg-background rounded-lg shadow-sm p-6">
@@ -335,106 +357,114 @@ const invoice = async (bill: TestBillType) => await downloadInvoice(bill.uid);
   </div>
 
   <!-- New Transaction Form Modal -->
-  <fel-modal v-if="showTransactionModal" @close="showTransactionModal = false" :contentWidth="'w-3/6'" class="bg-background">
+  <Modal v-if="showTransactionModal" @close="showTransactionModal = false" :contentWidth="'w-3/6'" class="bg-background">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">Transaction Form</h3>
     </template>
 
     <template v-slot:body>
-      <form class="space-y-6 p-6">
+      <Form class="space-y-6 p-6" @submit="submitTransactionForm">
         <div class="grid grid-cols-2 gap-6">
-          <label class="space-y-2">
-            <span class="text-sm font-medium text-foreground">Kind of payment</span>
-            <select 
-              :class="['w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2', {'border-destructive': errors.kind }]"
-              v-model="kind" 
-              :disabled="processing">
-              <option></option>
-              <option v-for="kind of kinds" :key="kind" :value="kind">
-                {{ kind }}
-              </option>
-            </select>
-            <div class="text-sm text-destructive">{{ errors.gender }}</div>
-          </label>
-          <label class="space-y-2">
-            <span class="text-sm font-medium text-foreground">Amount</span>
-            <input
-              :class="['w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2', {'border-destructive': errors.amount }]"
-              type="number"
-              v-model="amount"
-              :disabled="processing"
-            />
-          </label>
+          <FormField name="kind" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Kind of payment</FormLabel>
+              <FormControl>
+                <Select v-bind="componentField" :disabled="processing">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select kind" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem v-for="kind in kinds" :key="kind" :value="kind">
+                      {{ kind }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+          <FormField name="amount" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Amount</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" type="number" :disabled="processing" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </div>
-        <label class="space-y-2">
-          <span class="text-sm font-medium text-foreground">Notes</span>
-          <input
-            :class="['w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2', {'border-destructive': errors.notes }]"
-            v-model="notes"
-            :disabled="processing"
-          />
-        </label>
+        <FormField name="notes" v-slot="{ componentField }">
+          <FormItem>
+            <FormLabel>Notes</FormLabel>
+            <FormControl>
+              <Input v-bind="componentField" :disabled="processing" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
         <div class="flex justify-end">
-          <fel-button :color="'primary'" type="submit" :loading="processing" @click.prevent="submitTransactionForm">
+          <Button type="submit" :disabled="processing">
             Save Transaction
-          </fel-button>
+          </Button>
         </div>
-      </form>
+      </Form>
     </template>
-  </fel-modal>
+  </Modal>
 
   <!-- Confirm Transaction Form Modal -->
-  <fel-modal v-if="showConfirmTransactionModal" @close="showConfirmTransactionModal = false" :contentWidth="'w-3/6'" class="bg-background">
+  <Modal v-if="showConfirmTransactionModal" @close="showConfirmTransactionModal = false" :contentWidth="'w-3/6'" class="bg-background">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">Confirm Transaction</h3>
     </template>
 
     <template v-slot:body>
-      <form class="space-y-6 p-6">
-        <h4 class="text-lg font-medium text-foreground">{{ kind }} Transaction</h4>
-        <label class="space-y-2">
-          <span class="text-sm font-medium text-foreground">Notes</span>
-          <input
-            :class="['w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2', {'border-destructive': errors.notes }]"
-            v-model="confirmTransaction.notes"
-            :disabled="processing"
-          />
-        </label>
+      <Form class="space-y-6 p-6" @submit="submitConfirmTransaction">
+        <h4 class="text-lg font-medium text-foreground">{{ values.kind }} Transaction</h4>
+        <FormField name="notes" v-slot="{ componentField }">
+          <FormItem>
+            <FormLabel>Notes</FormLabel>
+            <FormControl>
+              <Input v-bind="componentField" :disabled="processing" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
         <div class="flex justify-end">
-          <fel-button :color="'primary'" type="submit" :loading="processing" @click.prevent="submitConfirmTransaction">
+          <Button type="submit" :disabled="processing">
             Confirm Transaction
-          </fel-button>
+          </Button>
         </div>
-      </form>
+      </Form>
     </template>
-  </fel-modal>
+  </Modal>
 
   <!-- Voucher Code Form Modal -->
-  <fel-modal v-if="showVoucherModal" @close="showVoucherModal = false" :contentWidth="'w-1/5'" class="bg-background">
+  <Modal v-if="showVoucherModal" @close="showVoucherModal = false" :contentWidth="'w-1/5'" class="bg-background">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">Apply Voucher Code</h3>
     </template>
 
     <template v-slot:body>
-      <form class="space-y-6 p-6">
-        <label class="space-y-2">
-          <span class="text-sm font-medium text-foreground">Voucher Code</span>
-          <input
-            :class="['w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2', {'border-destructive': !voucherCodeForm.code }]"
-            type="text"
-            v-model="voucherCodeForm.code"
-            :disabled="processing"
-          />
-        </label>
+      <Form class="space-y-6 p-6">
+        <FormItem>
+          <FormLabel>Voucher Code</FormLabel>
+          <FormControl>
+            <Input
+              type="text"
+              v-model="voucherCodeForm.code"
+              :disabled="processing"
+            />
+          </FormControl>
+        </FormItem>
 
         <div class="flex justify-end">
-          <fel-button :color="'primary'" type="submit" :loading="processing" @click.prevent="submitVoucherCodeForm">
+          <Button type="button" :disabled="processing" @click="submitVoucherCodeForm">
             Apply Voucher
-          </fel-button>
+          </Button>
         </div>
-      </form>
+      </Form>
     </template>
-  </fel-modal>
+  </Modal>
 </template>

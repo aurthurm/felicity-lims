@@ -3,6 +3,7 @@ import { defineAsyncComponent, ref } from "vue";
 import axios from "@/composables/axios";
 import useApiUtils from "@/composables/api_util";
 import useNotifyToast from "@/composables/alert_toast";
+import { Spinner } from "@/components/ui/spinner";
 
 const{ addError } = useApiUtils()
 const { toastSuccess, toastError } = useNotifyToast();
@@ -47,7 +48,10 @@ const loadDefault = (_) => {
           Load Setup Data
         </button>
         <div v-else class="rounded-lg border border-border bg-card p-4">
-          <fel-loader message="Loading default setup data ..." />
+          <span class="inline-flex items-center gap-2">
+            <Spinner class="size-4" />
+            <span class="text-sm">Loading default setup data ...</span>
+          </span>
         </div>
       </div>
     </div>

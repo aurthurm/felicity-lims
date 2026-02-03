@@ -248,7 +248,7 @@ export const setupNavigationGuards = (router: any) => {
         window.dispatchEvent(
             new CustomEvent('navigation:route-changed', {
                 detail: { to: to.path, from: from.path },
-            })
+            }),
         );
     });
 };

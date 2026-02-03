@@ -15,10 +15,19 @@ import {
 } from "@/types/gql";
 import { InstrumentType } from "@/types/gql";
 import { AddWorkSheetTemplateDocument, AddWorkSheetTemplateMutation, AddWorkSheetTemplateMutationVariables, EditWorkSheetTemplateDocument, EditWorkSheetTemplateMutation, EditWorkSheetTemplateMutationVariables } from "@/graphql/operations/worksheet.mutations";
-const modal = defineAsyncComponent(
-  () => import("@/components/ui/FelModal.vue")
-)
-
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import PageHeading from "@/components/common/PageHeading.vue"
 const worksheetStore = useWorksheetStore();
 const analysisStore = useAnalysisStore();
 const sampleStore = useSampleStore();
@@ -206,9 +215,9 @@ const sampleTypes = computed<SampleTypeTyp[]>(() => sampleStore.getSampleTypes);
 
 <template>
   <div>
-    <fel-heading title="WorkSheet Templates">
-      <fel-button @click="FormManager(true)">Add Template</fel-button>
-    </fel-heading>
+    <PageHeading title="WorkSheet Templates">
+      <Button @click="FormManager(true)">Add Template</Button>
+    </PageHeading>
 
     <hr class="my-4 border-t border-border" />
 
@@ -243,9 +252,14 @@ const sampleTypes = computed<SampleTypeTyp[]>(() => sampleStore.getSampleTypes);
               <font-awesome-icon icon="pen" />
             </a>
           </div>
-           <div v-if="!workSheetTemplates || workSheetTemplates.length === 0" class="p-4 text-center text-muted-foreground text-sm">
-             No templates found.
-           </div>
+           <Empty v-if="!workSheetTemplates || workSheetTemplates.length === 0" class="p-4 border-0 bg-transparent">
+             <EmptyContent>
+               <EmptyHeader>
+                 <EmptyTitle>No templates found</EmptyTitle>
+                 <EmptyDescription>Create a worksheet template to get started.</EmptyDescription>
+               </EmptyHeader>
+             </EmptyContent>
+           </Empty>
         </div>
       </section>
 
@@ -464,19 +478,12 @@ const sampleTypes = computed<SampleTypeTyp[]>(() => sampleStore.getSampleTypes);
                   disabled
                 />
               </label>
-              <label for="toggle" class="flex items-center cursor-pointer">
-                <div class="relative">
-                  <input
-                    type="checkbox"
-                    name="toggle"
-                    id="toggle"
-                    v-model="workSheetTemplate.rowWise"
-                    class="sr-only peer"
-                  />
-                  <div class="block h-6 w-10 rounded-full bg-muted peer-checked:bg-primary"></div>
-                  <div class="absolute left-1 top-1 h-4 w-4 rounded-full bg-background transition-transform peer-checked:translate-x-full border border-border"></div>
-                </div>
-                <span class="ml-2 text-sm font-medium text-foreground">Row Wise</span>
+              <label class="flex items-center gap-2">
+                <Switch
+                  :checked="workSheetTemplate.rowWise"
+                  @update:checked="(value) => workSheetTemplate.rowWise = value"
+                />
+                <span class="text-sm font-medium text-foreground">Row Wise</span>
               </label>
             </div>
           </div>

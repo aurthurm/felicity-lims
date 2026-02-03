@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Button } from "@/components/ui/button";
 import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
 import { useForm, useField } from 'vee-validate';
 import * as yup from 'yup';
@@ -7,9 +8,10 @@ import useApiUtil from '@/composables/api_util';
 import { AbxAntibioticType, AbxGuidelineType } from "@/types/gql";
 import { GetAbxAntibioticAllDocument, GetAbxAntibioticAllQuery, GetAbxAntibioticAllQueryVariables, GetAbxGuidelinesAllDocument, GetAbxGuidelinesAllQuery, GetAbxGuidelinesAllQueryVariables, GetAbxLaboratoryAntibioticsDocument, GetAbxLaboratoryAntibioticsQuery, GetAbxLaboratoryAntibioticsQueryVariables } from "@/graphql/operations/microbiology.queries";
 import { AddAbxAntibioticMutation, AddAbxAntibioticMutationVariables, AddAbxAntibioticDocument, EditAbxAntibioticMutation, EditAbxAntibioticMutationVariables, EditAbxAntibioticDocument, UseAbxAntibioticMutation, UseAbxAntibioticMutationVariables, UseAbxAntibioticDocument } from '@/graphql/operations/microbiology.mutations';
-
+import PageHeading from "@/components/common/PageHeading.vue"
+defineOptions({ name: 'AntibioticsView' })
 const DataTable = defineAsyncComponent(
-  () => import('@/components/ui/datatable/FelDataTable.vue')
+  () => import('@/components/common/DataTable.vue')
 )
 const VueMultiselect = defineAsyncComponent(
   () => import('vue-multiselect')
@@ -629,9 +631,9 @@ const saveForm = handleSubmit((formValues) => {
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Antibiotics">
-      <fel-button @click="FormManager(true)">Add Antibiotic</fel-button>
-    </fel-heading>
+    <PageHeading title="Antibiotics">
+      <Button @click="FormManager(true)">Add Antibiotic</Button>
+    </PageHeading>
 
     <div class="shadow-sm rounded-lg bg-card p-6">
       <DataTable 
@@ -657,7 +659,7 @@ const saveForm = handleSubmit((formValues) => {
   </div>
 
   <!-- Antibiotic Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
+  <Modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
     <template v-slot:header>
       <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -821,18 +823,12 @@ const saveForm = handleSubmit((formValues) => {
           <h4 class="text-lg font-semibold text-foreground">Usage</h4>
           <div class="grid grid-cols-2 gap-6">
             <div class="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                class="h-4 w-4 rounded border-input text-primary focus:ring-primary"
-                v-model="human"
+              <Checkbox :checked="human" @update:checked="(value) => human = value"
               />
               <span class="text-sm font-medium text-foreground">Human Use</span>
             </div>
             <div class="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                class="h-4 w-4 rounded border-input text-primary focus:ring-primary"
-                v-model="veterinary"
+              <Checkbox :checked="veterinary" @update:checked="(value) => veterinary = value"
               />
               <span class="text-sm font-medium text-foreground">Veterinary Use</span>
             </div>
@@ -950,7 +946,7 @@ const saveForm = handleSubmit((formValues) => {
         </button>
       </form>
     </template>
-  </fel-modal>
+  </Modal>
 </template>
 
 <style lang="postcss" scoped>

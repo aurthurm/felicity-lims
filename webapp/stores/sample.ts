@@ -124,14 +124,15 @@ export const useSampleStore = defineStore('sample', {
                 const result = await withClientQuery<GetAllSampleTypesQuery, GetAllSampleTypesQueryVariables>(
                     GetAllSampleTypesDocument,
                     {},
-                    'sampleTypeAll'
+                    'sampleTypeAll',
                 );
 
                 if (result && Array.isArray(result)) {
                     this.sampleTypes = result as SampleTypeTyp[];
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingSampleTypes = false;
             }
         },
@@ -215,7 +216,7 @@ export const useSampleStore = defineStore('sample', {
                 const result = await withClientQuery<GetAllSamplesQuery, GetAllSamplesQueryVariables>(
                     GetAllSamplesDocument,
                     params,
-                    undefined
+                    undefined,
                 );
 
                 if (result && typeof result === 'object' && 'sampleAll' in result) {
@@ -232,7 +233,8 @@ export const useSampleStore = defineStore('sample', {
                     this.samplePageInfo = page?.pageInfo;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingSamples = false;
             }
         },
@@ -248,7 +250,7 @@ export const useSampleStore = defineStore('sample', {
                     GetSampleByUidDocument,
                     { uid },
                     'sampleByUid',
-                    'network-only'
+                    'network-only',
                 );
 
                 if (result && typeof result === 'object') {
@@ -258,7 +260,8 @@ export const useSampleStore = defineStore('sample', {
                     this.sample = sample;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingSample = false;
             }
         },
@@ -345,7 +348,7 @@ export const useSampleStore = defineStore('sample', {
                     GetSampleByUidDocument,
                     { uid },
                     'sampleByUid',
-                    'network-only'
+                    'network-only',
                 );
 
                 if (result && typeof result === 'object' && 'status' in result) {
@@ -357,7 +360,8 @@ export const useSampleStore = defineStore('sample', {
                     this.updateSampleStatus(result as SampleType);
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingSamplesStatuses = false;
             }
         },
@@ -372,14 +376,15 @@ export const useSampleStore = defineStore('sample', {
                 const result = await withClientQuery<GetSampleParentIdQuery, GetSampleParentIdQueryVariables>(
                     GetSampleParentIdDocument,
                     { parentId, text: 'repeat' },
-                    'sampleByParentId'
+                    'sampleByParentId',
                 );
 
                 if (result && Array.isArray(result) && result.length > 0) {
                     this.repeatSample = result[0] as SampleType;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingRepeatSample = false;
             }
         },
@@ -399,14 +404,15 @@ export const useSampleStore = defineStore('sample', {
                 const result = await withClientQuery<GetAnalysesRequestsByPatientUidQuery, GetAnalysesRequestsByPatientUidQueryVariables>(
                     GetAnalysesRequestsByPatientUidDocument,
                     { uid },
-                    'analysisRequestsByPatientUid'
+                    'analysisRequestsByPatientUid',
                 );
 
                 if (result && Array.isArray(result)) {
                     this.analysisRequests = sortAnalysisRequests(result as AnalysisRequestType[]);
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingAnalysisRequests = false;
             }
         },
@@ -421,14 +427,15 @@ export const useSampleStore = defineStore('sample', {
                 const result = await withClientQuery<GetAnalysesRequestsByClientUidQuery, GetAnalysesRequestsByClientUidQueryVariables>(
                     GetAnalysesRequestsByClientUidDocument,
                     { uid },
-                    'analysisRequestsByClientUid'
+                    'analysisRequestsByClientUid',
                 );
 
                 if (result && Array.isArray(result)) {
                     this.analysisRequests = sortAnalysisRequests(result as AnalysisRequestType[]);
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingAnalysisRequests = false;
             }
         },
@@ -453,14 +460,15 @@ export const useSampleStore = defineStore('sample', {
                     GetAnalysesResultsBySampleUidDocument,
                     { uid },
                     'analysisResultBySampleUid',
-                    'network-only'
+                    'network-only',
                 );
 
                 if (result && Array.isArray(result)) {
                     this.analysisResults = sortResults(result as AnalysisResultType[]);
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingResults = false;
             }
         },
@@ -557,7 +565,8 @@ export const useSampleStore = defineStore('sample', {
                     this.qcSetPageInfo = page?.pageInfo;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingQCSets = false;
             }
         },
@@ -572,14 +581,15 @@ export const useSampleStore = defineStore('sample', {
                 const result = await withClientQuery<GetQcSetByUidQuery, GetQcSetByUidQueryVariables>(
                     GetQcSetByUidDocument,
                     { uid },
-                    'qcSetByUid'
+                    'qcSetByUid',
                 );
 
                 if (result && typeof result === 'object') {
                     this.qcSet = result as QcSetType;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingQCSet = false;
             }
         },

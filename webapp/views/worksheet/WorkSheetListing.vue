@@ -8,12 +8,30 @@ import { useUserStore } from "@/stores/user";
 import useApiUtil  from "@/composables/api_util";
 import { AddWorkSheetDocument, AddWorkSheetMutation, AddWorkSheetMutationVariables } from "@/graphql/operations/worksheet.mutations";
 import { AnalysisType } from "@/types/gql";
-import { useField, useForm } from "vee-validate";
+import { useForm } from "vee-validate";
 import { object, number, string } from "yup";
 import * as shield from "@/guards";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
+import PageHeading from "@/components/common/PageHeading.vue"
 const DataTable = defineAsyncComponent(
-  () => import("@/components/ui/datatable/FelDataTable.vue")
+  () => import("@/components/common/DataTable.vue")
 )
 
 const worksheetStore = useWorksheetStore();
@@ -138,7 +156,7 @@ const worksheetSchema = object({
   count: number().min(1, "Count must be at least 1").required("Count is required"),
 });
 
-const { handleSubmit, errors } = useForm({
+const { handleSubmit } = useForm({
   validationSchema: worksheetSchema,
   initialValues: {
     count: 1,
@@ -147,11 +165,6 @@ const { handleSubmit, errors } = useForm({
     instrumentUid: null,
   },
 });
-
-const { value: count } = useField("count");
-const { value: analystUid } = useField("analystUid");
-const { value: templateUid } = useField("templateUid");
-const { value: instrumentUid } = useField("instrumentUid");
 
 const saveForm = handleSubmit((values) => {
   showModal.value = false;
@@ -199,15 +212,14 @@ const countNone = computed(
 </script>
 
 <template>
-  <fel-heading title="Worksheets">
-    <button 
+  <PageHeading title="Worksheets">
+    <Button 
       v-show="shield.hasRights(shield.actions.CREATE, shield.objects.WORKSHEET)" 
       @click.prevent="showModal = true"
-      class="px-4 py-2 bg-primary text-primary-foreground rounded-md transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
     >
       Add WorkSheet
-    </button>
-  </fel-heading>
+    </Button>
+  </PageHeading>
   
   <div class="space-y-6">
     <div class="rounded-lg border border-border bg-card shadow-sm p-6">
@@ -238,68 +250,71 @@ const countNone = computed(
     </div>
 
     <!-- Location Edit Form Modal -->
-    <fel-modal v-if="showModal" @close="showModal = false" contentWidth="w-1/2">
+    <Modal v-if="showModal" @close="showModal = false" contentWidth="w-1/2">
       <template v-slot:header>
         <div class="space-y-4">
           <h3 class="text-lg font-medium">Create Worksheet</h3>
           <div class="border-t border-border" />
-          <ul v-if="Object.keys(errors).length > 0" class="space-y-1">
-            <li v-for="(error, idx) in Object.values(errors)" :key="idx" class="text-destructive text-sm">
-              {{ error }}
-            </li>
-          </ul>
         </div>
       </template>
 
       <template v-slot:body>
-        <form action="post" class="space-y-6 p-4">
+        <Form class="space-y-6 p-4" @submit="saveForm">
           <div class="grid grid-cols-3 gap-4">
-            <label class="block space-y-2">
-              <span class="text-sm font-medium">Analyst</span>
-              <select 
-                class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary" 
-                v-model="analystUid"
-              >
-                <option value=""></option>
-                <option v-for="analyst in analysts" :key="analyst.uid" :value="analyst.uid">
-                  {{ analystName(analyst) }}
-                </option>
-              </select>
-            </label>
-            <label class="block space-y-2">
-              <span class="text-sm font-medium">Worksheet Template</span>
-              <select 
-                class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary" 
-                v-model="templateUid"
-              >
-                <option value=""></option>
-                <option v-for="template in workSheetTemplates" :key="template.uid" :value="template.uid">
-                  {{ template.name }}
-                </option>
-              </select>
-            </label>
-            <label class="block space-y-2">
-              <span class="text-sm font-medium">How Many</span>
-              <input 
-                type="number" 
-                class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary" 
-                v-model="count" 
-                min="1" 
-              />
-            </label>
+            <FormField name="analystUid" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Analyst</FormLabel>
+                <FormControl>
+                  <Select v-bind="componentField">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select analyst" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Select analyst</SelectItem>
+                      <SelectItem v-for="analyst in analysts" :key="analyst.uid" :value="analyst.uid">
+                        {{ analystName(analyst) }}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="templateUid" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Worksheet Template</FormLabel>
+                <FormControl>
+                  <Select v-bind="componentField">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select template" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Select template</SelectItem>
+                      <SelectItem v-for="template in workSheetTemplates" :key="template.uid" :value="template.uid">
+                        {{ template.name }}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="count" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>How Many</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" type="number" min="1" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
           </div>
 
           <div class="border-t border-border pt-4">
-            <button 
-              type="button" 
-              @click.prevent="saveForm()"
-              class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-md transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-            >
-              Save Form
-            </button>
+            <Button type="submit" class="w-full">Save Form</Button>
           </div>
-        </form>
+        </Form>
       </template>
-    </fel-modal>
+    </Modal>
   </div>
 </template>

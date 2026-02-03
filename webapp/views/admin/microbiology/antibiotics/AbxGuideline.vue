@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {defineAsyncComponent, onMounted, ref} from 'vue';
-import { useField, useForm } from 'vee-validate';
+import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 
 import useApiUtil from '@/composables/api_util';
@@ -18,11 +18,20 @@ import {
   GetAbxGuidelinesAllQuery,
   GetAbxGuidelinesAllQueryVariables
 } from "@/graphql/operations/microbiology.queries";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
-const modal = defineAsyncComponent(
-    () => import("@/components/ui/FelModal.vue")
-)
-
+import PageHeading from "@/components/common/PageHeading.vue"
 const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
@@ -44,10 +53,6 @@ const { handleSubmit, resetForm, setValues } = useForm({
     description: '',
   },
 });
-
-const { value: name, errorMessage: nameError } = useField<string>('name');
-const { value: code, errorMessage: codeError } = useField<string>('code');
-const { value: description, errorMessage: descriptionError } = useField<string | null>('description');
 
 const abxGuidelines = ref<AbxGuidelineType[]>([]);
 
@@ -125,105 +130,106 @@ const saveForm = handleSubmit((values) => {
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Antibiotic Guidelines">
-      <fel-button @click="FormManager(true)">Add Guideline</fel-button>      
-    </fel-heading>
+    <PageHeading title="Antibiotic Guidelines">
+      <Button @click="FormManager(true)">Add Guideline</Button>      
+    </PageHeading>
 
     <div class="border shadow-sm rounded-lg bg-card p-6">
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-border fel-table">
-          <thead>
-            <tr>
-              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</th>
-              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Description</th>
-              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Code</th>
-              <th class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+        <Table class="min-w-full divide-y divide-border">
+          <TableHeader>
+            <TableRow>
+              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</TableHead>
+              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Description</TableHead>
+              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Code</TableHead>
+              <TableHead class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                 <span class="sr-only">Actions</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-border bg-background">
-            <tr v-for="guideline in abxGuidelines" :key="guideline?.uid" class="hover:bg-muted/50">
-              <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ guideline?.name }}</td>
-              <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ guideline?.description }}</td>
-              <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ guideline?.code }}</td>
-              <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                <button 
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody class="divide-y divide-border bg-background">
+            <TableRow v-for="guideline in abxGuidelines" :key="guideline?.uid" class="hover:bg-muted/50">
+              <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ guideline?.name }}</TableCell>
+              <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ guideline?.description }}</TableCell>
+              <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ guideline?.code }}</TableCell>
+              <TableCell class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                <Button 
+                  variant="outline"
+                  size="sm"
                   @click="FormManager(false, guideline)"
-                  class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 mr-2">
+                  class="mr-2">
                   Edit
-                </button>
-                <button 
-                  @click="deleteGuideline(guideline)"
-                  class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-destructive bg-background text-destructive hover:bg-destructive hover:text-destructive-foreground h-9 px-4 py-2">
+                </Button>
+                <Button 
+                  variant="destructive"
+                  size="sm"
+                  @click="deleteGuideline(guideline)">
                   Delete
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                </Button>
+              </TableCell>
+            </TableRow>
+            <TableEmpty v-if="!abxGuidelines || abxGuidelines.length === 0" :colspan="4">
+              <Empty class="border-0 bg-transparent p-0">
+                <EmptyContent>
+                  <EmptyHeader>
+                    <EmptyTitle>No guidelines found</EmptyTitle>
+                    <EmptyDescription>Add a guideline to get started.</EmptyDescription>
+                  </EmptyHeader>
+                </EmptyContent>
+              </Empty>
+            </TableEmpty>
+          </TableBody>
+        </Table>
       </div>
     </div>
 
     <!-- Modal -->
-    <fel-modal v-if="showModal" @close="showModal = false">
+    <Modal v-if="showModal" @close="showModal = false">
       <template v-slot:header>
         <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
       </template>
 
       <template v-slot:body>
-        <form @submit.prevent="saveForm" class="space-y-4">
-          <div class="space-y-2">
-            <label for="name" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Name</label>
-            <input 
-              id="name"
-              v-model="name"
-              type="text"
-              class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-              required
-            />
-            <p v-if="nameError" class="text-sm text-destructive">{{ nameError }}</p>
-          </div>
+        <Form @submit="saveForm" class="space-y-4">
+          <FormField name="name" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <div class="space-y-2">
-            <label for="description" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Description</label>
-            <textarea 
-              id="description"
-              v-model="description"
-              class="flex min-h-[60px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-              rows="3"
-            ></textarea>
-            <p v-if="descriptionError" class="text-sm text-destructive">{{ descriptionError }}</p>
-          </div>
+          <FormField name="description" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea v-bind="componentField" rows="3" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <div class="space-y-2">
-            <label for="code" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Code</label>
-            <input 
-              id="code"
-              v-model="code"
-              type="text"
-              class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-              required
-            />
-            <p v-if="codeError" class="text-sm text-destructive">{{ codeError }}</p>
-          </div>
+          <FormField name="code" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Code</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
           <div class="flex justify-end space-x-2">
-            <button 
-              type="button"
-              @click="showModal = false"
-              class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
+            <Button type="button" variant="outline" @click="showModal = false">
               Cancel
-            </button>
-            <button 
-              type="submit"
-              class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2">
-              Save
-            </button>
+            </Button>
+            <Button type="submit">Save</Button>
           </div>
-        </form>
+        </Form>
       </template>
-    </fel-modal>
+    </Modal>
   </div>
 </template>
 

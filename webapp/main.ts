@@ -1,6 +1,6 @@
-import {createApp} from 'vue';
-import {registerComponents, registerPlugins} from './registry';
-import {library} from '@fortawesome/fontawesome-svg-core';
+import { createApp } from 'vue';
+import { registerComponents, registerPlugins } from './registry';
+import { library } from '@fortawesome/fontawesome-svg-core';
 import {
     faAnchor,
     faArrowDown,
@@ -20,6 +20,7 @@ import {
     faChevronCircleLeft,
     faChevronCircleRight,
     faChevronDown,
+    faChevronRight,
     faChevronUp,
     faCircleDot,
     faClinicMedical,
@@ -80,10 +81,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import 'vue-multiselect/dist/vue-multiselect.css';
-import 'floating-vue/dist/style.css';
-import 'sweetalert2/dist/sweetalert2.min.css';
-import 'notyf/notyf.min.css';
 import '@vuepic/vue-datepicker/dist/main.css';
+import 'vue-sonner/style.css';
 import '@vue-flow/core/dist/style.css';
 import '@vue-flow/core/dist/theme-default.css';
 import '@/index.css';
@@ -98,6 +97,7 @@ const icons = [
     faUser,
     faUserGear,
     faChevronDown,
+    faChevronRight,
     faBars,
     faMeteor,
     faTachometerAlt,

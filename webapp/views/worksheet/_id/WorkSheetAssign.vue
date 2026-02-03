@@ -1,16 +1,18 @@
 <script setup lang="ts">
-import Swal from "sweetalert2";
 import { ref, computed, reactive, defineAsyncComponent } from "vue";
 import { useWorksheetStore} from "@/stores/worksheet";
 import { useAnalysisStore } from "@/stores/analysis";
 import { useSampleStore } from "@/stores/sample";
 import useApiUtil  from "@/composables/api_util";
+import { useConfirmDialog } from "@/composables/confirm_dialog";
 import {
   EditWorkSheetApplyTemplateDocument,
   EditWorkSheetApplyTemplateMutation,
   EditWorkSheetApplyTemplateMutationVariables,
   ManualyAssignWorsheetDocument, ManualyAssignWorsheetMutation, ManualyAssignWorsheetMutationVariables
 } from "@/graphql/operations/worksheet.mutations";
+import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
 
 import * as shield from "@/guards";
 import { AnalysisResultType } from "@/types/gql";
@@ -19,6 +21,7 @@ const worksheetStore = useWorksheetStore();
 const analysisStore = useAnalysisStore();
 const sampleStore = useSampleStore();
 const { withClientMutation } = useApiUtil();
+const { confirm } = useConfirmDialog();
 
 const templateUid = ref<string | null>(null);
 
@@ -28,23 +31,19 @@ const workSheetTemplates = computed(() => worksheetStore.getWorkSheetTemplates);
 
 const applyTemplate = async () => {
   try {
-    Swal.fire({
+    const confirmed = await confirm({
       title: "Are you sure?",
-      text: "You want to apply this template to add samples?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "hsl(var(--primary))",
-      cancelButtonColor: "hsl(var(--destructive))",
-      confirmButtonText: "Yes, apply now!",
-      cancelButtonText: "No, cancel apply!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        withClientMutation<EditWorkSheetApplyTemplateMutation, EditWorkSheetApplyTemplateMutationVariables>(EditWorkSheetApplyTemplateDocument,
-          { worksheetUid: worksheet?.value?.uid, templateUid: templateUid.value },
-          "updateWorksheetApplyTemplate"
-        ).then((result) => {});
-      }
+      description: "You want to apply this template to add samples?",
+      confirmText: "Yes, apply now!",
+      cancelText: "No, cancel apply!",
+      variant: "destructive",
     });
+    if (!confirmed) return;
+    await withClientMutation<EditWorkSheetApplyTemplateMutation, EditWorkSheetApplyTemplateMutationVariables>(
+      EditWorkSheetApplyTemplateDocument,
+      { worksheetUid: worksheet?.value?.uid, templateUid: templateUid.value },
+      "updateWorksheetApplyTemplate"
+    );
   } catch {}
 };
 
@@ -91,27 +90,23 @@ const assignToWorkSheet = () => {
   const selected = getResultsUids();
 
   try {
-    Swal.fire({
+    confirm({
       title: "Are you sure?",
-      text: "You want to assign selected to worksheet?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "hsl(var(--primary))",
-      cancelButtonColor: "hsl(var(--destructive))",
-      confirmButtonText: "Yes, assign now!",
-      cancelButtonText: "No, cancel apply!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        withClientMutation<ManualyAssignWorsheetMutation, ManualyAssignWorsheetMutationVariables>(ManualyAssignWorsheetDocument,
-          {
-            uid: worksheet?.value?.uid,
-            qcTemplateUid: qcTemplateUid.value,
-            analysesUids: selected,
-          },
-          "updateWorksheetManualAssign"
-        ).then((result) => {
-        });
-      }
+      description: "You want to assign selected to worksheet?",
+      confirmText: "Yes, assign now!",
+      cancelText: "No, cancel apply!",
+      variant: "destructive",
+    }).then((confirmed) => {
+      if (!confirmed) return;
+      withClientMutation<ManualyAssignWorsheetMutation, ManualyAssignWorsheetMutationVariables>(
+        ManualyAssignWorsheetDocument,
+        {
+          uid: worksheet?.value?.uid,
+          qcTemplateUid: qcTemplateUid.value,
+          analysesUids: selected,
+        },
+        "updateWorksheetManualAssign"
+      ).then(() => {});
     });
   } catch {}
 };
@@ -236,12 +231,11 @@ function areAllChecked(): boolean {
           </select>
         </label>
         <div class="ml-6 mt-2">
-          <FButton
+          <Button
             v-show="true"
             @click.prevent="filterAnalysis()"
-            :color="'sky-800'"
             class="p-1"
-            >Apply Filters</FButton
+            >Apply Filters</Button
           >
         </div>
       </div>
@@ -253,84 +247,89 @@ function areAllChecked(): boolean {
       class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg"
     >
       <div v-if="worksheetStore.fetchingAnalysisResults" class="py-4 text-center">
-        <fel-loader message="Fetching analytes ..." />
+        <span class="inline-flex items-center gap-2">
+          <Spinner class="size-4" />
+          <span class="text-sm">Fetching analytes ...</span>
+        </span>
       </div>
-      <table class="min-w-full fel-table" v-else>
-        <thead>
-          <tr>
-            <th
+      <Table class="min-w-full" v-else>
+        <TableHeader>
+          <TableRow>
+            <TableHead
               class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
             >
-              <input type="checkbox" @change="toggleCheckAll" v-model="allChecked" />
-            </th>
-            <th
+              <Checkbox
+                :checked="allChecked"
+                @update:checked="(value) => { allChecked = value; toggleCheckAll(); }"
+              />
+            </TableHead>
+            <TableHead
               class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
-            ></th>
-            <th
+            ></TableHead>
+            <TableHead
               class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
             >
               Sample ID
-            </th>
-            <th
+            </TableHead>
+            <TableHead
               class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
             >
               Analysis
-            </th>
-            <th
+            </TableHead>
+            <TableHead
               class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
             >
               Date Created
-            </th>
-            <th
+            </TableHead>
+            <TableHead
               class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
             >
               Date Received
-            </th>
-            <th
+            </TableHead>
+            <TableHead
               class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
             >
               Status
-            </th>
-          </tr>
-        </thead>
-        <tbody class="bg-background" v-motion-slide-right>
-          <tr v-for="analysisResult in analysisResults" :key="analysisResult?.uid">
-            <td>
-              <input
-                type="checkbox"
-                v-model="analysisResult.checked"
-                @change="checkCheck(analysisResult)"
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody class="bg-background" v-motion-slide-right>
+          <TableRow v-for="analysisResult in analysisResults" :key="analysisResult?.uid">
+            <TableCell>
+              <Checkbox
+                :checked="analysisResult.checked"
+                @update:checked="(value) => { analysisResult.checked = value; checkCheck(analysisResult); }"
               />
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border"></td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            </TableCell>
+            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border"></TableCell>
+            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary font-semibold">
                 {{ analysisResult?.sample?.sampleId }}
               </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            </TableCell>
+            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ analysisResult?.analysis?.name }}
               </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            </TableCell>
+            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ analysisResult?.sample?.createdAt }}
               </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            </TableCell>
+            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ analysisResult?.sample?.dateReceived }}
               </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            </TableCell>
+            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ analysisResult?.sample?.status }}
               </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
     </div>
   </div>
 
@@ -353,8 +352,8 @@ function areAllChecked(): boolean {
       </div>
     </form>
 
-    <FButton v-show="true" @click.prevent="assignToWorkSheet" :color="'orange-600'"
-      >Assign Analyses</FButton
+    <Button v-show="true" @click.prevent="assignToWorkSheet"
+      >Assign Analyses</Button
     >
   </section>
 </template>

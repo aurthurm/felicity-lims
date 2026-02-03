@@ -149,7 +149,7 @@ export default function useApiUtil() {
         query: TypedDocumentNode<TData, TVariables>,
         variables: TVariables,
         dataKey?: keyof TData,
-        requestPolicy: RequestPolicy = 'cache-first'
+        requestPolicy: RequestPolicy = 'cache-first',
     ): Promise<TData[keyof TData] | undefined> {
         try {
             const result = await urqlClient.query(query, variables, { requestPolicy }).toPromise();
@@ -172,7 +172,7 @@ export default function useApiUtil() {
     async function withClientMutation<TData extends Record<string, any>, TVariables extends AnyVariables>(
         mutation: TypedDocumentNode<TData, TVariables>,
         variables: TVariables,
-        dataKey?: keyof TData
+        dataKey?: keyof TData,
     ): Promise<any> {
         try {
             const result = await urqlClient.mutation(mutation, variables).toPromise();

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent } from 'vue';
 import { useLocationStore } from '@/stores/location';
+import PageHeading from "@/components/common/PageHeading.vue"
+defineOptions({ name: 'AdminView' })
 const VersionDisplay = defineAsyncComponent(
   () => import("./VersionDisplay.vue")
 )
@@ -12,9 +14,9 @@ const selectedRoute = computed(() => locationStore.getConfRoute)
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Felicity Configurations">
+    <PageHeading title="Felicity Configurations">
       <VersionDisplay />
-    </fel-heading>
+    </PageHeading>
 
     <div class="flex items-center text-sm">
       <span @click="resetSelected" class="cursor-pointer">

@@ -6,6 +6,7 @@ import { GetGrindMediaQuery, GetGrindMediaQueryVariables, GetGrindMediaDocument,
 import { GrindMediaType } from '@/types/gql';
 import { ref, computed, onMounted } from 'vue';
 import { MediaTarget} from '@/graphql/schema'
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 
 const props = defineProps({
   errandUid: {
@@ -234,12 +235,14 @@ const fileSize = computed(() => {
         <h3 class="text-lg font-medium text-foreground">Uploaded Files</h3>
         
         <!-- Loading or empty state -->
-        <div 
-          v-if="errandFiles.length === 0" 
-          class="py-6 text-center text-muted-foreground bg-background rounded-lg border border-dashed border-border"
-        >
-          No files uploaded yet
-        </div>
+        <Empty v-if="errandFiles.length === 0">
+          <EmptyContent>
+            <EmptyHeader>
+              <EmptyTitle>No files uploaded</EmptyTitle>
+              <EmptyDescription>Upload a file to get started.</EmptyDescription>
+            </EmptyHeader>
+          </EmptyContent>
+        </Empty>
         
         <!-- Error message -->
         <div 

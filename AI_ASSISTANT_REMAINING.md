@@ -1,36 +1,41 @@
-
 Assistant: "I'll help you register a new patient. Let me collect some information."
 
 [Form appears in chat]
 ┌──────────────────────────────────────┐
-│ First Name: [_____________________]  │
-│ Last Name:  [_____________________]  │
-│ DOB:        [____/____/________]     │
-│ Gender:     [M] [F] [Other]          │
-│ Email:      [_____________________]  │
-│ Phone:      [_____________________]  │
-│                                      │
-│        [Cancel]  [Submit]            │
+│ First Name: [_____________________] │
+│ Last Name: [_____________________] │
+│ DOB: [____/____/________] │
+│ Gender: [M] [F] [Other] │
+│ Email: [_____________________] │
+│ Phone: [_____________________] │
+│ │
+│ [Cancel] [Submit] │
 └──────────────────────────────────────┘
+
 ```
 
 #### Quick Actions
 ```
+
 Assistant: "Patient PAT-2024-001 created successfully!"
 
 Quick actions:
 [+ Create Sample] [+ Create Test Request] [View Patient Details]
+
 ```
 
 #### Confirmations
 ```
+
 Assistant: "I'm about to delete sample SAM-001. This action cannot be undone."
 
 [Cancel] [Confirm Delete]
+
 ```
 
 #### Multi-Step Workflows
 ```
+
 User: "Create a worksheet for chemistry samples"
 
 Step 1/3: "Found 15 pending chemistry samples. Which samples should I include?"
@@ -43,7 +48,8 @@ Step 3/3: "Assign analyst?"
 [Current User: John Doe] [Other User...]
 
 [Create Worksheet]
-```
+
+````
 
 ### 9.4 Mobile Responsiveness
 
@@ -84,9 +90,10 @@ class TestPatientIntents:
 
         assert intent == Intent.SEARCH_PATIENT
         assert params["patient_id"] == "PAT-2024-001"
-```
+````
 
 #### Tokenization Tests
+
 ```python
 class TestTokenization:
     """Test PII/PHI tokenization"""
@@ -123,6 +130,7 @@ class TestTokenization:
 ### 10.2 Integration Testing
 
 #### End-to-End Workflow Tests
+
 ```python
 class TestPatientWorkflow:
     """Test complete patient workflow"""
@@ -159,6 +167,7 @@ class TestPatientWorkflow:
 ### 10.3 Security Testing
 
 #### PII Leakage Tests
+
 ```python
 class TestPIIProtection:
     """Ensure no PII reaches LLM"""
@@ -184,6 +193,7 @@ class TestPIIProtection:
 ```
 
 #### Authorization Tests
+
 ```python
 class TestAuthorization:
     """Test permission enforcement"""
@@ -224,6 +234,7 @@ class TestAuthorization:
 ### 10.4 Performance Testing
 
 #### Load Testing
+
 ```python
 class TestPerformance:
     """Test system under load"""
@@ -255,12 +266,13 @@ class TestPerformance:
 ### 10.5 User Acceptance Testing
 
 #### UAT Scenarios
-| Scenario | Steps | Expected Outcome |
-|----------|-------|------------------|
-| **New User Onboarding** | 1. New lab tech logs in<br>2. Opens assistant<br>3. Asks "How do I register a patient?" | Assistant guides through process |
-| **Complex Workflow** | 1. Create patient<br>2. Create request<br>3. Add samples<br>4. Create worksheet<br>5. Enter results<br>6. Verify | Complete workflow via chat only |
-| **Error Recovery** | 1. Create sample with invalid data<br>2. View error message<br>3. Correct and retry | Clear error, successful retry |
-| **Context Switching** | 1. Working on Patient A<br>2. Switch to Patient B<br>3. Return to Patient A | Context preserved correctly |
+
+| Scenario                | Steps                                                                                                            | Expected Outcome                 |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| **New User Onboarding** | 1. New lab tech logs in<br>2. Opens assistant<br>3. Asks "How do I register a patient?"                          | Assistant guides through process |
+| **Complex Workflow**    | 1. Create patient<br>2. Create request<br>3. Add samples<br>4. Create worksheet<br>5. Enter results<br>6. Verify | Complete workflow via chat only  |
+| **Error Recovery**      | 1. Create sample with invalid data<br>2. View error message<br>3. Correct and retry                              | Clear error, successful retry    |
+| **Context Switching**   | 1. Working on Patient A<br>2. Switch to Patient B<br>3. Return to Patient A                                      | Context preserved correctly      |
 
 ---
 
@@ -269,29 +281,31 @@ class TestPerformance:
 ### 11.1 Infrastructure Requirements
 
 #### Backend Services
+
 ```yaml
 # docker-compose additions
 services:
-  felicity-assistant:
-    build:
-      context: .
-      dockerfile: Dockerfile.assistant
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - MONGODB_URL=${MONGODB_URL}
-      - REDIS_URL=${REDIS_URL}
-      - LLM_PROVIDER=${LLM_PROVIDER}  # claude, openai
-      - LLM_API_KEY=${LLM_API_KEY}
-      - LLM_MODEL=${LLM_MODEL}
-    depends_on:
-      - postgres
-      - mongodb
-      - redis
-    volumes:
-      - ./felicity:/app/felicity
+    felicity-assistant:
+        build:
+            context: .
+            dockerfile: Dockerfile.assistant
+        environment:
+            - DATABASE_URL=${DATABASE_URL}
+            - MONGODB_URL=${MONGODB_URL}
+            - REDIS_URL=${REDIS_URL}
+            - LLM_PROVIDER=${LLM_PROVIDER} # claude, openai
+            - LLM_API_KEY=${LLM_API_KEY}
+            - LLM_MODEL=${LLM_MODEL}
+        depends_on:
+            - postgres
+            - mongodb
+            - redis
+        volumes:
+            - ./felicity:/app/felicity
 ```
 
 #### Resource Allocation
+
 - **CPU**: 2-4 cores per instance
 - **Memory**: 4-8 GB RAM
 - **Storage**: 50 GB for conversation logs
@@ -300,6 +314,7 @@ services:
 ### 11.2 Configuration Management
 
 #### Environment Variables
+
 ```bash
 # LLM Configuration
 LLM_PROVIDER=claude  # or openai
@@ -329,6 +344,7 @@ ASSISTANT_MAX_FILE_SIZE_MB=10
 ### 11.3 Monitoring & Observability
 
 #### Key Metrics to Track
+
 ```python
 # Performance metrics
 - assistant_message_processing_time_seconds (histogram)
@@ -356,6 +372,7 @@ ASSISTANT_MAX_FILE_SIZE_MB=10
 ```
 
 #### Logging Strategy
+
 ```python
 # Structured logging
 logger.info(
@@ -373,65 +390,68 @@ logger.info(
 ```
 
 #### Alerting Rules
+
 ```yaml
 alerts:
-  - name: high_error_rate
-    condition: assistant_errors_total > 10% of assistant_messages_total
-    severity: warning
-    action: notify_team
+    - name: high_error_rate
+      condition: assistant_errors_total > 10% of assistant_messages_total
+      severity: warning
+      action: notify_team
 
-  - name: high_llm_cost
-    condition: assistant_llm_cost_usd_total > MAX_COST_PER_DAY
-    severity: critical
-    action: disable_assistant, notify_admin
+    - name: high_llm_cost
+      condition: assistant_llm_cost_usd_total > MAX_COST_PER_DAY
+      severity: critical
+      action: disable_assistant, notify_admin
 
-  - name: slow_response_time
-    condition: assistant_message_processing_time_seconds_p95 > 5s
-    severity: warning
-    action: notify_team
+    - name: slow_response_time
+      condition: assistant_message_processing_time_seconds_p95 > 5s
+      severity: warning
+      action: notify_team
 
-  - name: llm_api_down
-    condition: assistant_llm_errors_total > 10 in 5 minutes
-    severity: critical
-    action: enable_fallback_mode, notify_team
+    - name: llm_api_down
+      condition: assistant_llm_errors_total > 10 in 5 minutes
+      severity: critical
+      action: enable_fallback_mode, notify_team
 ```
 
 ### 11.4 Deployment Process
 
 #### CI/CD Pipeline
+
 ```yaml
 # .github/workflows/deploy-assistant.yml
 name: Deploy AI Assistant
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'felicity/apps/assistant/**'
-      - 'felicity/api/gql/assistant/**'
+    push:
+        branches: [main]
+        paths:
+            - 'felicity/apps/assistant/**'
+            - 'felicity/api/gql/assistant/**'
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Run tests
-        run: |
-          pytest felicity/tests/assistant/ -v
-          pytest felicity/tests/integration/assistant/ -v
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Run tests
+              run: |
+                  pytest felicity/tests/assistant/ -v
+                  pytest felicity/tests/integration/assistant/ -v
 
-  deploy:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to staging
-        run: |
-          # Deploy to staging environment
-          # Run smoke tests
-          # If passed, deploy to production
+    deploy:
+        needs: test
+        runs-on: ubuntu-latest
+        steps:
+            - name: Deploy to staging
+              run: |
+                  # Deploy to staging environment
+                  # Run smoke tests
+                  # If passed, deploy to production
 ```
 
 #### Rollout Strategy
+
 1. **Canary Deployment**: 5% of users initially
 2. **Monitor**: Track error rates, performance, user feedback
 3. **Gradual Rollout**: 25% → 50% → 100% over 2 weeks
@@ -440,6 +460,7 @@ jobs:
 ### 11.5 Disaster Recovery
 
 #### Backup Strategy
+
 ```python
 # Backup conversation data daily
 async def backup_conversations():
@@ -459,17 +480,18 @@ async def backup_conversations():
 ```
 
 #### Failover Procedures
+
 1. **LLM Provider Failure**
-   - Automatic fallback to secondary provider
-   - Or disable AI features, allow manual operations
+    - Automatic fallback to secondary provider
+    - Or disable AI features, allow manual operations
 
 2. **Database Failure**
-   - Read from replica
-   - Queue write operations
+    - Read from replica
+    - Queue write operations
 
 3. **Complete System Failure**
-   - Users can still access regular LIMS UI
-   - Assistant operations queued for later processing
+    - Users can still access regular LIMS UI
+    - Assistant operations queued for later processing
 
 ---
 
@@ -478,10 +500,12 @@ async def backup_conversations():
 ### 12.1 LLM Costs
 
 #### Claude 3.5 Sonnet Pricing (as of 2024)
+
 - **Input**: $3 per million tokens
 - **Output**: $15 per million tokens
 
 #### Example Usage Calculation
+
 ```
 Assumptions:
 - 50 active users per day
@@ -505,39 +529,42 @@ Yearly cost: $135 × 12 = $1,620/year
 
 ### 12.2 Infrastructure Costs
 
-| Component | Monthly Cost | Notes |
-|-----------|--------------|-------|
-| **Backend Service** | $50-100 | 2-4 core VPS |
-| **Database Storage** | $10-20 | Conversation history |
-| **Redis Cache** | $10-20 | Session management |
-| **Bandwidth** | $20-50 | API calls |
-| **Monitoring** | $0-30 | Application monitoring |
-| **Total Infrastructure** | $90-220/month | ~$1,000-2,600/year |
+| Component                | Monthly Cost  | Notes                  |
+| ------------------------ | ------------- | ---------------------- |
+| **Backend Service**      | $50-100       | 2-4 core VPS           |
+| **Database Storage**     | $10-20        | Conversation history   |
+| **Redis Cache**          | $10-20        | Session management     |
+| **Bandwidth**            | $20-50        | API calls              |
+| **Monitoring**           | $0-30         | Application monitoring |
+| **Total Infrastructure** | $90-220/month | ~$1,000-2,600/year     |
 
 ### 12.3 Total Cost of Ownership (TCO)
 
 #### Year 1 Costs
-| Category | Cost | Notes |
-|----------|------|-------|
-| **Development** | $80,000 | 6 months, 1 senior developer |
-| **LLM Costs** | $1,620 | Based on usage estimate |
-| **Infrastructure** | $1,800 | Hosting and services |
-| **Testing & QA** | $10,000 | Integration testing |
-| **Training** | $5,000 | User training materials |
-| **Total Year 1** | **$98,420** | |
+
+| Category           | Cost        | Notes                        |
+| ------------------ | ----------- | ---------------------------- |
+| **Development**    | $80,000     | 6 months, 1 senior developer |
+| **LLM Costs**      | $1,620      | Based on usage estimate      |
+| **Infrastructure** | $1,800      | Hosting and services         |
+| **Testing & QA**   | $10,000     | Integration testing          |
+| **Training**       | $5,000      | User training materials      |
+| **Total Year 1**   | **$98,420** |                              |
 
 #### Ongoing Costs (Per Year)
-| Category | Cost | Notes |
-|----------|------|-------|
-| **LLM Costs** | $1,620 | Scales with usage |
-| **Infrastructure** | $1,800 | Hosting |
-| **Maintenance** | $20,000 | 25% of dev cost |
-| **Support** | $5,000 | User support |
-| **Total Ongoing** | **$28,420/year** | |
+
+| Category           | Cost             | Notes             |
+| ------------------ | ---------------- | ----------------- |
+| **LLM Costs**      | $1,620           | Scales with usage |
+| **Infrastructure** | $1,800           | Hosting           |
+| **Maintenance**    | $20,000          | 25% of dev cost   |
+| **Support**        | $5,000           | User support      |
+| **Total Ongoing**  | **$28,420/year** |                   |
 
 ### 12.4 ROI Analysis
 
 #### Time Savings Calculation
+
 ```
 Assumptions:
 - 50 lab staff using system
@@ -558,6 +585,7 @@ ROI:
 ```
 
 #### Quality Improvements
+
 - **Reduced Errors**: 20-30% reduction in data entry errors
 - **Faster TAT**: 10-15% improvement in sample processing time
 - **Better Compliance**: Comprehensive audit trails, reduced violations
@@ -569,38 +597,38 @@ ROI:
 
 ### 13.1 Adoption Metrics
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| **Active Users** | 80% of lab staff | Weekly active users |
-| **Messages per User** | 15+ per day | Average daily messages |
-| **Workflows via AI** | 50%+ of operations | Percentage of operations via assistant |
-| **User Retention** | 90%+ return rate | Users who return after first use |
+| Metric                | Target             | Measurement                            |
+| --------------------- | ------------------ | -------------------------------------- |
+| **Active Users**      | 80% of lab staff   | Weekly active users                    |
+| **Messages per User** | 15+ per day        | Average daily messages                 |
+| **Workflows via AI**  | 50%+ of operations | Percentage of operations via assistant |
+| **User Retention**    | 90%+ return rate   | Users who return after first use       |
 
 ### 13.2 Performance Metrics
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| **Response Time** | < 500ms | P95 response time |
+| Metric                | Target  | Measurement         |
+| --------------------- | ------- | ------------------- |
+| **Response Time**     | < 500ms | P95 response time   |
 | **Streaming Latency** | < 100ms | Time to first token |
-| **Uptime** | 99.9% | System availability |
-| **Error Rate** | < 1% | Failed operations |
+| **Uptime**            | 99.9%   | System availability |
+| **Error Rate**        | < 1%    | Failed operations   |
 
 ### 13.3 Business Metrics
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| **Time Saved** | 30 min/user/day | Tracked via timestamps |
-| **Error Reduction** | 25% fewer errors | Compare pre/post |
-| **Training Time** | 50% reduction | New user onboarding time |
-| **User Satisfaction** | 4.5/5 stars | In-app feedback surveys |
+| Metric                | Target           | Measurement              |
+| --------------------- | ---------------- | ------------------------ |
+| **Time Saved**        | 30 min/user/day  | Tracked via timestamps   |
+| **Error Reduction**   | 25% fewer errors | Compare pre/post         |
+| **Training Time**     | 50% reduction    | New user onboarding time |
+| **User Satisfaction** | 4.5/5 stars      | In-app feedback surveys  |
 
 ### 13.4 Cost Metrics
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| **LLM Cost per User** | < $3/month | Total cost / active users |
-| **Cost per Message** | < $0.005 | Total cost / messages |
-| **ROI** | > 200% in 1 year | Savings vs. costs |
+| Metric                | Target           | Measurement               |
+| --------------------- | ---------------- | ------------------------- |
+| **LLM Cost per User** | < $3/month       | Total cost / active users |
+| **Cost per Message**  | < $0.005         | Total cost / messages     |
+| **ROI**               | > 200% in 1 year | Savings vs. costs         |
 
 ---
 
@@ -608,30 +636,30 @@ ROI:
 
 ### 14.1 Technical Risks
 
-| Risk | Impact | Probability | Mitigation |
-|------|--------|-------------|------------|
-| **LLM Provider Outage** | High | Medium | Multi-provider support, fallback mode |
-| **PII Leakage** | Critical | Low | Comprehensive tokenization, regular audits |
-| **Performance Degradation** | Medium | Medium | Caching, optimization, load testing |
-| **Integration Bugs** | Medium | High | Extensive testing, phased rollout |
+| Risk                        | Impact   | Probability | Mitigation                                 |
+| --------------------------- | -------- | ----------- | ------------------------------------------ |
+| **LLM Provider Outage**     | High     | Medium      | Multi-provider support, fallback mode      |
+| **PII Leakage**             | Critical | Low         | Comprehensive tokenization, regular audits |
+| **Performance Degradation** | Medium   | Medium      | Caching, optimization, load testing        |
+| **Integration Bugs**        | Medium   | High        | Extensive testing, phased rollout          |
 
 ### 14.2 Business Risks
 
-| Risk | Impact | Probability | Mitigation |
-|------|--------|-------------|------------|
-| **Low Adoption** | High | Medium | User training, clear value demonstration |
-| **High Costs** | Medium | Low | Rate limiting, cost monitoring, alerts |
-| **Regulatory Issues** | High | Low | Legal review, HIPAA compliance validation |
-| **User Resistance** | Medium | Medium | Change management, optional feature |
+| Risk                  | Impact | Probability | Mitigation                                |
+| --------------------- | ------ | ----------- | ----------------------------------------- |
+| **Low Adoption**      | High   | Medium      | User training, clear value demonstration  |
+| **High Costs**        | Medium | Low         | Rate limiting, cost monitoring, alerts    |
+| **Regulatory Issues** | High   | Low         | Legal review, HIPAA compliance validation |
+| **User Resistance**   | Medium | Medium      | Change management, optional feature       |
 
 ### 14.3 Security Risks
 
-| Risk | Impact | Probability | Mitigation |
-|------|--------|-------------|------------|
-| **Prompt Injection** | Medium | Medium | Input validation, sandboxing |
-| **Unauthorized Access** | High | Low | Strong authentication, RBAC |
-| **Data Breach** | Critical | Very Low | Encryption, tokenization, audit logs |
-| **LLM Hallucination** | Medium | Medium | Confirmation prompts, validation |
+| Risk                    | Impact   | Probability | Mitigation                           |
+| ----------------------- | -------- | ----------- | ------------------------------------ |
+| **Prompt Injection**    | Medium   | Medium      | Input validation, sandboxing         |
+| **Unauthorized Access** | High     | Low         | Strong authentication, RBAC          |
+| **Data Breach**         | Critical | Very Low    | Encryption, tokenization, audit logs |
+| **LLM Hallucination**   | Medium   | Medium      | Confirmation prompts, validation     |
 
 ---
 
@@ -640,34 +668,38 @@ ROI:
 ### Phase 7+: Advanced Capabilities
 
 #### 15.1 Multimodal Capabilities
+
 - **Image Analysis**: Upload images (culture plates, gels) for AI analysis
 - **Voice Conversations**: Full voice-based interaction
 - **Document Processing**: Extract data from PDFs, scanned forms
 - **Video Guidance**: AI-generated video tutorials
 
 #### 15.2 Advanced AI Features
+
 - **Predictive Analytics**:
-  - Predict test failures before they occur
-  - Forecast reagent needs
-  - Identify at-risk samples
+    - Predict test failures before they occur
+    - Forecast reagent needs
+    - Identify at-risk samples
 
 - **Anomaly Detection**:
-  - Automatic identification of unusual patterns
-  - Outlier detection in QC data
-  - Fraud detection in billing
+    - Automatic identification of unusual patterns
+    - Outlier detection in QC data
+    - Fraud detection in billing
 
 - **Natural Language Reporting**:
-  - Generate clinical interpretations
-  - Auto-write lab reports
-  - Summarize patient history
+    - Generate clinical interpretations
+    - Auto-write lab reports
+    - Summarize patient history
 
 #### 15.3 Collaboration Features
+
 - **Team Chats**: Multi-user conversations
 - **Expert Consultation**: AI routes complex cases to specialists
 - **Knowledge Base**: AI learns from organization's SOPs
 - **Case Discussions**: AI-facilitated case reviews
 
 #### 15.4 Integration Expansions
+
 - **EHR Integration**: Two-way sync with hospital systems
 - **LIMS-to-LIMS**: Transfer data between facilities
 - **Billing Systems**: Insurance claim automation
@@ -756,5 +788,7 @@ class IntentTaxonomy:
 ### Appendix B: Example Conversations
 
 #### Example 1: Complete Patient-Sample-Result Workflow
+
 ```
 User: Register a new patient John Doe, born 1990-05-15, male
+```

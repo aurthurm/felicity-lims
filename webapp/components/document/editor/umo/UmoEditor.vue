@@ -6,6 +6,7 @@ import { ArrowLeftIcon, EyeIcon } from '@heroicons/vue/24/outline';
 import { getOptions } from './options';
 import useApiUtil from '@/composables/api_util';
 import { EditDocumentVersionDocument, EditDocumentVersionMutation, EditDocumentVersionMutationVariables } from '@/graphql/operations/document.mutations';
+import { Spinner } from "@/components/ui/spinner";
 const UmoEditor = defineAsyncComponent(
   () => import("@umoteam/editor")
 )
@@ -98,7 +99,10 @@ const goBack = () => router.back();
         role="status"
         aria-label="Saving document"
       >
-        <fel-loader message="Saving..." />
+        <span class="inline-flex items-center gap-2">
+          <Spinner class="size-4" />
+          <span class="text-sm">Saving...</span>
+        </span>
       </div>
     </header>
     

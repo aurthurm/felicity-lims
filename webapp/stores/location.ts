@@ -57,7 +57,7 @@ export const useLocationStore = defineStore('location', {
                 const payload = await withClientQuery<GetAllCountriesQuery, GetAllCountriesQueryVariables>(
                     GetAllCountriesDocument,
                     {},
-                    'countryAll'
+                    'countryAll',
                 );
                 this.countries = payload as CountryType[];
                 this.provinces = [];
@@ -91,7 +91,7 @@ export const useLocationStore = defineStore('location', {
                     FilterProvincesByCountryDocument,
                     { uid: countryUid },
                     'provincesByCountryUid',
-                    'network-only'
+                    'network-only',
                 );
                 this.provinces = payload as ProvinceType[];
                 this.districts = [];
@@ -125,7 +125,7 @@ export const useLocationStore = defineStore('location', {
                     FilterDistrictsByProvinceDocument,
                     { uid: provinceUid },
                     'districtsByProvinceUid',
-                    'network-only'
+                    'network-only',
                 );
                 this.districts = payload as DistrictType[];
             } catch (error) {

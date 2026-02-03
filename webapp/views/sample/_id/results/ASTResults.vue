@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { Button } from "@/components/ui/button";
 import { useSampleStore } from "@/stores/sample";
 import { computed, defineAsyncComponent, ref, onMounted, watch } from "vue";
 import type { PropType } from 'vue'
-import Swal from 'sweetalert2';
+import { useConfirmDialog } from "@/composables/confirm_dialog";
 
 import {AnalysisResultType,SampleType} from "@/types/gql";
 import useApiUtil from '@/composables/api_util';
@@ -32,6 +33,7 @@ const {
 const sampleStore = useSampleStore();
 
 const { withClientMutation, withClientQuery } = useApiUtil()
+const { confirm } = useConfirmDialog();
 const organismResult = computed(() => organismAnalysisResults[0]);
 const astResults = ref<AbxAstResultType[]>([]);
 const pickedOrganisms = ref<AbxOrganismResultType[]>([]);
@@ -108,31 +110,29 @@ function searchPanels() {
   });
 }
 
-function applyPanel(panel){
+async function applyPanel(panel){
   showModal.value = false;
-  Swal.fire({
-      title: 'Are you sure?',
-      text: 'You want to apply panel: ' + panel.name + ' to organism: ' + choiceOrganism.value?.organism?.name,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: 'hsl(var(--primary))',
-      cancelButtonColor: 'hsl(var(--destructive))',
-      confirmButtonText: 'Yes, apply now!',
-      cancelButtonText: 'No, do not apply!',
-  }).then(async result => {
-      if (result.isConfirmed) {
-          withClientMutation<ApplyAbxAstPanelMutation, ApplyAbxAstPanelMutationVariables>(
-            ApplyAbxAstPanelDocument, { payload: {
-              organismResultUid: choiceOrganism.value?.uid!, 
-              panelUid: panel.uid, 
-              sampleUid: sample.uid!,
-            } }, 'applyAbxAstPanel'
-          ).then((res: any) => {
-            res?.astResults?.forEach(ast => (astResults.value.push(ast)));
-            processASTResults();
-          });
-      }
+  const confirmed = await confirm({
+    title: "Are you sure?",
+    description: `You want to apply panel: ${panel.name} to organism: ${choiceOrganism.value?.organism?.name}`,
+    confirmText: "Yes, apply now!",
+    cancelText: "No, do not apply!",
+    variant: "destructive",
   });
+  if (!confirmed) return;
+  const res = await withClientMutation<ApplyAbxAstPanelMutation, ApplyAbxAstPanelMutationVariables>(
+    ApplyAbxAstPanelDocument,
+    {
+      payload: {
+        organismResultUid: choiceOrganism.value?.uid!,
+        panelUid: panel.uid,
+        sampleUid: sample.uid!,
+      },
+    },
+    "applyAbxAstPanel"
+  );
+  res?.astResults?.forEach((ast) => astResults.value.push(ast));
+  processASTResults();
 }
 
 // Antibiotic table cells data management
@@ -339,24 +339,24 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
 
         <div class="rounded-lg border border-border bg-background">
           <div class="overflow-x-auto">
-            <table class="w-full fel-table">
-              <thead>
-                <tr class="border-b border-border bg-muted/50">
-                  <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Parameter</th>
-                  <th 
+            <Table class="w-full">
+              <TableHeader>
+                <TableRow class="border-b border-border bg-muted/50">
+                  <TableHead class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Parameter</TableHead>
+                  <TableHead 
                     v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
                     :key="antibiotic"
                     class="px-4 py-3 text-left text-sm font-medium text-muted-foreground"
                   >
                     {{ antibiotic }}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 <!-- Guideline year -->
-                <tr class="border-b border-border">
-                  <td class="px-4 py-3 text-sm font-medium text-foreground">Guideline</td>
-                  <td 
+                <TableRow class="border-b border-border">
+                  <TableCell class="px-4 py-3 text-sm font-medium text-foreground">Guideline</TableCell>
+                  <TableCell 
                     v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
                     :key="antibiotic"
                     class="px-4 py-3"
@@ -369,12 +369,12 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
                     >
                       <option v-for="gly in guidelines" :key="gly.uid" :value="gly.uid">{{ gly.code }}</option>
                     </select>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
                 <!-- AST Method -->
-                <tr class="border-b border-border">
-                  <td class="px-4 py-3 text-sm font-medium text-foreground">AST Method</td>
-                  <td 
+                <TableRow class="border-b border-border">
+                  <TableCell class="px-4 py-3 text-sm font-medium text-foreground">AST Method</TableCell>
+                  <TableCell 
                     v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
                     :key="antibiotic"
                     class="px-4 py-3"
@@ -387,12 +387,12 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
                     >
                       <option v-for="tm in testMethods" :key="tm.uid" :value="tm.uid">{{ tm.name }}</option>
                     </select>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
                 <!-- AST Value -->
-                <tr class="border-b border-border">
-                  <td class="px-4 py-3 text-sm font-medium text-foreground">AST Value</td>
-                  <td 
+                <TableRow class="border-b border-border">
+                  <TableCell class="px-4 py-3 text-sm font-medium text-foreground">AST Value</TableCell>
+                  <TableCell 
                     v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
                     :key="antibiotic"
                     class="px-4 py-3"
@@ -405,12 +405,12 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
                       step="0.1"
                       :disabled="organismResults[pickedOrg.uid][antibiotic].status !== 'pending'"
                     />
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
                 <!-- Result -->
-                <tr class="border-b border-border">
-                  <td class="px-4 py-3 text-sm font-medium text-foreground">Result</td>
-                  <td 
+                <TableRow class="border-b border-border">
+                  <TableCell class="px-4 py-3 text-sm font-medium text-foreground">Result</TableCell>
+                  <TableCell 
                     v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
                     :key="antibiotic"
                     class="px-4 py-3"
@@ -420,8 +420,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
                         v-model="organismResults[pickedOrg.uid][antibiotic].result"
                         @change="handleCellEdit(pickedOrg.uid, antibiotic, 'result', ($event.target as HTMLInputElement).value)"
                         class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                        :class="{
-                          'text-success': organismResults[pickedOrg.uid][antibiotic].result?.toUpperCase() === 'S',
+                        :class="{'text-success': organismResults[pickedOrg.uid][antibiotic].result?.toUpperCase() === 'S',
                           'text-warning': organismResults[pickedOrg.uid][antibiotic].result?.toUpperCase() === 'I',
                           'text-destructive': organismResults[pickedOrg.uid][antibiotic].result?.toUpperCase() === 'R'
                         }"
@@ -439,28 +438,28 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
                         />
                       </span>
                     </div>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
                 <!-- Reportable -->
-                <tr>
-                  <td class="px-4 py-3 text-sm font-medium text-foreground">Reportable</td>
-                  <td 
+                <TableRow>
+                  <TableCell class="px-4 py-3 text-sm font-medium text-foreground">Reportable</TableCell>
+                  <TableCell 
                     v-for="antibiotic in getAntibiotics(pickedOrg.uid)" 
                     :key="antibiotic"
                     class="px-4 py-3"
                   >
                     <div class="flex items-center space-x-4">
-                      <input 
-                        type="checkbox"
-                        v-model="organismResults[pickedOrg.uid][antibiotic].reportable"
-                        @change="handleCellEdit(pickedOrg.uid, antibiotic, 'reportable', ($event.target as HTMLInputElement).checked)"
-                        class="rounded border-input text-primary focus:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
+                      <Checkbox
+                        :checked="organismResults[pickedOrg.uid][antibiotic].reportable"
                         :disabled="organismResults[pickedOrg.uid][antibiotic].status !== 'pending'"
+                        @update:checked="(value) => {
+                          organismResults[pickedOrg.uid][antibiotic].reportable = value;
+                          handleCellEdit(pickedOrg.uid, antibiotic, 'reportable', value);
+                        }"
                       />
                       <span 
                         class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                        :class="{
-                          'bg-primary/10 text-primary': organismResults[pickedOrg.uid][antibiotic].status === 'pending',
+                        :class="{'bg-primary/10 text-primary': organismResults[pickedOrg.uid][antibiotic].status === 'pending',
                           'bg-warning/10 text-warning': organismResults[pickedOrg.uid][antibiotic].status === 'resulted',
                           'bg-success/10 text-success': organismResults[pickedOrg.uid][antibiotic].status === 'approved',
                           'bg-destructive/10 text-destructive': organismResults[pickedOrg.uid][antibiotic].status === 'cancelled'
@@ -469,15 +468,15 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
                         {{ organismResults[pickedOrg.uid][antibiotic].status }}
                       </span>
                     </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
           </div>
         </div>
 
         <div class="flex items-center space-x-4">
-          <fel-button 
+          <Button 
             v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && canSave(pickedOrg.uid)" 
             key="save" 
             @click.prevent="saveAntibiotics(pickedOrg.uid)" 
@@ -485,32 +484,32 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
             :disabled="savingAntibiotics"
           >
             Save Antibiotics
-          </fel-button>
+          </Button>
 
-          <fel-button 
+          <Button 
             v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && canSubmit(pickedOrg.uid)" 
             key="submit" 
             @click.prevent="submitAntibiotics(pickedOrg.uid)" 
             :color="'warning'"
           >
             Submit Antibiotics
-          </fel-button>
+          </Button>
 
-          <fel-button 
+          <Button 
             v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && canApprove(pickedOrg.uid)" 
             key="approve" 
             @click.prevent="approveAntibiotics(pickedOrg.uid)" 
             :color="'success'"
           >
             Approve Antibiotics
-          </fel-button>
+          </Button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Panel Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
+  <Modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
     <template v-slot:header>
       <h3 class="text-lg font-semibold text-foreground">
         Search Panel for <span class="italic">{{ choiceOrganism?.organism?.name }}</span>
@@ -529,34 +528,34 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
 
           <div class="rounded-lg border border-border">
             <div class="overflow-y-auto max-h-64">
-              <table class="w-full fel-table">
-                <tbody>
-                  <tr 
+              <Table class="w-full">
+                <TableBody>
+                  <TableRow 
                     v-for="panel in panels" 
                     :key="panel.uid"
                     class="border-b border-border hover:bg-muted/50 transition-colors duration-200"
                   >
-                    <td class="px-4 py-3">
+                    <TableCell class="px-4 py-3">
                       <div class="font-medium text-foreground">{{ panel.name }}</div>
                       <div class="text-sm text-muted-foreground">
                         {{ panel.antibiotics?.map(a => a.name)?.join(", ") }}
                       </div>
-                    </td>
-                    <td class="px-4 py-3 text-right">
+                    </TableCell>
+                    <TableCell class="px-4 py-3 text-right">
                       <button
                         @click="applyPanel(panel)"
                         class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2"
                       >
                         Apply
                       </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
             </div>
           </div>
         </div>
       </div>
     </template>
-  </fel-modal>
+  </Modal>
 </template>

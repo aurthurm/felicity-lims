@@ -1,7 +1,17 @@
 <script setup lang="ts">
-import { ref, reactive, computed, defineAsyncComponent } from 'vue';
-import { useField, useForm } from "vee-validate";
+import { ref, reactive, computed } from 'vue';
+import { useForm } from "vee-validate";
 import { object, string } from "yup";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   CountryType,
   ProvinceType,
@@ -18,9 +28,6 @@ import {
 
 import { useLocationStore } from '@/stores/location';
 import  useApiUtil  from '@/composables/api_util';
-const modal = defineAsyncComponent(
-  () => import('@/components/ui/FelModal.vue')
-)
 
 const locationStore = useLocationStore()
 const { withClientMutation } = useApiUtil()
@@ -47,7 +54,7 @@ const formSchema = object({
   provinceUid: string().nullable(),
 });
 
-const { handleSubmit, errors, resetForm, setValues } = useForm({
+const { handleSubmit, resetForm, setValues } = useForm({
   validationSchema: formSchema,
   initialValues: {
     name: "",
@@ -56,11 +63,6 @@ const { handleSubmit, errors, resetForm, setValues } = useForm({
     provinceUid: null,
   },
 });
-
-const { value: name } = useField<string>("name");
-const { value: code } = useField<string>("code");
-const { value: countryUid } = useField<string | null>("countryUid");
-const { value: provinceUid } = useField<string | null>("provinceUid");
 
 locationStore.fetchCountries();
 const countries = computed(() => locationStore.getCountries)
@@ -284,40 +286,40 @@ const saveForm = handleSubmit((values): void => {
   </div>
 
   <!-- Location Edit Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false">
+  <Modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
       <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form class="space-y-6" @submit.prevent="saveForm">
+      <Form class="space-y-6" @submit="saveForm">
         <div class="grid grid-cols-2 gap-6">
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Name</span>
-            <input 
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-              v-model="name" 
-              placeholder="Name ..." />
-            <div class="text-sm text-destructive">{{ errors.name }}</div>
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Code</span>
-            <input 
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-              v-model="code" 
-              placeholder="Code ..." />
-            <div class="text-sm text-destructive">{{ errors.code }}</div>
-          </label>
+          <FormField name="name" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Name ..." />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+          <FormField name="code" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Code</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Code ..." />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </div>
         <hr class="border-border" />
-        <button 
-          type="submit" 
-          class="inline-flex w-full items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+        <Button type="submit" class="w-full">
           Save Form
-        </button>
-      </form>
+        </Button>
+      </Form>
     </template>
-  </fel-modal>
+  </Modal>
 </template>
 
 <style lang="postcss" scoped>

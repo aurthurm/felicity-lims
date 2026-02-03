@@ -2,7 +2,7 @@
 import {defineAsyncComponent, ref} from "vue";
 
 const ItemSetting = defineAsyncComponent(
-    () => import("@/components/nav/FelAdminBreadCrumb.vue")
+    () => import("@/components/nav/AdminBreadCrumb.vue")
 );
 
 const configs = ref([

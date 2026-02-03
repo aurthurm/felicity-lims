@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { computed, ref, toRefs, watch, defineAsyncComponent } from 'vue';
-  import { useField, useForm } from 'vee-validate';
+  import { useForm } from 'vee-validate';
   import * as yup from 'yup';
   import { AddAnalysisSpecificationDocument, AddAnalysisSpecificationMutation, AddAnalysisSpecificationMutationVariables,
     EditAnalysisSpecificationDocument, EditAnalysisSpecificationMutation, EditAnalysisSpecificationMutationVariables } from '@/graphql/operations/analyses.mutations';
@@ -8,11 +8,25 @@
   import { useSetupStore } from '@/stores/setup';
   import { useAnalysisStore } from '@/stores/analysis';
   import  useApiUtil  from '@/composables/api_util';
-  const modal = defineAsyncComponent(
-    () => import('@/components/ui/FelModal.vue')
-  )
-
-
+  import { Button } from "@/components/ui/button";
+  import { Input } from "@/components/ui/input";
+  import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+  } from "@/components/ui/form";
+  import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select";
+import PageHeading from "@/components/common/PageHeading.vue"
+defineOptions({ name: 'SpecificationsView' })
   const analysisStore = useAnalysisStore()
   const  setupStore = useSetupStore()
   const { withClientMutation } = useApiUtil()
@@ -26,7 +40,7 @@
       analysisUid: {
           type: String,
           required: true,
-          default: 0,
+          default: '',
       },
   })
 
@@ -68,19 +82,6 @@
       ageMax: '',
     },
   });
-
-  const { value: minReport, errorMessage: minReportError } = useField<string | null>('minReport');
-  const { value: minWarn, errorMessage: minWarnError } = useField<number | string>('minWarn');
-  const { value: min, errorMessage: minError } = useField<number | string>('min');
-  const { value: max, errorMessage: maxError } = useField<number | string>('max');
-  const { value: maxWarn, errorMessage: maxWarnError } = useField<number | string>('maxWarn');
-  const { value: maxReport, errorMessage: maxReportError } = useField<string | null>('maxReport');
-  const { value: warnValues, errorMessage: warnValuesError } = useField<string | null>('warnValues');
-  const { value: warnReport, errorMessage: warnReportError } = useField<string | null>('warnReport');
-  const { value: methodUid, errorMessage: methodError } = useField<string | null>('methodUid');
-  const { value: gender, errorMessage: genderError } = useField<string | null>('gender');
-  const { value: ageMin, errorMessage: ageMinError } = useField<number | string>('ageMin');
-  const { value: ageMax, errorMessage: ageMaxError } = useField<number | string>('ageMax');
 
   watch(() => props.analysisUid, (anal, prev) => {
       
@@ -179,74 +180,74 @@
 </script>
 
 <template>
-    <fel-heading title="Specifications">
-      <fel-button @click="FormManager(true)">Add Specification</fel-button>
-    </fel-heading>
+    <PageHeading title="Specifications">
+      <Button @click="FormManager(true)">Add Specification</Button>
+    </PageHeading>
     
     <div class="overflow-x-auto mt-4">
         <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card text-card-foreground rounded-lg border border-border">
-        <table class="min-w-full fel-table">
-            <thead>
-            <tr>
-                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-destructive">Min Report</th>
-                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-warning">Min Warn</th>
-                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Min</th>
-                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Max</th>
-                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-warning">Max Warn</th>
-                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-destructive">Max Report</th>
-                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Warn Texts</th>
-                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Text Report</th>
-                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Method</th>
-                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Gender</th>
-                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Age Min</th>
-                <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Age Max</th>
-                <th class="px-4 py-2 border-b border-border"></th>
-            </tr>
-            </thead>
-            <tbody class="bg-card">
-            <tr v-for="specification in analysis?.specifications" :key="specification?.uid" class="hover:bg-accent/50">
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+        <Table class="min-w-full">
+            <TableHeader>
+            <TableRow>
+                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-destructive">Min Report</TableHead>
+                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-warning">Min Warn</TableHead>
+                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Min</TableHead>
+                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Max</TableHead>
+                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-warning">Max Warn</TableHead>
+                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-destructive">Max Report</TableHead>
+                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Warn Texts</TableHead>
+                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Text Report</TableHead>
+                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Method</TableHead>
+                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Gender</TableHead>
+                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Age Min</TableHead>
+                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Age Max</TableHead>
+                <TableHead class="px-4 py-2 border-b border-border"></TableHead>
+            </TableRow>
+            </TableHeader>
+            <TableBody class="bg-card">
+            <TableRow v-for="specification in analysis?.specifications" :key="specification?.uid" class="hover:bg-accent/50">
+                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                   <div class="text-sm text-destructive">{{ specification.minReport }}</div>
-                </td>
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                </TableCell>
+                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                   <div class="text-sm text-warning">{{ specification.minWarn }}</div>
-                </td>
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                </TableCell>
+                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                   <div class="text-sm text-foreground">{{ specification.min }}</div>
-                </td>
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                </TableCell>
+                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                   <div class="text-sm text-foreground">{{ specification.max }}</div>
-                </td>
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                </TableCell>
+                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                   <div class="text-sm text-warning">{{ specification.maxWarn }}</div>
-                </td>
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                </TableCell>
+                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                   <div class="text-sm text-destructive">{{ specification.maxReport }}</div>
-                </td>
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                </TableCell>
+                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                   <div class="text-sm text-foreground">{{ specification.warnValues }}</div>
-                </td>
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                </TableCell>
+                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                   <div class="text-sm text-foreground">{{ specification.warnReport }}</div>
-                </td>
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                </TableCell>
+                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                   <div class="text-sm text-foreground">{{ methodName(specification?.methodUid) || '' }}</div>
-                </td>
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                </TableCell>
+                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                   <div class="text-sm text-foreground">{{ specification.gender }}</div>
-                </td>
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                </TableCell>
+                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                   <div class="text-sm text-foreground">{{ specification.ageMin }}</div>
-                </td>
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                </TableCell>
+                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                   <div class="text-sm text-foreground">{{ specification.ageMax }}</div>
-                </td>
-                <td class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
-                    <button @click="FormManager(false, specification)" class="px-2 py-1 mr-2 border border-border bg-background text-foreground transition-colors duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring hover:bg-accent hover:text-accent-foreground">Edit</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                </TableCell>
+                <TableCell class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
+                    <Button variant="outline" size="sm" @click="FormManager(false, specification)">Edit</Button>
+                </TableCell>
+            </TableRow>
+            </TableBody>
+        </Table>
         </div>
     </div>
 
@@ -257,71 +258,65 @@
     </template>
 
     <template v-slot:body>
-      <form @submit.prevent="saveForm" class="p-6 space-y-6">
+      <Form @submit="saveForm" class="p-6 space-y-6">
         <div class="space-y-4">
           <h4 class="text-lg font-semibold text-foreground">Numerical Results</h4>
           <hr class="border-border">
           <div class="grid grid-cols-6 gap-4">
-            <label class="space-y-2">
-              <span class="text-sm font-medium text-destructive">Min Report</span>
-              <input
-                type="text"
-                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="minReport"
-                placeholder="Value ..."
-              />
-              <p v-if="minReportError" class="text-sm text-destructive">{{ minReportError }}</p>
-            </label>
-            <label class="space-y-2">
-              <span class="text-sm font-medium text-warning">Min Warn</span>
-              <input
-                type="number"
-                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="minWarn"
-                placeholder="Value ..."
-              />
-              <p v-if="minWarnError" class="text-sm text-destructive">{{ minWarnError }}</p>
-            </label>
-            <label class="space-y-2">
-              <span class="text-sm font-medium text-foreground">Min</span>
-              <input
-                type="number"
-                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="min"
-                placeholder="Value ..."
-              />
-              <p v-if="minError" class="text-sm text-destructive">{{ minError }}</p>
-            </label>
-            <label class="space-y-2">
-              <span class="text-sm font-medium text-foreground">Max</span>
-              <input
-                type="number"
-                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="max"
-                placeholder="Value ..."
-              />
-              <p v-if="maxError" class="text-sm text-destructive">{{ maxError }}</p>
-            </label>
-            <label class="space-y-2">
-              <span class="text-sm font-medium text-warning">Max Warn</span>
-              <input
-                type="number"
-                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="maxWarn"
-                placeholder="Value ..."
-              />
-              <p v-if="maxWarnError" class="text-sm text-destructive">{{ maxWarnError }}</p>
-            </label>
-            <label class="space-y-2">
-              <span class="text-sm font-medium text-destructive">Max Report</span>
-              <input
-                type="text"
-                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="maxReport"
-                placeholder="Value ..."
-              />
-              <p v-if="maxReportError" class="text-sm text-destructive">{{ maxReportError }}</p>
-            </label>
+            <FormField name="minReport" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel class="text-destructive">Min Report</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" placeholder="Value ..." />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="minWarn" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel class="text-warning">Min Warn</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" type="number" placeholder="Value ..." />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="min" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Min</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" type="number" placeholder="Value ..." />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="max" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Max</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" type="number" placeholder="Value ..." />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="maxWarn" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel class="text-warning">Max Warn</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" type="number" placeholder="Value ..." />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="maxReport" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel class="text-destructive">Max Report</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" placeholder="Value ..." />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
           </div>
         </div>
 
@@ -329,26 +324,24 @@
           <h4 class="text-lg font-semibold text-foreground">Textual Results</h4>
           <hr class="border-border">
           <div class="grid grid-cols-2 gap-4">
-            <label class="space-y-2">
-              <span class="text-sm font-medium text-foreground">Textual Results (comma separated)</span>
-              <input
-                type="text"
-                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="warnValues"
-                placeholder="Value ..."
-              />
-              <p v-if="warnValuesError" class="text-sm text-destructive">{{ warnValuesError }}</p>
-            </label>
-            <label class="space-y-2">
-              <span class="text-sm font-medium text-foreground">Report Message</span>
-              <input
-                type="text"
-                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="warnReport"
-                placeholder="Value ..."
-              />
-              <p v-if="warnReportError" class="text-sm text-destructive">{{ warnReportError }}</p>
-            </label>
+            <FormField name="warnValues" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Textual Results (comma separated)</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" placeholder="Value ..." />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="warnReport" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Report Message</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" placeholder="Value ..." />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
           </div>
         </div>
 
@@ -356,63 +349,68 @@
           <h4 class="text-lg font-semibold text-foreground">Conditions if Any</h4>
           <hr class="border-border">
           <div class="grid grid-cols-4 gap-4">
-            <label class="space-y-2">
-              <span class="text-sm font-medium text-foreground">Method</span>
-              <select 
-                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="methodUid"
-              >
-                <option value="">Select Method</option>
-                <option v-for="method in methods" :key="method?.uid" :value="method.uid">
-                  {{ method?.name }}
-                </option>
-              </select>
-              <p v-if="methodError" class="text-sm text-destructive">{{ methodError }}</p>
-            </label>
-            <label class="space-y-2">
-              <span class="text-sm font-medium text-foreground">Gender</span>
-              <select 
-                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="gender"
-              >
-                <option value="all">All</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-              </select>
-              <p v-if="genderError" class="text-sm text-destructive">{{ genderError }}</p>
-            </label>
-            <label class="space-y-2">
-              <span class="text-sm font-medium text-foreground">Age Min</span>
-              <input
-                type="number"
-                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="ageMin"
-                placeholder="Value ..."
-              />
-              <p v-if="ageMinError" class="text-sm text-destructive">{{ ageMinError }}</p>
-            </label>
-            <label class="space-y-2">
-              <span class="text-sm font-medium text-foreground">Age Max</span>
-              <input
-                type="number"
-                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="ageMax"
-                placeholder="Value ..."
-              />
-              <p v-if="ageMaxError" class="text-sm text-destructive">{{ ageMaxError }}</p>
-            </label>
+            <FormField name="methodUid" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Method</FormLabel>
+                <FormControl>
+                  <Select v-bind="componentField">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Method" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Select Method</SelectItem>
+                      <SelectItem v-for="method in methods" :key="method?.uid" :value="method.uid">
+                        {{ method?.name }}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="gender" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Gender</FormLabel>
+                <FormControl>
+                  <Select v-bind="componentField">
+                    <SelectTrigger>
+                      <SelectValue placeholder="All" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      <SelectItem value="male">Male</SelectItem>
+                      <SelectItem value="female">Female</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="ageMin" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Age Min</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" type="number" placeholder="Value ..." />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="ageMax" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Age Max</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" type="number" placeholder="Value ..." />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
           </div>
         </div>
 
         <div class="pt-4">
-          <button
-            type="submit"
-            class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
-          >
-            Save Form
-          </button>
+          <Button type="submit" class="w-full">Save Form</Button>
         </div>
-      </form>
+      </Form>
     </template>
   </modal>
 

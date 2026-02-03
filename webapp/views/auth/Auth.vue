@@ -2,6 +2,7 @@
 import { defineAsyncComponent } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 
+defineOptions({ name: 'AuthView' })
 // Lazy load components
 const Login = defineAsyncComponent(() => import('./Login.vue'));
 const PasswordReset = defineAsyncComponent(() => import('./PasswordReset.vue'));

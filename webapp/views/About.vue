@@ -1,4 +1,5 @@
 <script setup lang="ts">
+defineOptions({ name: 'AboutView' })
 // About page component
 </script>
 

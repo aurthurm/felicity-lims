@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Button } from "@/components/ui/button";
 import {computed, defineAsyncComponent, onMounted, ref, h} from 'vue';
 import { useForm, useField } from 'vee-validate';
 import * as yup from 'yup';
@@ -7,9 +8,9 @@ import useApiUtil from '@/composables/api_util';
 import { AbxClassType, AbxFamilyType, AbxGenusType, AbxKingdomType, AbxOrderType, AbxOrganismType, AbxPhylumType } from "@/types/gql";
 import { GetAbxFamilyAllDocument, GetAbxFamilyAllQuery, GetAbxFamilyAllQueryVariables, GetAbxOrderAllDocument, GetAbxOrderAllQuery, GetAbxOrderAllQueryVariables, GetAbxKingdomAllDocument, GetAbxKingdomAllQuery, GetAbxKingdomAllQueryVariables, GetAbxPhylumAllDocument, GetAbxPhylumAllQuery, GetAbxPhylumAllQueryVariables, GetAbxClassAllDocument, GetAbxClassAllQuery, GetAbxClassAllQueryVariables, GetAbxGenusAllDocument, GetAbxGenusAllQuery, GetAbxGenusAllQueryVariables, GetAbxOrganismAllDocument, GetAbxOrganismAllQuery, GetAbxOrganismAllQueryVariables } from "@/graphql/operations/microbiology.queries";
 import { AddAbxOrganismMutation, AddAbxOrganismMutationVariables, AddAbxOrganismDocument, EditAbxOrganismMutation, EditAbxOrganismMutationVariables, EditAbxOrganismDocument } from '@/graphql/operations/microbiology.mutations';
-
+import PageHeading from "@/components/common/PageHeading.vue"
 const DataTable = defineAsyncComponent(
-  () => import('@/components/ui/datatable/FelDataTable.vue')
+  () => import('@/components/common/DataTable.vue')
 )
 const VueMultiselect = defineAsyncComponent(
   () => import('vue-multiselect')
@@ -513,9 +514,9 @@ const saveForm = handleSubmit((formValues) => {
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Organisms">
-      <fel-button @click="FormManager(true)">Add Organism</fel-button>
-    </fel-heading>
+    <PageHeading title="Organisms">
+      <Button @click="FormManager(true)">Add Organism</Button>
+    </PageHeading>
 
     <div class="bg-card p-6 shadow-sm rounded-lg">
       <DataTable 
@@ -542,7 +543,7 @@ const saveForm = handleSubmit((formValues) => {
   </div>
 
   <!-- Organism Edit Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
+  <Modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -664,10 +665,7 @@ const saveForm = handleSubmit((formValues) => {
           </label>
           <label class="block">
             <span class="text-sm font-medium text-foreground">Anaerobe</span>
-            <input 
-              type="checkbox"
-              class="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-primary" 
-              v-model="anaerobe" />
+            <Checkbox :checked="anaerobe" @update:checked="(value) => anaerobe = value" />
           </label>
         </div>
 
@@ -681,7 +679,7 @@ const saveForm = handleSubmit((formValues) => {
         </button>
       </form>
     </template>
-  </fel-modal>
+  </Modal>
 </template>
 
 <style scoped>

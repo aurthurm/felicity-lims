@@ -122,14 +122,15 @@ export const useSetupStore = defineStore('setup', {
                 const result = await withClientQuery<GetAllDepartmentsQuery, GetAllDepartmentsQueryVariables>(
                     GetAllDepartmentsDocument,
                     params,
-                    'departmentAll'
+                    'departmentAll',
                 );
 
                 if (result && Array.isArray(result)) {
                     this.departments = result;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingDepartments = false;
             }
         },
@@ -155,7 +156,7 @@ export const useSetupStore = defineStore('setup', {
                 const result = await withClientQuery<GetOrganizationQuery, GetOrganizationQueryVariables>(
                     GetOrganizationDocument,
                     {},
-                    'organization'
+                    'organization',
                 );
 
                 if (result && typeof result === 'object') {
@@ -175,7 +176,7 @@ export const useSetupStore = defineStore('setup', {
                 const result: LaboratoryCursorPage = (await withClientQuery<GetAllLaboratoriesQuery, GetAllLaboratoriesQueryVariables>(
                     GetAllLaboratoriesDocument,
                     {},
-                    'laboratoryAll'
+                    'laboratoryAll',
                 )) as LaboratoryCursorPage;
 
                 if (result?.items && result && Array.isArray(result?.items)) {
@@ -189,7 +190,7 @@ export const useSetupStore = defineStore('setup', {
                 const result = await withClientQuery<GetLaboratoryQuery, GetLaboratoryQueryVariables>(
                     GetLaboratoryDocument,
                     {},
-                    'laboratory'
+                    'laboratory',
                 );
 
                 if (result && typeof result === 'object') {
@@ -241,14 +242,15 @@ export const useSetupStore = defineStore('setup', {
                 const result = await withClientQuery<GetAllSuppliersQuery, GetAllSampleTypesQueryVariables>(
                     GetAllSuppliersDocument,
                     {},
-                    'supplierAll'
+                    'supplierAll',
                 );
 
                 if (result && Array.isArray(result)) {
                     this.suppliers = result;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingSuppliers = false;
             }
         },
@@ -275,14 +277,15 @@ export const useSetupStore = defineStore('setup', {
                 const result = await withClientQuery<GetAllManufacturersQuery, GetAllManufacturersQueryVariables>(
                     GetAllManufacturersDocument,
                     {},
-                    'manufacturerAll'
+                    'manufacturerAll',
                 );
 
                 if (result && Array.isArray(result)) {
                     this.manufacturers = result;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingManufacturers = false;
             }
         },
@@ -309,14 +312,15 @@ export const useSetupStore = defineStore('setup', {
                 const result = await withClientQuery<GetAllInstrumentTypesQuery, GetAllInstrumentTypesQueryVariables>(
                     GetAllInstrumentTypesDocument,
                     {},
-                    'instrumentTypeAll'
+                    'instrumentTypeAll',
                 );
 
                 if (result && typeof result === 'object' && 'items' in result) {
                     this.instrumentTypes = result.items || [];
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingInstrumentTypes = false;
             }
         },
@@ -343,14 +347,15 @@ export const useSetupStore = defineStore('setup', {
                 const result = await withClientQuery<GetAllInstrumentsQuery, GetAllDepartmentsQueryVariables>(
                     GetAllInstrumentsDocument,
                     {},
-                    'instrumentAll'
+                    'instrumentAll',
                 );
 
                 if (result && typeof result === 'object' && 'items' in result) {
                     this.instruments = result.items || [];
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingInstruments = false;
             }
         },
@@ -377,14 +382,15 @@ export const useSetupStore = defineStore('setup', {
                 const result = await withClientQuery<GetAllLaboratoryInstrumentsQuery, GetAllLaboratoryInstrumentsQueryVariables>(
                     GetAllLaboratoryInstrumentsDocument,
                     {},
-                    'laboratoryInstrumentAll'
+                    'laboratoryInstrumentAll',
                 );
 
                 if (result && typeof result === 'object' && 'items' in result) {
                     this.laboratoryInstruments = result.items || [];
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingInstruments = false;
             }
         },
@@ -411,14 +417,15 @@ export const useSetupStore = defineStore('setup', {
                 const result = await withClientQuery<GetAllMethodsQuery, GetAllMethodsQueryVariables>(
                     GetAllMethodsDocument,
                     {},
-                    'methodAll'
+                    'methodAll',
                 );
 
                 if (result && typeof result === 'object' && 'items' in result) {
                     this.methods = result.items || [];
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingMethods = false;
             }
         },
@@ -448,7 +455,8 @@ export const useSetupStore = defineStore('setup', {
                     this.units = result;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingUnits = false;
             }
         },

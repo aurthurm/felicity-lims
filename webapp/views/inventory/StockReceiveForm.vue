@@ -11,6 +11,7 @@ import { useStorageStore } from "@/stores/storage";
 import { useSetupStore } from "@/stores/setup";
 import { useUserStore } from "@/stores/user";
 import { defineAsyncComponent, ref } from "vue";
+import { Spinner } from "@/components/ui/spinner";
 
 const emit = defineEmits(["close"])
 
@@ -306,7 +307,10 @@ const updateQuantityReceived = () => {
       >
         Save
       </button>
-      <fel-loader message="Adding Inventory ..." v-show="addingProduct" />
+      <span v-show="addingProduct" class="inline-flex items-center gap-2">
+        <Spinner class="size-4" />
+        <span class="text-sm">Adding Inventory ...</span>
+      </span>
     </div>
   </form>
 </template>

@@ -5,6 +5,7 @@ import type { Node, Edge, Connection } from '@vue-flow/core';
 import { Controls } from '@vue-flow/controls';
 import { MiniMap } from '@vue-flow/minimap';
 import { Background, BackgroundVariant } from '@vue-flow/background';
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 
 // Import custom nodes
 import TriggerNode from '../nodes/TriggerNode.vue';
@@ -431,13 +432,15 @@ defineExpose({
     </VueFlow>
 
     <!-- Canvas Overlay (for drop zones, hints, etc.) -->
-    <div v-if="nodes.length === 0" class="canvas-empty-state">
-      <div class="empty-state-content">
+    <Empty v-if="nodes.length === 0" class="canvas-empty-state border-0 bg-transparent p-0">
+      <EmptyContent class="empty-state-content">
         <div class="text-6xl mb-4">🎯</div>
-        <h3 class="text-xl font-semibold text-foreground mb-2">Start Building Your Reflex Rule</h3>
-        <p class="text-muted-foreground mb-4">
-          Drag a <strong class="text-primary">Trigger</strong> node from the palette to begin
-        </p>
+        <EmptyHeader>
+          <EmptyTitle class="text-xl font-semibold text-foreground">Start Building Your Reflex Rule</EmptyTitle>
+          <EmptyDescription class="text-muted-foreground">
+            Drag a <strong class="text-primary">Trigger</strong> node from the palette to begin
+          </EmptyDescription>
+        </EmptyHeader>
         <div class="flex items-center space-x-2 text-sm text-muted-foreground">
           <span>💡 Tip: Use</span>
           <kbd class="px-2 py-1 bg-muted rounded border">Ctrl</kbd>
@@ -445,8 +448,8 @@ defineExpose({
           <kbd class="px-2 py-1 bg-muted rounded border">Z</kbd>
           <span>to undo</span>
         </div>
-      </div>
-    </div>
+      </EmptyContent>
+    </Empty>
 
     <!-- Readonly Overlay -->
     <div v-if="readonly" class="canvas-readonly-overlay">

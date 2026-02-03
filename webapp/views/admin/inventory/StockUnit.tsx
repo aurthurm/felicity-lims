@@ -1,6 +1,7 @@
 import { computed, defineComponent, ref } from 'vue';
 import { useField, useForm } from 'vee-validate';
 import * as yup from 'yup';
+import Modal from '@/components/ui/Modal.vue';
 import {
     AddStockUnitDocument,
     AddStockUnitMutation,
@@ -9,6 +10,8 @@ import {
     EditStockUnitMutation,
     EditStockUnitMutationVariables,
 } from '@/graphql/operations/inventory.mutations';
+import { Table, TableBody, TableCell, TableEmpty, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from '@/components/ui/empty';
 import { useInventoryStore } from '@/stores/inventory';
 import useApiUtil from '@/composables/api_util';
 import { StockUnitType } from '@/types/gql';
@@ -44,7 +47,7 @@ const StockUnit = defineComponent({
             withClientMutation<AddStockUnitMutation, AddStockUnitMutationVariables>(
                 AddStockUnitDocument,
                 { payload },
-                'createStockUnit'
+                'createStockUnit',
             ).then(result => inventoryStore.addUnit(result));
         }
 
@@ -56,7 +59,7 @@ const StockUnit = defineComponent({
                     uid: currentUid.value,
                     payload,
                 },
-                'updateStockUnit'
+                'updateStockUnit',
             ).then(result => inventoryStore.updateUnit(result as any));
         }
 
@@ -94,47 +97,67 @@ const StockUnit = defineComponent({
         return (
             <div class="space-y-6">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-2xl font-semibold text-foreground">Stock Units</h2>
+                    <h2 class="text-foreground text-2xl font-semibold">Stock Units</h2>
                     <button
                         onClick={() => this.FormManager(true, null)}
-                        class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+                        class="ring-offset-background focus-visible:ring-ring bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
                     >
                         Add Stock Unit
                     </button>
                 </div>
 
-                <div class="rounded-md border border-border bg-card p-6">
+                <div class="border-border bg-card rounded-md border p-6">
                     <div class="relative w-full overflow-auto">
-                        <table class="w-full caption-bottom text-sm fel-table">
-                            <thead class="[&_tr]:border-b">
-                                <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                                    <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Unit Name</th>
-                                    <th class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="[&_tr:last-child]:border-0">
-                                {this.stockUnits.map(unit => (
-                                    <tr key={unit?.uid} class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                                        <td class="p-4 align-middle">{unit?.name}</td>
-                                        <td class="p-4 align-middle text-right">
-                                            <button
-                                                onClick={() => this.FormManager(false, unit)}
-                                                class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3"
-                                            >
-                                                Edit
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                        <Table class="w-full caption-bottom text-sm">
+                            <TableHeader class="[&_tr]:border-b">
+                                <TableRow class="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors">
+                                    <TableHead class="text-muted-foreground h-12 px-4 text-left align-middle font-medium">
+                                        Unit Name
+                                    </TableHead>
+                                    <TableHead class="text-muted-foreground h-12 px-4 text-right align-middle font-medium">
+                                        Actions
+                                    </TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody class="[&_tr:last-child]:border-0">
+                                {this.stockUnits.length === 0 ? (
+                                    <TableEmpty colspan={2}>
+                                        <Empty class="border-0 bg-transparent p-0">
+                                            <EmptyContent>
+                                                <EmptyHeader>
+                                                    <EmptyTitle>No units defined</EmptyTitle>
+                                                    <EmptyDescription>Add stock units to standardize quantities.</EmptyDescription>
+                                                </EmptyHeader>
+                                            </EmptyContent>
+                                        </Empty>
+                                    </TableEmpty>
+                                ) : (
+                                    this.stockUnits.map(unit => (
+                                        <TableRow
+                                            key={unit?.uid}
+                                            class="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors"
+                                        >
+                                            <TableCell class="p-4 align-middle">{unit?.name}</TableCell>
+                                            <TableCell class="p-4 text-right align-middle">
+                                                <button
+                                                    onClick={() => this.FormManager(false, unit)}
+                                                    class="ring-offset-background focus-visible:ring-ring border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex h-9 items-center justify-center rounded-md border px-3 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
+                                                >
+                                                    Edit
+                                                </button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
                     </div>
                 </div>
 
                 {this.showModal && (
-                    <fel-modal onClose={() => (this.showModal = false)}>
+                    <Modal onClose={() => (this.showModal = false)}>
                         {{
-                            header: () => <h3 class="text-lg font-semibold text-foreground">{this.formTitle}</h3>,
+                            header: () => <h3 class="text-foreground text-lg font-semibold">{this.formTitle}</h3>,
                             body: () => (
                                 <form
                                     onSubmit={e => {
@@ -145,24 +168,22 @@ const StockUnit = defineComponent({
                                 >
                                     <div class="space-y-4">
                                         <div class="space-y-2">
-                                            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                            <label class="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                                                 Stock Unit Name
                                             </label>
                                             <input
                                                 value={this.name}
                                                 onChange={e => (this.name = (e.target as HTMLInputElement).value)}
-                                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                                class="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full rounded-md border px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                                                 placeholder="Enter unit name..."
                                             />
-                                            {this.nameError ? (
-                                                <p class="text-sm text-destructive">{this.nameError}</p>
-                                            ) : null}
+                                            {this.nameError ? <p class="text-destructive text-sm">{this.nameError}</p> : null}
                                         </div>
                                     </div>
                                     <div class="flex justify-end">
                                         <button
                                             type="submit"
-                                            class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+                                            class="ring-offset-background focus-visible:ring-ring bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
                                         >
                                             Save Changes
                                         </button>
@@ -170,7 +191,7 @@ const StockUnit = defineComponent({
                                 </form>
                             ),
                         }}
-                    </fel-modal>
+                    </Modal>
                 )}
             </div>
         );

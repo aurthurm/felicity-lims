@@ -59,7 +59,7 @@ export const useStreamStore = defineStore('stream', {
             return pipe(
                 urqlClient.subscription<GetSystemActivitySubscription, GetSystemActivitySubscriptionVariables>(
                     GetSystemActivityDocument,
-                    {}
+                    {},
                 ),
                 subscribe(result => {
                     if (result.error) {
@@ -69,7 +69,7 @@ export const useStreamStore = defineStore('stream', {
                     if (result.data?.latestActivity) {
                         this.addStream(result.data.latestActivity as ActivityStreamType);
                     }
-                })
+                }),
             ).unsubscribe;
         },
     },

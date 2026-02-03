@@ -108,7 +108,7 @@ function setupLaboratoryRouteGuards(
     config: {
         defaultLaboratoryRoute: string;
         laboratorySelectionRoute: string;
-    }
+    },
 ) {
     router.beforeEach(async (to, from, next) => {
         const authStore = useEnhancedAuthStore();
@@ -298,8 +298,7 @@ function setupRealTimeUpdates() {
         try {
             websocket = new WebSocket(wsUrl);
 
-            websocket.onopen = () => {
-            };
+            websocket.onopen = () => {};
 
             websocket.onmessage = event => {
                 try {
@@ -313,8 +312,7 @@ function setupRealTimeUpdates() {
                 setTimeout(connectWebSocket, 5000);
             };
 
-            websocket.onerror = error => {
-            };
+            websocket.onerror = error => {};
         } catch {}
     };
 
@@ -419,7 +417,6 @@ function setupLaboratoryErrorHandling(app: App) {
     app.config.errorHandler = (err, instance, info) => {
         // Check if error is laboratory-related
         if (info.includes('laboratory') || String(err).toLowerCase().includes('laboratory')) {
-
             // Record error in laboratory store
             laboratoryStore.store.errorHistory.unshift({
                 error: String(err),
@@ -442,7 +439,6 @@ function setupLaboratoryErrorHandling(app: App) {
     // Handle unhandled promise rejections
     window.addEventListener('unhandledrejection', event => {
         if (String(event.reason).toLowerCase().includes('laboratory')) {
-
             laboratoryStore.store.errorHistory.unshift({
                 error: String(event.reason),
                 timestamp: new Date(),
@@ -499,7 +495,6 @@ function setupLaboratoryPerformanceMonitoring() {
  * Initialize laboratory plugin
  */
 function initializeLaboratoryPlugin() {
-
     // Set up global laboratory utilities
     (window as any).__laboratoryPlugin = {
         version: '1.0.0',
@@ -521,7 +516,7 @@ function initializeLaboratoryPlugin() {
                     'performance-monitoring',
                 ],
             },
-        })
+        }),
     );
 }
 

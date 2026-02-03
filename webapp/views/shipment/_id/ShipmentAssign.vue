@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import FButton from "@/components/ui/buttons/FelButton.vue";
+import { Button } from "@/components/ui/button";
 import { ref, computed, reactive, defineAsyncComponent } from "vue";
 import { useSampleStore } from "@/stores/sample";
 import { useShipmentStore } from "@/stores/shipment";
 import useShipmentComposable from "@/composables/shipment";
 import {  SampleType } from "@/types/gql";
+import { Spinner } from "@/components/ui/spinner";
 
 const shipmentStore = useShipmentStore();
 const sampleStore = useSampleStore();
@@ -112,14 +113,14 @@ function areAllChecked(): boolean {
         </div>
 
         <div>
-          <FButton
+          <Button
             v-show="true"
             @click.prevent="filterSamples()"
             :color="'sky-800'"
             class="h-10 px-4"
           >
             Apply Filters
-          </FButton>
+          </Button>
         </div>
       </div>
     </form>
@@ -127,56 +128,55 @@ function areAllChecked(): boolean {
     <div class="rounded-md border border-border">
       <div class="overflow-x-auto">
         <div v-if="shipmentStore.fetchingSamples" class="p-4 text-center">
-          <fel-loader message="Fetching samples ..." />
+          <span class="inline-flex items-center gap-2">
+            <Spinner class="size-4" />
+            <span class="text-sm">Fetching samples ...</span>
+          </span>
         </div>
-        <table class="w-full fel-table" v-else>
-          <thead>
-            <tr class="border-b border-border bg-muted/50">
-              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">
-                <input 
-                  type="checkbox" 
-                  @change="toggleCheckAll" 
-                  v-model="allChecked"
-                  class="h-4 w-4 rounded border-input text-primary focus:ring-primary"
+        <Table class="w-full" v-else>
+          <TableHeader>
+            <TableRow class="border-b border-border bg-muted/50">
+              <TableHead class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">
+                <Checkbox
+                  :checked="allChecked"
+                  @update:checked="(value) => { allChecked = value; toggleCheckAll(); }"
                 />
-              </th>
-              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground"></th>
-              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Sample ID</th>
-              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Sample Type</th>
-              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Client Sample ID</th>
-              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Analysis</th>
-              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Date Created</th>
-              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Date Received</th>
-              <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Status</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-border" v-motion-slide-right>
-            <tr v-for="sample in shipmentStore.samples" :key="sample?.uid" class="hover:bg-muted/50">
-              <td class="p-4 align-middle">
-                <input
-                  type="checkbox"
-                  v-model="sample.checked"
-                  @change="checkCheck(sample)"
-                  class="h-4 w-4 rounded border-input text-primary focus:ring-primary"
+              </TableHead>
+              <TableHead class="h-10 px-4 text-left align-middle font-medium text-muted-foreground"></TableHead>
+              <TableHead class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Sample ID</TableHead>
+              <TableHead class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Sample Type</TableHead>
+              <TableHead class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Client Sample ID</TableHead>
+              <TableHead class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Analysis</TableHead>
+              <TableHead class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Date Created</TableHead>
+              <TableHead class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Date Received</TableHead>
+              <TableHead class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody class="divide-y divide-border" v-motion-slide-right>
+            <TableRow v-for="sample in shipmentStore.samples" :key="sample?.uid" class="hover:bg-muted/50">
+              <TableCell class="p-4 align-middle">
+                <Checkbox
+                  :checked="sample.checked"
+                  @update:checked="(value) => { sample.checked = value; checkCheck(sample); }"
                 />
-              </td>
-              <td class="p-4 align-middle"></td>
-              <td class="p-4 align-middle">
+              </TableCell>
+              <TableCell class="p-4 align-middle"></TableCell>
+              <TableCell class="p-4 align-middle">
                 <div class="text-sm font-medium text-foreground">
                   {{ sample?.sampleId }}
                 </div>
-              </td>
-              <td class="p-4 align-middle">
+              </TableCell>
+              <TableCell class="p-4 align-middle">
                 <div class="text-sm font-medium text-foreground">
                   {{ sample?.sampleType?.name }}
                 </div>
-              </td>
-              <td class="p-4 align-middle">
+              </TableCell>
+              <TableCell class="p-4 align-middle">
                 <div class="text-sm font-medium text-foreground">
                   {{ sample?.analysisRequest?.clientRequestId }}
                 </div>
-              </td>
-              <td class="p-4 align-middle">
+              </TableCell>
+              <TableCell class="p-4 align-middle">
                 <div class="text-sm text-foreground">
                   <ul class="space-y-2">
                     <li 
@@ -184,10 +184,7 @@ function areAllChecked(): boolean {
                       :key="analyte.uid"
                       class="flex items-center space-x-2"
                     >
-                      <input
-                        type="checkbox"
-                        v-model="analyte.checked"
-                        class="h-4 w-4 rounded border-input text-primary focus:ring-primary"
+                      <Checkbox :checked="analyte.checked" @update:checked="(value) => analyte.checked = value"
                         :disabled="!sample.checked"
                       />
                       <span class="flex-1">{{ analyte?.analysis?.name }}</span>
@@ -197,37 +194,37 @@ function areAllChecked(): boolean {
                     </li>
                   </ul>
                 </div>
-              </td>
-              <td class="p-4 align-middle">
+              </TableCell>
+              <TableCell class="p-4 align-middle">
                 <div class="text-sm text-foreground">
                   {{ sample?.createdAt }}
                 </div>
-              </td>
-              <td class="p-4 align-middle">
+              </TableCell>
+              <TableCell class="p-4 align-middle">
                 <div class="text-sm text-foreground">
                   {{ sample?.dateReceived }}
                 </div>
-              </td>
-              <td class="p-4 align-middle">
+              </TableCell>
+              <TableCell class="p-4 align-middle">
                 <span class="inline-flex items-center rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
                   {{ sample?.status }}
                 </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </div>
     </div>
 
     <section class="flex justify-end">
-      <FButton 
+      <Button 
         v-show="true" 
         @click.prevent="assignToShipment" 
         :color="'orange-600'"
         class="h-10 px-4"
       >
         Assign Samples
-      </FButton>
+      </Button>
     </section>
   </div>
 </template>

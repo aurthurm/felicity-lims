@@ -4,14 +4,30 @@
   import { AddInstrumentInterfaceDocument, EditInstrumentInterfaceDocument, EditInstrumentInterfaceMutation, EditInstrumentInterfaceMutationVariables } from '@/graphql/operations/instrument.mutations';
   import { useSetupStore } from '@/stores/setup';
   import  useApiUtil  from '@/composables/api_util';
-  import { useField, useForm } from "vee-validate";
+  import { useForm } from "vee-validate";
   import { boolean, object, string } from "yup";
 import { GetInstrumentInterfacesDocument } from '@/graphql/operations/instrument.queries';
 import { AddInstrumentInterfaceMutation, AddInstrumentInterfaceMutationVariables, GetInstrumentInterfacesQuery, GetInstrumentInterfacesQueryVariables } from '@/types/gqlops';
-  const modal = defineAsyncComponent(
-    () => import('@/components/ui/FelModal.vue')
-  )
-  
+  import { Button } from "@/components/ui/button";
+  import { Checkbox } from "@/components/ui/checkbox";
+  import { Input } from "@/components/ui/input";
+  import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+  } from "@/components/ui/form";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select";
+  import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import PageHeading from "@/components/common/PageHeading.vue"
   const IIMapper = defineAsyncComponent(
     () => import('@/components/IIMapper.vue')
   )
@@ -42,7 +58,7 @@ import { AddInstrumentInterfaceMutation, AddInstrumentInterfaceMutationVariables
     isActive: boolean().nullable(),
   });
 
-  const { handleSubmit, errors, resetForm, setValues } = useForm({
+  const { handleSubmit, resetForm, setValues } = useForm({
     validationSchema: formSchema,
     initialValues: {
       laboratoryInstrumentUid: "",
@@ -54,14 +70,6 @@ import { AddInstrumentInterfaceMutation, AddInstrumentInterfaceMutationVariables
       isActive: true,
     },
   });
-
-  const { value: laboratoryInstrumentUid } = useField<string>("laboratoryInstrumentUid");
-  const { value: host } = useField<string | null>("host");
-  const { value: port } = useField<string | null>("port");
-  const { value: protocolType } = useField<string | null>("protocolType");
-  const { value: socketType } = useField<string | null>("socketType");
-  const { value: autoReconnect } = useField<boolean | null>("autoReconnect");
-  const { value: isActive } = useField<boolean | null>("isActive");
 
   onMounted(() => {
     setupStore.fetchLaboratoryInstruments();
@@ -195,165 +203,173 @@ import { AddInstrumentInterfaceMutation, AddInstrumentInterfaceMutationVariables
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Instrument Interfaces">
-      <fel-button @click="FormManager(true)">Add Instrument Interface</fel-button>
-    </fel-heading>
+    <PageHeading title="Instrument Interfaces">
+      <Button @click="FormManager(true)">Add Instrument Interface</Button>
+    </PageHeading>
 
     <div class="border border-border bg-background rounded-lg shadow-sm p-6 overflow-hidden">
       <div class="relative w-full overflow-auto">
-        <table class="w-full caption-bottom text-sm fel-table">
-          <thead class="[&_tr]:border-b">
-            <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-              <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Laboratory Instrument</th>
-              <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">TCPIP</th>
-              <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Protocol</th>
-              <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Socket Type</th>
-              <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Auto Reconnect</th>
-              <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Sync Units</th>
-              <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Mapped</th>
-              <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Active</th>
-              <th class="px-4 py-2 text-right align-middle font-medium text-muted-foreground">Actions</th>
-            </tr>
-          </thead>
-          <tbody class="[&_tr:last-child]:border-0">
-            <tr v-for="instInt in instrumentInterfaces" :key="instInt?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-              <td class="px-4 py-2 align-middle">{{ instInt?.laboratoryInstrument?.labName }}</td>
-              <td class="px-4 py-2 align-middle">{{ instInt?.host }}:{{ instInt?.port }}</td>
-              <td class="px-4 py-2 align-middle text-primary">{{ instInt?.protocolType }}</td>
-              <td class="px-4 py-2 align-middle text-primary">{{ instInt?.socketType }}</td>
-              <td class="px-4 py-2 align-middle text-primary">{{ instInt?.autoReconnect }}</td>
-              <td class="px-4 py-2 align-middle text-primary">{{ instInt?.syncUnits }}</td>
-              <td class="px-4 py-2 align-middle text-primary">{{ instInt?.driverMapping ? 'Yes' : 'No' }}</td>
-              <td class="px-4 py-2 align-middle text-primary">{{ instInt?.isActive }}</td>
-              <td class="px-4 py-2 align-middle text-right">
-                <button 
-                  @click="FormManager(false, instInt)"
-                  class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3"
-                >
+        <Table class="w-full caption-bottom text-sm">
+          <TableHeader class="[&_tr]:border-b">
+            <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Laboratory Instrument</TableHead>
+              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">TCPIP</TableHead>
+              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Protocol</TableHead>
+              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Socket Type</TableHead>
+              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Auto Reconnect</TableHead>
+              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Sync Units</TableHead>
+              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Mapped</TableHead>
+              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Active</TableHead>
+              <TableHead class="px-4 py-2 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody class="[&_tr:last-child]:border-0">
+            <TableRow v-for="instInt in instrumentInterfaces" :key="instInt?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableCell class="px-4 py-2 align-middle">{{ instInt?.laboratoryInstrument?.labName }}</TableCell>
+              <TableCell class="px-4 py-2 align-middle">{{ instInt?.host }}:{{ instInt?.port }}</TableCell>
+              <TableCell class="px-4 py-2 align-middle text-primary">{{ instInt?.protocolType }}</TableCell>
+              <TableCell class="px-4 py-2 align-middle text-primary">{{ instInt?.socketType }}</TableCell>
+              <TableCell class="px-4 py-2 align-middle text-primary">{{ instInt?.autoReconnect }}</TableCell>
+              <TableCell class="px-4 py-2 align-middle text-primary">{{ instInt?.syncUnits }}</TableCell>
+              <TableCell class="px-4 py-2 align-middle text-primary">{{ instInt?.driverMapping ? 'Yes' : 'No' }}</TableCell>
+              <TableCell class="px-4 py-2 align-middle text-primary">{{ instInt?.isActive }}</TableCell>
+              <TableCell class="px-4 py-2 align-middle text-right">
+                <Button variant="outline" size="sm" @click="FormManager(false, instInt)">
                   Edit
-                </button>
-                <button 
-                  @click="mapDriver(instInt)"
-                  class="ml-2 inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3"
-                >
+                </Button>
+                <Button variant="outline" size="sm" class="ml-2" @click="mapDriver(instInt)">
                   Mapper
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                </Button>
+              </TableCell>
+            </TableRow>
+            <TableEmpty v-if="!instrumentInterfaces || instrumentInterfaces.length === 0" :colspan="9">
+              <Empty class="border-0 bg-transparent p-0">
+                <EmptyContent>
+                  <EmptyHeader>
+                    <EmptyTitle>No instrument interfaces found</EmptyTitle>
+                    <EmptyDescription>Add an interface to get started.</EmptyDescription>
+                  </EmptyHeader>
+                </EmptyContent>
+              </Empty>
+            </TableEmpty>
+          </TableBody>
+        </Table>
       </div>
     </div>
   </div>
 
   <!-- Laboratory Instrument Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false">
+  <Modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
       <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form @submit.prevent="saveForm" class="space-y-6">
+      <Form @submit="saveForm" class="space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="space-y-2 col-span-1 md:col-span-2">
-            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Instrument
-            </label>
-            <select 
-              v-model="laboratoryInstrumentUid"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <option value="">Select Laboratory Instrument</option>
-              <option v-for="instrument in laboratoryInstruments" :key="instrument?.uid" :value="instrument.uid">
-                {{ instrument?.labName }}
-              </option>
-            </select>
-            <div class="text-sm text-destructive">{{ errors.laboratoryInstrumentUid }}</div>
-          </div>
+          <FormField name="laboratoryInstrumentUid" v-slot="{ componentField }">
+            <FormItem class="col-span-1 md:col-span-2">
+              <FormLabel>Instrument</FormLabel>
+              <FormControl>
+                <Select v-bind="componentField">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Laboratory Instrument" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Select Laboratory Instrument</SelectItem>
+                    <SelectItem v-for="instrument in laboratoryInstruments" :key="instrument?.uid" :value="instrument.uid">
+                      {{ instrument?.labName }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <div class="space-y-2">
-            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Host
-            </label>
-            <input
-              v-model="host"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              placeholder="Host Adress..."
-            />
-          </div>
+          <FormField name="host" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Host</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Host Adress..." />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <div class="space-y-2">
-            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Port
-            </label>
-            <input
-              v-model="port"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              placeholder="Port Number..."
-            />
-          </div>
+          <FormField name="port" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Port</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Port Number..." />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <div class="space-y-2">
-            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Protocol Type
-            </label>
-            <select
-              id="instrumentType"
-              v-model="protocolType"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <option value="hl7">HL7</option>
-              <option value="astm">ASTM</option>
-            </select>
-          </div>
+          <FormField name="protocolType" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Protocol Type</FormLabel>
+              <FormControl>
+                <Select v-bind="componentField">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select protocol" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="hl7">HL7</SelectItem>
+                    <SelectItem value="astm">ASTM</SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <div class="space-y-2">
-            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Socket Type
-            </label>
-            <select
-              id="instrumentType"
-              v-model="socketType"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <option value="server">Server</option>
-              <option value="client">Client</option>
-            </select>
-          </div>
+          <FormField name="socketType" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Socket Type</FormLabel>
+              <FormControl>
+                <Select v-bind="componentField">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select socket type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="server">Server</SelectItem>
+                    <SelectItem value="client">Client</SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <div class="flex items-center space-x-2">
-            <input 
-              type="checkbox" 
-              id="autoReconnect"
-              v-model="autoReconnect"
-              class="h-4 w-4 rounded border-input bg-background text-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-            />
-            <label for="autoReconnect" class="text-sm font-medium text-muted-foreground">Auto Reconnect</label>
-          </div>
+          <FormField name="autoReconnect" v-slot="{ value, handleChange }">
+            <FormItem class="flex items-center space-x-2">
+              <FormControl>
+                <Checkbox :checked="value" @update:checked="handleChange" />
+              </FormControl>
+              <FormLabel>Auto Reconnect</FormLabel>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <div class="flex items-center space-x-2">
-            <input 
-              type="checkbox" 
-              id="isActive"
-              v-model="isActive"
-              class="h-4 w-4 rounded border-input bg-background text-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-            />
-            <label for="isActive" class="text-sm font-medium text-muted-foreground">Is Active</label>
-          </div>
-
+          <FormField name="isActive" v-slot="{ value, handleChange }">
+            <FormItem class="flex items-center space-x-2">
+              <FormControl>
+                <Checkbox :checked="value" @update:checked="handleChange" />
+              </FormControl>
+              <FormLabel>Is Active</FormLabel>
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </div>
 
         <div class="flex justify-end">
-          <button
-            type="submit"
-            class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
-          >
-            Save Changes
-          </button>
+          <Button type="submit">Save Changes</Button>
         </div>
-      </form>
+      </Form>
     </template>
-  </fel-modal>
+  </Modal>
 
   <!-- Driver Mapper Modal -->
   <IIMapper 

@@ -30,7 +30,7 @@ export default function useShipmentComposable() {
                     uid: shipmentUid,
                     payload: { samples: samplesMetadata, action },
                 },
-                'shipmentManageSamples'
+                'shipmentManageSamples',
             );
 
             shipmentStore.updateShipmentMetadata(result);
@@ -51,7 +51,7 @@ export default function useShipmentComposable() {
             const result = await withClientMutation<ActionShipmentMutation, ActionShipmentMutationVariables>(
                 ActionShipmentDocument,
                 { uid, action },
-                'actionShipment'
+                'actionShipment',
             );
 
             shipmentStore.updateShipmentMetadata(result);
@@ -72,7 +72,7 @@ export default function useShipmentComposable() {
             const resp = await withClientQuery<ManifestReportQuery, ManifestReportQueryVariables>(
                 ManifestReportDocument,
                 { uid },
-                'manifestReportDownload'
+                'manifestReportDownload',
             );
 
             const tempLink = document.createElement('a');

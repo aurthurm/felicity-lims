@@ -2,10 +2,12 @@
 import { useNoticeStore } from '@/stores/notice'
 import { useAuthStore } from '@/stores/auth'
 import { computed, onMounted, defineAsyncComponent } from 'vue'
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 
+defineOptions({ name: 'NoticeView' })
 // Lazy load components
-const FelInbox = defineAsyncComponent(
-  () => import("@/components/ui/inbox/FelInbox.vue")
+const Inbox = defineAsyncComponent(
+  () => import("@/components/common/Inbox.vue")
 )
 
 // Initialize stores
@@ -34,11 +36,16 @@ const handleNoticeSelect = (notice: any) => {
     <h1 class="text-xl text-foreground font-semibold">Notice Board</h1>
     <hr class="my-2" />
     
-    <div v-if="notices.length <= 0" class="bg-background rounded-sm shadow-sm p-4 text-muted-foreground">
-      You have no notices.
-    </div>
+    <Empty v-if="notices.length <= 0" class="bg-background shadow-sm p-4">
+      <EmptyContent>
+        <EmptyHeader>
+          <EmptyTitle>No notices</EmptyTitle>
+          <EmptyDescription>You have no notices.</EmptyDescription>
+        </EmptyHeader>
+      </EmptyContent>
+    </Empty>
     
-    <FelInbox 
+    <Inbox 
       v-else
       :items="notices"
       title="Notice Board"

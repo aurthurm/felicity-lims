@@ -158,7 +158,7 @@ function getUsers() {
     </div>
 
     <!-- Create/Edit Milestone Modal -->
-    <fel-modal 
+    <Modal 
       v-if="showForm" 
       @close="showForm = false" 
       content-width="w-full max-w-2xl"
@@ -217,11 +217,8 @@ function getUsers() {
           
           <!-- Complete Status -->
           <div class="flex items-center space-x-2">
-            <input
-              id="complete"
-              v-model="form.complete"
-              type="checkbox"
-              class="w-4 h-4 text-primary border-border rounded focus:ring-primary focus:ring-offset-2"
+            <Checkbox
+              id="complete" :checked="form.complete" @update:checked="(value) => form.complete = value"
             />
             <label class="text-sm font-medium text-foreground" for="complete">
               Complete
@@ -246,7 +243,7 @@ function getUsers() {
           </div>
         </form>
       </template>
-    </fel-modal>
+    </Modal>
   </div>
 </template>
 

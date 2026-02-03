@@ -33,58 +33,79 @@ watch(
 <template>
   <Drawer
     :show="notificationStore.show"
-    contentWidth="w-1/3"
+    contentWidth="sm:max-w-md w-full max-w-[calc(100vw-2rem)]"
     @close="notificationStore.showNotifications(false)"
   >
     <template #header>
-      <div class="flex items-center justify-between">
-        <h2 class="text-2xl font-semibold leading-6 text-card-foreground">
-          Notifications
-        </h2>
-        <button 
-          class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none border border-input hover:bg-accent hover:text-accent-foreground h-9 w-9 p-0"
-          @click="notificationStore.showNotifications(false)"
-          aria-label="Close notifications"
-        >
-          <svg 
-            width="24" 
-            height="24" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
-            <path 
-              d="M18 6L6 18" 
-              stroke="currentColor" 
-              stroke-width="1.25" 
-              stroke-linecap="round" 
-              stroke-linejoin="round" 
-            />
-            <path 
-              d="M6 6L18 18" 
-              stroke="currentColor" 
-              stroke-width="1.25" 
-              stroke-linecap="round" 
-              stroke-linejoin="round" 
-            />
-          </svg>
-        </button>
+      <div class="flex items-center gap-3">
+          <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              class="text-primary"
+              aria-hidden="true"
+            >
+              <path
+                d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"
+                fill="currentColor"
+              />
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-lg font-semibold tracking-tight text-foreground">
+              Notifications
+            </h2>
+            <p class="text-xs text-muted-foreground">
+              Activity and updates
+            </p>
+          </div>
       </div>
     </template>
 
     <template #body>
-      <div 
-        v-for="stream of streamStore.streams" 
-        :key="stream?.uid"
-        class="w-full my-1 py-2 px-3 bg-card rounded-lg border border-border shadow-sm flex items-center hover:bg-accent/50 transition-colors"
-        role="article"
-        :aria-label="`Notification from ${stream?.actor?.firstName} ${stream?.actor?.lastName}`"
-      >
-        <div 
-          class="w-6 h-6 border rounded-full border-border flex items-center justify-center bg-primary/10"
-          aria-hidden="true"
+      <div class="space-y-2">
+        <!-- Empty state -->
+        <div
+          v-if="!streamStore.streams?.length"
+          class="flex flex-col items-center justify-center py-12 text-center"
         >
+          <div class="rounded-full bg-muted p-4 mb-4">
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              class="text-muted-foreground"
+            >
+              <path
+                d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+          <p class="text-sm font-medium text-foreground">No notifications yet</p>
+          <p class="mt-1 text-xs text-muted-foreground max-w-[200px]">
+            When you receive activity updates, they'll appear here.
+          </p>
+        </div>
+
+        <!-- Notification list -->
+        <article
+          v-for="stream of streamStore.streams"
+          :key="stream?.uid"
+          class="flex gap-3 rounded-lg border border-border bg-card p-4 shadow-sm transition-colors hover:bg-accent/50"
+          :aria-label="`Notification from ${stream?.actor?.firstName} ${stream?.actor?.lastName}`"
+        >
+          <div
+            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10"
+            aria-hidden="true"
+          >
           <svg 
             width="16" 
             height="16" 
@@ -99,20 +120,18 @@ watch(
             />
           </svg>
         </div>
-        <div class="pl-2 flex-1">
-          <p class="text-sm leading-none text-card-foreground">
-            <span class="text-accent">{{ stream?.actor?.firstName }} {{ stream?.actor?.lastName }}</span>
+        <div class="min-w-0 flex-1 space-y-1">
+          <p class="text-sm leading-snug text-foreground">
+            <span class="font-medium text-foreground">{{ stream?.actor?.firstName }} {{ stream?.actor?.lastName }}</span>
             <span class="mx-1 text-destructive italic">{{ stream.verb }}</span>
-            <span class="mr-1 text-muted-foreground">{{ stream.actionObjectType }}</span>
-            <span class="text-accent font-semibold text-sm">{{ stream?.actionObject?.sample?.sampleId ?? stream?.actionObject.sampleId ??
-              stream?.actionObject.sampleUid ?? stream?.actionObject.worksheetId }}</span>
+            <span class="text-muted-foreground">{{ stream.actionObjectType }}</span>
+            <span class="ml-1 font-medium text-foreground">{{ stream?.actionObject?.sample?.sampleId ?? stream?.actionObject?.sampleId ?? stream?.actionObject?.sampleUid ?? stream?.actionObject?.worksheetId }}</span>
           </p>
         </div>
+        </article>
       </div>
     </template>
-    
-    <template #footer>
-    </template>
 
+    <template #footer />
   </Drawer>
 </template>

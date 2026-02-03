@@ -3,7 +3,9 @@ import { useSampleStore } from "@/stores/sample";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { computed, defineAsyncComponent, onMounted, watch } from "vue";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 
+defineOptions({ name: 'ResultsView' })
 const GenericResults = defineAsyncComponent(
   () => import("./GenericResults.vue")
 )
@@ -56,6 +58,13 @@ watch(
         :organismAnalysisResults="organismResults" 
       />
     </div>
-    <div v-else class="text-muted-foreground">No sample data</div>
+    <Empty v-else>
+      <EmptyContent>
+        <EmptyHeader>
+          <EmptyTitle>No sample data</EmptyTitle>
+          <EmptyDescription>There are no results available for this sample.</EmptyDescription>
+        </EmptyHeader>
+      </EmptyContent>
+    </Empty>
   </div>
 </template>

@@ -1,67 +1,58 @@
 <script setup lang="ts">
-import {computed, defineAsyncComponent, onMounted, ref, watch} from "vue";
-import {useNotificationStore} from "@/stores/notification";
-import {useAuthStore} from "@/stores/auth";
-import {useRouter} from "vue-router";
-import useApiUtil from "@/composables/api_util";
-import userPreferenceComposable from "@/composables/preferences";
-import * as guards from "@/guards";
+import { computed, onMounted, ref } from "vue"
+import { useAuthStore } from "@/stores/auth"
+import useApiUtil from "@/composables/api_util"
+import userPreferenceComposable from "@/composables/preferences"
+import { useConfirmDialog } from "@/composables/confirm_dialog"
+import * as guards from "@/guards"
 import { VITE_USE_MEGA_MENU } from '@/conf'
-import { useFullscreen } from "@vueuse/core";
-import { LaboratoryType } from "@/types/gql";
-import { SwitchActiveLaboratoryDocument } from "@/graphql/operations/_mutations";
-import { SwitchActiveLaboratoryMutation, SwitchActiveLaboratoryMutationVariables } from "@/types/gqlops";
+import { useFullscreen } from "@vueuse/core"
+import { LaboratoryType } from "@/types/gql"
+import { SwitchActiveLaboratoryDocument } from "@/graphql/operations/_mutations"
+import { SwitchActiveLaboratoryMutation, SwitchActiveLaboratoryMutationVariables } from "@/types/gqlops"
+import { Button } from "@/components/ui/button"
+import { Spinner } from "@/components/ui/spinner"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { SidebarTrigger } from "@/components/ui/sidebar"
 
-// Lazily load components for better performance
-const Logo = defineAsyncComponent(() => import("@/components/logo/Logo.vue"));
-
-const UserPreferences = defineAsyncComponent(() => import("@/components/user/UserPreferences.vue"));
-
-const {isFullscreen, toggle} = useFullscreen()
-
-// Router and navigation
-const router = useRouter();
-const menuOpen = ref(false);
-const dropdownOpen = ref(false);
-
-// Close menu when route changes
-watch(() => router.currentRoute.value, (current, previous) => {
-  if (current.path !== previous?.path) {
-    menuOpen.value = false;
-    dropdownOpen.value = false;
-  }
-});
+const { isFullscreen, toggle } = useFullscreen()
+const { alert } = useConfirmDialog()
 
 // Auth and user information
-const authStore = useAuthStore();
+const authStore = useAuthStore()
 const activeLaboratory = computed<LaboratoryType | undefined>(
   () => authStore.auth?.activeLaboratory
-);
+)
 const userLaboratories = computed(
   () => authStore.auth?.laboratories
-);
+)
 const userFullName = computed(() => {
-  const firstName = authStore.auth?.user?.firstName || '';
-  const lastName = authStore.auth?.user?.lastName || '';
-  return `${firstName} ${lastName}`.trim();
-});
+  const firstName = authStore.auth?.user?.firstName || ''
+  const lastName = authStore.auth?.user?.lastName || ''
+  return `${firstName} ${lastName}`.trim()
+})
 
-// Error handling
-const {errors, clearErrors, withClientMutation} = useApiUtil();
-const showErrors = ref(false);
-
-//User Preferences
-const showPreferences = ref(false);
-
-// Notifications management
-const notificationStore = useNotificationStore();
-const toggleNotifications = (value: boolean) => notificationStore.showNotifications(value);
+const { withClientMutation } = useApiUtil()
 
 // Theme management
-const {loadPreferredTheme} = userPreferenceComposable();
+const { loadPreferredTheme } = userPreferenceComposable()
 onMounted(() => {
-  loadPreferredTheme();
-});
+  loadPreferredTheme()
+})
 
 // Navigation items for more maintainable structure
 const navItems = computed(() => [
@@ -149,302 +140,178 @@ const navItems = computed(() => [
     route: "/documents",
     guard: guards.pages.DOCUMENT
   }
-]);
+])
 
-const closeMenus = () => {
-  menuOpen.value = false;
-  dropdownOpen.value = false;
-};
-
-// Handle escape key to close menus
-const handleKeyDown = (event: KeyboardEvent) => {
-  if (event.key === 'Escape') {
-    closeMenus();
-  }
-};
-
-onMounted(() => {
-  document.addEventListener('keydown', handleKeyDown);
-});
-
-const showModal = ref(false);
-const targetLaboratoryUid = ref<string | null>(null);
-const switching = ref(false);
+const propsNav = withDefaults(
+  defineProps<{ showSidebarToggle?: boolean }>(),
+  { showSidebarToggle: false }
+)
+const showModal = ref(false)
+const targetLaboratoryUid = ref<string | null>(null)
+const switching = ref(false)
+const updateTargetLaboratoryUid = (value: string) => {
+  targetLaboratoryUid.value = value || null
+}
 const switchLabNow = () => {
-  if(!targetLaboratoryUid.value) {
-    alert("Please select a laboratory to switch to.");
-    return;
+  if (!targetLaboratoryUid.value) {
+    alert({
+      title: "Select a Laboratory",
+      description: "Please select a laboratory to switch to.",
+      confirmText: "OK",
+      variant: "default",
+    })
+    return
   }
-  switching.value = true;
+  switching.value = true
   setTimeout(async () => {
     await withClientMutation<SwitchActiveLaboratoryMutation, SwitchActiveLaboratoryMutationVariables>(
           SwitchActiveLaboratoryDocument, 
           {userUid: authStore.auth?.user?.uid, laboratoryUid: targetLaboratoryUid.value}, 
           'setUserActiveLaboratory'
     ).then(_ => authStore.logout()).catch(() => undefined).finally(() => {
-      showModal.value = false;
-      switching.value = false;
-    });
-  }, 3000);
-};
+      showModal.value = false
+      switching.value = false
+    })
+  }, 3000)
+}
 </script>
 
 <template>
   <nav
       id="main-nav"
-      class="flex items-center px-6 bg-primary border-b border-border "
+      class="flex min-h-10 items-center border-b px-4"
       role="navigation"
       aria-label="Main Navigation"
   >
+    <!-- Sidebar toggle (when in sidebar layout) -->
+    <SidebarTrigger
+      v-if="propsNav.showSidebarToggle"
+      class="-ml-2 mr-2 h-8 w-8 shrink-0 hover:bg-transparent"
+    />
+
     <!-- Brand and menu section -->
     <div class="flex-1">
       <div class="flex text-right align-middle">
-        <!-- Logo and brand name -->
+        <!-- Brand name (logo is in sidebar header) -->
         <router-link
             to="/"
             id="brand"
-            class="flex items-center md:w-auto text-primary-foreground/80 hover:text-primary-foreground transition-colors"
+            class="flex items-center md:w-auto py-1"
             aria-label="Felicity LIMS Home"
         >
-          <Logo />
-          <h1 class="text-left text-2xl font-medium ml-2">
+          <h1 class="text-left text-sm font-medium">
             {{ activeLaboratory?.name ?? "Felicity LIMS" }}
           </h1>
         </router-link>
 
-       <span v-if="VITE_USE_MEGA_MENU" class="mx-8 border-l border-border my-2" aria-hidden="true"></span>
+        <span v-if="VITE_USE_MEGA_MENU" class="mx-4 h-5 border-l" aria-hidden="true"></span>
 
-        <!-- Main menu dropdown trigger -->
-        <button v-if="VITE_USE_MEGA_MENU" 
-            @click="menuOpen = !menuOpen"
-            class="hidden md:flex md:items-center focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md p-2"
-            :aria-expanded="menuOpen"
-            aria-controls="main-menu"
-        >
-          <span
-              class="text-xl font-medium mr-2 text-primary-foreground/80 hover:text-primary-foreground uppercase">Menu</span>
-          <font-awesome-icon
-              :icon="menuOpen ? 'chevron-up' : 'chevron-down'"
-              class="text-muted-foreground transition-transform duration-200"
-              aria-hidden="true"
-          />
-        </button>
-
-        <!-- Main menu dropdown content -->
-        <div
-            v-show="menuOpen"
-            id="main-menu"
-            class="absolute left-64 top-12 mt-1 p-4 w-1/2 bg-primary rounded-md shadow-lg border border-border z-20"
-            @click.away="menuOpen = false"
-        >
-          <div
-              class="grid grid-cols-3 gap-4"
-              role="menu"
-              aria-label="Main Menu"
-          >
-            <router-link
+        <DropdownMenu v-if="VITE_USE_MEGA_MENU">
+          <DropdownMenuTrigger as-child>
+            <Button variant="ghost" size="sm">
+              Menu
+              <font-awesome-icon icon="chevron-down" class="ml-1.5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" class="w-[520px] p-4">
+            <div class="grid grid-cols-3 gap-2">
+              <DropdownMenuItem
                 v-for="item in navItems"
                 :key="item.id"
                 v-show="guards.canAccessPage(item.guard)"
-                :to="item.route"
-                :id="`${item.id}-link`"
-                class="flex items-center py-2 px-4 text-primary-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                role="menuitem"
-                @click="menuOpen = false"
-            >
-              <span class="mr-4" aria-hidden="true">
-                <font-awesome-icon :icon="item.icon"/>
-              </span>
-              <span class="text-lg font-medium">{{ item.label }}</span>
-            </router-link>
-          </div>
-        </div>
+                as-child
+              >
+                <router-link
+                  :to="item.route"
+                  :id="`${item.id}-link`"
+                  class="flex items-center gap-2"
+                >
+                  <font-awesome-icon :icon="item.icon" />
+                  <span class="text-sm font-medium">{{ item.label }}</span>
+                </router-link>
+              </DropdownMenuItem>
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
 
     <!-- User section and actions -->
-    <div class="flex items-center space-x-4">
-      <!-- Errors button -->
-      <button
-          v-if="errors.length > 0"
-          class="flex items-center px-4 py-2 text-primary-foreground/80 hover:text-primary-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md"
-          @click="showErrors = true"
-          aria-label="Show errors"
+    <div class="flex items-center gap-1">
+      <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <Button variant="ghost" size="sm">
+            <font-awesome-icon icon="user" class="mr-1.5 size-3.5" />
+            <span class="text-sm font-medium">{{ userFullName }}</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Account</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem @click="authStore.logout()">
+            <font-awesome-icon icon="sign-out-alt" class="mr-2" aria-hidden="true"/>
+            Log out
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <Button
+        v-if="(userLaboratories?.length ?? 0) > 1"
+        variant="ghost"
+        size="icon-sm"
+        @click="showModal = true"
+        aria-label="Switch laboratory"
       >
-        <font-awesome-icon icon="bell" class="mr-2" aria-hidden="true"/>
-        <span class="text-lg font-medium mr-2 uppercase">Errors</span>
-        <span class="bg-destructive text-destructive-foreground text-xs rounded-full px-2 py-1">{{
-            errors.length
-          }}</span>
-      </button>
-
-      <span v-if="errors.length > 0" class="border-l border-border h-6" aria-hidden="true"></span>
-
-      <!-- Notifications button -->
-      <button
-          class="flex items-center px-4 py-2 text-primary-foreground/80 hover:text-primary-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md"
-          @click="toggleNotifications(true)"
-          aria-label="Show notifications"
+        <font-awesome-icon icon="shuffle" aria-hidden="true" />
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        @click="toggle"
+        :aria-label="isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'"
       >
-        <font-awesome-icon icon="bell" class="mr-2" aria-hidden="true"/>
-        <span class="text-lg font-medium uppercase">Notifications</span>
-      </button>
-
-      <span class="border-l border-border h-6" aria-hidden="true"></span>
-
-      <!-- Admin settings link -->
-      <router-link
-          v-show="guards.canAccessPage(guards.pages.ADMINISTRATION)"
-          to="/admin"
-          class="flex items-center px-4 py-2 text-primary-foreground/80 hover:text-primary-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md"
-          aria-label="Settings"
-      >
-        <font-awesome-icon icon="cog" class="mr-2" aria-hidden="true"/>
-        <span class="text-lg font-medium uppercase">Settings</span>
-      </router-link>
-
-      <div class="px-4 flex text-right items-center relative"> 
-        <span
-            class="flex justify-center items-center h-8 w-8 rounded-full border-2 border-border hover:border-primary text-primary-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-primary cursor-pointer"
-            aria-hidden="true"
-            tabindex="0">
-          <font-awesome-icon icon="user"/>
-        </span>
-
-        <div class="relative">
-          <button
-              @click="dropdownOpen = !dropdownOpen"
-              class=" text-primary-foreground/80 hover:text-primary-foreground hidden md:flex md:items-center ml-2 focus:outline-none rounded-lg p-1 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-primary"
-              :aria-expanded="dropdownOpen"
-              aria-controls="user-menu"
-          >
-            <span class="text-lg font-medium uppercase">{{ userFullName }}</span>
-            <font-awesome-icon
-                :icon="dropdownOpen ? 'chevron-up' : 'chevron-down'"
-                class="ml-2 text-primary-foreground/80 transition-transform" aria-hidden="true"
-            />
-          </button>
-
-          <div
-              v-show="dropdownOpen"
-              id="user-menu"
-              class="absolute right-0 top-11 py-2 w-48 bg-popover text-popover-foreground rounded-lg shadow-xl z-20"
-              @click.away="dropdownOpen = false"
-              role="menu">
-            <button
-                class="w-full text-left cursor-pointer py-2 px-4 flex items-center hover:bg-primary hover:text-primary-foreground uppercase transition-colors focus:outline-none focus:bg-accent focus:text-accent-foreground rounded"
-                role="menuitem"
-                @click.away="showPreferences = true; dropdownOpen = false"
-            >
-              <font-awesome-icon icon="user-gear" class="mr-2" aria-hidden="true"/>
-              Preferences
-            </button>
-            <button
-                @click="authStore.logout()"
-                class="w-full text-left cursor-pointer py-2 px-4 flex items-center hover:bg-primary hover:text-primary-foreground uppercase transition-colors focus:outline-none focus:bg-accent focus:text-accent-foreground rounded"
-                role="menuitem"
-            >
-              <font-awesome-icon icon="sign-out-alt" class="mr-2" aria-hidden="true"/>
-              Log out
-            </button>
-          </div>
-        </div>
-      </div>
-      <button v-if="(userLaboratories?.length ?? 0) > 1"
-          @click="showModal = true"
-          class="flex items-center p-2 text-primary-foreground/80 hover:text-primary-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md"
-          :aria-label="isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'">
-          <font-awesome-icon icon="shuffle"
-          class="text-muted-foreground transition-transform duration-200"
-          aria-hidden="true" />
-      </button>
-      <button
-          @click="toggle"
-          class="flex items-center p-2 text-primary-foreground/80 hover:text-primary-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md"
-          :aria-label="isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'">
         <font-awesome-icon :icon="isFullscreen ? 'compress' : 'expand'"/>
-      </button>
+      </Button>
     </div>
   </nav>
 
-  <!-- Error drawer -->
-  <fel-drawer :show="showErrors" @close="showErrors = false">
-    <template v-slot:header>
-      <div class="flex items-center justify-between">
-        <h3 class="font-semibold text-lg">Errors List</h3>
-        <button
-            class="p-2 text-muted-foreground hover:text-foreground rounded-full hover:bg-secondary transition-colors focus:outline-none"
-            @click="clearErrors()"
-            aria-label="Clear all errors"
-        >
-          <font-awesome-icon
-              icon="trash-alt"
-              class="w-5 h-5"
-              aria-hidden="true"
-          />
-        </button>
-      </div>
-    </template>
-    <template v-slot:body>
-      <p v-if="errors.length === 0" class="text-muted-foreground italic">No errors to display</p>
-      <ul v-else aria-label="Error messages" class="divide-y divide-border">
-        <li
-            v-for="(err, idx) in errors"
-            :key="idx"
-            class="mb-2 p-3 bg-background rounded text-sm border-l-4 border-destructive"
-        >
-          <code class="block whitespace-pre-wrap">{{ err }}</code>
-        </li>
-      </ul>
-    </template>
-  </fel-drawer>
-
-  <!-- User Preferences Drawer -->
-  <fel-drawer :show="showPreferences" @close="showPreferences = false">
-    <template v-slot:header>
-      <div class="flex items-center justify-between">
-        <h3 class="font-semibold text-lg">Your Preferences</h3>
-      </div>
-    </template>
-    <template v-slot:body>
-      <user-preferences />
-    </template>
-  </fel-drawer>
-
     <!-- Lab Switcher -->
-  <fel-modal v-if="showModal" @close="showModal = false">
+  <Modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
       <h3 class="text-lg font-bold text-foreground">Current Laboratory Switcher</h3>
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-6 space-y-6">
-        <div class="space-y-4">
-          <div class="grid grid-cols-2 gap-4">
-            <label class="col-span-2 space-y-2">
-              <span class="text-md font-medium">Laboratory Name</span>
-              <select 
-                class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-                v-model="targetLaboratoryUid"
-              >
-                <option value="">Select Department</option>
-                <option v-for="lab in userLaboratories" :key="lab.uid" :value="lab?.uid">{{ lab.name }}</option>
-              </select>
-            </label>
-          </div>
+      <form action="post" class="space-y-6 p-6">
+        <div class="space-y-2">
+          <span class="text-sm font-medium">Laboratory Name</span>
+          <Select
+            :model-value="targetLaboratoryUid ?? ''"
+            @update:model-value="updateTargetLaboratoryUid"
+          >
+            <SelectTrigger class="w-full">
+              <SelectValue placeholder="Select Department" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">Select Department</SelectItem>
+              <SelectItem v-for="lab in userLaboratories" :key="lab.uid" :value="lab?.uid">
+                {{ lab.name }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
-        <fel-button
+        <Button
           type="button"
           @click.prevent="switchLabNow()"
-          :loading="switching"
           :disabled="switching"
           class="w-full"
         >
+          <Spinner v-if="switching" class="mr-2 size-4" />
           Switch Laboratory
-        </fel-button>
+        </Button>
       </form>
     </template>
-  </fel-modal>
+  </Modal>
 
 </template>

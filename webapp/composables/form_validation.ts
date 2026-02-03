@@ -181,7 +181,7 @@ export function useFormValidation<T extends Record<string, any>>(form: T, rules:
 // Password strength checker
 export function usePasswordStrength() {
     const getPasswordStrength = (
-        password: string
+        password: string,
     ): {
         score: number;
         label: string;
@@ -207,7 +207,7 @@ export function usePasswordStrength() {
         if (!/(.)\1{2,}/.test(password)) score += 1; // No repeated characters
         if (
             !/(?:012|123|234|345|456|567|678|789|890|abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz)/i.test(
-                password
+                password,
             )
         )
             score += 1; // No sequential characters

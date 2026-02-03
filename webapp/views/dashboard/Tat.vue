@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+defineOptions({ name: 'TatView' })
 // This component displays Turn Around Time measures for the dashboard
 const isLoading = ref(false);
 </script>

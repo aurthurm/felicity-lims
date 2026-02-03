@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
@@ -10,8 +10,14 @@
     <body class="bg-secondary">
         <div id="felicityApp">
             <div id="fel-load">
-                <p>Felicity LIMS</p>
-                <div class="fel-loader"></div>
+                <p class="fel-load-title">Felicity LIMS</p>
+                <div class="fel-loader" aria-label="Loading">
+                    <span class="fel-loader-dot"></span>
+                    <span class="fel-loader-dot"></span>
+                    <span class="fel-loader-dot"></span>
+                    <span class="fel-loader-dot"></span>
+                    <span class="fel-loader-dot"></span>
+                </div>
             </div>
         </div>
         <script lang="ts" type="module" src="/webapp/main.ts"></script>

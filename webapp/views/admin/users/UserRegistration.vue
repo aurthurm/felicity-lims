@@ -1,6 +1,23 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { useField, useForm } from "vee-validate";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import * as yup from "yup";
 import { useRouter } from "vue-router";
 import { UserType, GroupType, LaboratoryType, OrganizationType } from "@/types/gql";
@@ -137,7 +154,7 @@ const userSchema = yup.object({
   activeLaboratoryUid: yup.string().trim().nullable(),
 });
 
-const { handleSubmit, resetForm, meta } = useForm({
+const { handleSubmit, resetForm, meta, values, setFieldValue } = useForm({
   validationSchema: userSchema,
   initialValues: {
     firstName: "",
@@ -154,17 +171,10 @@ const { handleSubmit, resetForm, meta } = useForm({
   },
 });
 
-const { value: firstName, errorMessage: firstNameError } = useField<string>("firstName");
-const { value: lastName, errorMessage: lastNameError } = useField<string>("lastName");
-const { value: email, errorMessage: emailError } = useField<string>("email");
-const { value: userName, errorMessage: userNameError } = useField<string>("userName");
-const { value: password, errorMessage: passwordError } = useField<string>("password");
-const { value: passwordConfirm, errorMessage: passwordConfirmError } = useField<string>("passwordConfirm");
 const { value: isActive } = useField<boolean>("isActive");
 const { value: isBlocked } = useField<boolean>("isBlocked");
-const { value: groupUid } = useField<string | null>("groupUid");
 const { value: laboratoryUids, errorMessage: laboratoryUidsError } = useField<string[]>("laboratoryUids");
-const { value: activeLaboratoryUid, errorMessage: activeLaboratoryUidError } = useField<string | null>("activeLaboratoryUid");
+const { errorMessage: activeLaboratoryUidError } = useField<string | null>("activeLaboratoryUid");
 
 const isFormValid = computed(() => meta.value.valid);
 
@@ -281,8 +291,8 @@ const onLaboratorySelectionChange = () => {
 
 // Generate username from email
 const generateUsername = () => {
-  if (email.value) {
-    userName.value = email.value.split('@')[0];
+  if (values.email) {
+    setFieldValue("userName", values.email.split("@")[0]);
   }
 };
 
@@ -296,112 +306,85 @@ onMounted(() => {
   <div class="space-y-6">
     <div class="flex items-center justify-between">
       <h2 class="text-2xl font-semibold text-foreground">Register New User</h2>
-      <button 
-        @click="goBack"
-        class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
-      >
+      <Button variant="outline" @click="goBack">
         <i class="fas fa-arrow-left mr-2"></i>
         Back to Users
-      </button>
+      </Button>
     </div>
 
     <hr class="border-border" />
 
-    <form @submit.prevent="saveUser" class="space-y-8">
+    <Form @submit="saveUser" class="space-y-8">
       <!-- Basic Information -->
       <div class="space-y-4">
         <h3 class="text-lg font-medium text-foreground">Basic Information</h3>
         
         <div class="grid grid-cols-2 gap-6">
-          <div class="space-y-2">
-            <label class="text-sm font-medium text-foreground">
-              First Name *
-            </label>
-            <input
-              v-model="firstName"
-              type="text"
-              required
-              placeholder="Enter first name..."
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            />
-            <p v-if="firstNameError" class="text-sm text-destructive">{{ firstNameError }}</p>
-          </div>
+          <FormField name="firstName" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>First Name *</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Enter first name..." />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <div class="space-y-2">
-            <label class="text-sm font-medium text-foreground">
-              Last Name *
-            </label>
-            <input
-              v-model="lastName"
-              type="text"
-              required
-              placeholder="Enter last name..."
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            />
-            <p v-if="lastNameError" class="text-sm text-destructive">{{ lastNameError }}</p>
-          </div>
+          <FormField name="lastName" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Last Name *</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Enter last name..." />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <div class="space-y-2">
-            <label class="text-sm font-medium text-foreground">
-              Email Address *
-            </label>
-            <input
-              v-model="email"
-              @blur="generateUsername"
-              type="email"
-              required
-              placeholder="Enter email address..."
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            />
-            <p v-if="emailError" class="text-sm text-destructive">{{ emailError }}</p>
-          </div>
+          <FormField name="email" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Email Address *</FormLabel>
+              <FormControl>
+                <Input
+                  v-bind="componentField"
+                  type="email"
+                  placeholder="Enter email address..."
+                  @blur="(event) => { componentField.onBlur?.(event); generateUsername(); }"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <div class="space-y-2">
-            <label class="text-sm font-medium text-foreground">
-              Username *
-            </label>
-            <input
-              v-model="userName"
-              type="text"
-              required
-              placeholder="Enter username..."
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            />
-            <p v-if="userNameError" class="text-sm text-destructive">{{ userNameError }}</p>
-          </div>
+          <FormField name="userName" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Username *</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Enter username..." />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <div class="space-y-2">
-            <label class="text-sm font-medium text-foreground">
-              Password *
-            </label>
-            <input
-              v-model="password"
-              type="password"
-              required
-              placeholder="Enter password..."
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            />
-            <p v-if="passwordError" class="text-sm text-destructive">
-              {{ passwordError }}
-            </p>
-            <PasswordStrengthIndicator :password="password" />
-          </div>
+          <FormField name="password" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Password *</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" type="password" placeholder="Enter password..." />
+              </FormControl>
+              <FormMessage />
+              <PasswordStrengthIndicator :password="values.password" />
+            </FormItem>
+          </FormField>
 
-          <div class="space-y-2">
-            <label class="text-sm font-medium text-foreground">
-              Confirm Password *
-            </label>
-            <input
-              v-model="passwordConfirm"
-              type="password"
-              required
-              placeholder="Confirm password..."
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            />
-            <p v-if="passwordConfirmError" class="text-sm text-destructive">
-              {{ passwordConfirmError }}
-            </p>
-          </div>
+          <FormField name="passwordConfirm" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Confirm Password *</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" type="password" placeholder="Confirm password..." />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </div>
       </div>
 
@@ -409,19 +392,25 @@ onMounted(() => {
       <div class="space-y-4">
         <h3 class="text-lg font-medium text-foreground">Role Assignment</h3>
         
-        <div class="space-y-2">
-          <label class="text-sm font-medium text-foreground">Default Group</label>
-          <select
-            v-model="groupUid"
-            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <option value="">Select Default Group (Optional)</option>
-            <option v-for="group in groups" :key="group.uid" :value="group.uid">
-              {{ group.name }}
-            </option>
-          </select>
-          <p v-if="groupUidError" class="text-sm text-destructive">{{ groupUidError }}</p>
-        </div>
+        <FormField name="groupUid" v-slot="{ componentField }">
+          <FormItem>
+            <FormLabel>Default Group</FormLabel>
+            <FormControl>
+              <Select v-bind="componentField">
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Default Group (Optional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Select Default Group (Optional)</SelectItem>
+                  <SelectItem v-for="group in groups" :key="group.uid" :value="group.uid">
+                    {{ group.name }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
       </div>
 
       <!-- Laboratory Access -->
@@ -433,13 +422,15 @@ onMounted(() => {
           <label class="text-sm font-medium text-foreground">Assigned Laboratories</label>
           <div class="border border-input rounded-md p-3 space-y-2 max-h-48 overflow-y-auto">
             <div v-for="lab in laboratories" :key="lab.uid" class="flex items-center space-x-3">
-              <input
+              <Checkbox
                 :id="`lab-${lab.uid}`"
-                v-model="laboratoryUids"
-                :value="lab.uid"
-                @change="onLaboratorySelectionChange"
-                type="checkbox"
-                class="h-4 w-4 text-primary focus:ring-ring border-gray-300 rounded"
+                :checked="laboratoryUids.includes(lab.uid)"
+                @update:checked="(value) => {
+                  laboratoryUids = value
+                    ? (laboratoryUids.includes(lab.uid) ? laboratoryUids : [...laboratoryUids, lab.uid])
+                    : laboratoryUids.filter((uid) => uid !== lab.uid);
+                  onLaboratorySelectionChange();
+                }"
               />
               <label :for="`lab-${lab.uid}`" class="flex-1 cursor-pointer">
                 <div class="flex items-center justify-between">
@@ -458,19 +449,26 @@ onMounted(() => {
         </div>
 
         <!-- Active Laboratory Selection -->
-        <div v-if="laboratoryUids.length > 0" class="space-y-2">
-          <label class="text-sm font-medium text-foreground">Default Active Laboratory</label>
-          <select
-            v-model="activeLaboratoryUid"
-            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <option value="">Select default laboratory...</option>
-            <option v-for="lab in assignedLaboratories" :key="lab.uid" :value="lab.uid">
-              {{ lab.name }}
-            </option>
-          </select>
-          <p v-if="activeLaboratoryUidError" class="text-sm text-destructive">{{ activeLaboratoryUidError }}</p>
-        </div>
+        <FormField v-if="laboratoryUids.length > 0" name="activeLaboratoryUid" v-slot="{ componentField }">
+          <FormItem>
+            <FormLabel>Default Active Laboratory</FormLabel>
+            <FormControl>
+              <Select v-bind="componentField">
+                <SelectTrigger>
+                  <SelectValue placeholder="Select default laboratory..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Select default laboratory...</SelectItem>
+                  <SelectItem v-for="lab in assignedLaboratories" :key="lab.uid" :value="lab.uid">
+                    {{ lab.name }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </FormControl>
+            <FormMessage />
+            <p v-if="activeLaboratoryUidError" class="text-sm text-destructive">{{ activeLaboratoryUidError }}</p>
+          </FormItem>
+        </FormField>
 
         <!-- Laboratory Roles (Future Enhancement) -->
         <div v-if="laboratoryUids.length > 0" class="space-y-2">
@@ -481,15 +479,17 @@ onMounted(() => {
                 <div class="font-medium text-sm">{{ getLaboratoryName(labUid) }}</div>
                 <div class="text-xs text-muted-foreground">Specific role for this laboratory</div>
               </div>
-              <select
-                v-model="laboratoryRoles[labUid]"
-                class="w-48 h-8 rounded border border-input bg-background px-2 text-sm"
-              >
-                <option value="">Use Default Group</option>
-                <option v-for="group in groups" :key="group.uid" :value="group.uid">
-                  {{ group.name }}
-                </option>
-              </select>
+              <Select v-model="laboratoryRoles[labUid]">
+                <SelectTrigger class="w-48">
+                  <SelectValue placeholder="Use Default Group" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Use Default Group</SelectItem>
+                  <SelectItem v-for="group in groups" :key="group.uid" :value="group.uid">
+                    {{ group.name }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>
@@ -501,19 +501,13 @@ onMounted(() => {
         
         <div class="flex items-center space-x-6">
           <label class="flex items-center space-x-3">
-            <input
-              v-model="isActive"
-              type="checkbox"
-              class="h-4 w-4 text-primary focus:ring-ring border-gray-300 rounded"
+            <Checkbox :checked="isActive" @update:checked="(value) => isActive = value"
             />
             <span class="text-sm font-medium text-foreground">Active User</span>
           </label>
           
           <label class="flex items-center space-x-3">
-            <input
-              v-model="isBlocked"
-              type="checkbox"
-              class="h-4 w-4 text-destructive focus:ring-ring border-gray-300 rounded"
+            <Checkbox :checked="isBlocked" @update:checked="(value) => isBlocked = value"
             />
             <span class="text-sm font-medium text-foreground">Blocked</span>
           </label>
@@ -524,26 +518,17 @@ onMounted(() => {
 
       <!-- Form Actions -->
       <div class="flex justify-end space-x-4">
-        <button
-          type="button"
-          @click="resetUserForm"
-          :disabled="processing"
-          class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
-        >
+        <Button type="button" variant="outline" @click="resetUserForm" :disabled="processing">
           Reset Form
-        </button>
+        </Button>
         
-        <button
-          type="submit"
-          :disabled="!isFormValid || processing"
-          class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
-        >
+        <Button type="submit" :disabled="!isFormValid || processing">
           <span v-if="processing" class="mr-2">
             <i class="fas fa-spinner fa-spin"></i>
           </span>
           {{ processing ? "Creating..." : "Create User" }}
-        </button>
+        </Button>
       </div>
-    </form>
+    </Form>
   </div>
 </template>

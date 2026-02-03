@@ -2,7 +2,10 @@
 import { storeToRefs } from "pinia";
 import { onMounted, watch } from "vue";
 import { useDashBoardStore } from "@/stores/dashboard";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import { Spinner } from "@/components/ui/spinner";
 
+defineOptions({ name: 'OverviewView' })
 // Initialize store
 const dashBoardStore = useDashBoardStore();
 const { dashboard } = storeToRefs(dashBoardStore);
@@ -25,7 +28,10 @@ watch(
 <template>
   <div class="mt-4">
     <div v-if="dashboard.fetchingOverViewStats" class="text-start my-4">
-      <fel-loader message="Fetching updated overview stats..." />
+      <span class="inline-flex items-center gap-2">
+        <Spinner class="size-4" />
+        <span class="text-sm">Fetching updated overview stats...</span>
+      </span>
     </div>
 
     <section v-else>
@@ -43,9 +49,14 @@ watch(
             <span class="font-semibold text-muted-foreground text-l">{{ analyte.group }}</span>
           </div>
         </div>
-        <p v-if="!dashboard.overViewStats?.analyses?.length" class="my-4 text-muted-foreground">
-          No analyses indicators found
-        </p>
+        <Empty v-if="!dashboard.overViewStats?.analyses?.length" class="my-4 border-0 bg-transparent p-0">
+          <EmptyContent>
+            <EmptyHeader>
+              <EmptyTitle>No analyses indicators</EmptyTitle>
+              <EmptyDescription>No analysis metrics available for this range.</EmptyDescription>
+            </EmptyHeader>
+          </EmptyContent>
+        </Empty>
       </div>
 
       <!-- Sample Status -->
@@ -62,9 +73,14 @@ watch(
             <span class="font-semibold text-muted-foreground text-l">{{ sample.group }}</span>
           </div>
         </div>
-        <p v-if="!dashboard.overViewStats?.samples?.length" class="my-4 text-muted-foreground">
-          No sample indicators found
-        </p>
+        <Empty v-if="!dashboard.overViewStats?.samples?.length" class="my-4 border-0 bg-transparent p-0">
+          <EmptyContent>
+            <EmptyHeader>
+              <EmptyTitle>No sample indicators</EmptyTitle>
+              <EmptyDescription>No sample metrics available for this range.</EmptyDescription>
+            </EmptyHeader>
+          </EmptyContent>
+        </Empty>
       </div>
 
       <!-- WorkSheet Status -->
@@ -81,9 +97,14 @@ watch(
             <span class="font-semibold text-muted-foreground text-l">{{ worksheet.group }}</span>
           </div>
         </div>
-        <p v-if="!dashboard.overViewStats?.worksheets?.length" class="my-4 text-muted-foreground">
-          No worksheet indicators found
-        </p>
+        <Empty v-if="!dashboard.overViewStats?.worksheets?.length" class="my-4 border-0 bg-transparent p-0">
+          <EmptyContent>
+            <EmptyHeader>
+              <EmptyTitle>No worksheet indicators</EmptyTitle>
+              <EmptyDescription>No worksheet metrics available for this range.</EmptyDescription>
+            </EmptyHeader>
+          </EmptyContent>
+        </Empty>
       </div>
 
       <!-- Extras -->
@@ -100,9 +121,14 @@ watch(
             <span class="font-semibold text-muted-foreground text-l">{{ extra.group }}</span>
           </div>
         </div>
-        <p v-if="!dashboard.overViewStats?.extras?.length" class="my-4 text-muted-foreground">
-          No extra indicators found
-        </p>
+        <Empty v-if="!dashboard.overViewStats?.extras?.length" class="my-4 border-0 bg-transparent p-0">
+          <EmptyContent>
+            <EmptyHeader>
+              <EmptyTitle>No extra indicators</EmptyTitle>
+              <EmptyDescription>No extra metrics available for this range.</EmptyDescription>
+            </EmptyHeader>
+          </EmptyContent>
+        </Empty>
       </div>
     </section>
   </div>

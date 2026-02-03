@@ -1,4 +1,5 @@
 <script setup lang="ts">
+defineOptions({ name: 'BlankView' })
 // Blank page component
 </script>
 

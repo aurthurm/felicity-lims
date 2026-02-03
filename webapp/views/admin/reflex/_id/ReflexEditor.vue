@@ -14,12 +14,13 @@ import ReflexHistoryControls from './components/ReflexHistoryControls.vue';
 import { useReflexHistory, useReflexHistoryKeyboard } from '@/composables/useReflexHistory';
 import { useReflexDraft } from '@/composables/useReflexDraft';
 import { useReflexValidation } from '@/composables/useReflexValidation';
+import { Spinner } from "@/components/ui/spinner";
 
 // Import store
 import { useReflexStore } from '@/stores/reflex';
 
-// Import sweetalert2
-import Swal from 'sweetalert2';
+import { useConfirmDialog } from "@/composables/confirm_dialog";
+import useNotifyToast from "@/composables/alert_toast";
 
 // Import API util for GraphQL queries
 import useApiUtil from '@/composables/api_util';
@@ -160,11 +161,11 @@ const fetchAnalysesAndSampleTypes = async () => {
         }));
     }
   } catch (error) {
-    await Swal.fire({
-      icon: 'error',
-      title: 'Data Load Failed',
-      text: 'Failed to load analyses and sample types. Please refresh the page.',
-      confirmButtonText: 'OK',
+    await alert({
+      title: "Data Load Failed",
+      description: "Failed to load analyses and sample types. Please refresh the page.",
+      confirmText: "OK",
+      variant: "destructive",
     });
   } finally {
     isLoadingData.value = false;
@@ -206,6 +207,8 @@ const {
   clearHistory,
   initializeHistory,
 } = useReflexHistory();
+const { confirm, alert } = useConfirmDialog();
+const { toastSuccess, toastInfo } = useNotifyToast();
 
 /**
  * Initialize history with empty state immediately (synchronous, before any async operations)
@@ -605,38 +608,29 @@ const handleManualSave = async () => {
   const saveableGraph = getSaveableGraph();
 
   if (!saveableGraph) {
-    await Swal.fire({
-      icon: 'warning',
-      title: 'Nothing to Save',
-      text: 'No valid nodes connected to trigger. Please add a trigger node and connect valid nodes to it.',
-      confirmButtonText: 'OK',
+    await alert({
+      title: "Nothing to Save",
+      description: "No valid nodes connected to trigger. Please add a trigger node and connect valid nodes to it.",
+      confirmText: "OK",
+      variant: "destructive",
     });
     return;
   }
 
   // Check if dirty
   if (!isDirty.value) {
-    await Swal.fire({
-      icon: 'info',
-      title: 'No Changes',
-      text: 'No changes to save.',
-      timer: 2000,
-      showConfirmButton: false,
-    });
+    toastInfo("No changes to save.");
     return;
   }
 
-  const result = await Swal.fire({
-    icon: 'question',
-    title: 'Save Rule?',
-    text: `This will save ${saveableGraph.nodes.length} valid nodes connected to trigger.`,
-    showCancelButton: true,
-    confirmButtonText: 'Save',
-    cancelButtonText: 'Cancel',
-    confirmButtonColor: 'hsl(var(--success))',
+  const confirmed = await confirm({
+    title: "Save Rule?",
+    description: `This will save ${saveableGraph.nodes.length} valid nodes connected to trigger.`,
+    confirmText: "Save",
+    cancelText: "Cancel",
+    variant: "default",
   });
-
-  if (!result.isConfirmed) return;
+  if (!confirmed) return;
 
   isSaving.value = true;
 
@@ -657,19 +651,13 @@ const handleManualSave = async () => {
         };
       }
 
-      await Swal.fire({
-        icon: 'success',
-        title: 'Saved!',
-        text: 'Rule saved successfully.',
-        timer: 2000,
-        showConfirmButton: false,
-      });
+      toastSuccess("Rule saved successfully.");
     } catch (error) {
-      await Swal.fire({
-        icon: 'error',
-        title: 'Save Failed',
-        text: 'An error occurred while saving the rule.',
-        confirmButtonText: 'OK',
+      await alert({
+        title: "Save Failed",
+        description: "An error occurred while saving the rule.",
+        confirmText: "OK",
+        variant: "destructive",
       });
     } finally {
       isSaving.value = false;
@@ -683,37 +671,28 @@ const handleTogglePublish = async () => {
   const newState = !isPublished.value;
   const action = newState ? 'publish' : 'unpublish';
 
-  const result = await Swal.fire({
-    icon: 'question',
+  const confirmed = await confirm({
     title: `${action.charAt(0).toUpperCase() + action.slice(1)} Rule?`,
-    text: newState
-      ? 'Publishing will make this rule active and available for execution.'
-      : 'Unpublishing will deactivate this rule and save it as a draft.',
-    showCancelButton: true,
-    confirmButtonText: action.charAt(0).toUpperCase() + action.slice(1),
-    cancelButtonText: 'Cancel',
-    confirmButtonColor: newState ? 'hsl(var(--primary))' : 'hsl(var(--muted-foreground))',
+    description: newState
+      ? "Publishing will make this rule active and available for execution."
+      : "Unpublishing will deactivate this rule and save it as a draft.",
+    confirmText: action.charAt(0).toUpperCase() + action.slice(1),
+    cancelText: "Cancel",
+    variant: "default",
   });
-
-  if (!result.isConfirmed) return;
+  if (!confirmed) return;
 
   isPublishing.value = true;
 
   try {
     await reflexStore.togglePublish(ruleUid.value, newState);
-    await Swal.fire({
-      icon: 'success',
-      title: `${action.charAt(0).toUpperCase() + action.slice(1)}ed!`,
-      text: `Rule ${action}ed successfully.`,
-      timer: 2000,
-      showConfirmButton: false,
-    });
+    toastSuccess(`Rule ${action}ed successfully.`);
   } catch (error) {
-    await Swal.fire({
-      icon: 'error',
+    await alert({
       title: `${action.charAt(0).toUpperCase() + action.slice(1)} Failed`,
-      text: `Failed to ${action} rule. Please try again.`,
-      confirmButtonText: 'OK',
+      description: `Failed to ${action} rule. Please try again.`,
+      confirmText: "OK",
+      variant: "destructive",
     });
   } finally {
     isPublishing.value = false;
@@ -1103,7 +1082,10 @@ onBeforeUnmount(() => {
   <div class="reflex-editor">
     <!-- Loading State -->
     <div v-if="isLoading" class="loading-overlay">
-      <fel-loader message="Loading rule..." variant="muted" size="lg" />
+      <span class="inline-flex items-center gap-2">
+        <Spinner class="size-5" />
+        <span class="text-base">Loading rule...</span>
+      </span>
     </div>
 
     <!-- Main Editor -->

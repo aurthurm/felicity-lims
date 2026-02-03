@@ -4,10 +4,11 @@ import { computed, defineAsyncComponent, onMounted, reactive, ref } from 'vue';
 import useApiUtil from '@/composables/api_util';
 import { GrindSchemeType, UserType } from '@/types/gql';
 import { formatDate, stringToColor, getUserInitials } from '@/utils'
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { AddGrindSchemeDocument, AddGrindSchemeMutation, AddGrindSchemeMutationVariables, EditGrindSchemeDocument, EditGrindSchemeMutation, EditGrindSchemeMutationVariables } from '@/graphql/operations/grind.mutations';
 import { GetGrindSchemeAllDocument, GetGrindSchemeAllQuery, GetGrindSchemeAllQueryVariables } from '@/graphql/operations/grind.queries';
 import { UserAllDocument, UserAllQuery, UserAllQueryVariables } from '@/graphql/operations/_queries';
-
+import PageHeading from "@/components/common/PageHeading.vue"
 const VueMultiselect = defineAsyncComponent(
   () => import('vue-multiselect')
 )
@@ -179,7 +180,7 @@ function saveForm() {
 </script>
 
 <template>
-  <fel-heading title="Projects" />
+  <PageHeading title="Projects" />
 
   <div class="pb-8">
     <div class="flex justify-between items-center mb-6">
@@ -326,28 +327,34 @@ function saveForm() {
     </div>
     
     <!-- Empty state -->
-    <div v-if="schemes.length === 0 && !isLoading" class="flex flex-col items-center justify-center py-12">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-muted-foreground mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-      </svg>
-      <h3 class="text-lg font-medium text-foreground mb-2">No schemes found</h3>
-      <p class="text-muted-foreground mb-4">Get started by creating your first scheme</p>
-      <button
-        @click="openCreateForm"
-        class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-      >
-        <span class="flex items-center space-x-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+    <Empty v-if="schemes.length === 0 && !isLoading" class="py-12">
+      <EmptyContent>
+        <EmptyMedia variant="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
           </svg>
-          <span>Create Scheme</span>
-        </span>
-      </button>
-    </div>
+        </EmptyMedia>
+        <EmptyHeader>
+          <EmptyTitle>No schemes found</EmptyTitle>
+          <EmptyDescription>Get started by creating your first scheme.</EmptyDescription>
+        </EmptyHeader>
+        <button
+          @click="openCreateForm"
+          class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        >
+          <span class="flex items-center space-x-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            <span>Create Scheme</span>
+          </span>
+        </button>
+      </EmptyContent>
+    </Empty>
   </div>
   
   <!-- Create/Edit Scheme Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" content-width="w-full max-w-2xl">
+  <Modal v-if="showModal" @close="showModal = false" content-width="w-full max-w-2xl">
     <template v-slot:header>
       <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -460,7 +467,7 @@ function saveForm() {
         </div>
       </form>
     </template>
-  </fel-modal>
+  </Modal>
 </template>
 
 <style scoped>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Button } from "@/components/ui/button";
 import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
 import { useForm, useField } from 'vee-validate';
 import * as yup from 'yup';
@@ -7,9 +8,9 @@ import useApiUtil from '@/composables/api_util';
 import { AbxExpertInterpretationRuleType } from "@/types/gql";
 import { GetAbxExpertInterpretationRuleAllDocument, GetAbxExpertInterpretationRuleAllQuery, GetAbxExpertInterpretationRuleAllQueryVariables } from "@/graphql/operations/microbiology.queries";
 import { AddAbxExpertInterpretationRuleMutation, AddAbxExpertInterpretationRuleMutationVariables, AddAbxExpertInterpretationRuleDocument, EditAbxExpertInterpretationRuleMutation, EditAbxExpertInterpretationRuleMutationVariables, EditAbxExpertInterpretationRuleDocument } from '@/graphql/operations/microbiology.mutations';
-
+import PageHeading from "@/components/common/PageHeading.vue"
 const DataTable = defineAsyncComponent(
-  () => import('@/components/ui/datatable/FelDataTable.vue')
+  () => import('@/components/common/DataTable.vue')
 )
 
 const {withClientMutation, withClientQuery} = useApiUtil()
@@ -258,9 +259,9 @@ const saveForm = handleSubmit((formValues) => {
 </script>
 
 <template>
-  <fel-heading title="Expert Interpretation Rules">
-    <fel-button @click="FormManager(true)">Add Expert Interpretation Rule</fel-button>
-  </fel-heading>
+  <PageHeading title="Expert Interpretation Rules">
+    <Button @click="FormManager(true)">Add Expert Interpretation Rule</Button>
+  </PageHeading>
 
   <div class="rounded-lg bg-card p-6 shadow-sm">
     <DataTable 
@@ -285,7 +286,7 @@ const saveForm = handleSubmit((formValues) => {
   </div>
 
   <!-- Expert Interpretation Rule Edit Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false">
+  <Modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
       <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -367,7 +368,7 @@ const saveForm = handleSubmit((formValues) => {
         </button>
       </form>
     </template>
-  </fel-modal>
+  </Modal>
 </template>
 
 

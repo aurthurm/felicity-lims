@@ -107,15 +107,15 @@ export const useLaboratoryContextStore = defineStore('laboratoryContext', () => 
     const canSwitchContext = computed(() => hasMultipleLaboratories.value && !context.value.contextSwitching);
 
     const isLaboratoryAccessible = computed(
-        () => (laboratoryUid: string) => context.value.availableLaboratories.some(lab => lab.uid === laboratoryUid)
+        () => (laboratoryUid: string) => context.value.availableLaboratories.some(lab => lab.uid === laboratoryUid),
     );
 
     const getLaboratoryByUid = computed(
-        () => (laboratoryUid: string) => context.value.availableLaboratories.find(lab => lab.uid === laboratoryUid)
+        () => (laboratoryUid: string) => context.value.availableLaboratories.find(lab => lab.uid === laboratoryUid),
     );
 
     const getContextHistory = computed(
-        () => context.value.contextHistory.slice().reverse() // Most recent first
+        () => context.value.contextHistory.slice().reverse(), // Most recent first
     );
 
     // Initialize context from auth store
@@ -256,7 +256,7 @@ export const useLaboratoryContextStore = defineStore('laboratoryContext', () => 
                     userUid: authStore.auth.user.uid,
                     laboratoryUid: laboratoryUid,
                 },
-                'setUserActiveLaboratory'
+                'setUserActiveLaboratory',
             );
 
             if (result.__typename === 'UserType') {
@@ -314,7 +314,7 @@ export const useLaboratoryContextStore = defineStore('laboratoryContext', () => 
         try {
             const result = await withClientQuery<RefreshUserLaboratoriesQuery, RefreshUserLaboratoriesQueryVariables>(
                 RefreshUserLaboratoriesDocument,
-                { userUid: authStore.auth.user.uid }
+                { userUid: authStore.auth.user.uid },
             );
 
             if (result.user) {
@@ -409,7 +409,7 @@ export const useLaboratoryContextStore = defineStore('laboratoryContext', () => 
                 resetContext();
             }
         },
-        { deep: true, immediate: true }
+        { deep: true, immediate: true },
     );
 
     return {

@@ -4,7 +4,9 @@
   import { ProfileType } from '@/types/gql';
   import  useApiUtil  from '@/composables/api_util';
   import { GetReferenceRunsDocument, GetReferenceRunsQuery, GetReferenceRunsQueryVariables } from '@/graphql/operations/analyses.queries';
+  import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 
+import PageHeading from "@/components/common/PageHeading.vue"
   const VueMultiselect = defineAsyncComponent(
     () => import('vue-multiselect')
   )
@@ -121,7 +123,7 @@
 <template>
   <div class="min-h-[500px]">
     <div class="flex justify-between" >
-      <fel-heading title="Analyses Service Control Charts" />
+      <PageHeading title="Analyses Service Control Charts" />
       <div class="flex justify-start items-center gap-x-2">
         <VueDatePicker 
           class="z-60 disabled:bg-muted" 
@@ -141,9 +143,14 @@
     </div>
 
     <hr class="my-4">
-    <template v-if="groupedChartData?.length == 0">
-      The selected analysis has no data for the selected period.
-    </template>
+    <Empty v-if="groupedChartData?.length == 0" class="py-6">
+      <EmptyContent>
+        <EmptyHeader>
+          <EmptyTitle>No data for this period</EmptyTitle>
+          <EmptyDescription>The selected analysis has no data for the selected period.</EmptyDescription>
+        </EmptyHeader>
+      </EmptyContent>
+    </Empty>
     <template v-else>
       <div class="mb-4" v-for="grouping in groupedChartData" :key="grouping.name">
         <ChartLJ :title="grouping.name" :series="grouping.data" />

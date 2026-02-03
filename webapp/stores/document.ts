@@ -43,7 +43,7 @@ export const useDocumentStore = defineStore('documents', {
                         sortBy: ['-created_at'],
                         ...params,
                     },
-                    'documentAll'
+                    'documentAll',
                 );
 
                 if (result && typeof result === 'object' && 'items' in result) {
@@ -128,7 +128,7 @@ export const useDocumentStore = defineStore('documents', {
                 const result = await withClientQuery<GetDocumentFolderAllQuery, GetDocumentFolderAllQueryVariables>(
                     GetDocumentFolderAllDocument,
                     {},
-                    'documentFolderAll'
+                    'documentFolderAll',
                 );
 
                 if (result && typeof result === 'object' && 'items' in result) {

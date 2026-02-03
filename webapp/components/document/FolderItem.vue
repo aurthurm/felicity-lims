@@ -110,6 +110,7 @@ import {
 } from 'lucide-vue-next'
 import { useDocumentStore } from '@/stores/document'
 import { DocumentFolderType } from '@/types/gql';
+import { useConfirmDialog } from "@/composables/confirm_dialog";
 
 // Define props
 const props = defineProps({
@@ -131,6 +132,7 @@ const emit = defineEmits<{
 // Setup state
 const store = useDocumentStore()
 const isMenuOpen = ref(false)
+const { confirm } = useConfirmDialog();
 
 // Computed properties
 const childFolders = computed(() => {
@@ -161,9 +163,16 @@ function handleDeleteFolder() {
   
   if (hasChildFolders || hasDocuments) {
     // Show confirmation dialog
-    if (window.confirm('Delete this folder and all its contents?')) {
-      store.deleteFolder(props.folder.uid)
-    }
+    confirm({
+      title: "Delete Folder?",
+      description: "Delete this folder and all its contents?",
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      variant: "destructive",
+    }).then((confirmed) => {
+      if (!confirmed) return;
+      store.deleteFolder(props.folder.uid);
+    });
   } else {
     store.deleteFolder(props.folder.uid)
   }

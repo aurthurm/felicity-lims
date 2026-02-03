@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { defineAsyncComponent } from 'vue';
-  const FelTabs = defineAsyncComponent(
-    () => import("@/components/ui/tabs/FelTabs.vue")
+  const TabsNav = defineAsyncComponent(
+    () => import("@/components/ui/tabs/TabsNav.vue")
   )
 
   const tabs = [
@@ -30,6 +30,6 @@
 
 <template>
   <div class="space-y-6">
-    <FelTabs :tabs="tabs" initial-tab="laboratory" />
+    <TabsNav :tabs="tabs" initial-tab="laboratory" />
   </div>
 </template>

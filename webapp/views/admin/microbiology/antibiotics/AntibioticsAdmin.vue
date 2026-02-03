@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed, defineAsyncComponent} from 'vue';
-
-const FelTabs = defineAsyncComponent(() => import("@/components/ui/tabs/FelTabs.vue"));
+import PageHeading from "@/components/common/PageHeading.vue"
+const TabsNav = defineAsyncComponent(() => import("@/components/ui/tabs/TabsNav.vue"));
 
 const tabs = computed(() => [
   {
@@ -21,7 +21,7 @@ const tabs = computed(() => [
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Antibiotics Management"></fel-heading>
-    <fel-tabs :tabs="tabs" initial-tab="abx-lab-antibiotics"/>
+    <PageHeading title="Antibiotics Management"></PageHeading>
+    <TabsNav :tabs="tabs" initial-tab="abx-lab-antibiotics"/>
   </div>
 </template>

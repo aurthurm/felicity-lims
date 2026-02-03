@@ -10,9 +10,19 @@ import {
 import { useNoticeStore } from "@/stores/notice";
 import useApiUtil  from "@/composables/api_util";
 
-import { useField, useForm } from "vee-validate";
+import { useForm } from "vee-validate";
 import { object, string, array, number, date } from "yup";
 import { formatDate } from "@/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
 	ClassicEditor,
 	AccessibilityHelp,
@@ -156,7 +166,7 @@ const noticeSchema = object({
   departments: array(),
 });
 
-const { handleSubmit, errors } = useForm({
+const { handleSubmit } = useForm({
   validationSchema: noticeSchema,
   initialValues: {
     uid: notice?.value?.uid,
@@ -167,10 +177,6 @@ const { handleSubmit, errors } = useForm({
     departments: notice?.value?.departments,
   },
 });
-
-const { value: title } = useField<string>("title");
-const { value: body } = useField<string>("body");
-const { value: expiry } = useField("expiry");
 
 const submitNoticeForm = handleSubmit((values) => {
   if (!values.uid) addNotice(values as NoticeType);
@@ -217,56 +223,64 @@ function updateNotice(payload: NoticeType) {
 </script>
 
 <template>
-  <form action="post" class="space-y-4 p-4" @submit.prevent="submitNoticeForm">
+  <Form class="space-y-4 p-4" @submit="submitNoticeForm">
     <div class="space-y-4">
-      <div class="space-y-2">
-        <label class="block text-sm font-medium text-foreground">Title</label>
-        <input
-          class="w-full px-3 py-2 text-foreground bg-background border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
-          v-model="title"
-          placeholder="Notice title..."
-        />
-        <div v-if="errors.title" class="text-sm text-destructive">{{ errors.title }}</div>
-      </div>
+      <FormField name="title" v-slot="{ componentField }">
+        <FormItem>
+          <FormLabel>Title</FormLabel>
+          <FormControl>
+            <Input v-bind="componentField" placeholder="Notice title..." />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
       
-      <div class="space-y-2">
-        <label class="block text-sm font-medium text-foreground">Body</label>
-        <div class="main-container min-w-full prose prose-slate">
-          <div class="editor-container editor-container_balloon-editor" ref="editorContainerElement">
-            <div class="editor-container__editor">
-              <div ref="editorElement">
-                <ckeditor 
-                v-if="isLayoutReady" 
-                v-model="body" 
-                :editor="editor" 
-                :config="config"
-                tag-name="textarea"/>
+      <FormField name="body" v-slot="{ value, handleChange }">
+        <FormItem>
+          <FormLabel>Body</FormLabel>
+          <FormControl>
+            <div class="main-container min-w-full prose prose-slate">
+              <div class="editor-container editor-container_balloon-editor" ref="editorContainerElement">
+                <div class="editor-container__editor">
+                  <div ref="editorElement">
+                    <ckeditor 
+                      v-if="isLayoutReady" 
+                      :model-value="value"
+                      @update:model-value="handleChange"
+                      :editor="editor" 
+                      :config="config"
+                      tag-name="textarea"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div v-if="errors.body" class="text-sm text-destructive">{{ errors.body }}</div>
-      </div>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
       
-      <div class="space-y-2">
-        <label class="block text-sm font-medium text-foreground">Expiration</label>
-        <VueDatePicker 
-          class="w-full" 
-          v-model="expiry"
-          :min-date="minDateTime" 
-          placeholder="Select Expiry Date"
-        ></VueDatePicker>
-        <div v-if="errors.expiry" class="text-sm text-destructive">{{ errors.expiry }}</div>
-      </div>
+      <FormField name="expiry" v-slot="{ value, handleChange }">
+        <FormItem>
+          <FormLabel>Expiration</FormLabel>
+          <FormControl>
+            <VueDatePicker 
+              class="w-full" 
+              :model-value="value"
+              @update:model-value="handleChange"
+              :min-date="minDateTime" 
+              placeholder="Select Expiry Date"
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
     </div>
     
     <div class="border-t border-border my-4"></div>
     
-    <button
-      type="submit"
-      class="w-full px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200"
-    >
+    <Button type="submit" class="w-full">
       Save Notice
-    </button>
-  </form>
+    </Button>
+  </Form>
 </template>

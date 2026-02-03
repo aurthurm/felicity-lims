@@ -1,11 +1,13 @@
 <template>
-    <fel-heading title="Billing" />
-    <fel-tabs :tabs="tabs" />
+    <PageHeading title="Billing" />
+    <TabsNav :tabs="tabs" />
 </template>
 
 <script setup lang="ts">
+import TabsNav from "@/components/ui/tabs/TabsNav.vue";
 import { defineAsyncComponent } from 'vue';
-
+import PageHeading from "@/components/common/PageHeading.vue"
+defineOptions({ name: 'BillingView' })
 const BillingOverview = defineAsyncComponent(() => import('./BillingOverview.vue'));
 const BillingListing = defineAsyncComponent(() => import('./BillingListing.vue'));
 

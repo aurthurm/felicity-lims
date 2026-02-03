@@ -29,15 +29,15 @@ const ContainerGrid = defineComponent({
         };
 
         return (
-            <div class="overflow-auto p-4 bg-background rounded-lg shadow-sm">
+            <div class="bg-background overflow-auto rounded-lg p-4 shadow-sm">
                 {this.container?.rowWise ? (
                     <>
                         {[...Array(this.container?.rows ?? 0).keys()].map(row => {
                             return (
                                 <div
                                     class={[
-                                        true ? 'grid grid-cols-' + this.container?.cols ?? 0 : '',
-                                        'border border-border rounded-lg mb-2',
+                                        true ? ('grid-cols- grid' + this.container?.cols ?? 0) : '',
+                                        'border-border mb-2 rounded-lg border',
                                     ]}
                                     key={row + '_x'}
                                 >
@@ -46,7 +46,7 @@ const ContainerGrid = defineComponent({
                                             <>
                                                 <div
                                                     class={[
-                                                        'col-span-1 w-full border-r border-border last:border-r-0 p-2 text-foreground transition-colors duration-200',
+                                                        'border-border text-foreground col-span-1 w-full border-r p-2 transition-colors duration-200 last:border-r-0',
                                                         'hover:bg-muted/50 cursor-pointer',
                                                         {
                                                             'bg-muted/30': slotSample(row * (this.container?.cols ?? 0) + col + 1) === null,
@@ -58,10 +58,10 @@ const ContainerGrid = defineComponent({
                                                     ]}
                                                     key={col + '_y'}
                                                 >
-                                                    <div class="text-sm font-medium text-center">
+                                                    <div class="text-center text-sm font-medium">
                                                         {row * (this.container?.cols ?? 0) + col + 1}
                                                     </div>
-                                                    <div class="text-xs text-center text-muted-foreground mt-1">
+                                                    <div class="text-muted-foreground mt-1 text-center text-xs">
                                                         {slotSample(row * (this.container?.cols ?? 0) + col + 1)?.sampleId}
                                                     </div>
                                                 </div>
@@ -74,7 +74,7 @@ const ContainerGrid = defineComponent({
                     </>
                 ) : (
                     <>
-                        <div class={[true ? 'grid grid-cols-' + this.container?.cols ?? 0 : '', 'gap-4']}>
+                        <div class={[true ? ('grid-cols- grid' + this.container?.cols ?? 0) : '', 'gap-4']}>
                             {[...Array(this.container?.cols ?? 0).keys()].map(col => {
                                 return (
                                     <div class="col-span-1 space-y-2" key={col + '_y'}>
@@ -83,7 +83,7 @@ const ContainerGrid = defineComponent({
                                                 <div key={row + '_x'}>
                                                     <div
                                                         class={[
-                                                            'p-2 rounded-lg text-center transition-colors duration-200',
+                                                            'rounded-lg p-2 text-center transition-colors duration-200',
                                                             'hover:bg-muted/50 cursor-pointer',
                                                             slotSample(col * (this.container?.rows ?? 0) + row + 1) === null
                                                                 ? 'bg-muted/30'
@@ -93,7 +93,7 @@ const ContainerGrid = defineComponent({
                                                         <span class="text-sm font-medium">
                                                             {col * (this.container?.rows ?? 0) + row + 1}
                                                         </span>
-                                                        <div class="text-xs text-muted-foreground mt-1">
+                                                        <div class="text-muted-foreground mt-1 text-xs">
                                                             {slotSample(col * (this.container?.rows ?? 0) + row + 1)?.sampleId}
                                                         </div>
                                                     </div>

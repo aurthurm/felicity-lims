@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref} from 'vue';
-import { useForm, useField } from 'vee-validate';
+import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 
 import useApiUtil from '@/composables/api_util';
@@ -14,7 +14,19 @@ import {
   EditAbxBreakpointTypeMutationVariables
 } from "@/graphql/operations/microbiology.mutations";
 import { GetAbxBreakpointTypeAllQuery, GetAbxBreakpointTypeAllQueryVariables, GetAbxBreakpointTypeAllDocument } from '@/graphql/operations/microbiology.queries';
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
+import PageHeading from "@/components/common/PageHeading.vue"
 const {withClientMutation, withClientQuery} = useApiUtil()
 
 let showModal = ref<boolean>(false);
@@ -26,16 +38,13 @@ const breakpointTypeSchema = yup.object({
   name: yup.string().trim().required('Name is required'),
 });
 
-const { handleSubmit, resetForm, setValues, errors } = useForm({
+const { handleSubmit, resetForm, setValues } = useForm({
   validationSchema: breakpointTypeSchema,
   initialValues: {
     name: '',
     description: '',
   },
 });
-const { value: name } = useField<string>('name');
-const { value: description } = useField<string>('description');
-
 const abxBreakpointTypes = ref<AbxBreakpointTypeType[]>([]);
 
 onMounted(() => {
@@ -104,72 +113,80 @@ const saveForm = handleSubmit((formValues) => {
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Antibiotic Breakpoint Type"></fel-heading>
+    <PageHeading title="Antibiotic Breakpoint Type"></PageHeading>
 
     <div class="overflow-x-auto">
       <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card shadow-dashboard rounded-lg p-6">
-        <table class="min-w-full divide-y divide-border fel-table">
-          <thead>
-            <tr>
-              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</th>
-              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Description</th>
-              <th class="px-3 py-3.5"></th>
-            </tr>
-          </thead>
-          <tbody class="bg-background divide-y divide-border">
-            <tr v-for="bpt in abxBreakpointTypes" :key="bpt?.uid">
-              <td class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">{{ bpt?.name }}</td>
-              <td class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">{{ bpt?.description }}</td>
-              <td class="px-3 py-3.5 whitespace-nowrap text-right text-sm">
+        <Table class="min-w-full divide-y divide-border">
+          <TableHeader>
+            <TableRow>
+              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</TableHead>
+              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Description</TableHead>
+              <TableHead class="px-3 py-3.5"></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody class="bg-background divide-y divide-border">
+            <TableRow v-for="bpt in abxBreakpointTypes" :key="bpt?.uid">
+              <TableCell class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">{{ bpt?.name }}</TableCell>
+              <TableCell class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">{{ bpt?.description }}</TableCell>
+              <TableCell class="px-3 py-3.5 whitespace-nowrap text-right text-sm">
                 <!-- <button @click="FormManager(false, bpt)"
                         class="px-3 py-1.5 bg-primary text-primary-foreground rounded-sm transition duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
                   Edit
                 </button> -->
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </TableCell>
+            </TableRow>
+            <TableEmpty v-if="!abxBreakpointTypes || abxBreakpointTypes.length === 0" :colspan="3">
+              <Empty class="border-0 bg-transparent p-0">
+                <EmptyContent>
+                  <EmptyHeader>
+                    <EmptyTitle>No breakpoint types found</EmptyTitle>
+                    <EmptyDescription>Add a breakpoint type to get started.</EmptyDescription>
+                  </EmptyHeader>
+                </EmptyContent>
+              </Empty>
+            </TableEmpty>
+          </TableBody>
+        </Table>
       </div>
     </div>
   </div>
 
   <!-- Location Edit Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false">
+  <Modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form @submit.prevent="saveForm" class="space-y-6 p-4">
+      <Form @submit="saveForm" class="space-y-6 p-4">
         <div class="grid grid-cols-2 gap-4">
-          <label class="block">
-            <span class="text-sm font-medium text-foreground">Name</span>
-            <input
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="name"
-                placeholder="Name ..."
-            />
-            <p v-if="errors.name" class="text-sm text-destructive">{{ errors.name }}</p>
-          </label>
-          <label class="block">
-            <span class="text-sm font-medium text-foreground">Description</span>
-            <input
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="description"
-                placeholder="Begin typing ..."
-            />
-          </label>
+          <FormField name="name" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Name ..." />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+          <FormField name="description" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Begin typing ..." />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </div>
         <hr class="border-border"/>
-        <button
-            type="submit"
-            class="w-full bg-primary text-primary-foreground rounded-sm px-4 py-2 transition-colors duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-        >
+        <Button type="submit" class="w-full">
           Save Abx BreakpointType
-        </button>
-      </form>
+        </Button>
+      </Form>
     </template>
-  </fel-modal>
+  </Modal>
 </template>
 
 <style scoped>

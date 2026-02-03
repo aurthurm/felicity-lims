@@ -163,7 +163,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                 lab =>
                     lab.name.toLowerCase().includes(query) ||
                     lab.code?.toLowerCase().includes(query) ||
-                    lab.email?.toLowerCase().includes(query)
+                    lab.email?.toLowerCase().includes(query),
             );
         }
 
@@ -235,7 +235,6 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
         if (store.value.errorHistory.length > 20) {
             store.value.errorHistory = store.value.errorHistory.slice(0, 20);
         }
-
     };
 
     const clearErrors = () => {
@@ -262,7 +261,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                         updated_at
                     }
                 }`,
-                {}
+                {},
             );
 
             if (response?.laboratories) {
@@ -302,7 +301,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                         }
                     }
                 }`,
-                { laboratoryInput: laboratoryData }
+                { laboratoryInput: laboratoryData },
             );
 
             if (response?.createLaboratory) {
@@ -353,7 +352,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                 {
                     laboratoryUid,
                     laboratoryInput: updateData,
-                }
+                },
             );
 
             if (response?.updateLaboratory) {
@@ -403,7 +402,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                         }
                     }
                 }`,
-                { laboratoryUid }
+                { laboratoryUid },
             );
 
             if (response?.deleteLaboratory) {
@@ -615,7 +614,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                         updated_at
                     }
                 }`,
-                { laboratoryUid }
+                { laboratoryUid },
             );
 
             if (response?.laboratorySettings) {
@@ -642,7 +641,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                 {
                     laboratoryUid,
                     settingsInput: settingsData,
-                }
+                },
             );
 
             if (response?.updateLaboratorySettings) {
@@ -681,7 +680,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                         is_active
                     }
                 }`,
-                { laboratoryUid }
+                { laboratoryUid },
             );
 
             if (response?.laboratoryUsers) {
@@ -710,7 +709,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                         }
                     }
                 }`,
-                { laboratoryUid, userUid, role }
+                { laboratoryUid, userUid, role },
             );
 
             if (response?.assignUserToLaboratory) {
@@ -747,7 +746,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                         }
                     }
                 }`,
-                { laboratoryUid, userUid }
+                { laboratoryUid, userUid },
             );
 
             if (response?.removeUserFromLaboratory) {
@@ -910,7 +909,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
             } else {
                 resetStore();
             }
-        }
+        },
     );
 
     // Watch for active laboratory changes in auth store
@@ -923,7 +922,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
                 // Load laboratory-specific data
                 Promise.all([fetchLaboratorySettings(newActiveLab.uid), fetchLaboratoryUsers(newActiveLab.uid)]);
             }
-        }
+        },
     );
 
     // Auto-save to storage on state changes
@@ -932,7 +931,7 @@ export const useLaboratoryStore = defineStore('laboratory', () => {
         () => {
             saveToStorage();
         },
-        { deep: true }
+        { deep: true },
     );
 
     // Initialize on store creation

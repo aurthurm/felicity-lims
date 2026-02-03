@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, computed, PropType, watch, toRefs, defineAsyncComponent } from 'vue';
-  import { useField, useForm } from "vee-validate";
+  import { useForm } from "vee-validate";
   import { object, string } from "yup";
   import { AddMethodDocument, AddMethodMutation, AddMethodMutationVariables,
     EditMethodDocument, EditMethodMutation, EditMethodMutationVariables } from '@/graphql/operations/instrument.mutations';
@@ -8,6 +8,17 @@
   import { useAnalysisStore } from '@/stores/analysis';
   import { useSetupStore } from '@/stores/setup';
   import  useApiUtil  from '@/composables/api_util';
+  import { Button } from "@/components/ui/button";
+  import { Input } from "@/components/ui/input";
+  import { Textarea } from "@/components/ui/textarea";
+  import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+  } from "@/components/ui/form";
   const VueMultiselect = defineAsyncComponent(
     () => import('vue-multiselect')
   )
@@ -31,7 +42,7 @@
     description: string().nullable(),
   });
 
-  const { handleSubmit, errors, setValues } = useForm({
+  const { handleSubmit, setValues } = useForm({
     validationSchema: formSchema,
     initialValues: {
       name: method?.value?.name ?? "",
@@ -39,10 +50,6 @@
       description: method?.value?.description ?? "",
     },
   });
-
-  const { value: name } = useField<string>("name");
-  const { value: keyword } = useField<string>("keyword");
-  const { value: description } = useField<string | null>("description");
 
   watch(() => props.analysisUid, (anal, prev) => {})
   watch(
@@ -133,85 +140,75 @@
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
 
 <template>
-  <form @submit.prevent="saveForm" class="space-y-4">
+  <Form @submit="saveForm" class="space-y-4">
     <div class="space-y-4">
       <div class="grid grid-cols-3 gap-4">
-        <div class="col-span-2 space-y-2">
-          <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            Method Name
-          </label>
-          <input
-            v-model="name"
-            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            placeholder="Enter method name..."
-          />
-          <div class="text-sm text-destructive">{{ errors.name }}</div>
-        </div>
-        <div class="space-y-2">
-          <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            Keyword
-          </label>
-          <input
-            v-model="keyword"
-            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            placeholder="Enter keyword..."
-          />
-          <div class="text-sm text-destructive">{{ errors.keyword }}</div>
-        </div>
+        <FormField name="name" v-slot="{ componentField }">
+          <FormItem class="col-span-2">
+            <FormLabel>Method Name</FormLabel>
+            <FormControl>
+              <Input v-bind="componentField" placeholder="Enter method name..." />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+        <FormField name="keyword" v-slot="{ componentField }">
+          <FormItem>
+            <FormLabel>Keyword</FormLabel>
+            <FormControl>
+              <Input v-bind="componentField" placeholder="Enter keyword..." />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
       </div>
 
       <div class="space-y-4">
-        <div class="space-y-2">
-          <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            Analyses
-          </label>
-          <VueMultiselect
-            v-model="selectedAnalyses"
-            :options="analyses"
-            :multiple="true"
-            :searchable="true"
-            label="name"
-            track-by="uid"
-            :disabled="analysis?.uid != undefined"
-            class="multiselect-blue"
-          />
-        </div>
+        <FormItem>
+          <FormLabel>Analyses</FormLabel>
+          <FormControl>
+            <VueMultiselect
+              v-model="selectedAnalyses"
+              :options="analyses"
+              :multiple="true"
+              :searchable="true"
+              label="name"
+              track-by="uid"
+              :disabled="analysis?.uid != undefined"
+              class="multiselect-blue"
+            />
+          </FormControl>
+        </FormItem>
 
-        <div class="space-y-2">
-          <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            Instruments
-          </label>
-          <VueMultiselect
-            v-model="selectedIntsruments"
-            :options="instruments"
-            :multiple="true"
-            :searchable="true"
-            label="name"
-            track-by="uid"
-            class="multiselect-blue"
-          />
-        </div>
+        <FormItem>
+          <FormLabel>Instruments</FormLabel>
+          <FormControl>
+            <VueMultiselect
+              v-model="selectedIntsruments"
+              :options="instruments"
+              :multiple="true"
+              :searchable="true"
+              label="name"
+              track-by="uid"
+              class="multiselect-blue"
+            />
+          </FormControl>
+        </FormItem>
 
-        <div class="space-y-2">
-          <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            Description
-          </label>
-          <textarea
-            v-model="description"
-            class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            placeholder="Enter description..."
-          />
-        </div>
+        <FormField name="description" v-slot="{ componentField }">
+          <FormItem>
+            <FormLabel>Description</FormLabel>
+            <FormControl>
+              <Textarea v-bind="componentField" placeholder="Enter description..." />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
       </div>
     </div>
 
     <div class="flex justify-end">
-      <button
-        type="submit"
-        class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
-      >
-        Save Changes
-      </button>
+      <Button type="submit">Save Changes</Button>
     </div>
-  </form>
+  </Form>
 </template>

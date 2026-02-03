@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue';
-  import { useField, useForm } from 'vee-validate';
+  import { useForm } from 'vee-validate';
   import * as yup from 'yup';
   import { RejectionReasonType } from '@/types/gql';
   import { AddRejectionReasonDocument, AddRejectionReasonMutation, AddRejectionReasonMutationVariables,
@@ -8,7 +8,18 @@
 
   import { useAnalysisStore } from '@/stores/analysis';
   import  useApiUtil  from '@/composables/api_util';
+  import { Button } from "@/components/ui/button";
+  import { Input } from "@/components/ui/input";
+  import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+  } from "@/components/ui/form";
 
+import PageHeading from "@/components/common/PageHeading.vue"
   const analysisStore = useAnalysisStore()
   const { withClientMutation } = useApiUtil()
 
@@ -28,8 +39,6 @@
     },
   });
 
-  const { value: reason, errorMessage: reasonError } = useField<string>('reason');
-  
   analysisStore.fetchRejectionReasons()
   const rejectionReasons = computed(() => analysisStore.getRejectionReasons)
 
@@ -67,69 +76,61 @@
 
 <template>
     <div>
-      <fel-heading title="Rejection Reasons">
-        <fel-button @click="FormManager(true)">Add Rejection Reason</fel-button>
-      </fel-heading>
+      <PageHeading title="Rejection Reasons">
+        <Button @click="FormManager(true)">Add Rejection Reason</Button>
+      </PageHeading>
 
         <div class="rounded-md bg-card p-6 shadow-sm">
           <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card text-card-foreground rounded-lg">
-            <table class="min-w-full fel-table">
-                <thead>
-                <tr>
-                    <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Reason</th>
-                    <th class="px-4 py-2 border-b border-border"></th>
-                </tr>
-                </thead>
-                <tbody class="bg-card">
-                <tr v-for="rejection in rejectionReasons" :key="rejection?.uid" class="hover:bg-accent/50">
-                    <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+            <Table class="min-w-full">
+                <TableHeader>
+                <TableRow>
+                    <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Reason</TableHead>
+                    <TableHead class="px-4 py-2 border-b border-border"></TableHead>
+                </TableRow>
+                </TableHeader>
+                <TableBody class="bg-card">
+                <TableRow v-for="rejection in rejectionReasons" :key="rejection?.uid" class="hover:bg-accent/50">
+                    <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
                       <div class="text-sm text-foreground">{{ rejection?.reason }}</div>
-                    </td>
-                    <td class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
-                        <button 
-                          @click="FormManager(false, rejection)" 
-                          class="px-2 py-1 mr-2 border border-border bg-background text-foreground transition-colors duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring hover:bg-accent hover:text-accent-foreground"
-                        >
+                    </TableCell>
+                    <TableCell class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
+                        <Button variant="outline" size="sm" @click="FormManager(false, rejection)">
                           Edit
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                        </Button>
+                    </TableCell>
+                </TableRow>
+                </TableBody>
+            </Table>
           </div>
         </div>
     </div>
 
     <!-- Rejection Reason Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false">
+  <Modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
       <h3 class="text-lg font-bold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form @submit.prevent="saveForm" class="p-6 space-y-6">
+      <Form @submit="saveForm" class="p-6 space-y-6">
         <div class="space-y-4">
-          <label class="space-y-2">
-            <span class="text-sm font-medium text-muted-foreground">Rejection Reason</span>
-            <input
-              class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-              v-model="reason"
-              placeholder="Reason ..."
-            />
-            <p v-if="reasonError" class="text-sm text-destructive">{{ reasonError }}</p>
-          </label>
+          <FormField name="reason" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Rejection Reason</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Reason ..." />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </div>
 
         <div class="pt-4">
-          <button
-            type="submit"
-            class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
-          >
-            Save Form
-          </button>
+          <Button type="submit" class="w-full">Save Form</Button>
         </div>
-      </form>
+      </Form>
     </template>
-  </fel-modal>
+  </Modal>
 
 </template>

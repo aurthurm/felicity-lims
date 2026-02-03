@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent, reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useAuthStore } from "@/stores/auth"
+import Logo from "@/components/logo/Logo.vue"
+import { Button } from "@/components/ui/button"
 import { storeToRefs } from "pinia"
+import { useConfirmDialog } from "@/composables/confirm_dialog"
+import { Spinner } from "@/components/ui/spinner"
 
 // Define emits
 const emit = defineEmits<{
@@ -11,6 +15,7 @@ const emit = defineEmits<{
 // Initialize auth store
 const authStore = useAuthStore()
 const { auth } = storeToRefs(authStore)
+const { alert } = useConfirmDialog()
 
 // Form state
 const email = ref("")
@@ -40,7 +45,12 @@ const submitForm = () => {
 
 const changePassword = () => {
   if (!formIsValid.value) {
-    alert("Please correct form errors")
+    alert({
+      title: "Form Errors",
+      description: "Please correct form errors.",
+      confirmText: "OK",
+      variant: "default",
+    })
     return
   }
   authStore.resetPassword(resetForm.password, resetForm.passwordc)
@@ -48,26 +58,17 @@ const changePassword = () => {
 </script>
 
 <template>
-  <div class="flex min-h-screen items-center justify-center bg-linear-to-br from-primary to-accent p-6">
+  <div class="flex min-h-screen items-center justify-center bg-white p-6">
     <div class="w-full max-w-md">
-      <div class="space-y-6 rounded-xl bg-background/95 p-8 shadow-2xl backdrop-blur-sm">
+      <div class="relative -top-20 flex items-center justify-center">
+        <Logo :styling="'h-36 w-36'" variant="dark" />
+      </div>
+
+      <!-- Card Container -->
+      <div class="space-y-6 rounded-xl border border-border bg-background/95 p-8 shadow-2xl backdrop-blur-sm">
         <!-- Logo Section -->
         <div class="flex flex-col items-center space-y-2">
-          <div class="relative flex h-16 w-16 items-center justify-center">
-            <div class="absolute flex h-12 w-12 items-center justify-center rounded-xl bg-accent transform rotate-45">
-              <svg class="h-8 w-8 -rotate-45 transform text-primary-foreground" viewBox="0 0 512 512" fill="none">
-                <path
-                  d="M364.61 390.213C304.625 450.196 207.37 450.196 147.386 390.213C117.394 360.22 102.398 320.911 102.398 281.6C102.398 242.291 117.394 202.981 147.386 172.989C147.386 230.4 153.6 281.6 230.4 307.2C230.4 256 256 102.4 294.4 76.7999C320 128 334.618 142.997 364.608 172.989C394.601 202.981 409.597 242.291 409.597 281.6C409.597 320.911 394.601 360.22 364.61 390.213Z"
-                  fill="currentColor"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-          <h2 class="text-2xl font-bold text-foreground">Felicity LIMS</h2>
+          <h2 class="mt-4 text-2xl font-bold text-foreground">Felicity LIMS</h2>
           <p class="text-sm text-muted-foreground">Password Recovery</p>
         </div>
 
@@ -75,14 +76,15 @@ const changePassword = () => {
         <form v-if="!auth.resetData?.canReset" class="space-y-5" @submit.prevent="submitForm">
           <div v-if="!auth.receivedToken">
             <!-- Back to Login Button -->
-            <div class="mb-6">
-              <button
+            <div class="my-3">
+              <Button
                 type="button"
-                class="inline-flex items-center text-sm text-accent transition-colors duration-200 hover:text-indigo-800"
+                variant="link"
+                class="h-auto p-0 min-h-0"
                 @click="emit('forgot')"
               >
                 <span class="mr-1">←</span> Back to Login
-              </button>
+              </Button>
             </div>
 
             <!-- Email Input -->
@@ -103,22 +105,23 @@ const changePassword = () => {
             </div>
 
             <!-- Received Token Link -->
-            <div class="flex justify-end">
-              <button
+            <div class="my-3 flex justify-end">
+              <Button
                 type="button"
-                class="text-sm text-accent transition-colors duration-200 hover:text-indigo-800"
+                variant="link"
+                class="h-auto p-0 min-h-0"
                 @click="authStore.setReceivedResetToken(true)"
               >
                 Received a Token?
-              </button>
+              </Button>
             </div>
 
             <!-- Submit Button -->
             <button
               v-if="!auth.processing"
               :class="[
-                'w-full rounded-lg px-4 py-2 font-medium text-primary-foreground transition-colors duration-200',
-                email ? 'bg-accent hover:bg-accent' : 'cursor-not-allowed bg-muted'
+                'w-full rounded-lg px-4 py-2 font-medium transition-colors duration-200',
+                email ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'cursor-not-allowed bg-muted text-muted-foreground'
               ]"
               :disabled="!email"
               type="submit"
@@ -126,20 +129,24 @@ const changePassword = () => {
               Request Password Reset
             </button>
             <div v-else class="flex justify-center">
-              <fel-loader message="Requesting..." />
+              <span class="inline-flex items-center gap-2">
+                <Spinner class="size-4" />
+                <span class="text-sm">Requesting...</span>
+              </span>
             </div>
           </div>
 
           <!-- Token Input Section -->
           <div v-else class="space-y-5">
-            <div class="mb-6">
-              <button
+            <div class="my-3">
+              <Button
                 type="button"
-                class="inline-flex items-center text-sm text-accent transition-colors duration-200 hover:text-indigo-800"
+                variant="link"
+                class="h-auto p-0 min-h-0"
                 @click="authStore.setReceivedResetToken(false)"
               >
                 <span class="mr-1">←</span> Token not received
-              </button>
+              </Button>
             </div>
 
             <div class="space-y-1">
@@ -161,8 +168,8 @@ const changePassword = () => {
             <button
               v-if="!auth.processing"
               :class="[
-                'w-full rounded-lg px-4 py-2 font-medium text-primary-foreground transition-colors duration-200',
-                token ? 'bg-accent hover:bg-accent' : 'cursor-not-allowed bg-muted'
+                'w-full rounded-lg px-4 py-2 font-medium transition-colors duration-200',
+                token ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'cursor-not-allowed bg-muted text-muted-foreground'
               ]"
               :disabled="!token"
               type="submit"
@@ -170,7 +177,10 @@ const changePassword = () => {
               Submit Token
             </button>
             <div v-else class="flex justify-center">
-              <fel-loader message="Validating password reset token..." />
+              <span class="inline-flex items-center gap-2">
+                <Spinner class="size-4" />
+                <span class="text-sm">Validating password reset token...</span>
+              </span>
             </div>
           </div>
         </form>
@@ -221,8 +231,8 @@ const changePassword = () => {
           <button
             v-if="!auth.processing"
             :class="[
-              'w-full rounded-lg px-4 py-2 font-medium text-primary-foreground transition-colors duration-200',
-              formIsValid ? 'bg-accent hover:bg-accent' : 'cursor-not-allowed bg-muted'
+              'w-full rounded-lg px-4 py-2 font-medium transition-colors duration-200',
+              formIsValid ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'cursor-not-allowed bg-muted text-muted-foreground'
             ]"
             :disabled="!formIsValid"
             type="submit"
@@ -230,14 +240,17 @@ const changePassword = () => {
             Reset Password
           </button>
           <div v-else class="flex justify-center">
-            <fel-loader message="Resetting password..." />
+            <span class="inline-flex items-center gap-2">
+              <Spinner class="size-4" />
+              <span class="text-sm">Resetting password...</span>
+            </span>
           </div>
         </form>
       </div>
 
       <!-- Footer -->
       <div class="mt-6 text-center">
-        <p class="text-sm text-primary-foreground/80">
+        <p class="text-sm text-muted-foreground">
           Secure Password Recovery System
         </p>
       </div>

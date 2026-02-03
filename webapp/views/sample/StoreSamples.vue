@@ -3,13 +3,29 @@ import { computed, watch, onMounted, defineAsyncComponent } from "vue";
 import useSampleComposable from "@/composables/samples";
 import { useStorageStore } from "@/stores/storage";
 import useTreeStateComposable from "@/composables/tree-state";
-import { useField, useForm } from "vee-validate";
+import { useForm } from "vee-validate";
 import { object, array } from "yup";
 import { storgeSlotMapper } from "@/utils";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { ExtStorageContainerType } from "@/types/storage";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 const TreeItem = defineAsyncComponent(
-  () => import("@/components/storage/FelTreeItem.vue")
+  () => import("@/components/storage/TreeItem.vue")
 )
 
 interface ISampleData {
@@ -30,9 +46,9 @@ let samples = JSON.parse(window.history.state.samples);
 
 let assignedUids: string[] = [];
 
-const setAssigned = (_) => {
+const setAssigned = () => {
   assignedUids = [];
-  samplesData.value.forEach((s) => {
+  values.samples.forEach((s) => {
     if (s.sampleUid) {
       assignedUids.push(s.sampleUid?.toString());
     }
@@ -46,7 +62,7 @@ watch(
   (tree, prev) => {
     if (tree.tag === "storage-container") {
       storageSrore.fetchStorageContainer(tree.uid!);
-      samplesData.value = [];
+      setFieldValue("samples", []);
     }
   },
   { deep: true }
@@ -61,7 +77,7 @@ const prepareSlots = () => {
   // add existing to pool
   samples = [...samples, ...(storageContainer.value?.samples ?? [])];
   //
-  samplesData.value = [];
+  setFieldValue("samples", []);
   const slots = storgeSlotMapper(
     storageContainer.value?.cols ?? 1,
     storageContainer.value?.rows ?? 1,
@@ -69,6 +85,7 @@ const prepareSlots = () => {
     storageContainer.value?.rowWise! ?? false
   ).map((s) => ({ ...s, storageContainerUid: storageContainer.value?.uid }));
 
+  const nextSamples: ISampleData[] = [];
   slots.forEach((slot) => {
     const filtrate = samples.filter(
       (s) =>
@@ -80,18 +97,19 @@ const prepareSlots = () => {
       assignedUids.push(slot.sampleUid.toString());
     }
     //
-    samplesData.value.push({
+    nextSamples.push({
       sampleUid: undefined,
       ...slot,
     });
   });
+  setFieldValue("samples", nextSamples);
 };
 
 const formSchema = object({
   samples: array().required().min(1, "Select At least one sample"),
 });
 
-const { handleSubmit, errors } = useForm({
+const { handleSubmit, setFieldValue, values } = useForm({
   validationSchema: formSchema,
   initialValues: {
     priority: 0,
@@ -99,16 +117,26 @@ const { handleSubmit, errors } = useForm({
   } as any,
 });
 
-const { value: samplesData } = useField<ISampleData[]>("samples");
+const samplesData = computed(() => values.samples as ISampleData[]);
 
 const removeSample = (uid) => {
-  samplesData.value = samplesData.value.map((s) => {
+  const next = values.samples.map((s) => {
     if (s.sampleUid === uid) {
       s = { ...s, sampleUid: undefined };
     }
     return s;
   });
+  setFieldValue("samples", next);
   assignedUids = assignedUids.filter((a) => +a !== uid);
+};
+
+const updateSampleAt = (index: number, sampleUid: string) => {
+  const parsed = sampleUid ? Number(sampleUid) : undefined;
+  const next = values.samples.map((s, idx) => (
+    idx === index ? { ...s, sampleUid: parsed } : s
+  ));
+  setFieldValue("samples", next);
+  setAssigned();
 };
 
 const submitForm = handleSubmit(async (values) => {
@@ -167,16 +195,16 @@ const submitForm = handleSubmit(async (values) => {
         </div>
 
         <div class="flex justify-end">
-          <button 
+          <Button 
             v-if="activeTree.tag === tags.STORAGE_CONTAINER"
             @click="prepareSlots()"
-            class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
+            type="button"
           >
             Reset Slots
-          </button>
+          </Button>
         </div>
 
-        <form action="post" class="bg-background rounded-lg shadow-sm p-6 space-y-6" @submit.prevent="submitForm">
+        <Form class="bg-background rounded-lg shadow-sm p-6 space-y-6" @submit="submitForm">
           <div class="grid grid-cols-12 gap-4 text-sm font-medium text-foreground">
             <div class="col-span-1">Position</div>
             <div class="col-span-1">Label</div>
@@ -189,42 +217,49 @@ const submitForm = handleSubmit(async (values) => {
               <div class="col-span-1 text-muted-foreground">{{ storageMeta.storageSlot }}</div>
               <div class="col-span-10">
                 <div class="flex items-center gap-4">
-                  <select 
-                    name="sampleUid" 
-                    id="sampleUid" 
-                    v-model="storageMeta.sampleUid" 
-                    class="w-64 px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
-                    @change="setAssigned"
-                    aria-label="Select sample"
-                  >
-                    <option v-for="sample in samples" :key="sample.uid" :value="sample.uid"
-                      v-show="!assignedUids.includes(sample.uid.toString())">
-                      {{ sample?.sampleId }} &lbbrk;{{ sample?.analysisRequest?.clientRequestId }}&rbbrk;
-                    </option>
-                  </select>
-                  <button 
+                  <FormField :name="`samples.${index}.sampleUid`" v-slot="{ value }">
+                    <FormItem class="w-64">
+                      <FormControl>
+                        <Select :model-value="value ? String(value) : ''" @update:model-value="(val) => updateSampleAt(index, val)">
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select sample" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem v-for="sample in samples" :key="sample.uid" :value="String(sample.uid)"
+                              v-show="!assignedUids.includes(sample.uid.toString())">
+                              {{ sample?.sampleId }} &lbbrk;{{ sample?.analysisRequest?.clientRequestId }}&rbbrk;
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  </FormField>
+                  <Button 
                     v-if="storageMeta.sampleUid" 
                     @click="removeSample(storageMeta.sampleUid)"
-                    class="text-destructive hover:text-destructive/80 transition-colors"
+                    variant="ghost"
+                    size="icon"
+                    type="button"
                     aria-label="Remove sample"
                   >
                     <FontAwesomeIcon icon="ban" />
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
           </div>
 
           <div class="flex justify-end pt-4">
-            <button 
+            <Button 
               v-if="activeTree.tag === tags.STORAGE_CONTAINER && samples?.length > 0" 
               type="submit"
-              class="px-6 py-2 bg-destructive text-destructive-foreground rounded-md hover:bg-destructive/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-destructive/50"
+              variant="destructive"
             >
               Store Samples
-            </button>
+            </Button>
           </div>
-        </form>
+        </Form>
       </div>
       
       <div class="col-span-3"></div>

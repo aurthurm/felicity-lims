@@ -33,11 +33,13 @@ import { GrindUpdateErrandInput } from '@/graphql/schema'
 import { UserType } from '@/types/gql'
 import { UserAllDocument, UserAllQuery, UserAllQueryVariables } from '@/graphql/operations/_queries'
 import { ArrowLeftIcon } from '@heroicons/vue/24/outline';
+import { useConfirmDialog } from "@/composables/confirm_dialog";
 
 // const ErrandActivity = defineAsyncComponent(() => import("./ErrandActivity.vue"))
 const ErrandDiscussion = defineAsyncComponent(() => import("@/components/grind/CommentSystem.vue"))
 const ErrandFile = defineAsyncComponent(() => import("./ErrandFile.vue"))
 const ErrandMilestone = defineAsyncComponent(() => import("./ErrandMilestone.vue"))
+const { alert } = useConfirmDialog()
 
 // CKEditor Management
 const isLayoutReady = ref(false);
@@ -225,7 +227,12 @@ const rangeFormat = (date: Date[]) => {
 }
 const handleDate = (dates: Date[]) => {
     if(dates.length !== 2) {
-        alert('Invalid date range');
+        alert({
+          title: "Invalid Date Range",
+          description: "Please select a valid start and end date.",
+          confirmText: "OK",
+          variant: "default",
+        });
         return;
     }
    updateErrand({ 

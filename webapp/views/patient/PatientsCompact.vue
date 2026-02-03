@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import TabsNav from "@/components/ui/tabs/TabsNav.vue";
 import { ref, reactive, computed, defineAsyncComponent, onMounted } from "vue";
 import { usePatientStore } from "@/stores/patient";
 import { useLocationStore } from "@/stores/location";
 import { storeToRefs } from "pinia";
 import { PatientType } from "@/types/gql";
 import * as shield from "@/guards";
-
+import { Spinner } from "@/components/ui/spinner";
+import PageHeading from "@/components/common/PageHeading.vue"
 // Constants
 const GENDERS = {
   MALE: 0,
@@ -57,7 +59,7 @@ const tabs = computed(() => [
     id: "samples",
     label: "Samples",
     component: defineAsyncComponent(() => 
-      import("@/components/sample/FelAnalyisRequestListing.vue")
+      import("@/components/sample/AnalysisRequestListing.vue")
     ),
     props: {
       target: "patient-samples",
@@ -78,7 +80,7 @@ const tabs = computed(() => [
     id: "logs",
     label: "Logs",
     component: defineAsyncComponent(() => 
-      import("@/components/audit/FelAuditLog.vue")
+      import("@/components/audit/AuditLog.vue")
     ),
     props: {
       targetType: "patient",
@@ -132,7 +134,7 @@ onMounted(() => {
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Patients Quick View" />
+    <PageHeading title="Patients Quick View" />
     <!-- Header Actions -->
     <div class="flex justify-between items-center">
       <div class="flex items-center space-x-4">
@@ -172,10 +174,10 @@ onMounted(() => {
         :delay="400"
         class="col-span-3  overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
       >
-        <fel-loader 
-          v-if="fetchingPatients"
-          message="Fetching patients..." 
-        />
+        <span v-if="fetchingPatients" class="inline-flex items-center gap-2">
+          <Spinner class="size-4" />
+          <span class="text-sm">Fetching patients...</span>
+        </span>
         
         <template v-else>
           <div class="space-y-2">
@@ -219,12 +221,12 @@ onMounted(() => {
         class="col-span-9 space-y-6"
       >
         <components.PatientInfo @editPatient="showModal = true" />
-        <fel-tabs :tabs="tabs" initial-tab="samples" class="rounded-lg" />
+        <TabsNav :tabs="tabs" initial-tab="samples" class="rounded-lg" />
       </section>
     </div>
 
     <!-- Edit Modal -->
-    <fel-modal
+    <Modal
       v-if="showModal"
       @close="showModal = false"
       content-width="w-3/6"
@@ -241,7 +243,7 @@ onMounted(() => {
             @close="handlePatientUpdate"
           />
       </template>
-    </fel-modal>
+    </Modal>
   </div>
 </template>
 

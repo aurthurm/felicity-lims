@@ -3,9 +3,11 @@ import { onMounted, defineAsyncComponent, ref, computed } from "vue";
 import useApiUtil from "@/composables/api_util";
 import { AnalysisType } from "@/types/gql";
 import { GetAnalysesServicesByUidDocument, GetAnalysesServicesByUidQuery, GetAnalysesServicesByUidQueryVariables } from "@/graphql/operations/analyses.queries";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Spinner } from "@/components/ui/spinner";
 
-const FelLabelValueList = defineAsyncComponent(
-  () => import("@/components/ui/label/FelLabelValueList.vue")
+const LabelValueList = defineAsyncComponent(
+  () => import("@/components/common/LabelValueList.vue")
 );
 
 interface Props {
@@ -75,14 +77,18 @@ const items = computed<AnalysisItem[]>(() => {
 <template>
   <div class="w-full" role="region" aria-label="Analysis details">
     <div v-if="isLoading" class="flex justify-center items-center py-4">
-      <fel-loader message="Loading analysis data..." variant="muted" size="sm" />
+      <span class="inline-flex items-center gap-2">
+        <Spinner class="size-3" />
+        <span class="text-xs">Loading analysis data...</span>
+      </span>
     </div>
     
-    <div v-else-if="error" class="text-destructive text-sm py-2" role="alert">
-      {{ error }}
-    </div>
+    <Alert v-else-if="error" variant="destructive">
+      <AlertTitle>Error</AlertTitle>
+      <AlertDescription>{{ error }}</AlertDescription>
+    </Alert>
     
-    <FelLabelValueList 
+    <LabelValueList 
       v-else-if="analysis?.uid" 
       :items="items" 
       class="bg-card rounded-md border border-border p-4 shadow-sm"

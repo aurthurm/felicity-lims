@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Button } from "@/components/ui/button";
 import {  computed, onMounted, reactive, ref } from "vue";
 import type { PropType } from 'vue'
 import {
@@ -180,79 +181,79 @@ const approveResults = () =>
       <div class="p-6 space-y-6">
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-foreground">Organisms</h3>
-          <fel-button 
+          <Button 
             v-if="analysisResult.status == 'pending'"
             @click="addOrganism()"
             :disabled="addingOrganism"
             :color="'primary'"
           >
             Add Organism
-          </fel-button>
+          </Button>
         </div>
 
         <div class="border-t border-border" />
 
         <div class="overflow-x-auto">
-          <table class="w-full fel-table">
-            <thead>
-              <tr class="border-b border-border bg-muted/50">
-                <th class="px-4 py-2 text-left text-sm font-medium text-foreground">Isolate Number</th>
-                <th class="px-4 py-2 text-left text-sm font-medium text-foreground">Organism Name</th>
-                <th class="px-4 py-2"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr 
+          <Table class="w-full">
+            <TableHeader>
+              <TableRow class="border-b border-border bg-muted/50">
+                <TableHead class="px-4 py-2 text-left text-sm font-medium text-foreground">Isolate Number</TableHead>
+                <TableHead class="px-4 py-2 text-left text-sm font-medium text-foreground">Organism Name</TableHead>
+                <TableHead class="px-4 py-2"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow 
                 v-for="(orgResult, idx) in organismResults" 
                 :key="orgResult?.uid"
                 class="border-b border-border hover:bg-muted/50 transition-colors duration-200"
               >
-                <td class="px-4 py-2">
+                <TableCell class="px-4 py-2">
                   <span class="text-sm text-foreground">#{{ orgResult?.isolateNumber }}</span>
-                </td>
-                <td class="px-4 py-2">
+                </TableCell>
+                <TableCell class="px-4 py-2">
                   <span 
                     v-if="orgResult?.organism"
                     class="text-sm text-primary"
                   >
                     {{ orgResult?.organism?.name }}
                   </span>
-                  <fel-button 
+                  <Button 
                     v-else
                     @click="pickOrganism(idx)"
                     :color="'outline'"
                   >
                     Pick Organism
-                  </fel-button>
-                </td>
-                <td class="px-4 py-2 text-right">
+                  </Button>
+                </TableCell>
+                <TableCell class="px-4 py-2 text-right">
                   <div class="flex items-center justify-end space-x-2">
                     <template v-if="orgResult?.organism && !orgResult?.organismUid">
-                      <fel-button 
+                      <Button 
                         @click="pickOrganism(idx)"
                         :color="'destructive'"
                       >
                         Change
-                      </fel-button>
-                      <fel-button 
+                      </Button>
+                      <Button 
                         @click="saveOrgResult(orgResult)"
                         :color="'primary'"
                       >
                         Save
-                      </fel-button>
+                      </Button>
                     </template>
-                    <fel-button 
+                    <Button 
                       v-if="analysisResult.status == 'pending' && organismResults.length > 1"
                       @click="removeOrgResult(orgResult)"
                       :color="'destructive'"
                     >
                       Delete
-                    </fel-button>
+                    </Button>
                   </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
         </div>
       </div>
     </div>
@@ -280,25 +281,25 @@ const approveResults = () =>
         <p v-else class="text-sm text-muted-foreground">{{ analysisResult.result }}</p>
 
         <div class="flex justify-end space-x-4">
-          <fel-button 
+          <Button 
             v-if="state.can_submit"
             @click="submitResults"
             :color="'primary'"
           >
             Submit Results
-          </fel-button>
-          <fel-button 
+          </Button>
+          <Button 
             v-if="state.can_approve"
             @click="approveResults"
             :color="'primary'"
           >
             Approve Results
-          </fel-button>
+          </Button>
         </div>
       </div>
     </div>
 
-    <fel-modal v-if="showModal" @close="showModal = false">
+    <Modal v-if="showModal" @close="showModal = false">
       <template v-slot:header>
         <h3 class="text-xl font-semibold text-foreground">Select Organism</h3>
       </template>
@@ -327,6 +328,6 @@ const approveResults = () =>
           </div>
         </div>
       </template>
-    </fel-modal>
+    </Modal>
   </div>
 </template>

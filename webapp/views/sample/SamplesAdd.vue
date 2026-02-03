@@ -8,6 +8,7 @@ import {useAnalysisStore} from "@/stores/analysis";
 import {useClientStore} from "@/stores/client";
 import {useBillingStore} from "@/stores/billing";
 import {useSetupStore} from "@/stores/setup";
+import { Spinner } from "@/components/ui/spinner";
 import {
   AnalysisRequestInputType,
   AnalysisRequestType,
@@ -23,7 +24,7 @@ import {
   AddAnalysisRequestMutation,
   AddAnalysisRequestMutationVariables
 } from "@/graphql/operations/analyses.mutations";
-import {useField, useForm} from "vee-validate";
+import { useForm } from "vee-validate";
 import { array, boolean, mixed, number, object, string } from "yup";
 import useApiUtil from "@/composables/api_util";
 import {formatDate} from "@/utils";
@@ -31,6 +32,24 @@ import dayjs from "dayjs";
 import {useDebounceFn} from "@vueuse/core";
 import SampleCostBreakdown from "@/components/billing/SampleCostBreakdown.vue";
 import CostSummary from "@/components/billing/CostSummary.vue";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const sampleStore = useSampleStore();
 const patientStore = usePatientStore();
@@ -62,7 +81,7 @@ const clients = computed(() => clientStore.getClients);
 const selectedClient = ref<ClientType | null>(null);
 const selectContact = (client: ClientType) => {
   selectedClient.value = client;
-  clientContact.value = null;
+  setFieldValue("clientContact", null);
 };
 
 // Sample Types
@@ -163,7 +182,7 @@ function createDefaultClinicalData() {
   };
 }
 
-const {handleSubmit, errors} = useForm({
+const { handleSubmit, values, setFieldValue } = useForm({
   validationSchema: arSchema,
   initialValues: {
     priority: 0,
@@ -179,39 +198,37 @@ if (patient?.value?.client) {
 }
 
 watch(
-  client,
+  () => values.client,
   (value) => {
-    selectedClient.value = value ?? null;
-    if (clientContact.value && clientContact.value?.clientUid !== value?.uid) {
-      clientContact.value = null;
+    selectedClient.value = (value as ClientType | null) ?? null;
+    if (values.clientContact && values.clientContact?.clientUid !== value?.uid) {
+      setFieldValue("clientContact", null);
     }
   },
   { immediate: true }
 );
 
-const {value: clientRequestId} = useField("clientRequestId");
-const {value: clinicalData} = useField<ClinicalDataType>("clinicalData");
-const {value: client} = useField<ClientType>("client");
-const {value: clientContact} = useField<ClientContactType | null>("clientContact");
-const {value: priority} = useField("priority");
-
 type PartialSample = Pick<SampleType, "sampleType" | "profiles" | "analyses"> & {
   dateCollected?: Date | string | { toDate?: () => Date };
   dateReceived?: Date | string | { toDate?: () => Date };
 };
-const {value: samples} = useField<PartialSample[]>("samples");
+const samples = computed(() => values.samples as PartialSample[]);
 
 // Symptoms management
 const newSymptom = ref("");
 const addSymptom = () => {
-  if (newSymptom.value.trim() && !clinicalData.value?.symptoms?.includes(newSymptom.value.trim())) {
-    clinicalData.value?.symptoms?.push(newSymptom.value.trim());
-    newSymptom.value = "";
+  const trimmed = newSymptom.value.trim();
+  if (!trimmed) return;
+  const current = values.clinicalData?.symptoms ?? [];
+  if (!current.includes(trimmed)) {
+    setFieldValue("clinicalData.symptoms", [...current, trimmed]);
   }
+  newSymptom.value = "";
 };
 
 const removeSymptom = (index: number) => {
-  clinicalData.value?.symptoms?.splice(index, 1);
+  const current = values.clinicalData?.symptoms ?? [];
+  setFieldValue("clinicalData.symptoms", current.filter((_, idx) => idx !== index));
 };
 
 const submitARForm = handleSubmit((values) => {
@@ -225,8 +242,8 @@ function addAnalysesRequest(request: AnalysisRequestType): void {
     patientUid: patient.value?.uid,
     clientRequestId: request.clientRequestId,
     clinicalData: request.clinicalData,
-    clientUid: client?.value?.uid,
-    clientContactUid: clientContact?.value?.uid,
+    clientUid: values.client?.uid,
+    clientContactUid: values.clientContact?.uid,
     samples: request.samples?.map((s: SampleType) => {
       return {
         ...s,
@@ -254,13 +271,16 @@ function addAnalysesRequest(request: AnalysisRequestType): void {
 
 function addSample(): void {
   const sample: PartialSample = createDefaultSample({});
-  samples.value.push(sample);
+  setFieldValue("samples", [...samples.value, sample]);
 }
 
 function removeSample(index: number): void {
   // Prevent removing if only one sample remains
   if (samples.value.length > 1) {
-    samples.value.splice(index, 1);
+    setFieldValue(
+      "samples",
+      samples.value.filter((_, idx) => idx !== index)
+    );
   }
 }
 
@@ -354,7 +374,7 @@ const contactLabel = (contact: ClientContactType) => {
 <template>
   <div class="space-y-6">
     <h5 class="text-xl font-semibold text-foreground mb-4">Add Analysis Request</h5>
-    <form action="post" class="relative p-6 bg-background rounded-lg shadow-sm space-y-6" @submit.prevent="submitARForm">
+    <Form class="relative p-6 bg-background rounded-lg shadow-sm space-y-6" @submit="submitARForm">
       <!-- Loading overlay -->
       <div
         v-if="arSaving"
@@ -363,142 +383,165 @@ const contactLabel = (contact: ClientContactType) => {
         aria-live="polite"
       >
         <div class="flex flex-col items-center gap-4">
-          <fel-loader message="Adding Samples..." variant="primary" size="lg" />
+          <span class="inline-flex items-center gap-2">
+            <Spinner class="size-5" />
+            <span class="text-base">Adding Samples...</span>
+          </span>
         </div>
       </div>
 
       <div class="space-y-4">
         <!-- Client, Contact, and Priority - Same Row -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <label class="flex items-center gap-x-4">
-            <span class="text-sm font-medium text-foreground">Client</span>
-            <VueMultiselect
-                class="w-full"
-                placeholder="Select a Client"
-                v-model="client"
-                :options="clients"
-                :searchable="true"
-                :disabled="arSaving"
-                label="name"
-                track-by="uid"
-                @select="selectContact"
-                :option-height="60"
-                :close-on-select="true"
-            />
-          </label>
+          <FormField name="client" v-slot="{ value, handleChange }">
+            <FormItem>
+              <FormLabel>Client</FormLabel>
+              <FormControl>
+                <VueMultiselect
+                  class="w-full"
+                  placeholder="Select a Client"
+                  :model-value="value"
+                  @update:model-value="(next) => { handleChange(next); selectContact(next); }"
+                  :options="clients"
+                  :searchable="true"
+                  :disabled="arSaving"
+                  label="name"
+                  track-by="uid"
+                  :option-height="60"
+                  :close-on-select="true"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <label class="flex items-center gap-x-4">
-            <span class="text-sm font-medium text-foreground whitespace-nowrap">Client Contact</span>
-            <VueMultiselect
-                class="w-full"
-                placeholder="Select a Client Contact"
-                v-model="clientContact"
-                :options="selectedClient?.contacts ?? []"
-                :custom-label="contactLabel"
-                :disabled="arSaving"
-                track-by="uid"
-                :close-on-select="true"
-                :searchable="true"
-            />
-            <div class="text-sm text-destructive">{{ errors.clientContact }}</div>
-          </label>
+          <FormField name="clientContact" v-slot="{ value, handleChange }">
+            <FormItem>
+              <FormLabel>Client Contact</FormLabel>
+              <FormControl>
+                <VueMultiselect
+                  class="w-full"
+                  placeholder="Select a Client Contact"
+                  :model-value="value"
+                  @update:model-value="handleChange"
+                  :options="selectedClient?.contacts ?? []"
+                  :custom-label="contactLabel"
+                  :disabled="arSaving"
+                  track-by="uid"
+                  :close-on-select="true"
+                  :searchable="true"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <label class="flex items-center gap-x-4">
-            <span class="text-sm font-medium text-foreground">Priority</span>
-            <select
-                name="priority"
-                id="priority"
-                v-model="priority"
-                :disabled="arSaving"
-                class="w-full px-3 py-2 bg-background/10 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
-                aria-label="Select priority level"
-            >
-              <option value=0>Low</option>
-              <option value=1>Medium</option>
-              <option value=2>High</option>
-            </select>
-            <div class="text-sm text-destructive">{{ errors.priority }}</div>
-          </label>
+          <FormField name="priority" v-slot="{ value }">
+            <FormItem>
+              <FormLabel>Priority</FormLabel>
+              <FormControl>
+                <Select :model-value="String(value ?? 0)" @update:model-value="(val) => setFieldValue('priority', Number(val))" :disabled="arSaving">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select priority" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0">Low</SelectItem>
+                    <SelectItem value="1">Medium</SelectItem>
+                    <SelectItem value="2">High</SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </div>
 
-        <label class="flex items-center gap-x-4">
-          <span class="text-sm font-medium text-foreground whitespace-nowrap">Client Request ID</span>
-          <input
-              class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
-              v-model="clientRequestId"
-              :disabled="arSaving"
-              placeholder="CRID ..."
-          />
-          <div class="text-sm text-destructive">{{ errors.clientRequestId }}</div>
-        </label>
+        <FormField name="clientRequestId" v-slot="{ componentField }">
+          <FormItem>
+            <FormLabel>Client Request ID</FormLabel>
+            <FormControl>
+              <Input
+                v-bind="componentField"
+                :disabled="arSaving"
+                placeholder="CRID ..."
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
         <!-- Clinical Data Section - Collapsible -->
         <div class="border border-border rounded-lg bg-background/50">
-          <button
+          <Button
               type="button"
+              variant="ghost"
               @click="clinicalDataExpanded = !clinicalDataExpanded"
               :disabled="arSaving"
-              class="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-muted/20 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 rounded-t-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              class="w-full px-4 py-3 flex items-center justify-between text-left rounded-t-lg"
           >
             <span class="text-sm font-medium text-foreground whitespace-nowrap">Clinical Data (click to expand)</span>
             <svg
                 class="w-5 h-5 transition-transform duration-200"
-                :class="{ 'rotate-180': clinicalDataExpanded }"
+                :class="{'rotate-180': clinicalDataExpanded }"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
             >
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
             </svg>
-          </button>
+          </Button>
 
           <div v-if="clinicalDataExpanded" class="px-4 py-4 space-y-4 border-t border-border">
             <!-- Clinical Indication -->
-            <label class="flex items-center gap-x-4">
-              <span class="text-sm font-medium text-foreground whitespace-nowrap w-40">Clinical Indication</span>
-              <input
-                  class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
-                  v-model="clinicalData.clinicalIndication"
-                  :disabled="arSaving"
-                  placeholder="Enter clinical indication..."
-              />
-            </label>
+            <FormField name="clinicalData.clinicalIndication" v-slot="{ componentField }">
+              <FormItem class="flex items-center gap-x-4">
+                <FormLabel class="whitespace-nowrap w-40">Clinical Indication</FormLabel>
+                <FormControl class="w-full">
+                  <Input
+                    v-bind="componentField"
+                    :disabled="arSaving"
+                    placeholder="Enter clinical indication..."
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
 
             <!-- Symptoms -->
             <div class="flex flex-wrap mt-2">
               <span class="text-sm font-medium text-foreground w-40">Symptoms</span>
               <div class="flex gap-2">
-                <input
-                    class="flex-1 px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
-                    v-model="newSymptom"
-                    :disabled="arSaving"
-                    placeholder="Add symptom..."
-                    @keydown.enter.prevent.stop="addSymptom"
+                <Input
+                  class="flex-1"
+                  v-model="newSymptom"
+                  :disabled="arSaving"
+                  placeholder="Add symptom..."
+                  @keydown.enter.prevent.stop="addSymptom"
                 />
-                <button
-                    type="button"
-                    @click="addSymptom"
-                    :disabled="arSaving"
-                    class="px-3 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50 disabled:cursor-not-allowed"
+                <Button
+                  type="button"
+                  @click="addSymptom"
+                  :disabled="arSaving"
                 >
                   Add
-                </button>
+                </Button>
               </div>
               <div class="flex flex-wrap gap-2 mt-2">
                 <span
-                    v-for="(symptom, index) in clinicalData.symptoms"
-                    :key="index"
-                    class="inline-flex items-center gap-1 px-2 py-1 bg-muted text-muted-foreground rounded-md text-sm"
+                  v-for="(symptom, index) in values.clinicalData?.symptoms ?? []"
+                  :key="index"
+                  class="inline-flex items-center gap-1 px-2 py-1 bg-muted text-muted-foreground rounded-md text-sm"
                 >
                   {{ symptom }}
-                  <button
-                      type="button"
-                      @click="removeSymptom(index)"
-                      :disabled="arSaving"
-                      class="text-destructive hover:text-destructive/80 ml-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    @click="removeSymptom(index)"
+                    :disabled="arSaving"
                   >
                     ×
-                  </button>
+                  </Button>
                 </span>
               </div>
             </div>
@@ -515,44 +558,68 @@ const contactLabel = (contact: ClientContactType) => {
             <!--            </label>-->
 
             <!-- Treatment Notes -->
-            <label class="flex items-center gap-x-4">
-              <span class="text-sm font-medium text-foreground whitespace-nowrap w-40">Treatment Notes</span>
-              <textarea
-                  class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
-                  v-model="clinicalData.treatmentNotes"
-                  :disabled="arSaving"
-                  placeholder="Enter treatment notes..."
-                  rows="2"
-              />
-            </label>
+            <FormField name="clinicalData.treatmentNotes" v-slot="{ componentField }">
+              <FormItem class="flex items-center gap-x-4">
+                <FormLabel class="whitespace-nowrap w-40">Treatment Notes</FormLabel>
+                <FormControl class="w-full">
+                  <Textarea
+                    v-bind="componentField"
+                    :disabled="arSaving"
+                    placeholder="Enter treatment notes..."
+                    rows="2"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
 
             <!-- Patient Status -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <label class="flex items-center gap-x-4">
-                <span class="text-sm font-medium text-foreground whitespace-nowrap w-40">Pregnancy Status</span>
-                <select
-                    v-model="clinicalData.pregnancyStatus"
-                    :disabled="arSaving"
-                    class="w-full ml-4 px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
-                >
-                  <option :value="null">Not specified</option>
-                  <option :value="true">Pregnant</option>
-                  <option :value="false">Not pregnant</option>
-                </select>
-              </label>
+              <FormField name="clinicalData.pregnancyStatus" v-slot="{ value }">
+                <FormItem class="flex items-center gap-x-4">
+                  <FormLabel class="whitespace-nowrap w-40">Pregnancy Status</FormLabel>
+                  <FormControl class="w-full">
+                    <Select
+                      :model-value="value === null || value === undefined ? 'null' : String(value)"
+                      @update:model-value="(val) => setFieldValue('clinicalData.pregnancyStatus', val === 'null' ? null : val === 'true')"
+                      :disabled="arSaving"
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Not specified" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="null">Not specified</SelectItem>
+                        <SelectItem value="true">Pregnant</SelectItem>
+                        <SelectItem value="false">Not pregnant</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
 
-              <label class="flex items-center gap-x-4">
-                <span class="text-sm font-medium text-foreground whitespace-nowrap w-40">Breastfeeding Status</span>
-                <select
-                    v-model="clinicalData.breastFeeding"
-                    :disabled="arSaving"
-                    class="w-full px-3 py-2 bg-background border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
-                >
-                  <option :value="null">Not specified</option>
-                  <option :value="true">Breastfeeding</option>
-                  <option :value="false">Not breastfeeding</option>
-                </select>
-              </label>
+              <FormField name="clinicalData.breastFeeding" v-slot="{ value }">
+                <FormItem class="flex items-center gap-x-4">
+                  <FormLabel class="whitespace-nowrap w-40">Breastfeeding Status</FormLabel>
+                  <FormControl class="w-full">
+                    <Select
+                      :model-value="value === null || value === undefined ? 'null' : String(value)"
+                      @update:model-value="(val) => setFieldValue('clinicalData.breastFeeding', val === 'null' ? null : val === 'true')"
+                      :disabled="arSaving"
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Not specified" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="null">Not specified</SelectItem>
+                        <SelectItem value="true">Breastfeeding</SelectItem>
+                        <SelectItem value="false">Not breastfeeding</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
             </div>
 
             <!-- Vitals -->
@@ -617,101 +684,100 @@ const contactLabel = (contact: ClientContactType) => {
         <div class="flex justify-between items-center">
           <h5 class="text-lg font-semibold text-foreground">Samples</h5>
           <div class="flex items-center gap-4">
-            <span class="text-sm text-destructive">{{ errors.samples }}</span>
-            <button
-                type="button"
-                v-if="samples?.length !== 20"
-                @click.prevent="addSample()"
-                :disabled="arSaving"
-                class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50 disabled:cursor-not-allowed"
+            <FormField name="samples" v-slot="{}">
+              <FormItem>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <Button
+              type="button"
+              v-if="samples?.length !== 20"
+              @click.prevent="addSample()"
+              :disabled="arSaving"
             >
               Add Sample
-            </button>
+            </Button>
           </div>
         </div>
 
         <div class="relative border border-border rounded-lg bg-background/50 overflow-visible">
           <!-- Fixed field labels column -->
           <div class="absolute left-0 top-0 bottom-0 w-48 bg-muted/30 border-r border-border z-10">
-            <table class="w-full h-full fel-table">
-              <thead>
-              <tr class="border-b border-border bg-muted/30">
-                <th class="p-4 text-left text-sm font-medium text-foreground h-16">
+            <Table class="w-full h-full">
+              <TableHeader>
+              <TableRow class="border-b border-border bg-muted/30">
+                <TableHead class="p-4 text-left text-sm font-medium text-foreground h-16">
                   Field
-                </th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr class="border-b border-border h-20 min-h-20 max-h-20">
-                <td class="p-4 text-sm font-medium text-foreground bg-muted/10">
+                </TableHead>
+              </TableRow>
+              </TableHeader>
+              <TableBody>
+              <TableRow class="border-b border-border h-20 min-h-20 max-h-20">
+                <TableCell class="p-4 text-sm font-medium text-foreground bg-muted/10">
                   Sample Type
-                </td>
-              </tr>
-              <tr class="border-b border-border h-20 min-h-20 max-h-20">
-                <td class="p-4 text-sm font-medium text-foreground bg-muted/10">
+                </TableCell>
+              </TableRow>
+              <TableRow class="border-b border-border h-20 min-h-20 max-h-20">
+                <TableCell class="p-4 text-sm font-medium text-foreground bg-muted/10">
                   Date Collected
-                </td>
-              </tr>
-              <tr class="border-b border-border h-20 min-h-20 max-h-20">
-                <td class="p-4 text-sm font-medium text-foreground bg-muted/10">
+                </TableCell>
+              </TableRow>
+              <TableRow class="border-b border-border h-20 min-h-20 max-h-20">
+                <TableCell class="p-4 text-sm font-medium text-foreground bg-muted/10">
                   Date Received
-                </td>
-              </tr>
-              <tr class="border-b border-border h-20 min-h-20 max-h-20">
-                <td class="p-4 text-sm font-medium text-foreground bg-muted/10">
+                </TableCell>
+              </TableRow>
+              <TableRow class="border-b border-border h-20 min-h-20 max-h-20">
+                <TableCell class="p-4 text-sm font-medium text-foreground bg-muted/10">
                   Analysis Profiles
-                </td>
-              </tr>
-              <tr class="border-b border-border h-20 min-h-20 max-h-20">
-                <td class="p-4 text-sm font-medium text-foreground bg-muted/10">
+                </TableCell>
+              </TableRow>
+              <TableRow class="border-b border-border h-20 min-h-20 max-h-20">
+                <TableCell class="p-4 text-sm font-medium text-foreground bg-muted/10">
                   Analysis Services
-                </td>
-              </tr>
-              <tr v-if="billingEnabled" class="border-b border-border">
-                <td class="p-4 text-sm font-medium text-foreground bg-muted/10">
+                </TableCell>
+              </TableRow>
+              <TableRow v-if="billingEnabled" class="border-b border-border">
+                <TableCell class="p-4 text-sm font-medium text-foreground bg-muted/10">
                   Cost Breakdown
-                </td>
-              </tr>
-              <tr class="h-24">
-                <td class="p-4 text-sm font-medium text-foreground bg-muted/10">
+                </TableCell>
+              </TableRow>
+              <TableRow class="h-24">
+                <TableCell class="p-4 text-sm font-medium text-foreground bg-muted/10">
                   Selection Summary
-                </td>
-              </tr>
-              </tbody>
-            </table>
+                </TableCell>
+              </TableRow>
+              </TableBody>
+            </Table>
           </div>
 
           <!-- Scrollable samples content -->
           <div class="overflow-x-auto overflow-y-visible pl-48">
-            <table class="w-80 min-w-80 fel-table">
-              <thead>
-              <tr class="border-b border-border bg-muted/30">
-                <th v-for="(sample, index) in samples" :key="index"
+            <Table class="w-80 min-w-80">
+              <TableHeader>
+              <TableRow class="border-b border-border bg-muted/30">
+                <TableHead v-for="(sample, index) in samples" :key="index"
                     class="p-4 text-center text-sm font-medium text-foreground w-80 min-w-80 relative h-16 border-r">
                   <div class="flex items-center justify-between">
                     <span>Sample {{ index + 1 }}</span>
-                    <button
-                        type="button"
-                        @click.prevent="removeSample(index)"
-                        :disabled="!canRemoveSample || arSaving"
-                        :class="[
-                          'px-2 py-1 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 text-xs ml-2',
-                          canRemoveSample && !arSaving
-                            ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90 focus:ring-destructive/50'
-                            : 'bg-muted text-muted-foreground cursor-not-allowed'
-                        ]"
-                        :title="canRemoveSample && !arSaving ? 'Remove sample' : 'At least one sample is required'"
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      @click.prevent="removeSample(index)"
+                      :disabled="!canRemoveSample || arSaving"
+                      :title="canRemoveSample && !arSaving ? 'Remove sample' : 'At least one sample is required'"
                     >
                       Remove
-                    </button>
+                    </Button>
                   </div>
-                </th>
-              </tr>
-              </thead>
-              <tbody>
+                </TableHead>
+              </TableRow>
+              </TableHeader>
+              <TableBody>
               <!-- Sample Type Row -->
-              <tr class="border-b border-border hover:bg-muted/20 h-20 min-h-20 max-h-20">
-                <td v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r">
+              <TableRow class="border-b border-border hover:bg-muted/20 h-20 min-h-20 max-h-20">
+                <TableCell v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r">
                   <VueMultiselect
                       class="w-full"
                       placeholder="Select sample type"
@@ -723,12 +789,12 @@ const contactLabel = (contact: ClientContactType) => {
                       track-by="uid"
                       :openDirection="'below'"
                   />
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
 
               <!-- Date Collected Row -->
-              <tr class="border-b border-border hover:bg-muted/20 h-20 min-h-20 max-h-20">
-                <td v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r">
+              <TableRow class="border-b border-border hover:bg-muted/20 h-20 min-h-20 max-h-20">
+                <TableCell v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r">
                   <VueDatePicker
                       class="w-full"
                       v-model="sample.dateCollected"
@@ -737,12 +803,12 @@ const contactLabel = (contact: ClientContactType) => {
                       time-picker-inline
                       :teleport="true"
                   />
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
 
               <!-- Date Received Row -->
-              <tr class="border-b border-border hover:bg-muted/20 h-20 min-h-20 max-h-20">
-                <td v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r">
+              <TableRow class="border-b border-border hover:bg-muted/20 h-20 min-h-20 max-h-20">
+                <TableCell v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r">
                   <VueDatePicker
                       class="w-full"
                       v-model="sample.dateReceived"
@@ -752,12 +818,12 @@ const contactLabel = (contact: ClientContactType) => {
                       time-picker-inline
                       :teleport="true"
                   />
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
 
               <!-- Analysis Profiles Row -->
-              <tr class="border-b border-border hover:bg-muted/20 h-20 min-h-20 max-h-20">
-                <td v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r">
+              <TableRow class="border-b border-border hover:bg-muted/20 h-20 min-h-20 max-h-20">
+                <TableCell v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r">
                   <VueMultiselect
                       class="w-full whitespace-nowrap z-10"
                       placeholder="Select analysis profiles"
@@ -770,12 +836,12 @@ const contactLabel = (contact: ClientContactType) => {
                       track-by="uid"
                       :openDirection="'below'"
                   />
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
 
               <!-- Analysis Services Row -->
-              <tr class="border-b border-border hover:bg-muted/20 h-20 min-h-20 max-h-20">
-                <td v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r">
+              <TableRow class="border-b border-border hover:bg-muted/20 h-20 min-h-20 max-h-20">
+                <TableCell v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r">
                   <VueMultiselect
                       class="w-full whitespace-nowrap"
                       placeholder="Select analysis services"
@@ -788,24 +854,24 @@ const contactLabel = (contact: ClientContactType) => {
                       track-by="uid"
                       :openDirection="'below'"
                   />
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
 
               <!-- Cost Breakdown Row (Only if billing enabled) -->
-              <tr v-if="billingEnabled" class="border-b border-border hover:bg-muted/20">
-                <td v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r align-top">
+              <TableRow v-if="billingEnabled" class="border-b border-border hover:bg-muted/20">
+                <TableCell v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r align-top">
                   <SampleCostBreakdown
                       :profiles="sample.profiles"
                       :analyses="sample.analyses"
                       :price-map="priceMap"
                       :loading="billingStore.fetchingPrices"
                   />
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
 
               <!-- Selection Summary Row -->
-              <tr class="hover:bg-muted/20 h-24">
-                <td v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r">
+              <TableRow class="hover:bg-muted/20 h-24">
+                <TableCell v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r">
                   <div class="p-3 bg-muted/50 rounded-md text-sm space-y-1">
                     <div v-if="sample.profiles?.length === 0 && sample.analyses?.length === 0"
                          class="text-xs text-destructive whitespace-nowrap">
@@ -820,10 +886,10 @@ const contactLabel = (contact: ClientContactType) => {
                       </div>
                     </div>
                   </div>
-                </td>
-              </tr>
-              </tbody>
-            </table>
+                </TableCell>
+              </TableRow>
+              </TableBody>
+            </Table>
           </div>
         </div>
       </section>
@@ -838,15 +904,14 @@ const contactLabel = (contact: ClientContactType) => {
       />
 
       <div class="flex justify-end pt-4">
-        <button
-            type="submit"
-            :disabled="arSaving"
-            class="px-6 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50 disabled:cursor-not-allowed"
+        <Button
+          type="submit"
+          :disabled="arSaving"
         >
           Save Sample(s)
-        </button>
+        </Button>
       </div>
-    </form>
+    </Form>
   </div>
 </template>
 

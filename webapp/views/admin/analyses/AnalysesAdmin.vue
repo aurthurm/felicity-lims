@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import TabsNav from "@/components/ui/tabs/TabsNav.vue";
   import { ref, computed, defineAsyncComponent } from 'vue';
   import { useRoute } from 'vue-router';
   import { useSampleStore } from '@/stores/sample';
   import { useSetupStore } from '@/stores/setup';
 
+import PageHeading from "@/components/common/PageHeading.vue"
   const setupStore = useSetupStore()
   const  sampleStore = useSampleStore()
   const route = useRoute();
@@ -70,9 +72,9 @@
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Analyses Administration"></fel-heading>
+    <PageHeading title="Analyses Administration"></PageHeading>
 
-    <fel-tabs :tabs="tabs" :initial-tab="currentTab" class="rounded-lg" />
+    <TabsNav :tabs="tabs" :initial-tab="currentTab" class="rounded-lg" />
   </div>
 </template>
 

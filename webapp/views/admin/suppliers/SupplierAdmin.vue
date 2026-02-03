@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import TabsNav from "@/components/ui/tabs/TabsNav.vue";
   import { defineAsyncComponent } from 'vue';
   const SuppliersListing = defineAsyncComponent(
         () => import('./SuppliersListing.vue')
@@ -22,6 +23,6 @@
 </script>
 
 <template>
-  <fel-tabs :tabs="tabs" />
+  <TabsNav :tabs="tabs" />
 </template>
 

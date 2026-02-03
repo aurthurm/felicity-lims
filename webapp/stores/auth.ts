@@ -102,7 +102,7 @@ export const useAuthStore = defineStore('auth', () => {
             const res = await withClientMutation<TokenRefreshMutation, TokenRefreshMutationVariables>(
                 TokenRefreshDocument,
                 { refreshToken: auth.value.refresh },
-                'refresh'
+                'refresh',
             );
 
             if (!res) {
@@ -111,7 +111,8 @@ export const useAuthStore = defineStore('auth', () => {
 
             await persistAuth(res);
             // The watch function will handle starting a new timer
-        } catch {} finally {
+        } catch {
+        } finally {
             auth.value.processing = false;
         }
     };
@@ -142,7 +143,6 @@ export const useAuthStore = defineStore('auth', () => {
                 refreshToken();
                 return;
             }
-
 
             // Set new timer
             auth.value.refreshTokenTimeout = setTimeout(() => {
@@ -187,7 +187,7 @@ export const useAuthStore = defineStore('auth', () => {
                 }
             }
         },
-        { deep: true }
+        { deep: true },
     );
 
     const persistAuth = async (data: any) => {
@@ -207,7 +207,7 @@ export const useAuthStore = defineStore('auth', () => {
         await withClientMutation<AuthenticateUserMutation, AuthenticateUserMutationVariables>(
             AuthenticateUserDocument,
             payload,
-            'authenticateUser'
+            'authenticateUser',
         )
             .then(res => {
                 if (!res) {
@@ -234,7 +234,7 @@ export const useAuthStore = defineStore('auth', () => {
         await withClientMutation<RequestPassResetMutation, RequestPassResetMutationVariables>(
             RequestPassResetDocument,
             { email },
-            'requestPasswordReset'
+            'requestPasswordReset',
         )
             .then(({ message }) => {
                 setReceivedResetToken(true);
@@ -250,7 +250,7 @@ export const useAuthStore = defineStore('auth', () => {
         await withClientMutation<ValidatePassResetTokenMutation, ValidatePassResetTokenMutationVariables>(
             ValidatePassResetTokenDocument,
             { token },
-            'validatePasswordResetToken'
+            'validatePasswordResetToken',
         )
             .then(res => {
                 auth.value.resetData = {
@@ -278,7 +278,7 @@ export const useAuthStore = defineStore('auth', () => {
                 password,
                 passwordc,
             },
-            'resetPassword'
+            'resetPassword',
         )
             .then(res => {
                 setForgotPassword(false);

@@ -7,8 +7,10 @@ import { useAuthStore } from "@/stores/auth";
 import { useNoticeStore } from "@/stores/notice";
 import { useSetupStore} from "@/stores/setup";
 import useApiUtil  from "@/composables/api_util";
-import Swal from 'sweetalert2';
-
+import { useConfirmDialog } from "@/composables/confirm_dialog";
+import { Spinner } from "@/components/ui/spinner";
+import PageHeading from "@/components/common/PageHeading.vue"
+defineOptions({ name: 'NoticesView' })
 const NoticeForm = defineAsyncComponent(
   () => import("./NoticeForm.vue")
 )
@@ -17,6 +19,7 @@ let setupStore = useSetupStore();
 const noticeStore = useNoticeStore();
 const authStore = useAuthStore();
 const { withClientMutation } = useApiUtil();
+const { confirm } = useConfirmDialog();
 
 const { fetchingNotices } = storeToRefs(noticeStore);
 
@@ -35,24 +38,20 @@ onMounted(async () => {
 });
 
 async function deleteNotice(uid: string) {
-
-  await Swal.fire({
-    title: 'Are you sure?',
-    text: "You want to delete these notice",
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: 'hsl(var(--primary))',
-    cancelButtonColor: 'hsl(var(--destructive))',
-    confirmButtonText: 'Yes, delete now!',
-    cancelButtonText: 'No, do not delete!',
-  }).then(async (result) => {
-    if (result.isConfirmed) {
-      withClientMutation<DeleteNoticeMutation, DeleteNoticeMutationVariables>(DeleteNoticeDocument, { uid }, "deleteNotice").then((payload) =>
-        noticeStore.deleteNotice(payload)
-      );
-    }
-  })
-
+  const confirmed = await confirm({
+    title: "Are you sure?",
+    description: "You want to delete these notice",
+    confirmText: "Yes, delete now!",
+    cancelText: "No, do not delete!",
+    variant: "destructive",
+  });
+  if (!confirmed) return;
+  const payload = await withClientMutation<DeleteNoticeMutation, DeleteNoticeMutationVariables>(
+    DeleteNoticeDocument,
+    { uid },
+    "deleteNotice"
+  );
+  noticeStore.deleteNotice(payload);
 }
 
 function FormManager(create: boolean, obj: NoticeType = {} as NoticeType): void {
@@ -70,38 +69,38 @@ const notices = computed<NoticeType[]>(() => noticeStore.getMyNotices(user.value
 
 <template>
   <div class="space-y-4">
-    <fel-heading title="Notice Manager">
+    <PageHeading title="Notice Manager">
       <button 
         @click.prevent="FormManager(true)"
         class="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200"
       >
         New Notice
       </button>
-    </fel-heading>
+    </PageHeading>
 
     <!-- Notice Table View -->
     <div class="overflow-hidden shadow ring-1 ring-border ring-opacity/5 rounded-lg">
-      <table class="min-w-full divide-y divide-border fel-table">
-        <thead class="bg-muted">
-          <tr>
-            <th class="px-3 py-3.5 text-left text-sm font-medium text-foreground">Notice Title</th>
-            <th class="px-3 py-3.5 text-left text-sm font-medium text-foreground">Expiration</th>
-            <th class="px-3 py-3.5 text-right text-sm font-medium text-foreground">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-border bg-background">
-          <tr v-for="notice in notices" :key="notice.uid" class="hover:bg-muted/50 transition-colors duration-150">
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">
+      <Table class="min-w-full divide-y divide-border">
+        <TableHeader class="bg-muted">
+          <TableRow>
+            <TableHead class="px-3 py-3.5 text-left text-sm font-medium text-foreground">Notice Title</TableHead>
+            <TableHead class="px-3 py-3.5 text-left text-sm font-medium text-foreground">Expiration</TableHead>
+            <TableHead class="px-3 py-3.5 text-right text-sm font-medium text-foreground">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody class="divide-y divide-border bg-background">
+          <TableRow v-for="notice in notices" :key="notice.uid" class="hover:bg-muted/50 transition-colors duration-150">
+            <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-foreground">
               <div class="flex items-center">
                 <div class="cursor-pointer" @click="FormManager(false, notice)">
                   {{ notice.title }}
                 </div>
               </div>
-            </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">
+            </TableCell>
+            <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-foreground">
               {{ notice.status }}
-            </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-right">
+            </TableCell>
+            <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-right">
               <button
                 class="px-3 py-1.5 mr-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200"
                 @click="FormManager(false, notice)">
@@ -112,18 +111,21 @@ const notices = computed<NoticeType[]>(() => noticeStore.getMyNotices(user.value
                 @click="deleteNotice(notice.uid)">
                 Delete
               </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
       <div v-if="fetchingNotices" class="py-4 text-center">
-        <fel-loader message="Fetching notices ..." />
+        <span class="inline-flex items-center gap-2">
+          <Spinner class="size-4" />
+          <span class="text-sm">Fetching notices ...</span>
+        </span>
       </div>
     </div>
   </div>
 
   <!-- Notice Form Modal -->
-  <fel-modal v-if="modalState.showModal" @close="modalState.showModal = false" :content-width="'w-1/2'">
+  <Modal v-if="modalState.showModal" @close="modalState.showModal = false" :content-width="'w-1/2'">
     <template v-slot:header>
       <h3 class="text-lg font-medium text-foreground">{{ modalState.title }}</h3>
     </template>
@@ -131,5 +133,5 @@ const notices = computed<NoticeType[]>(() => noticeStore.getMyNotices(user.value
     <template v-slot:body>
       <NoticeForm :notice="modalState.notice" @close="modalState.showModal = false" />
     </template>
-  </fel-modal>
+  </Modal>
 </template>

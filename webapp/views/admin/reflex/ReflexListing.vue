@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Button } from "@/components/ui/button";
 import { ref, onMounted } from "vue";
 import { useForm, useField } from 'vee-validate';
 import * as yup from 'yup';
@@ -6,7 +7,7 @@ import { ReflexRuleType } from "@/types/reflex";
 import useApiUtil  from "@/composables/api_util";
 import { useReflexStore } from "@/stores/reflex";
 import { AddReflexRuleDocument, AddReflexRuleMutation, AddReflexRuleMutationVariables, EditReflexRuleDocument, EditReflexRuleMutation, EditReflexRuleMutationVariables } from "@/graphql/operations/reflex.mutations";
-
+import PageHeading from "@/components/common/PageHeading.vue"
 const { withClientMutation } = useApiUtil();
 const reflexStore = useReflexStore();
 
@@ -73,49 +74,59 @@ const saveForm = handleSubmit((formValues) => {
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Reflex Rules">
-      <fel-button @click="FormManager(true)">Add Reflex Rule</fel-button>
-    </fel-heading>
+    <PageHeading title="Reflex Rules">
+      <Button @click="FormManager(true)">Add Reflex Rule</Button>
+    </PageHeading>
 
     <div class="rounded-md border border-border bg-card p-6">
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-border fel-table">
-          <thead>
-            <tr>
-              <th class="px-4 py-2 text-left text-sm font-semibold text-foreground">Title</th>
-              <th class="px-4 py-2 text-left text-sm font-semibold text-foreground">Description</th>
-              <th class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+        <Table class="min-w-full divide-y divide-border">
+          <TableHeader>
+            <TableRow>
+              <TableHead class="px-4 py-2 text-left text-sm font-semibold text-foreground">Title</TableHead>
+              <TableHead class="px-4 py-2 text-left text-sm font-semibold text-foreground">Description</TableHead>
+              <TableHead class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                 <span class="sr-only">Actions</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-border bg-background">
-            <tr v-for="rule in reflexStore.reflexRules" :key="rule?.uid" class="hover:bg-muted/50">
-              <td class="whitespace-nowrap px-4 py-2 text-sm text-foreground">
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody class="divide-y divide-border bg-background">
+            <TableRow v-for="rule in reflexStore.reflexRules" :key="rule?.uid" class="hover:bg-muted/50">
+              <TableCell class="whitespace-nowrap px-4 py-2 text-sm text-foreground">
                 <router-link
                   :to="{ name: 'reflex-detail', params: { uid: rule?.uid } }"
                   class="text-primary hover:text-primary/80"
                 >
                   {{ rule?.name }}
                 </router-link>
-              </td>
-              <td class="whitespace-nowrap px-4 py-2 text-sm text-foreground">{{ rule?.description }}</td>
-              <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+              </TableCell>
+              <TableCell class="whitespace-nowrap px-4 py-2 text-sm text-foreground">{{ rule?.description }}</TableCell>
+              <TableCell class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                 <button 
                   @click="FormManager(false, rule)"
                   class="text-primary hover:text-primary/80">
                   Edit
                 </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </TableCell>
+            </TableRow>
+            <TableEmpty v-if="!reflexStore.reflexRules || reflexStore.reflexRules.length === 0" :colspan="3">
+              <Empty class="border-0 bg-transparent p-0">
+                <EmptyContent>
+                  <EmptyHeader>
+                    <EmptyTitle>No reflex rules yet</EmptyTitle>
+                    <EmptyDescription>Create a rule to automate reflex testing.</EmptyDescription>
+                  </EmptyHeader>
+                </EmptyContent>
+              </Empty>
+            </TableEmpty>
+          </TableBody>
+        </Table>
       </div>
     </div>
   </div>
 
   <!-- Reflex Rule Edit Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
+  <Modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -153,5 +164,5 @@ const saveForm = handleSubmit((formValues) => {
         </button>
       </form>
     </template>
-  </fel-modal>
+  </Modal>
 </template>

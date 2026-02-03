@@ -27,11 +27,12 @@ const key = props.tabKey || "tab"
 --------------------------------------------- */
 const resolveInitial = () => {
   const tabFromUrl = route.query[key] as string | undefined
+  const visible = props.tabs.filter((t) => !t.hidden)
 
-  if (tabFromUrl) return tabFromUrl
-  if (props.initialTab) return props.initialTab
+  if (tabFromUrl && visible.some((t) => t.id === tabFromUrl)) return tabFromUrl
+  if (props.initialTab && visible.some((t) => t.id === props.initialTab)) return props.initialTab
 
-  return props.tabs[0]?.id
+  return visible[0]?.id
 }
 
 const currentTabId = ref(resolveInitial())
@@ -83,8 +84,16 @@ const setCurrentTab = (tabId: string) => {
 watch(
   () => route.query[key],
   (newVal) => {
-    if (newVal && newVal !== currentTabId.value) {
-      currentTabId.value = newVal as string
+    const nextVal = newVal as string | undefined
+    const visible = visibleTabs.value
+    if (nextVal && visible.some((t) => t.id === nextVal)) {
+      if (nextVal !== currentTabId.value) {
+        currentTabId.value = nextVal
+      }
+      return
+    }
+    if (visible.length > 0 && currentTabId.value !== visible[0].id) {
+      setCurrentTab(visible[0].id)
     }
   }
 )
@@ -121,7 +130,7 @@ watch(
 
 
 <template>
-  <Tabs :value="currentTabId" @update:value="setCurrentTab">
+  <Tabs :model-value="currentTabId" @update:model-value="setCurrentTab">
     <TabsList>
       <TabsTrigger
         v-for="tab in visibleTabs"

@@ -1,15 +1,27 @@
 <script setup lang="ts">
 import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
-import { useForm, useField } from 'vee-validate';
+import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import { addListsUnique } from '@/utils';
 import useApiUtil from '@/composables/api_util';
 import { AbxBreakpointType, AbxBreakpointTypeType, AbxGuidelineYearType, AbxHostType, AbxSiteOfInfectionType, AbxTestMethodType } from "@/types/gql";
 import { GetAbxBreakpointAllDocument, GetAbxBreakpointAllQuery, GetAbxBreakpointAllQueryVariables, GetAbxBreakpointTypeAllDocument, GetAbxBreakpointTypeAllQuery, GetAbxBreakpointTypeAllQueryVariables, GetAbxGuidelineYearAllDocument, GetAbxGuidelineYearAllQuery, GetAbxGuidelineYearAllQueryVariables, GetAbxHostAllDocument, GetAbxHostAllQuery, GetAbxHostAllQueryVariables, GetAbxSiteOfInfectionAllDocument, GetAbxSiteOfInfectionAllQuery, GetAbxSiteOfInfectionAllQueryVariables, GetAbxTestMethodAllDocument, GetAbxTestMethodAllQuery, GetAbxTestMethodAllQueryVariables } from "@/graphql/operations/microbiology.queries";
 import { AddAbxBreakpointMutation, AddAbxBreakpointMutationVariables, AddAbxBreakpointDocument, EditAbxBreakpointMutation, EditAbxBreakpointMutationVariables, EditAbxBreakpointDocument } from '@/graphql/operations/microbiology.mutations';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
+import PageHeading from "@/components/common/PageHeading.vue"
 const DataTable = defineAsyncComponent(
-  () => import('@/components/ui/datatable/FelDataTable.vue')
+  () => import('@/components/common/DataTable.vue')
 )
 const VueMultiselect = defineAsyncComponent(
   () => import('vue-multiselect')
@@ -30,7 +42,7 @@ const breakpointSchema = yup.object({
   organismCodeType: yup.string().trim().required('Organism code type is required'),
 });
 
-const { handleSubmit, resetForm, setValues, errors } = useForm({
+const { handleSubmit, resetForm, setValues, values } = useForm({
   validationSchema: breakpointSchema,
   initialValues: {
     guideline: null,
@@ -54,22 +66,6 @@ const { handleSubmit, resetForm, setValues, errors } = useForm({
     ecvEcoffTentative: '',
   },
 });
-const { value: guideline } = useField<AbxGuidelineYearType | null>('guideline');
-const { value: year } = useField<number | null>('year');
-const { value: testMethod } = useField<AbxTestMethodType | null>('testMethod');
-const { value: potency } = useField<string>('potency');
-const { value: organismCode } = useField<string>('organismCode');
-const { value: organismCodeType } = useField<string>('organismCodeType');
-const { value: breakpointType } = useField<AbxBreakpointTypeType | null>('breakpointType');
-const { value: host } = useField<AbxHostType | null>('host');
-const { value: siteOfInfection } = useField<AbxSiteOfInfectionType | null>('siteOfInfection');
-const { value: whonetAbxCode } = useField<string>('whonetAbxCode');
-const { value: r } = useField<string>('r');
-const { value: i } = useField<string>('i');
-const { value: sdd } = useField<string>('sdd');
-const { value: s } = useField<string>('s');
-const { value: ecvEcoff } = useField<string>('ecvEcoff');
-const { value: ecvEcoffTentative } = useField<string>('ecvEcoffTentative');
 
 const fetchingBreakpoints = ref<boolean>(false);
 const antibiotics = ref<AbxBreakpointType[]>([]);
@@ -417,9 +413,9 @@ const saveForm = handleSubmit((formValues) => {
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Antibiotic Breakpoints">
-      <fel-button @click="FormManager(true)">Add Breakpoint</fel-button>
-    </fel-heading>
+    <PageHeading title="Antibiotic Breakpoints">
+      <Button @click="FormManager(true)">Add Breakpoint</Button>
+    </PageHeading>
 
     <div class="rounded-lg shadow-sm bg-card p-6">
       <DataTable 
@@ -445,37 +441,42 @@ const saveForm = handleSubmit((formValues) => {
   </div>
 
   <!-- Breakpoint Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
+  <Modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form @submit.prevent="saveForm" class="space-y-6 p-4">
+      <Form @submit="saveForm" class="space-y-6 p-4">
         <!-- Basic Information -->
         <div class="space-y-4">
           <h4 class="text-lg font-semibold text-foreground">Basic Information</h4>
           <div class="grid grid-cols-2 gap-4">
-            <label class="block">
-              <span class="text-sm font-medium text-foreground">Guidelines</span>
-              <VueMultiselect
-                v-model="guideline"
-                :options="abxGuidelines"
-                :searchable="true"
-                label="code"
-                class="mt-1 multiselect-blue"
-              >
-              </VueMultiselect>
-              <p v-if="errors.guideline" class="text-sm text-destructive">{{ errors.guideline }}</p>
-            </label>
-            <label class="block">
-              <span class="text-sm font-medium text-foreground">Year</span>
-              <input type="number"
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model.number="year"
-                placeholder="Year"
-              />
-            </label>
+            <FormField name="guideline" v-slot="{ value, handleChange }">
+              <FormItem>
+                <FormLabel>Guidelines</FormLabel>
+                <FormControl>
+                  <VueMultiselect
+                    :model-value="value"
+                    @update:model-value="handleChange"
+                    :options="abxGuidelines"
+                    :searchable="true"
+                    label="code"
+                    class="mt-1 multiselect-blue"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="year" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Year</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" type="number" placeholder="Year" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
           </div>
         </div>
 
@@ -624,7 +625,7 @@ const saveForm = handleSubmit((formValues) => {
         </button>
       </form>
     </template>
-  </fel-modal>
+  </Modal>
 </template>
 
 <style scoped>

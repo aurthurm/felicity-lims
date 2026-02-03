@@ -79,7 +79,7 @@ export const useStorageStore = defineStore('storage', {
                 const result = await withClientQuery<GetStoreRoomsTreeQuery, GetStoreRoomsTreeQueryVariables>(
                     GetStoreRoomsTreeDocument,
                     {},
-                    'storeRoomAll'
+                    'storeRoomAll',
                 );
 
                 if (result && Array.isArray(result)) {
@@ -87,7 +87,8 @@ export const useStorageStore = defineStore('storage', {
                     setTree(result as StoreRoomType[]);
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingTree = false;
             }
         },
@@ -99,14 +100,15 @@ export const useStorageStore = defineStore('storage', {
                 const result = await withClientQuery<GetAllStoreRoomsQuery, GetAllStoreRoomsQueryVariables>(
                     GetAllStoreRoomsDocument,
                     {},
-                    'storeRoomAll'
+                    'storeRoomAll',
                 );
 
                 if (result && Array.isArray(result)) {
                     this.storeRooms = result as StoreRoomType[];
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingStoreRooms = false;
             }
         },
@@ -139,14 +141,15 @@ export const useStorageStore = defineStore('storage', {
                 const result = await withClientQuery<GetAllStorageLocationsQuery, GetAllStorageLocationsQueryVariables>(
                     GetAllStorageLocationsDocument,
                     { storeRoomUid },
-                    'storageLocations'
+                    'storageLocations',
                 );
 
                 if (result && Array.isArray(result)) {
                     this.storageLocations = result as StorageLocationType[];
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingStorageLocations = false;
             }
         },
@@ -179,14 +182,15 @@ export const useStorageStore = defineStore('storage', {
                 const result = await withClientQuery<GetAllStorageSectionsQuery, GetAllStorageSectionsQueryVariables>(
                     GetAllStorageSectionsDocument,
                     { storageLocationUid },
-                    'storageSections'
+                    'storageSections',
                 );
 
                 if (result && Array.isArray(result)) {
                     this.storageSections = result as StorageSectionType[];
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingStorageSections = false;
             }
         },
@@ -219,14 +223,15 @@ export const useStorageStore = defineStore('storage', {
                 const result = await withClientQuery<GetAllStorageContainersQuery, GetAllStorageContainersQueryVariables>(
                     GetAllStorageContainersDocument,
                     { storageSectionUid },
-                    'storageContainers'
+                    'storageContainers',
                 );
 
                 if (result && Array.isArray(result)) {
                     this.storageContainers = result as StorageContainerType[];
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingStorageContainers = false;
             }
         },
@@ -259,7 +264,7 @@ export const useStorageStore = defineStore('storage', {
                     GetSrorageContainerByUidDocument,
                     { uid },
                     'storageContainerByUid',
-                    'network-only'
+                    'network-only',
                 );
 
                 if (result) {
@@ -267,7 +272,8 @@ export const useStorageStore = defineStore('storage', {
                     await this.fetchStorageContainerSamples(uid);
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingStorageContainer = false;
             }
         },
@@ -287,7 +293,7 @@ export const useStorageStore = defineStore('storage', {
                     GetSamplesByStorageContainerUidDocument,
                     { uid },
                     'samplesByStorageContainerUid',
-                    'network-only'
+                    'network-only',
                 );
 
                 if (this.storageContainer && result) {
@@ -295,7 +301,8 @@ export const useStorageStore = defineStore('storage', {
                     (this.storageContainer as any).samples = result;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingStorageContainerSamples = false;
             }
         },

@@ -7,7 +7,10 @@ import {
   GetInventoryKpisQueryVariables,
 } from "@/graphql/operations/inventory.queries";
 import { InventoryKpiType } from "@/types/gql";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import { Spinner } from "@/components/ui/spinner";
 
+defineOptions({ name: 'InventoryView' })
 const { withClientQuery } = useApiUtil();
 
 const loading = ref(false);
@@ -143,11 +146,11 @@ onMounted(() => {
         </select>
       </div>
       <label class="flex items-center gap-2 text-sm text-foreground">
-        <input v-model="showLowStock" type="checkbox" class="h-4 w-4" />
+        <Checkbox :checked="showLowStock" @update:checked="(value) => showLowStock = value" />
         Low stock
       </label>
       <label class="flex items-center gap-2 text-sm text-foreground">
-        <input v-model="showReorderNow" type="checkbox" class="h-4 w-4" />
+        <Checkbox :checked="showReorderNow" @update:checked="(value) => showReorderNow = value" />
         Reorder now
       </label>
       <button
@@ -161,34 +164,37 @@ onMounted(() => {
     </div>
 
     <div v-if="loading" class="text-start my-4">
-      <fel-loader message="Fetching inventory KPIs..." />
+      <span class="inline-flex items-center gap-2">
+        <Spinner class="size-4" />
+        <span class="text-sm">Fetching inventory KPIs...</span>
+      </span>
     </div>
     <div v-else-if="error" class="text-sm text-destructive">
       {{ error }}
     </div>
 
     <div v-else class="overflow-x-auto border border-border rounded-lg">
-      <table class="min-w-full divide-y divide-border fel-table">
-        <thead class="bg-muted">
-          <tr>
-            <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">Product</th>
-            <th class="px-4 py-3 text-right text-xs font-semibold text-muted-foreground">Current</th>
-            <th class="px-4 py-3 text-right text-xs font-semibold text-muted-foreground">Min</th>
-            <th class="px-4 py-3 text-right text-xs font-semibold text-muted-foreground">Max</th>
-            <th class="px-4 py-3 text-right text-xs font-semibold text-muted-foreground">Reorder Point</th>
-            <th class="px-4 py-3 text-right text-xs font-semibold text-muted-foreground">ROQ</th>
-            <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">Status</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-border">
-          <tr v-for="item in filteredKpis" :key="item.productUid">
-            <td class="px-4 py-3 text-sm text-foreground">{{ item.productName }}</td>
-            <td class="px-4 py-3 text-sm text-right text-foreground">{{ item.currentStock }}</td>
-            <td class="px-4 py-3 text-sm text-right text-foreground">{{ item.minimumLevel }}</td>
-            <td class="px-4 py-3 text-sm text-right text-foreground">{{ item.maximumLevel }}</td>
-            <td class="px-4 py-3 text-sm text-right text-foreground">{{ item.reorderPoint }}</td>
-            <td class="px-4 py-3 text-sm text-right text-foreground">{{ item.reorderQuantity }}</td>
-            <td class="px-4 py-3 text-sm">
+      <Table class="min-w-full divide-y divide-border">
+        <TableHeader class="bg-muted">
+          <TableRow>
+            <TableHead class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">Product</TableHead>
+            <TableHead class="px-4 py-3 text-right text-xs font-semibold text-muted-foreground">Current</TableHead>
+            <TableHead class="px-4 py-3 text-right text-xs font-semibold text-muted-foreground">Min</TableHead>
+            <TableHead class="px-4 py-3 text-right text-xs font-semibold text-muted-foreground">Max</TableHead>
+            <TableHead class="px-4 py-3 text-right text-xs font-semibold text-muted-foreground">Reorder Point</TableHead>
+            <TableHead class="px-4 py-3 text-right text-xs font-semibold text-muted-foreground">ROQ</TableHead>
+            <TableHead class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">Status</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody class="divide-y divide-border">
+          <TableRow v-for="item in filteredKpis" :key="item.productUid">
+            <TableCell class="px-4 py-3 text-sm text-foreground">{{ item.productName }}</TableCell>
+            <TableCell class="px-4 py-3 text-sm text-right text-foreground">{{ item.currentStock }}</TableCell>
+            <TableCell class="px-4 py-3 text-sm text-right text-foreground">{{ item.minimumLevel }}</TableCell>
+            <TableCell class="px-4 py-3 text-sm text-right text-foreground">{{ item.maximumLevel }}</TableCell>
+            <TableCell class="px-4 py-3 text-sm text-right text-foreground">{{ item.reorderPoint }}</TableCell>
+            <TableCell class="px-4 py-3 text-sm text-right text-foreground">{{ item.reorderQuantity }}</TableCell>
+            <TableCell class="px-4 py-3 text-sm">
               <span
                 v-if="item.reorderNow"
                 class="inline-flex items-center rounded-full bg-destructive/10 text-destructive px-2 py-0.5 text-xs font-semibold"
@@ -207,15 +213,20 @@ onMounted(() => {
               >
                 OK
               </span>
-            </td>
-          </tr>
-          <tr v-if="filteredKpis.length === 0">
-            <td colspan="7" class="px-4 py-6 text-center text-sm text-muted-foreground">
-              No KPI records found.
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </TableCell>
+          </TableRow>
+          <TableEmpty v-if="filteredKpis.length === 0" :colspan="7">
+            <Empty class="border-0 bg-transparent p-0">
+              <EmptyContent>
+                <EmptyHeader>
+                  <EmptyTitle>No KPI records</EmptyTitle>
+                  <EmptyDescription>Adjust filters or check back later.</EmptyDescription>
+                </EmptyHeader>
+              </EmptyContent>
+            </Empty>
+          </TableEmpty>
+        </TableBody>
+      </Table>
     </div>
   </div>
 </template>

@@ -29,7 +29,7 @@ export default function useWorksheet(): WorksheetActions {
                     action: 'unassign',
                     samples: [],
                 },
-                'updateWorksheet'
+                'updateWorksheet',
             );
 
             if (!result) {
@@ -69,7 +69,7 @@ export default function useWorksheet(): WorksheetActions {
                     uids: worksheetUids,
                     action: 'submit',
                 },
-                'actionWorksheets'
+                'actionWorksheets',
             );
 
             if (!result) {

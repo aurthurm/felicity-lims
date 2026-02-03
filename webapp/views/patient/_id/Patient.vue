@@ -4,6 +4,7 @@ import { useRoute } from "vue-router";
 import { usePatientStore } from "@/stores/patient";
 import { PatientType } from "@/types/gql";
 
+defineOptions({ name: 'PatientView' })
 const PatientForm = defineAsyncComponent(
   () => import("@/components/person/PatientForm.vue")
 )
@@ -33,7 +34,7 @@ const updatePatient = (res: PatientType) => {
   </div>
 
   <!-- Patient Edit Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
+  <Modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">Patient Form</h3>
     </template>
@@ -41,6 +42,6 @@ const updatePatient = (res: PatientType) => {
     <template v-slot:body>
       <PatientForm :patient="patientStore.patient" :navigate="false" @close="updatePatient" />
     </template>
-  </fel-modal>
+  </Modal>
 </template>
 

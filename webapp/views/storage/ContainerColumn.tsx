@@ -21,14 +21,14 @@ const ContainerColumn = defineComponent({
         };
 
         return (
-            <div class="max-h-[600px] overflow-y-auto p-4 bg-background rounded-lg shadow-sm">
+            <div class="bg-background max-h-[600px] overflow-y-auto rounded-lg p-4 shadow-sm">
                 {[...Array(this.container?.slots ?? 0).keys()]?.map((slot, slotIdx) => {
                     return (
-                        <div class="grid grid-cols-12 gap-x-4 w-full mb-2" key={slotIdx}>
-                            <span class="col-span-1 my-1 text-sm font-medium text-muted-foreground">{slotIdx + 1}:</span>
+                        <div class="mb-2 grid w-full grid-cols-12 gap-x-4" key={slotIdx}>
+                            <span class="text-muted-foreground col-span-1 my-1 text-sm font-medium">{slotIdx + 1}:</span>
                             <div
                                 class={[
-                                    'col-span-11 p-2 rounded-lg transition-colors duration-200',
+                                    'col-span-11 rounded-lg p-2 transition-colors duration-200',
                                     'hover:bg-muted/50 cursor-pointer',
                                     { 'bg-muted/30': slotSample(slotIdx + 1) === null },
                                     { 'bg-emerald-500/20 hover:bg-emerald-500/30': slotSample(slotIdx + 1) !== null },

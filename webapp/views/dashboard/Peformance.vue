@@ -1,10 +1,12 @@
 <script lang="ts" setup>
 import { storeToRefs } from "pinia";
-import { onMounted, watch, ref } from "vue";
+import { computed, onMounted, watch, ref, nextTick } from "vue";
 import { Chart } from "@antv/g2";
 import { Bar } from "@antv/g2plot";
 import { useDashBoardStore } from "@/stores/dashboard";
 import { IProcess } from "@/stores/dashboard";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import { Spinner } from "@/components/ui/spinner";
 
 interface DonutData {
   item: string;
@@ -26,6 +28,8 @@ const prRTS = ref<IProcess>({} as IProcess);
 const prSTV = ref<IProcess>({} as IProcess);
 const prVTP = ref<IProcess>({} as IProcess);
 const analProcess = ref<IProcess>({} as IProcess);
+const hasSamplePerformance = computed(() => (dashboard.value.peformanceStats.sample ?? []).length > 0);
+const hasAnalysisPerformance = computed(() => (dashboard.value.peformanceStats.analysis ?? []).length > 0);
 
 onMounted(() => {
   dashBoardStore.getSampleProcessPeformance();
@@ -44,8 +48,10 @@ watch(
 
 watch(
   () => dashboard.value.peformanceStats.sample,
-  (processes) => {
-    processes?.forEach((process) => {
+  async (processes) => {
+    if (!processes?.length) return;
+    await nextTick();
+    processes.forEach((process) => {
       const donutData: DonutData[] = [
         {
           item: "On-Time",
@@ -91,8 +97,9 @@ watch(
 
 watch(
   () => dashboard.value.peformanceStats.analysis,
-  (process) => {
+  async (process) => {
     if (process?.[0]) {
+      await nextTick();
       analProcess.value = process[0];
       const services: ServiceData[] = process[0].groups?.map((group) => ({
         analysis: group?.service ?? "",
@@ -217,10 +224,22 @@ const resetSampleGraphs = () => {
 
     <div class="bg-muted p-4 rounded-sm">
       <div v-if="dashboard.fetchingSampePeformanceStats" class="text-start my-4">
-        <fel-loader message="Fetching updated sample performance stats..." />
+        <span class="inline-flex items-center gap-2">
+          <Spinner class="size-4" />
+          <span class="text-sm">Fetching updated sample performance stats...</span>
+        </span>
       </div>
-      
-      <div class="flex flex-wrap justify-start gap-4">
+      <div v-else-if="!hasSamplePerformance" class="py-4">
+        <Empty class="border-0 bg-background">
+          <EmptyContent>
+            <EmptyHeader>
+              <EmptyTitle>No sample performance data</EmptyTitle>
+              <EmptyDescription>Performance metrics will appear after samples are processed.</EmptyDescription>
+            </EmptyHeader>
+          </EmptyContent>
+        </Empty>
+      </div>
+      <div v-else class="flex flex-wrap justify-start gap-4">
         <div class="flex flex-col items-center">
           <div class="bg-background shadow rounded-sm px-6 pt-3 pb-5 border border-foreground text-center">
             <div class="font-semibold text-muted-foreground">Received to Published</div>
@@ -287,9 +306,22 @@ const resetSampleGraphs = () => {
 
     <div class=" bg-muted p-2">
       <div v-if="dashboard.fetchingAnalysisPeformanceStats" class="text-start my-4 w-100">
-        <fel-loader message="fetching analysis peformance stats ..." />
+        <span class="inline-flex items-center gap-2">
+          <Spinner class="size-4" />
+          <span class="text-sm">fetching analysis peformance stats ...</span>
+        </span>
       </div>
-      <div id="ap-graphs">
+      <div v-else-if="!hasAnalysisPerformance" class="py-4">
+        <Empty class="border-0 bg-background">
+          <EmptyContent>
+            <EmptyHeader>
+              <EmptyTitle>No analysis performance data</EmptyTitle>
+              <EmptyDescription>Analysis trends will appear once results are recorded.</EmptyDescription>
+            </EmptyHeader>
+          </EmptyContent>
+        </Empty>
+      </div>
+      <div v-else id="ap-graphs">
         <div id="process-service" class="mt-3"></div>
       </div>
     </div>

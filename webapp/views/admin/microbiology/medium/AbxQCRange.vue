@@ -1,18 +1,27 @@
 <script setup lang="ts">
 import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
-import { useForm, useField } from 'vee-validate';
+import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import { addListsUnique } from '@/utils';
 import useApiUtil from '@/composables/api_util';
 import { AbxQCRangeType, AbxGuidelineType, AbxMediumType } from "@/types/gql";
 import { GetAbxQcRangeAllDocument, GetAbxQcRangeAllQuery, GetAbxQcRangeAllQueryVariables, GetAbxGuidelinesAllDocument, GetAbxGuidelinesAllQuery, GetAbxGuidelinesAllQueryVariables, GetAbxMediumAllDocument, GetAbxMediumAllQuery, GetAbxMediumAllQueryVariables } from "@/graphql/operations/microbiology.queries";
 import { AddAbxQcRangeMutation, AddAbxQcRangeMutationVariables, AddAbxQcRangeDocument, EditAbxQcRangeMutation, EditAbxQcRangeMutationVariables, EditAbxQcRangeDocument } from '@/graphql/operations/microbiology.mutations';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
-const modal = defineAsyncComponent(
-  () => import("@/components/ui/FelModal.vue")
-)
+import PageHeading from "@/components/common/PageHeading.vue"
 const DataTable = defineAsyncComponent(
-  () => import('@/components/ui/datatable/FelDataTable.vue')
+  () => import('@/components/common/DataTable.vue')
 )
 const VueMultiselect = defineAsyncComponent(
   () => import('vue-multiselect')
@@ -41,7 +50,7 @@ const qcRangeSchema = yup.object({
   comments: yup.string().trim().nullable(),
 });
 
-const { handleSubmit, resetForm, setValues, errors } = useForm({
+const { handleSubmit, resetForm, setValues } = useForm({
   validationSchema: qcRangeSchema,
   initialValues: {
     guideline: null,
@@ -59,19 +68,6 @@ const { handleSubmit, resetForm, setValues, errors } = useForm({
     comments: '',
   },
 });
-const { value: guideline } = useField<AbxGuidelineType | null>('guideline');
-const { value: year } = useField<number | string>('year');
-const { value: strain } = useField<string>('strain');
-const { value: referenceTable } = useField<string>('referenceTable');
-const { value: whonetOrgCode } = useField<string>('whonetOrgCode');
-const { value: antibiotic } = useField<string>('antibiotic');
-const { value: abxTest } = useField<string>('abxTest');
-const { value: whonetAbxCode } = useField<string>('whonetAbxCode');
-const { value: method } = useField<string>('method');
-const { value: medium } = useField<AbxMediumType | null>('medium');
-const { value: minimum } = useField<string>('minimum');
-const { value: maximum } = useField<string>('maximum');
-const { value: comments } = useField<string>('comments');
 
 const fetchingQcRanges = ref<boolean>(false);
 const qcRanges = ref<AbxQCRangeType[]>([]);
@@ -347,9 +343,9 @@ const saveForm = handleSubmit((formValues) => {
 
 <template>
 
-  <fel-heading title="Quality Control range">
-    <!-- <fel-button @click="FormManager(true)">Add Medium</fel-button> -->
-  </fel-heading>
+  <PageHeading title="Quality Control range">
+    <!-- <Button @click="FormManager(true)">Add Medium</Button> -->
+  </PageHeading>
 
   <div class="rounded-lg shadow-sm bg-card p-6">
     <DataTable 
@@ -374,163 +370,169 @@ const saveForm = handleSubmit((formValues) => {
   </div>
 
   <!-- QcRange Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
+  <Modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form @submit.prevent="saveForm" class="space-y-6 p-4">
+      <Form @submit="saveForm" class="space-y-6 p-4">
         <!-- Basic Information -->
         <div class="space-y-4">
           <h4 class="text-lg font-semibold text-foreground">Basic Information</h4>
           <div class="grid grid-cols-2 gap-4">
-            <label class="block">
-              <span class="text-sm font-medium text-foreground">Guidelines</span>
-              <VueMultiselect
-              v-model="guideline"
-              :options="abxGuidelines"
-              :searchable="true"
-              label="name"
-              class="mt-1"
-              >
-              <!-- track-by="uid" -->
-              </VueMultiselect>
-              <p v-if="errors.guideline" class="text-sm text-destructive">{{ errors.guideline }}</p>
-            </label>
-            <label class="block">
-              <span class="text-sm font-medium text-foreground">Year</span>
-              <input
-                type="number"
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model.number="year"
-                placeholder="Enter year"
-              />
-              <p v-if="errors.year" class="text-sm text-destructive">{{ errors.year }}</p>
-            </label>
+            <FormField name="guideline" v-slot="{ value, handleChange }">
+              <FormItem>
+                <FormLabel>Guidelines</FormLabel>
+                <FormControl>
+                  <VueMultiselect
+                    :model-value="value"
+                    @update:model-value="handleChange"
+                    :options="abxGuidelines"
+                    :searchable="true"
+                    label="name"
+                    class="mt-1"
+                  >
+                  </VueMultiselect>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="year" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Year</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" type="number" placeholder="Enter year" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
           </div>
         </div>
 
         <!-- Coding Systems -->
         <div class="space-y-4">
           <div class="grid grid-cols-3 gap-4">
-            <label class="block">
-              <span class="text-sm font-medium text-foreground">Strain</span>
-              <input
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="strain"
-                placeholder="Strain"
-              />
-              <p v-if="errors.strain" class="text-sm text-destructive">{{ errors.strain }}</p>
-            </label>
-            <label class="block">
-              <span class="text-sm font-medium text-foreground">Reference Table</span>
-              <input
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="referenceTable"
-                placeholder="Reference Table"
-              />
-              <p v-if="errors.referenceTable" class="text-sm text-destructive">{{ errors.referenceTable }}</p>
-            </label>
-            <label class="block">
-              <span class="text-sm font-medium text-foreground">Whonet Org Code</span>
-              <input
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="whonetOrgCode"
-                placeholder="Whonet Org Code"
-              />
-              <p v-if="errors.whonetOrgCode" class="text-sm text-destructive">{{ errors.whonetOrgCode }}</p>
-            </label>
-            <label class="block">
-              <span class="text-sm font-medium text-foreground">Antibiotic</span>
-              <input
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="antibiotic"
-                placeholder="Antibiotic"
-              />
-              <p v-if="errors.antibiotic" class="text-sm text-destructive">{{ errors.antibiotic }}</p>
-            </label>
-            <label class="block">
-              <span class="text-sm font-medium text-foreground">Abx Test</span>
-              <input
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="abxTest"
-                placeholder="Abx Test"
-              />
-              <p v-if="errors.abxTest" class="text-sm text-destructive">{{ errors.abxTest }}</p>
-            </label>
-            <label class="block">
-              <span class="text-sm font-medium text-foreground">Whonet Abx Code</span>
-              <input
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="whonetAbxCode"
-                placeholder="Whonet Abx Code"
-              />
-              <p v-if="errors.whonetAbxCode" class="text-sm text-destructive">{{ errors.whonetAbxCode }}</p>
-            </label>
-            <label class="block">
-              <span class="text-sm font-medium text-foreground">Method</span>
-              <input
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="method"
-                placeholder="Method"
-              />
-              <p v-if="errors.method" class="text-sm text-destructive">{{ errors.method }}</p>
-            </label>
-            <label class="block">
-              <span class="text-sm font-medium text-foreground">Medium</span>
-              <VueMultiselect
-              v-model="medium"
-              :options="abxMediums"
-              :searchable="true"
-              label="name"
-              class="mt-1"
-              >
-              </VueMultiselect>
-            </label>
-            <label class="block">
-              <span class="text-sm font-medium text-foreground">Minimum</span>
-              <input
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="minimum"
-                placeholder="Minimum"
-              />
-            </label>
-            <label class="block">
-              <span class="text-sm font-medium text-foreground">Maximum</span>
-              <input
-                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                v-model="maximum"
-                placeholder="Maximum"
-              />
-            </label>
+            <FormField name="strain" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Strain</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" placeholder="Strain" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="referenceTable" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Reference Table</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" placeholder="Reference Table" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="whonetOrgCode" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Whonet Org Code</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" placeholder="Whonet Org Code" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="antibiotic" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Antibiotic</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" placeholder="Antibiotic" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="abxTest" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Abx Test</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" placeholder="Abx Test" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="whonetAbxCode" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Whonet Abx Code</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" placeholder="Whonet Abx Code" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="method" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Method</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" placeholder="Method" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="medium" v-slot="{ value, handleChange }">
+              <FormItem>
+                <FormLabel>Medium</FormLabel>
+                <FormControl>
+                  <VueMultiselect
+                    :model-value="value"
+                    @update:model-value="handleChange"
+                    :options="abxMediums"
+                    :searchable="true"
+                    label="name"
+                    class="mt-1"
+                  >
+                  </VueMultiselect>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="minimum" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Minimum</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" placeholder="Minimum" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            <FormField name="maximum" v-slot="{ componentField }">
+              <FormItem>
+                <FormLabel>Maximum</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" placeholder="Maximum" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
           </div>
         </div>
 
         <!-- Additional Information -->
         <div class="space-y-4">
-          <label class="block">
-            <span class="text-sm font-medium text-foreground">Comments</span>
-            <textarea
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              v-model="comments"
-              rows="3"
-              placeholder="Additional comments..."
-            ></textarea>
-          </label>
+          <FormField name="comments" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Comments</FormLabel>
+              <FormControl>
+                <Textarea v-bind="componentField" rows="3" placeholder="Additional comments..." />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </div>
 
         <hr class="border-border"/>
         
-        <button
-          type="submit"
-          class="w-full bg-primary text-primary-foreground rounded-sm px-4 py-2 transition-colors duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-        >
-          Save QcRange
-        </button>
-      </form>
+        <Button type="submit" class="w-full">Save QcRange</Button>
+      </Form>
     </template>
-  </fel-modal>
+  </Modal>
 
 </template>
 

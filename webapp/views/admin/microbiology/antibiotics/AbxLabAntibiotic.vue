@@ -5,7 +5,8 @@ import useApiUtil from '@/composables/api_util';
 import {AbxAntibioticType} from "@/types/gql";
 import { GetAbxLaboratoryAntibioticsDocument, GetAbxLaboratoryAntibioticsQuery, GetAbxLaboratoryAntibioticsQueryVariables } from '@/graphql/operations/microbiology.queries';
 import { DiscardAbxAntibioticMutation, DiscardAbxAntibioticMutationVariables, DiscardAbxAntibioticDocument } from '@/graphql/operations/microbiology.mutations';
-
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import PageHeading from "@/components/common/PageHeading.vue"
 const {withClientMutation, withClientQuery} = useApiUtil()
 
 const abxlabAntibiotics = ref<AbxAntibioticType[]>([]);
@@ -33,44 +34,54 @@ function discardAntibiotic(antibiotic) {
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Laboratory Antibiotics"></fel-heading>
+    <PageHeading title="Laboratory Antibiotics"></PageHeading>
 
     <div class="border shadow-sm rounded-lg bg-card p-6">
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-border fel-table">
-          <thead>
-            <tr>
-              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</th>
-              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Guidelines</th>
-              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Potency</th>
-              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">LOINC MIC</th>
-              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">LOINC DISK</th>
-              <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">LOINC ETEST</th>
-              <th class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+        <Table class="min-w-full divide-y divide-border">
+          <TableHeader>
+            <TableRow>
+              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</TableHead>
+              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Guidelines</TableHead>
+              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Potency</TableHead>
+              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">LOINC MIC</TableHead>
+              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">LOINC DISK</TableHead>
+              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">LOINC ETEST</TableHead>
+              <TableHead class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                 <span class="sr-only">Actions</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-border bg-background">
-            <tr v-for="abx in abxlabAntibiotics" :key="abx?.uid" class="hover:bg-muted/50">
-              <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ abx?.name }}</td>
-              <td class="whitespace-nowrap px-3 py-4 text-sm">
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody class="divide-y divide-border bg-background">
+            <TableRow v-for="abx in abxlabAntibiotics" :key="abx?.uid" class="hover:bg-muted/50">
+              <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ abx?.name }}</TableCell>
+              <TableCell class="whitespace-nowrap px-3 py-4 text-sm">
                 <span class="px-2 py-1 mr-2 text-sm bg-muted rounded-md font-medium" v-for="gl in abx?.guidelines" :key="gl.name">{{ gl.name }}</span>
-              </td>
-              <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ abx?.potency }}</td>
-              <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ abx?.loincmic }}</td>
-              <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ abx?.loincdisk }}</td>
-              <td class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ abx?.loincetest }}</td>
-              <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+              </TableCell>
+              <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ abx?.potency }}</TableCell>
+              <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ abx?.loincmic }}</TableCell>
+              <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ abx?.loincdisk }}</TableCell>
+              <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ abx?.loincetest }}</TableCell>
+              <TableCell class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                 <button 
                   @click="discardAntibiotic(abx)"
                   class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-destructive bg-background text-destructive hover:bg-destructive hover:text-destructive-foreground h-9 px-4 py-2">
                   Remove
                 </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </TableCell>
+            </TableRow>
+            <TableEmpty v-if="!abxlabAntibiotics || abxlabAntibiotics.length === 0" :colspan="7">
+              <Empty class="border-0 bg-transparent p-0">
+                <EmptyContent>
+                  <EmptyHeader>
+                    <EmptyTitle>No laboratory antibiotics found</EmptyTitle>
+                    <EmptyDescription>Add antibiotics to get started.</EmptyDescription>
+                  </EmptyHeader>
+                </EmptyContent>
+              </Empty>
+            </TableEmpty>
+          </TableBody>
+        </Table>
       </div>
     </div>
   </div>

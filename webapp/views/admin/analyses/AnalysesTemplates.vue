@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from "vue";
-import { useField, useForm } from "vee-validate";
+import { useForm } from "vee-validate";
 import * as yup from "yup";
 import { AnalysisTemplateType, AnalysisType } from "@/types/gql";
 import {
@@ -10,8 +10,34 @@ import {
 import { useSetupStore } from "@/stores/setup";
 import { useAnalysisStore } from "@/stores/analysis";
 import useApiUtil  from "@/composables/api_util";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 
+import PageHeading from "@/components/common/PageHeading.vue"
 const analysisStore = useAnalysisStore();
 const setupStore = useSetupStore();
 const { withClientMutation } = useApiUtil();
@@ -50,11 +76,6 @@ const { handleSubmit, resetForm, setValues } = useForm({
     active: true,
   },
 });
-
-const { value: name, errorMessage: nameError } = useField<string>("name");
-const { value: description, errorMessage: descriptionError } = useField<string | null>("description");
-const { value: departmentUid, errorMessage: departmentError } = useField<string | null>("departmentUid");
-const { value: active } = useField<boolean>("active");
 
 function addAnalysisTemplate(payload: { name: string; description: string | null; departmentUid: string | null; active: boolean }): void {
   withClientMutation<AddAnalysisTemplateMutation, AddAnalysisTemplateMutationVariables>(
@@ -148,9 +169,9 @@ const saveForm = handleSubmit((values) => {
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Analyses Templates">
-      <fel-button @click="FormManager(true)">Add Analyses Template</fel-button>
-    </fel-heading>
+    <PageHeading title="Analyses Templates">
+      <Button @click="FormManager(true)">Add Analyses Template</Button>
+    </PageHeading>
 
     <div class="grid grid-cols-12 gap-6">
       <!-- Templates List -->
@@ -198,16 +219,13 @@ const saveForm = handleSubmit((values) => {
                 </p>
               </div>
               <div class="flex items-center space-x-2">
-                <button
-                  @click="FormManager(false, analysisTemplate)"
-                  class="inline-flex items-center justify-center h-9 w-9 rounded-md border border-input bg-background text-foreground hover:bg-accent hover:text-accent-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
-                >
+                <Button variant="outline" size="icon" @click="FormManager(false, analysisTemplate)">
                   <svg class="w-4 h-4" viewBox="0 0 20 20">
                     <path
                       d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
                     ></path>
                   </svg>
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -246,9 +264,10 @@ const saveForm = handleSubmit((values) => {
                       v-for="category in analysesServices"
                       :key="category[0]"
                     >
-                      <fel-accordion>
-                        <template v-slot:title>{{ category[0] }}</template>
-                        <template v-slot:body>
+                      <Accordion type="single" collapsible>
+                        <AccordionItem :value="String(category[0])">
+                          <AccordionTrigger>{{ category[0] }}</AccordionTrigger>
+                          <AccordionContent>
                           <div>
                             <ul>
                               <li
@@ -266,11 +285,8 @@ const saveForm = handleSubmit((values) => {
                                       { 'text-gray-700 font-medium': false },
                                     ]"
                                   >
-                                    <input
-                                      type="checkbox"
-                                      :id="`toggle-${service?.uid}`"
-                                      class="form-control"
-                                      v-model="service.checked"
+                                    <Checkbox
+                                      :id="`toggle-${service?.uid}`" :checked="service.checked" @update:checked="(value) => service.checked = value"
                                     />
                                     <label
                                       :for="`toggle-${service?.uid}`"
@@ -283,8 +299,9 @@ const saveForm = handleSubmit((values) => {
                               </li>
                             </ul>
                           </div>
-                        </template>
-                      </fel-accordion>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
                     </div>
                   </div>
                   <button
@@ -302,70 +319,75 @@ const saveForm = handleSubmit((values) => {
 
       <!-- Empty State -->
       <section v-else class="col-span-9">
-        <div class="rounded-lg border border-border bg-card p-6 flex flex-col items-center justify-center space-y-4 min-h-[400px]">
-          <div class="text-4xl text-muted-foreground">📋</div>
-          <h3 class="text-lg font-medium text-foreground">No Template Selected</h3>
-          <p class="text-sm text-muted-foreground">Select a template from the list to view its details</p>
-        </div>
+        <Empty class="min-h-[400px] bg-card">
+          <EmptyContent>
+            <EmptyMedia variant="icon">
+              <span class="text-2xl">📋</span>
+            </EmptyMedia>
+            <EmptyHeader>
+              <EmptyTitle>No template selected</EmptyTitle>
+              <EmptyDescription>Select a template from the list to view its details.</EmptyDescription>
+            </EmptyHeader>
+          </EmptyContent>
+        </Empty>
       </section>
     </div>
   </div>
 
   <!-- Template Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false">
+  <Modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form @submit.prevent="saveForm" class="p-6 space-y-6">
+      <Form @submit="saveForm" class="p-6 space-y-6">
         <div class="space-y-4">
-          <label class="space-y-2">
-            <span class="text-sm font-medium text-muted-foreground">Template Name</span>
-            <input
-              v-model="name"
-              type="text"
-              class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
-              placeholder="Enter template name"
-            />
-            <p v-if="nameError" class="text-sm text-destructive">{{ nameError }}</p>
-          </label>
+          <FormField name="name" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Template Name</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Enter template name" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <label class="space-y-2">
-            <span class="text-sm font-medium text-muted-foreground">Department</span>
-            <select
-              v-model="departmentUid"
-              class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
-            >
-              <option value="">Select department</option>
-              <option v-for="department in departments" :key="department.uid" :value="department.uid">
-                {{ department.name }}
-              </option>
-            </select>
-            <p v-if="departmentError" class="text-sm text-destructive">{{ departmentError }}</p>
-          </label>
+          <FormField name="departmentUid" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Department</FormLabel>
+              <FormControl>
+                <Select v-bind="componentField">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select department" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Select department</SelectItem>
+                    <SelectItem v-for="department in departments" :key="department.uid" :value="department.uid">
+                      {{ department.name }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-          <label class="space-y-2">
-            <span class="text-sm font-medium text-muted-foreground">Description</span>
-            <textarea
-              v-model="description"
-              rows="3"
-              class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground resize-none"
-              placeholder="Enter template description"
-            ></textarea>
-            <p v-if="descriptionError" class="text-sm text-destructive">{{ descriptionError }}</p>
-          </label>
+          <FormField name="description" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea v-bind="componentField" rows="3" placeholder="Enter template description" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </div>
 
         <div class="pt-4">
-          <button
-            type="submit"
-            class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
-          >
-            Save Changes
-          </button>
+          <Button type="submit" class="w-full">Save Changes</Button>
         </div>
-      </form>
+      </Form>
     </template>
-  </fel-modal>
+  </Modal>
 </template>

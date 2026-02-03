@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import {computed, onBeforeMount, onMounted, watch} from "vue";
+import { computed, onBeforeMount, onMounted, watch } from "vue";
 import {useRouter} from "vue-router";
 import axios from "@/composables/axios";
 import {useStreamStore} from "@/stores/stream";
 import {useAuthStore} from "@/stores/auth";
 import userPreferenceComposable from "@/composables/preferences";
+import { Toaster } from "@/components/ui/sonner";
+import AppConfirmDialog from "@/components/common/AppConfirmDialog.vue";
 
-const {currentRoute, push} = useRouter();
+const { currentRoute, push } = useRouter();
 const authStore = useAuthStore();
 const streamStore = useStreamStore();
-const {loadPreferredTheme} = userPreferenceComposable();
+const { loadPreferredTheme } = userPreferenceComposable();
 
 watch(
   () => authStore.auth.isAuthenticated,
@@ -30,7 +32,7 @@ watch(
 onBeforeMount(() => {
   axios.get("setup/installation").then((resp) => {
     if (!resp.data.installed) {
-      push({name: "INSTALLATION"});
+      push({ name: "INSTALLATION" });
     }
   });
 });
@@ -58,7 +60,8 @@ const layout = computed(() => {
 
 <template>
   <component :is="layout">
-    <notifications position="bottom right"/>
+    <Toaster position="bottom-right" />
+    <AppConfirmDialog />
     <router-view/>
   </component>
 </template>

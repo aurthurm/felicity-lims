@@ -4,1014 +4,810 @@ import gql from 'graphql-tag';
 import * as Urql from '@urql/vue';
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type GetGrindErrandsQueryVariables = Types.Exact<{
-  first: Types.Scalars['Int']['input'];
-  after?: Types.InputMaybe<Types.Scalars['String']['input']>;
-  text: Types.Scalars['String']['input'];
-  sortBy?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
+    first: Types.Scalars['Int']['input'];
+    after?: Types.InputMaybe<Types.Scalars['String']['input']>;
+    text: Types.Scalars['String']['input'];
+    sortBy?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
 }>;
 
-
-export type GetGrindErrandsQuery = (
-  { __typename?: 'Query' }
-  & { grindErrandAll: (
-    { __typename?: 'GrindErrandCursorPage' }
-    & Pick<Types.GrindErrandCursorPage, 'totalCount'>
-    & {
-      pageInfo: (
-        { __typename?: 'PageInfo' }
-        & Pick<
-          Types.PageInfo,
-          | 'hasNextPage'
-          | 'hasPreviousPage'
-          | 'startCursor'
-          | 'endCursor'
-        >
-      ),
-      items?: Types.Maybe<Array<(
-        { __typename?: 'GrindErrandType' }
-        & Pick<
-          Types.GrindErrandType,
-          | 'uid'
-          | 'title'
-          | 'description'
-          | 'category'
-          | 'priority'
-          | 'startDate'
-          | 'endDate'
-          | 'milestonesAt'
-          | 'createdAt'
-        >
-        & {
-          poster?: Types.Maybe<(
-            { __typename?: 'GrindPosterType' }
-            & Pick<Types.GrindPosterType, 'uid' | 'title'>
-          )>,
-          stamps: Array<(
-            { __typename?: 'GrindStampType' }
-            & Pick<Types.GrindStampType, 'uid' | 'title'>
-          )>,
-          label?: Types.Maybe<(
-            { __typename?: 'GrindLabelType' }
-            & Pick<Types.GrindLabelType, 'uid' | 'title'>
-          )>,
-          createdBy?: Types.Maybe<(
-            { __typename?: 'UserType' }
-            & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
-          )>,
-          assignee?: Types.Maybe<(
-            { __typename?: 'UserType' }
-            & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
-          )>,
-          reporter?: Types.Maybe<(
-            { __typename?: 'UserType' }
-            & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
-          )>,
-          members: Array<(
-            { __typename?: 'UserType' }
-            & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
-          )>,
-        }
-      )>>,
-    }
-  ) }
-);
+export type GetGrindErrandsQuery = { __typename?: 'Query' } & {
+    grindErrandAll: { __typename?: 'GrindErrandCursorPage' } & Pick<Types.GrindErrandCursorPage, 'totalCount'> & {
+            pageInfo: { __typename?: 'PageInfo' } & Pick<Types.PageInfo, 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | 'endCursor'>;
+            items?: Types.Maybe<
+                Array<
+                    { __typename?: 'GrindErrandType' } & Pick<
+                        Types.GrindErrandType,
+                        'uid' | 'title' | 'description' | 'category' | 'priority' | 'startDate' | 'endDate' | 'milestonesAt' | 'createdAt'
+                    > & {
+                            poster?: Types.Maybe<{ __typename?: 'GrindPosterType' } & Pick<Types.GrindPosterType, 'uid' | 'title'>>;
+                            stamps: Array<{ __typename?: 'GrindStampType' } & Pick<Types.GrindStampType, 'uid' | 'title'>>;
+                            label?: Types.Maybe<{ __typename?: 'GrindLabelType' } & Pick<Types.GrindLabelType, 'uid' | 'title'>>;
+                            createdBy?: Types.Maybe<{ __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>>;
+                            assignee?: Types.Maybe<{ __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>>;
+                            reporter?: Types.Maybe<{ __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>>;
+                            members: Array<{ __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>>;
+                        }
+                >
+            >;
+        };
+};
 
 export type GetGrindErrandQueryVariables = Types.Exact<{
-  uid: Types.Scalars['String']['input'];
+    uid: Types.Scalars['String']['input'];
 }>;
 
-
-export type GetGrindErrandQuery = (
-  { __typename?: 'Query' }
-  & { grindErrandByUid?: Types.Maybe<(
-    { __typename?: 'GrindErrandType' }
-    & Pick<
-      Types.GrindErrandType,
-      | 'uid'
-      | 'title'
-      | 'description'
-      | 'category'
-      | 'priority'
-      | 'startDate'
-      | 'endDate'
-      | 'posterUid'
-      | 'milestonesAt'
-      | 'labelUid'
-      | 'createdAt'
-    >
-    & {
-      poster?: Types.Maybe<(
-        { __typename?: 'GrindPosterType' }
-        & Pick<Types.GrindPosterType, 'uid' | 'title'>
-      )>,
-      stamps: Array<(
-        { __typename?: 'GrindStampType' }
-        & Pick<Types.GrindStampType, 'uid' | 'title'>
-      )>,
-      label?: Types.Maybe<(
-        { __typename?: 'GrindLabelType' }
-        & Pick<Types.GrindLabelType, 'uid' | 'title'>
-      )>,
-      assignee?: Types.Maybe<(
-        { __typename?: 'UserType' }
-        & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
-      )>,
-      reporter?: Types.Maybe<(
-        { __typename?: 'UserType' }
-        & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
-      )>,
-      members: Array<(
-        { __typename?: 'UserType' }
-        & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
-      )>,
-      createdBy?: Types.Maybe<(
-        { __typename?: 'UserType' }
-        & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
-      )>,
-    }
-  )> }
-);
+export type GetGrindErrandQuery = { __typename?: 'Query' } & {
+    grindErrandByUid?: Types.Maybe<
+        { __typename?: 'GrindErrandType' } & Pick<
+            Types.GrindErrandType,
+            | 'uid'
+            | 'title'
+            | 'description'
+            | 'category'
+            | 'priority'
+            | 'startDate'
+            | 'endDate'
+            | 'posterUid'
+            | 'milestonesAt'
+            | 'labelUid'
+            | 'createdAt'
+        > & {
+                poster?: Types.Maybe<{ __typename?: 'GrindPosterType' } & Pick<Types.GrindPosterType, 'uid' | 'title'>>;
+                stamps: Array<{ __typename?: 'GrindStampType' } & Pick<Types.GrindStampType, 'uid' | 'title'>>;
+                label?: Types.Maybe<{ __typename?: 'GrindLabelType' } & Pick<Types.GrindLabelType, 'uid' | 'title'>>;
+                assignee?: Types.Maybe<{ __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>>;
+                reporter?: Types.Maybe<{ __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>>;
+                members: Array<{ __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>>;
+                createdBy?: Types.Maybe<{ __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>>;
+            }
+    >;
+};
 
 export type GetGrindErrandDiscussionsQueryVariables = Types.Exact<{
-  errandUid: Types.Scalars['String']['input'];
+    errandUid: Types.Scalars['String']['input'];
 }>;
 
-
-export type GetGrindErrandDiscussionsQuery = (
-  { __typename?: 'Query' }
-  & { grindErrandDiscussions: Array<(
-    { __typename?: 'GrindErrandDiscussionType' }
-    & Pick<
-      Types.GrindErrandDiscussionType,
-      | 'uid'
-      | 'comment'
-      | 'errandUid'
-      | 'parentUid'
-      | 'canEdit'
-      | 'createdAt'
-      | 'createdByUid'
-    >
-    & {
-      subdiscussions: Array<(
-        { __typename?: 'GrindErrandDiscussionType' }
-        & Pick<
-          Types.GrindErrandDiscussionType,
-          | 'uid'
-          | 'comment'
-          | 'errandUid'
-          | 'parentUid'
-        >
-      )>,
-      createdBy?: Types.Maybe<(
-        { __typename?: 'UserType' }
-        & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
-      )>,
-    }
-  )> }
-);
+export type GetGrindErrandDiscussionsQuery = { __typename?: 'Query' } & {
+    grindErrandDiscussions: Array<
+        { __typename?: 'GrindErrandDiscussionType' } & Pick<
+            Types.GrindErrandDiscussionType,
+            'uid' | 'comment' | 'errandUid' | 'parentUid' | 'canEdit' | 'createdAt' | 'createdByUid'
+        > & {
+                subdiscussions: Array<
+                    { __typename?: 'GrindErrandDiscussionType' } & Pick<
+                        Types.GrindErrandDiscussionType,
+                        'uid' | 'comment' | 'errandUid' | 'parentUid'
+                    >
+                >;
+                createdBy?: Types.Maybe<{ __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>>;
+            }
+    >;
+};
 
 export type GetGrindErrandDiscussionsByParentQueryVariables = Types.Exact<{
-  parentUid: Types.Scalars['String']['input'];
+    parentUid: Types.Scalars['String']['input'];
 }>;
 
-
-export type GetGrindErrandDiscussionsByParentQuery = (
-  { __typename?: 'Query' }
-  & { grindErrandDiscussionsByParent: Array<(
-    { __typename?: 'GrindErrandDiscussionType' }
-    & Pick<
-      Types.GrindErrandDiscussionType,
-      | 'uid'
-      | 'comment'
-      | 'errandUid'
-      | 'parentUid'
-      | 'canEdit'
-      | 'createdAt'
-      | 'createdByUid'
-    >
-    & {
-      subdiscussions: Array<(
-        { __typename?: 'GrindErrandDiscussionType' }
-        & Pick<
-          Types.GrindErrandDiscussionType,
-          | 'uid'
-          | 'comment'
-          | 'errandUid'
-          | 'parentUid'
-        >
-      )>,
-      createdBy?: Types.Maybe<(
-        { __typename?: 'UserType' }
-        & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
-      )>,
-    }
-  )> }
-);
+export type GetGrindErrandDiscussionsByParentQuery = { __typename?: 'Query' } & {
+    grindErrandDiscussionsByParent: Array<
+        { __typename?: 'GrindErrandDiscussionType' } & Pick<
+            Types.GrindErrandDiscussionType,
+            'uid' | 'comment' | 'errandUid' | 'parentUid' | 'canEdit' | 'createdAt' | 'createdByUid'
+        > & {
+                subdiscussions: Array<
+                    { __typename?: 'GrindErrandDiscussionType' } & Pick<
+                        Types.GrindErrandDiscussionType,
+                        'uid' | 'comment' | 'errandUid' | 'parentUid'
+                    >
+                >;
+                createdBy?: Types.Maybe<{ __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>>;
+            }
+    >;
+};
 
 export type GetGrindOccurrenciesByTargetQueryVariables = Types.Exact<{
-  target: Types.Scalars['String']['input'];
-  targetUid: Types.Scalars['String']['input'];
+    target: Types.Scalars['String']['input'];
+    targetUid: Types.Scalars['String']['input'];
 }>;
 
-
-export type GetGrindOccurrenciesByTargetQuery = (
-  { __typename?: 'Query' }
-  & { grindOccurrencesByTarget: Array<(
-    { __typename?: 'GrindOccurrenceType' }
-    & Pick<
-      Types.GrindOccurrenceType,
-      | 'uid'
-      | 'description'
-      | 'target'
-      | 'targetUid'
-      | 'createdAt'
-    >
-    & { actor?: Types.Maybe<(
-      { __typename?: 'UserType' }
-      & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
-    )> }
-  )> }
-);
+export type GetGrindOccurrenciesByTargetQuery = { __typename?: 'Query' } & {
+    grindOccurrencesByTarget: Array<
+        { __typename?: 'GrindOccurrenceType' } & Pick<
+            Types.GrindOccurrenceType,
+            'uid' | 'description' | 'target' | 'targetUid' | 'createdAt'
+        > & { actor?: Types.Maybe<{ __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>> }
+    >;
+};
 
 export type GetGrindMilestonesByErrandQueryVariables = Types.Exact<{
-  errandUid: Types.Scalars['String']['input'];
+    errandUid: Types.Scalars['String']['input'];
 }>;
 
-
-export type GetGrindMilestonesByErrandQuery = (
-  { __typename?: 'Query' }
-  & { grindMilestonesByErrand: Array<(
-    { __typename?: 'GrindMilestoneType' }
-    & Pick<
-      Types.GrindMilestoneType,
-      | 'uid'
-      | 'title'
-      | 'description'
-      | 'createdAt'
-      | 'complete'
-    >
-    & {
-      errand?: Types.Maybe<(
-        { __typename?: 'GrindErrandType' }
-        & Pick<Types.GrindErrandType, 'uid'>
-      )>,
-      createdBy?: Types.Maybe<(
-        { __typename?: 'UserType' }
-        & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
-      )>,
-      assignee?: Types.Maybe<(
-        { __typename?: 'UserType' }
-        & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
-      )>,
-    }
-  )> }
-);
+export type GetGrindMilestonesByErrandQuery = { __typename?: 'Query' } & {
+    grindMilestonesByErrand: Array<
+        { __typename?: 'GrindMilestoneType' } & Pick<
+            Types.GrindMilestoneType,
+            'uid' | 'title' | 'description' | 'createdAt' | 'complete'
+        > & {
+                errand?: Types.Maybe<{ __typename?: 'GrindErrandType' } & Pick<Types.GrindErrandType, 'uid'>>;
+                createdBy?: Types.Maybe<{ __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>>;
+                assignee?: Types.Maybe<{ __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>>;
+            }
+    >;
+};
 
 export type GetGrindMediaQueryVariables = Types.Exact<{
-  target: Types.Scalars['String']['input'];
-  targetUid: Types.Scalars['String']['input'];
+    target: Types.Scalars['String']['input'];
+    targetUid: Types.Scalars['String']['input'];
 }>;
 
-
-export type GetGrindMediaQuery = (
-  { __typename?: 'Query' }
-  & { grindMediaByTarget: Array<(
-    { __typename?: 'GrindMediaType' }
-    & Pick<
-      Types.GrindMediaType,
-      | 'uid'
-      | 'target'
-      | 'targetUid'
-      | 'destination'
-      | 'encoding'
-      | 'filename'
-      | 'mimetype'
-      | 'originalName'
-      | 'path'
-      | 'size'
-      | 'createdAt'
-    >
-    & { createdBy?: Types.Maybe<(
-      { __typename?: 'UserType' }
-      & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
-    )> }
-  )> }
-);
+export type GetGrindMediaQuery = { __typename?: 'Query' } & {
+    grindMediaByTarget: Array<
+        { __typename?: 'GrindMediaType' } & Pick<
+            Types.GrindMediaType,
+            | 'uid'
+            | 'target'
+            | 'targetUid'
+            | 'destination'
+            | 'encoding'
+            | 'filename'
+            | 'mimetype'
+            | 'originalName'
+            | 'path'
+            | 'size'
+            | 'createdAt'
+        > & { createdBy?: Types.Maybe<{ __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>> }
+    >;
+};
 
 export type GetGrindSchemeAllQueryVariables = Types.Exact<{
-  first: Types.Scalars['Int']['input'];
-  after?: Types.InputMaybe<Types.Scalars['String']['input']>;
-  text: Types.Scalars['String']['input'];
-  sortBy?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
+    first: Types.Scalars['Int']['input'];
+    after?: Types.InputMaybe<Types.Scalars['String']['input']>;
+    text: Types.Scalars['String']['input'];
+    sortBy?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
 }>;
 
-
-export type GetGrindSchemeAllQuery = (
-  { __typename?: 'Query' }
-  & { grindSchemeAll: (
-    { __typename?: 'GrindSchemeCursorPage' }
-    & Pick<Types.GrindSchemeCursorPage, 'totalCount'>
-    & {
-      pageInfo: (
-        { __typename?: 'PageInfo' }
-        & Pick<
-          Types.PageInfo,
-          | 'hasNextPage'
-          | 'hasPreviousPage'
-          | 'startCursor'
-          | 'endCursor'
-        >
-      ),
-      items?: Types.Maybe<Array<(
-        { __typename?: 'GrindSchemeType' }
-        & Pick<
-          Types.GrindSchemeType,
-          | 'uid'
-          | 'title'
-          | 'description'
-          | 'startDate'
-          | 'endDate'
-          | 'createdAt'
-        >
-        & {
-          assignee?: Types.Maybe<(
-            { __typename?: 'UserType' }
-            & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
-          )>,
-          members: Array<(
-            { __typename?: 'UserType' }
-            & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
-          )>,
-          createdBy?: Types.Maybe<(
-            { __typename?: 'UserType' }
-            & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
-          )>,
-        }
-      )>>,
-    }
-  ) }
-);
+export type GetGrindSchemeAllQuery = { __typename?: 'Query' } & {
+    grindSchemeAll: { __typename?: 'GrindSchemeCursorPage' } & Pick<Types.GrindSchemeCursorPage, 'totalCount'> & {
+            pageInfo: { __typename?: 'PageInfo' } & Pick<Types.PageInfo, 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | 'endCursor'>;
+            items?: Types.Maybe<
+                Array<
+                    { __typename?: 'GrindSchemeType' } & Pick<
+                        Types.GrindSchemeType,
+                        'uid' | 'title' | 'description' | 'startDate' | 'endDate' | 'createdAt'
+                    > & {
+                            assignee?: Types.Maybe<{ __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>>;
+                            members: Array<{ __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>>;
+                            createdBy?: Types.Maybe<{ __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>>;
+                        }
+                >
+            >;
+        };
+};
 
 export type GetGrindSchemeQueryVariables = Types.Exact<{
-  uid: Types.Scalars['String']['input'];
+    uid: Types.Scalars['String']['input'];
 }>;
 
-
-export type GetGrindSchemeQuery = (
-  { __typename?: 'Query' }
-  & { grindSchemeByUid?: Types.Maybe<(
-    { __typename?: 'GrindSchemeType' }
-    & Pick<
-      Types.GrindSchemeType,
-      | 'uid'
-      | 'title'
-      | 'description'
-      | 'startDate'
-      | 'endDate'
-      | 'createdAt'
-    >
-    & {
-      assignee?: Types.Maybe<(
-        { __typename?: 'UserType' }
-        & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
-      )>,
-      members: Array<(
-        { __typename?: 'UserType' }
-        & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
-      )>,
-      boards: Array<(
-        { __typename?: 'GrindBoardType' }
-        & Pick<Types.GrindBoardType, 'uid' | 'title' | 'description'>
-      )>,
-      createdBy?: Types.Maybe<(
-        { __typename?: 'UserType' }
-        & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
-      )>,
-    }
-  )> }
-);
+export type GetGrindSchemeQuery = { __typename?: 'Query' } & {
+    grindSchemeByUid?: Types.Maybe<
+        { __typename?: 'GrindSchemeType' } & Pick<
+            Types.GrindSchemeType,
+            'uid' | 'title' | 'description' | 'startDate' | 'endDate' | 'createdAt'
+        > & {
+                assignee?: Types.Maybe<{ __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>>;
+                members: Array<{ __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>>;
+                boards: Array<{ __typename?: 'GrindBoardType' } & Pick<Types.GrindBoardType, 'uid' | 'title' | 'description'>>;
+                createdBy?: Types.Maybe<{ __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>>;
+            }
+    >;
+};
 
 export type GetGrindPostersByBoardQueryVariables = Types.Exact<{
-  boardUid: Types.Scalars['String']['input'];
+    boardUid: Types.Scalars['String']['input'];
 }>;
 
-
-export type GetGrindPostersByBoardQuery = (
-  { __typename?: 'Query' }
-  & { grindPostersByBoard: Array<(
-    { __typename?: 'GrindPosterType' }
-    & Pick<Types.GrindPosterType, 'uid' | 'title' | 'boardUid'>
-    & { errands: Array<(
-      { __typename?: 'GrindErrandType' }
-      & Pick<
-        Types.GrindErrandType,
-        | 'uid'
-        | 'title'
-        | 'description'
-        | 'priority'
-        | 'startDate'
-        | 'endDate'
-        | 'progress'
-        | 'posterUid'
-        | 'milestonesAt'
-        | 'labelUid'
-      >
-      & {
-        stamps: Array<(
-          { __typename?: 'GrindStampType' }
-          & Pick<Types.GrindStampType, 'uid' | 'title'>
-        )>,
-        assignee?: Types.Maybe<(
-          { __typename?: 'UserType' }
-          & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
-        )>,
-        members: Array<(
-          { __typename?: 'UserType' }
-          & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>
-        )>,
-      }
-    )> }
-  )> }
-);
+export type GetGrindPostersByBoardQuery = { __typename?: 'Query' } & {
+    grindPostersByBoard: Array<
+        { __typename?: 'GrindPosterType' } & Pick<Types.GrindPosterType, 'uid' | 'title' | 'boardUid'> & {
+                errands: Array<
+                    { __typename?: 'GrindErrandType' } & Pick<
+                        Types.GrindErrandType,
+                        | 'uid'
+                        | 'title'
+                        | 'description'
+                        | 'priority'
+                        | 'startDate'
+                        | 'endDate'
+                        | 'progress'
+                        | 'posterUid'
+                        | 'milestonesAt'
+                        | 'labelUid'
+                    > & {
+                            stamps: Array<{ __typename?: 'GrindStampType' } & Pick<Types.GrindStampType, 'uid' | 'title'>>;
+                            assignee?: Types.Maybe<{ __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>>;
+                            members: Array<{ __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName'>>;
+                        }
+                >;
+            }
+    >;
+};
 
 export type GetGrindStampAllQueryVariables = Types.Exact<{
-  first: Types.Scalars['Int']['input'];
-  after?: Types.InputMaybe<Types.Scalars['String']['input']>;
-  text: Types.Scalars['String']['input'];
-  sortBy?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
+    first: Types.Scalars['Int']['input'];
+    after?: Types.InputMaybe<Types.Scalars['String']['input']>;
+    text: Types.Scalars['String']['input'];
+    sortBy?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
 }>;
 
-
-export type GetGrindStampAllQuery = (
-  { __typename?: 'Query' }
-  & { grindStampAll: (
-    { __typename?: 'GrindStampCursorPage' }
-    & Pick<Types.GrindStampCursorPage, 'totalCount'>
-    & {
-      pageInfo: (
-        { __typename?: 'PageInfo' }
-        & Pick<
-          Types.PageInfo,
-          | 'hasNextPage'
-          | 'hasPreviousPage'
-          | 'startCursor'
-          | 'endCursor'
-        >
-      ),
-      items?: Types.Maybe<Array<(
-        { __typename?: 'GrindStampType' }
-        & Pick<Types.GrindStampType, 'uid' | 'title' | 'category'>
-      )>>,
-    }
-  ) }
-);
+export type GetGrindStampAllQuery = { __typename?: 'Query' } & {
+    grindStampAll: { __typename?: 'GrindStampCursorPage' } & Pick<Types.GrindStampCursorPage, 'totalCount'> & {
+            pageInfo: { __typename?: 'PageInfo' } & Pick<Types.PageInfo, 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | 'endCursor'>;
+            items?: Types.Maybe<Array<{ __typename?: 'GrindStampType' } & Pick<Types.GrindStampType, 'uid' | 'title' | 'category'>>>;
+        };
+};
 
 export type GetGrindStampByCategoryQueryVariables = Types.Exact<{
-  category: Types.StampCategory;
+    category: Types.StampCategory;
 }>;
 
-
-export type GetGrindStampByCategoryQuery = (
-  { __typename?: 'Query' }
-  & { grindStampByCategory: Array<(
-    { __typename?: 'GrindStampType' }
-    & Pick<Types.GrindStampType, 'uid' | 'title' | 'category'>
-  )> }
-);
+export type GetGrindStampByCategoryQuery = { __typename?: 'Query' } & {
+    grindStampByCategory: Array<{ __typename?: 'GrindStampType' } & Pick<Types.GrindStampType, 'uid' | 'title' | 'category'>>;
+};
 
 export type GetGrindLabelAllQueryVariables = Types.Exact<{
-  first: Types.Scalars['Int']['input'];
-  after?: Types.InputMaybe<Types.Scalars['String']['input']>;
-  text: Types.Scalars['String']['input'];
-  sortBy?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
+    first: Types.Scalars['Int']['input'];
+    after?: Types.InputMaybe<Types.Scalars['String']['input']>;
+    text: Types.Scalars['String']['input'];
+    sortBy?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
 }>;
 
-
-export type GetGrindLabelAllQuery = (
-  { __typename?: 'Query' }
-  & { grindLabelAll: (
-    { __typename?: 'GrindLabelCursorPage' }
-    & Pick<Types.GrindLabelCursorPage, 'totalCount'>
-    & {
-      pageInfo: (
-        { __typename?: 'PageInfo' }
-        & Pick<
-          Types.PageInfo,
-          | 'hasNextPage'
-          | 'hasPreviousPage'
-          | 'startCursor'
-          | 'endCursor'
-        >
-      ),
-      items?: Types.Maybe<Array<(
-        { __typename?: 'GrindLabelType' }
-        & Pick<Types.GrindLabelType, 'uid' | 'title' | 'category'>
-      )>>,
-    }
-  ) }
-);
+export type GetGrindLabelAllQuery = { __typename?: 'Query' } & {
+    grindLabelAll: { __typename?: 'GrindLabelCursorPage' } & Pick<Types.GrindLabelCursorPage, 'totalCount'> & {
+            pageInfo: { __typename?: 'PageInfo' } & Pick<Types.PageInfo, 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | 'endCursor'>;
+            items?: Types.Maybe<Array<{ __typename?: 'GrindLabelType' } & Pick<Types.GrindLabelType, 'uid' | 'title' | 'category'>>>;
+        };
+};
 
 export type DownloadGrindMediaFileUrlQueryVariables = Types.Exact<{
-  uid: Types.Scalars['String']['input'];
+    uid: Types.Scalars['String']['input'];
 }>;
 
-
-export type DownloadGrindMediaFileUrlQuery = (
-  { __typename?: 'Query' }
-  & { downloadGrindMediaFileUrl: (
-    { __typename?: 'FileUrlResponseType' }
-    & Pick<
-      Types.FileUrlResponseType,
-      | 'uid'
-      | 'mimetype'
-      | 'filename'
-      | 'downloadUrl'
-    >
-  ) }
-);
+export type DownloadGrindMediaFileUrlQuery = { __typename?: 'Query' } & {
+    downloadGrindMediaFileUrl: { __typename?: 'FileUrlResponseType' } & Pick<
+        Types.FileUrlResponseType,
+        'uid' | 'mimetype' | 'filename' | 'downloadUrl'
+    >;
+};
 
 export type DownloadGrindMediaFileQueryVariables = Types.Exact<{
-  uid: Types.Scalars['String']['input'];
+    uid: Types.Scalars['String']['input'];
 }>;
 
-
-export type DownloadGrindMediaFileQuery = (
-  { __typename?: 'Query' }
-  & { downloadGrindMediaFile: (
-    { __typename?: 'FileResponseType' }
-    & Pick<
-      Types.FileResponseType,
-      | 'uid'
-      | 'filename'
-      | 'mimetype'
-      | 'content'
-      | 'size'
-    >
-  ) }
-);
-
+export type DownloadGrindMediaFileQuery = { __typename?: 'Query' } & {
+    downloadGrindMediaFile: { __typename?: 'FileResponseType' } & Pick<
+        Types.FileResponseType,
+        'uid' | 'filename' | 'mimetype' | 'content' | 'size'
+    >;
+};
 
 export const GetGrindErrandsDocument = gql`
     query GetGrindErrands($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
-  grindErrandAll(
-    pageSize: $first
-    afterCursor: $after
-    text: $text
-    sortBy: $sortBy
-  ) {
-    totalCount
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-      startCursor
-      endCursor
+        grindErrandAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {
+            totalCount
+            pageInfo {
+                hasNextPage
+                hasPreviousPage
+                startCursor
+                endCursor
+            }
+            items {
+                uid
+                title
+                description
+                category
+                priority
+                startDate
+                endDate
+                milestonesAt
+                poster {
+                    uid
+                    title
+                }
+                stamps {
+                    uid
+                    title
+                }
+                label {
+                    uid
+                    title
+                }
+                createdBy {
+                    uid
+                    firstName
+                    lastName
+                }
+                assignee {
+                    uid
+                    firstName
+                    lastName
+                }
+                reporter {
+                    uid
+                    firstName
+                    lastName
+                }
+                members {
+                    uid
+                    firstName
+                    lastName
+                }
+                createdAt
+            }
+        }
     }
-    items {
-      uid
-      title
-      description
-      category
-      priority
-      startDate
-      endDate
-      milestonesAt
-      poster {
-        uid
-        title
-      }
-      stamps {
-        uid
-        title
-      }
-      label {
-        uid
-        title
-      }
-      createdBy {
-        uid
-        firstName
-        lastName
-      }
-      assignee {
-        uid
-        firstName
-        lastName
-      }
-      reporter {
-        uid
-        firstName
-        lastName
-      }
-      members {
-        uid
-        firstName
-        lastName
-      }
-      createdAt
-    }
-  }
-}
-    `;
+`;
 
 export function useGetGrindErrandsQuery(options?: Omit<Urql.UseQueryArgs<never, GetGrindErrandsQueryVariables | undefined>, 'query'>) {
-  return Urql.useQuery<GetGrindErrandsQuery, GetGrindErrandsQueryVariables | undefined>({ query: GetGrindErrandsDocument, variables: undefined, ...options });
-};
+    return Urql.useQuery<GetGrindErrandsQuery, GetGrindErrandsQueryVariables | undefined>({
+        query: GetGrindErrandsDocument,
+        variables: undefined,
+        ...options,
+    });
+}
 export const GetGrindErrandDocument = gql`
     query GetGrindErrand($uid: String!) {
-  grindErrandByUid(uid: $uid) {
-    uid
-    title
-    description
-    category
-    priority
-    startDate
-    endDate
-    posterUid
-    milestonesAt
-    poster {
-      uid
-      title
+        grindErrandByUid(uid: $uid) {
+            uid
+            title
+            description
+            category
+            priority
+            startDate
+            endDate
+            posterUid
+            milestonesAt
+            poster {
+                uid
+                title
+            }
+            stamps {
+                uid
+                title
+            }
+            labelUid
+            label {
+                uid
+                title
+            }
+            assignee {
+                uid
+                firstName
+                lastName
+            }
+            reporter {
+                uid
+                firstName
+                lastName
+            }
+            members {
+                uid
+                firstName
+                lastName
+            }
+            createdBy {
+                uid
+                firstName
+                lastName
+            }
+            createdAt
+        }
     }
-    stamps {
-      uid
-      title
-    }
-    labelUid
-    label {
-      uid
-      title
-    }
-    assignee {
-      uid
-      firstName
-      lastName
-    }
-    reporter {
-      uid
-      firstName
-      lastName
-    }
-    members {
-      uid
-      firstName
-      lastName
-    }
-    createdBy {
-      uid
-      firstName
-      lastName
-    }
-    createdAt
-  }
-}
-    `;
+`;
 
 export function useGetGrindErrandQuery(options?: Omit<Urql.UseQueryArgs<never, GetGrindErrandQueryVariables | undefined>, 'query'>) {
-  return Urql.useQuery<GetGrindErrandQuery, GetGrindErrandQueryVariables | undefined>({ query: GetGrindErrandDocument, variables: undefined, ...options });
-};
+    return Urql.useQuery<GetGrindErrandQuery, GetGrindErrandQueryVariables | undefined>({
+        query: GetGrindErrandDocument,
+        variables: undefined,
+        ...options,
+    });
+}
 export const GetGrindErrandDiscussionsDocument = gql`
     query GetGrindErrandDiscussions($errandUid: String!) {
-  grindErrandDiscussions(errandUid: $errandUid) {
-    uid
-    comment
-    errandUid
-    parentUid
-    subdiscussions {
-      uid
-      comment
-      errandUid
-      parentUid
+        grindErrandDiscussions(errandUid: $errandUid) {
+            uid
+            comment
+            errandUid
+            parentUid
+            subdiscussions {
+                uid
+                comment
+                errandUid
+                parentUid
+            }
+            canEdit
+            createdAt
+            createdByUid
+            createdBy {
+                uid
+                firstName
+                lastName
+            }
+        }
     }
-    canEdit
-    createdAt
-    createdByUid
-    createdBy {
-      uid
-      firstName
-      lastName
-    }
-  }
-}
-    `;
+`;
 
-export function useGetGrindErrandDiscussionsQuery(options?: Omit<Urql.UseQueryArgs<never, GetGrindErrandDiscussionsQueryVariables | undefined>, 'query'>) {
-  return Urql.useQuery<GetGrindErrandDiscussionsQuery, GetGrindErrandDiscussionsQueryVariables | undefined>({ query: GetGrindErrandDiscussionsDocument, variables: undefined, ...options });
-};
+export function useGetGrindErrandDiscussionsQuery(
+    options?: Omit<Urql.UseQueryArgs<never, GetGrindErrandDiscussionsQueryVariables | undefined>, 'query'>,
+) {
+    return Urql.useQuery<GetGrindErrandDiscussionsQuery, GetGrindErrandDiscussionsQueryVariables | undefined>({
+        query: GetGrindErrandDiscussionsDocument,
+        variables: undefined,
+        ...options,
+    });
+}
 export const GetGrindErrandDiscussionsByParentDocument = gql`
     query GetGrindErrandDiscussionsByParent($parentUid: String!) {
-  grindErrandDiscussionsByParent(parentUid: $parentUid) {
-    uid
-    comment
-    errandUid
-    parentUid
-    subdiscussions {
-      uid
-      comment
-      errandUid
-      parentUid
+        grindErrandDiscussionsByParent(parentUid: $parentUid) {
+            uid
+            comment
+            errandUid
+            parentUid
+            subdiscussions {
+                uid
+                comment
+                errandUid
+                parentUid
+            }
+            canEdit
+            createdAt
+            createdByUid
+            createdBy {
+                uid
+                firstName
+                lastName
+            }
+        }
     }
-    canEdit
-    createdAt
-    createdByUid
-    createdBy {
-      uid
-      firstName
-      lastName
-    }
-  }
-}
-    `;
+`;
 
-export function useGetGrindErrandDiscussionsByParentQuery(options?: Omit<Urql.UseQueryArgs<never, GetGrindErrandDiscussionsByParentQueryVariables | undefined>, 'query'>) {
-  return Urql.useQuery<GetGrindErrandDiscussionsByParentQuery, GetGrindErrandDiscussionsByParentQueryVariables | undefined>({ query: GetGrindErrandDiscussionsByParentDocument, variables: undefined, ...options });
-};
+export function useGetGrindErrandDiscussionsByParentQuery(
+    options?: Omit<Urql.UseQueryArgs<never, GetGrindErrandDiscussionsByParentQueryVariables | undefined>, 'query'>,
+) {
+    return Urql.useQuery<GetGrindErrandDiscussionsByParentQuery, GetGrindErrandDiscussionsByParentQueryVariables | undefined>({
+        query: GetGrindErrandDiscussionsByParentDocument,
+        variables: undefined,
+        ...options,
+    });
+}
 export const GetGrindOccurrenciesByTargetDocument = gql`
     query GetGrindOccurrenciesByTarget($target: String!, $targetUid: String!) {
-  grindOccurrencesByTarget(target: $target, targetUid: $targetUid) {
-    uid
-    description
-    target
-    targetUid
-    actor {
-      uid
-      firstName
-      lastName
+        grindOccurrencesByTarget(target: $target, targetUid: $targetUid) {
+            uid
+            description
+            target
+            targetUid
+            actor {
+                uid
+                firstName
+                lastName
+            }
+            createdAt
+        }
     }
-    createdAt
-  }
-}
-    `;
+`;
 
-export function useGetGrindOccurrenciesByTargetQuery(options?: Omit<Urql.UseQueryArgs<never, GetGrindOccurrenciesByTargetQueryVariables | undefined>, 'query'>) {
-  return Urql.useQuery<GetGrindOccurrenciesByTargetQuery, GetGrindOccurrenciesByTargetQueryVariables | undefined>({ query: GetGrindOccurrenciesByTargetDocument, variables: undefined, ...options });
-};
+export function useGetGrindOccurrenciesByTargetQuery(
+    options?: Omit<Urql.UseQueryArgs<never, GetGrindOccurrenciesByTargetQueryVariables | undefined>, 'query'>,
+) {
+    return Urql.useQuery<GetGrindOccurrenciesByTargetQuery, GetGrindOccurrenciesByTargetQueryVariables | undefined>({
+        query: GetGrindOccurrenciesByTargetDocument,
+        variables: undefined,
+        ...options,
+    });
+}
 export const GetGrindMilestonesByErrandDocument = gql`
     query GetGrindMilestonesByErrand($errandUid: String!) {
-  grindMilestonesByErrand(errandUid: $errandUid) {
-    uid
-    title
-    description
-    errand {
-      uid
+        grindMilestonesByErrand(errandUid: $errandUid) {
+            uid
+            title
+            description
+            errand {
+                uid
+            }
+            createdBy {
+                uid
+                firstName
+                lastName
+            }
+            assignee {
+                uid
+                firstName
+                lastName
+            }
+            createdAt
+            complete
+        }
     }
-    createdBy {
-      uid
-      firstName
-      lastName
-    }
-    assignee {
-      uid
-      firstName
-      lastName
-    }
-    createdAt
-    complete
-  }
-}
-    `;
+`;
 
-export function useGetGrindMilestonesByErrandQuery(options?: Omit<Urql.UseQueryArgs<never, GetGrindMilestonesByErrandQueryVariables | undefined>, 'query'>) {
-  return Urql.useQuery<GetGrindMilestonesByErrandQuery, GetGrindMilestonesByErrandQueryVariables | undefined>({ query: GetGrindMilestonesByErrandDocument, variables: undefined, ...options });
-};
+export function useGetGrindMilestonesByErrandQuery(
+    options?: Omit<Urql.UseQueryArgs<never, GetGrindMilestonesByErrandQueryVariables | undefined>, 'query'>,
+) {
+    return Urql.useQuery<GetGrindMilestonesByErrandQuery, GetGrindMilestonesByErrandQueryVariables | undefined>({
+        query: GetGrindMilestonesByErrandDocument,
+        variables: undefined,
+        ...options,
+    });
+}
 export const GetGrindMediaDocument = gql`
     query GetGrindMedia($target: String!, $targetUid: String!) {
-  grindMediaByTarget(target: $target, targetUid: $targetUid) {
-    uid
-    target
-    targetUid
-    destination
-    encoding
-    filename
-    mimetype
-    originalName
-    path
-    size
-    createdBy {
-      uid
-      firstName
-      lastName
+        grindMediaByTarget(target: $target, targetUid: $targetUid) {
+            uid
+            target
+            targetUid
+            destination
+            encoding
+            filename
+            mimetype
+            originalName
+            path
+            size
+            createdBy {
+                uid
+                firstName
+                lastName
+            }
+            createdAt
+        }
     }
-    createdAt
-  }
-}
-    `;
+`;
 
 export function useGetGrindMediaQuery(options?: Omit<Urql.UseQueryArgs<never, GetGrindMediaQueryVariables | undefined>, 'query'>) {
-  return Urql.useQuery<GetGrindMediaQuery, GetGrindMediaQueryVariables | undefined>({ query: GetGrindMediaDocument, variables: undefined, ...options });
-};
+    return Urql.useQuery<GetGrindMediaQuery, GetGrindMediaQueryVariables | undefined>({
+        query: GetGrindMediaDocument,
+        variables: undefined,
+        ...options,
+    });
+}
 export const GetGrindSchemeAllDocument = gql`
     query GetGrindSchemeAll($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
-  grindSchemeAll(
-    pageSize: $first
-    afterCursor: $after
-    text: $text
-    sortBy: $sortBy
-  ) {
-    totalCount
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-      startCursor
-      endCursor
+        grindSchemeAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {
+            totalCount
+            pageInfo {
+                hasNextPage
+                hasPreviousPage
+                startCursor
+                endCursor
+            }
+            items {
+                uid
+                title
+                description
+                startDate
+                endDate
+                assignee {
+                    uid
+                    firstName
+                    lastName
+                }
+                members {
+                    uid
+                    firstName
+                    lastName
+                }
+                createdBy {
+                    uid
+                    firstName
+                    lastName
+                }
+                createdAt
+            }
+        }
     }
-    items {
-      uid
-      title
-      description
-      startDate
-      endDate
-      assignee {
-        uid
-        firstName
-        lastName
-      }
-      members {
-        uid
-        firstName
-        lastName
-      }
-      createdBy {
-        uid
-        firstName
-        lastName
-      }
-      createdAt
-    }
-  }
-}
-    `;
+`;
 
 export function useGetGrindSchemeAllQuery(options?: Omit<Urql.UseQueryArgs<never, GetGrindSchemeAllQueryVariables | undefined>, 'query'>) {
-  return Urql.useQuery<GetGrindSchemeAllQuery, GetGrindSchemeAllQueryVariables | undefined>({ query: GetGrindSchemeAllDocument, variables: undefined, ...options });
-};
+    return Urql.useQuery<GetGrindSchemeAllQuery, GetGrindSchemeAllQueryVariables | undefined>({
+        query: GetGrindSchemeAllDocument,
+        variables: undefined,
+        ...options,
+    });
+}
 export const GetGrindSchemeDocument = gql`
     query GetGrindScheme($uid: String!) {
-  grindSchemeByUid(uid: $uid) {
-    uid
-    title
-    description
-    startDate
-    endDate
-    assignee {
-      uid
-      firstName
-      lastName
+        grindSchemeByUid(uid: $uid) {
+            uid
+            title
+            description
+            startDate
+            endDate
+            assignee {
+                uid
+                firstName
+                lastName
+            }
+            members {
+                uid
+                firstName
+                lastName
+            }
+            boards {
+                uid
+                title
+                description
+            }
+            createdBy {
+                uid
+                firstName
+                lastName
+            }
+            createdAt
+        }
     }
-    members {
-      uid
-      firstName
-      lastName
-    }
-    boards {
-      uid
-      title
-      description
-    }
-    createdBy {
-      uid
-      firstName
-      lastName
-    }
-    createdAt
-  }
-}
-    `;
+`;
 
 export function useGetGrindSchemeQuery(options?: Omit<Urql.UseQueryArgs<never, GetGrindSchemeQueryVariables | undefined>, 'query'>) {
-  return Urql.useQuery<GetGrindSchemeQuery, GetGrindSchemeQueryVariables | undefined>({ query: GetGrindSchemeDocument, variables: undefined, ...options });
-};
+    return Urql.useQuery<GetGrindSchemeQuery, GetGrindSchemeQueryVariables | undefined>({
+        query: GetGrindSchemeDocument,
+        variables: undefined,
+        ...options,
+    });
+}
 export const GetGrindPostersByBoardDocument = gql`
     query GetGrindPostersByBoard($boardUid: String!) {
-  grindPostersByBoard(boardUid: $boardUid) {
-    uid
-    title
-    boardUid
-    errands {
-      uid
-      title
-      description
-      priority
-      startDate
-      endDate
-      progress
-      posterUid
-      milestonesAt
-      stamps {
-        uid
-        title
-      }
-      labelUid
-      assignee {
-        uid
-        firstName
-        lastName
-      }
-      members {
-        uid
-        firstName
-        lastName
-      }
+        grindPostersByBoard(boardUid: $boardUid) {
+            uid
+            title
+            boardUid
+            errands {
+                uid
+                title
+                description
+                priority
+                startDate
+                endDate
+                progress
+                posterUid
+                milestonesAt
+                stamps {
+                    uid
+                    title
+                }
+                labelUid
+                assignee {
+                    uid
+                    firstName
+                    lastName
+                }
+                members {
+                    uid
+                    firstName
+                    lastName
+                }
+            }
+        }
     }
-  }
-}
-    `;
+`;
 
-export function useGetGrindPostersByBoardQuery(options?: Omit<Urql.UseQueryArgs<never, GetGrindPostersByBoardQueryVariables | undefined>, 'query'>) {
-  return Urql.useQuery<GetGrindPostersByBoardQuery, GetGrindPostersByBoardQueryVariables | undefined>({ query: GetGrindPostersByBoardDocument, variables: undefined, ...options });
-};
+export function useGetGrindPostersByBoardQuery(
+    options?: Omit<Urql.UseQueryArgs<never, GetGrindPostersByBoardQueryVariables | undefined>, 'query'>,
+) {
+    return Urql.useQuery<GetGrindPostersByBoardQuery, GetGrindPostersByBoardQueryVariables | undefined>({
+        query: GetGrindPostersByBoardDocument,
+        variables: undefined,
+        ...options,
+    });
+}
 export const GetGrindStampAllDocument = gql`
     query GetGrindStampAll($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
-  grindStampAll(
-    pageSize: $first
-    afterCursor: $after
-    text: $text
-    sortBy: $sortBy
-  ) {
-    totalCount
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-      startCursor
-      endCursor
+        grindStampAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {
+            totalCount
+            pageInfo {
+                hasNextPage
+                hasPreviousPage
+                startCursor
+                endCursor
+            }
+            items {
+                uid
+                title
+                category
+            }
+        }
     }
-    items {
-      uid
-      title
-      category
-    }
-  }
-}
-    `;
+`;
 
 export function useGetGrindStampAllQuery(options?: Omit<Urql.UseQueryArgs<never, GetGrindStampAllQueryVariables | undefined>, 'query'>) {
-  return Urql.useQuery<GetGrindStampAllQuery, GetGrindStampAllQueryVariables | undefined>({ query: GetGrindStampAllDocument, variables: undefined, ...options });
-};
+    return Urql.useQuery<GetGrindStampAllQuery, GetGrindStampAllQueryVariables | undefined>({
+        query: GetGrindStampAllDocument,
+        variables: undefined,
+        ...options,
+    });
+}
 export const GetGrindStampByCategoryDocument = gql`
     query GetGrindStampByCategory($category: StampCategory!) {
-  grindStampByCategory(category: $category) {
-    uid
-    title
-    category
-  }
-}
-    `;
+        grindStampByCategory(category: $category) {
+            uid
+            title
+            category
+        }
+    }
+`;
 
-export function useGetGrindStampByCategoryQuery(options?: Omit<Urql.UseQueryArgs<never, GetGrindStampByCategoryQueryVariables | undefined>, 'query'>) {
-  return Urql.useQuery<GetGrindStampByCategoryQuery, GetGrindStampByCategoryQueryVariables | undefined>({ query: GetGrindStampByCategoryDocument, variables: undefined, ...options });
-};
+export function useGetGrindStampByCategoryQuery(
+    options?: Omit<Urql.UseQueryArgs<never, GetGrindStampByCategoryQueryVariables | undefined>, 'query'>,
+) {
+    return Urql.useQuery<GetGrindStampByCategoryQuery, GetGrindStampByCategoryQueryVariables | undefined>({
+        query: GetGrindStampByCategoryDocument,
+        variables: undefined,
+        ...options,
+    });
+}
 export const GetGrindLabelAllDocument = gql`
     query GetGrindLabelAll($first: Int!, $after: String, $text: String!, $sortBy: [String!] = ["uid"]) {
-  grindLabelAll(
-    pageSize: $first
-    afterCursor: $after
-    text: $text
-    sortBy: $sortBy
-  ) {
-    totalCount
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-      startCursor
-      endCursor
+        grindLabelAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {
+            totalCount
+            pageInfo {
+                hasNextPage
+                hasPreviousPage
+                startCursor
+                endCursor
+            }
+            items {
+                uid
+                title
+                category
+            }
+        }
     }
-    items {
-      uid
-      title
-      category
-    }
-  }
-}
-    `;
+`;
 
 export function useGetGrindLabelAllQuery(options?: Omit<Urql.UseQueryArgs<never, GetGrindLabelAllQueryVariables | undefined>, 'query'>) {
-  return Urql.useQuery<GetGrindLabelAllQuery, GetGrindLabelAllQueryVariables | undefined>({ query: GetGrindLabelAllDocument, variables: undefined, ...options });
-};
+    return Urql.useQuery<GetGrindLabelAllQuery, GetGrindLabelAllQueryVariables | undefined>({
+        query: GetGrindLabelAllDocument,
+        variables: undefined,
+        ...options,
+    });
+}
 export const DownloadGrindMediaFileUrlDocument = gql`
     query DownloadGrindMediaFileUrl($uid: String!) {
-  downloadGrindMediaFileUrl(uid: $uid) {
-    uid
-    mimetype
-    filename
-    downloadUrl
-  }
-}
-    `;
+        downloadGrindMediaFileUrl(uid: $uid) {
+            uid
+            mimetype
+            filename
+            downloadUrl
+        }
+    }
+`;
 
-export function useDownloadGrindMediaFileUrlQuery(options?: Omit<Urql.UseQueryArgs<never, DownloadGrindMediaFileUrlQueryVariables | undefined>, 'query'>) {
-  return Urql.useQuery<DownloadGrindMediaFileUrlQuery, DownloadGrindMediaFileUrlQueryVariables | undefined>({ query: DownloadGrindMediaFileUrlDocument, variables: undefined, ...options });
-};
+export function useDownloadGrindMediaFileUrlQuery(
+    options?: Omit<Urql.UseQueryArgs<never, DownloadGrindMediaFileUrlQueryVariables | undefined>, 'query'>,
+) {
+    return Urql.useQuery<DownloadGrindMediaFileUrlQuery, DownloadGrindMediaFileUrlQueryVariables | undefined>({
+        query: DownloadGrindMediaFileUrlDocument,
+        variables: undefined,
+        ...options,
+    });
+}
 export const DownloadGrindMediaFileDocument = gql`
     query DownloadGrindMediaFile($uid: String!) {
-  downloadGrindMediaFile(uid: $uid) {
-    uid
-    filename
-    mimetype
-    content
-    size
-  }
-}
-    `;
+        downloadGrindMediaFile(uid: $uid) {
+            uid
+            filename
+            mimetype
+            content
+            size
+        }
+    }
+`;
 
-export function useDownloadGrindMediaFileQuery(options?: Omit<Urql.UseQueryArgs<never, DownloadGrindMediaFileQueryVariables | undefined>, 'query'>) {
-  return Urql.useQuery<DownloadGrindMediaFileQuery, DownloadGrindMediaFileQueryVariables | undefined>({ query: DownloadGrindMediaFileDocument, variables: undefined, ...options });
-};
+export function useDownloadGrindMediaFileQuery(
+    options?: Omit<Urql.UseQueryArgs<never, DownloadGrindMediaFileQueryVariables | undefined>, 'query'>,
+) {
+    return Urql.useQuery<DownloadGrindMediaFileQuery, DownloadGrindMediaFileQueryVariables | undefined>({
+        query: DownloadGrindMediaFileDocument,
+        variables: undefined,
+        ...options,
+    });
+}

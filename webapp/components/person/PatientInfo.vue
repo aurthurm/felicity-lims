@@ -5,6 +5,7 @@ import { storeToRefs } from "pinia";
 import { usePatientStore } from "@/stores/patient";
 import { parseDate } from "@/utils";
 import { PatientType } from "@/types/gql";
+import { Spinner } from "@/components/ui/spinner";
 
 const route = useRoute();
 const patientStore = usePatientStore();
@@ -24,7 +25,10 @@ const editPatient = (patient: PatientType | undefined) => {
 <template>
   <div class="bg-background rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4 border border-border" v-motion-slide-top>
     <div v-if="fetchingPatient" class="py-4 text-center">
-      <fel-loader message="Fetching patient details ..." />
+      <span class="inline-flex items-center gap-2">
+        <Spinner class="size-4" />
+        <span class="text-sm">Fetching patient details ...</span>
+      </span>
     </div>
     <div class="grid grid-cols-12 gap-3" v-else>
       <!-- Meta Column -->
@@ -151,4 +155,3 @@ const editPatient = (patient: PatientType | undefined) => {
     </div>
   </div>
 </template>
-

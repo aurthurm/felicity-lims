@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Button } from "@/components/ui/button";
 import {computed, defineAsyncComponent, onMounted, ref, h} from 'vue';
 import { useForm, useField } from 'vee-validate';
 import * as yup from 'yup';
@@ -7,9 +8,9 @@ import useApiUtil from '@/composables/api_util';
 import { AbxOrganismType, AbxOrganismSerotypeType } from "@/types/gql";
 import { GetAbxOrganismAllDocument, GetAbxOrganismAllQuery, GetAbxOrganismAllQueryVariables, GetAbxOrganismSerotypeAllDocument, GetAbxOrganismSerotypeAllQuery, GetAbxOrganismSerotypeAllQueryVariables } from "@/graphql/operations/microbiology.queries";
 import { AddAbxOrganismSerotypeMutation, AddAbxOrganismSerotypeMutationVariables, AddAbxOrganismSerotypeDocument, EditAbxOrganismSerotypeMutation, EditAbxOrganismSerotypeMutationVariables, EditAbxOrganismSerotypeDocument } from '@/graphql/operations/microbiology.mutations';
-
+import PageHeading from "@/components/common/PageHeading.vue"
 const DataTable = defineAsyncComponent(
-  () => import('@/components/ui/datatable/FelDataTable.vue')
+  () => import('@/components/common/DataTable.vue')
 )
 const VueMultiselect = defineAsyncComponent(
   () => import('vue-multiselect')
@@ -296,9 +297,9 @@ const saveForm = handleSubmit((formValues) => {
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Organism Serotypes">
-      <fel-button @click="FormManager(true)">Add Organism Serotype</fel-button>
-    </fel-heading>
+    <PageHeading title="Organism Serotypes">
+      <Button @click="FormManager(true)">Add Organism Serotype</Button>
+    </PageHeading>
 
     <div class="bg-card p-6 shadow-sm rounded-lg">
       <DataTable 
@@ -325,7 +326,7 @@ const saveForm = handleSubmit((formValues) => {
   </div>
 
   <!-- Organism Serotype Edit Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
+  <Modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -427,7 +428,7 @@ const saveForm = handleSubmit((formValues) => {
         </button>
       </form>
     </template>
-  </fel-modal>
+  </Modal>
 </template>
 
 <style scoped>

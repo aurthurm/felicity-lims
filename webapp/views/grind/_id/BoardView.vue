@@ -77,7 +77,7 @@ const savePosterForm = () => {
     </div>
 
     <!-- Create/Edit Poster Modal -->
-    <fel-modal 
+    <Modal 
       v-if="showPosterModal" 
       @close="showPosterModal = false" 
       content-width="w-full max-w-2xl"
@@ -135,7 +135,7 @@ const savePosterForm = () => {
           </div>
         </form>
       </template>
-    </fel-modal>
+    </Modal>
   </div>
 </template>
 

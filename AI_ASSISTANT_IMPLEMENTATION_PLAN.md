@@ -25,9 +25,11 @@ This document outlines a comprehensive implementation plan for an AI-powered ass
 ## 1. Vision & Objectives
 
 ### Vision
+
 Create an intelligent conversational assistant that democratizes access to complex LIMS workflows, enabling laboratory staff to perform tasks through natural language while maintaining enterprise-grade security and compliance.
 
 ### Core Objectives
+
 1. **Accessibility**: Reduce training time and complexity for new users
 2. **Efficiency**: Streamline multi-step workflows into simple conversations
 3. **Compliance**: Maintain HIPAA compliance with zero PII/PHI exposure to LLM
@@ -103,25 +105,28 @@ Create an intelligent conversational assistant that democratizes access to compl
 ### 3.1 Patient Management (17 use cases)
 
 #### Basic Operations
-| Use Case | User Intent | Example Query | Backend Operation |
-|----------|-------------|---------------|-------------------|
-| **Register Patient** | Create new patient | "Register a new patient named John Doe, DOB 1990-05-15" | `createPatient` mutation |
-| **Search Patient** | Find existing patient | "Find patient with ID PAT-2024-001" | `patientSearch` query with encrypted field search |
-| **Search by Demographics** | Find by PII fields | "Find patients born on 1990-05-15" | `patientSearch` with searchable encryption indices |
-| **Update Patient Info** | Modify patient details | "Update John Doe's phone number to +1234567890" | `updatePatient` mutation |
-| **Add Patient Identification** | Add ID numbers | "Add SSN 123-45-6789 for patient PAT-2024-001" | `createPatientIdentification` mutation |
-| **View Patient History** | Get patient context | "Show me all samples for patient PAT-2024-001" | `patientByUid` + related samples |
+
+| Use Case                       | User Intent            | Example Query                                           | Backend Operation                                  |
+| ------------------------------ | ---------------------- | ------------------------------------------------------- | -------------------------------------------------- |
+| **Register Patient**           | Create new patient     | "Register a new patient named John Doe, DOB 1990-05-15" | `createPatient` mutation                           |
+| **Search Patient**             | Find existing patient  | "Find patient with ID PAT-2024-001"                     | `patientSearch` query with encrypted field search  |
+| **Search by Demographics**     | Find by PII fields     | "Find patients born on 1990-05-15"                      | `patientSearch` with searchable encryption indices |
+| **Update Patient Info**        | Modify patient details | "Update John Doe's phone number to +1234567890"         | `updatePatient` mutation                           |
+| **Add Patient Identification** | Add ID numbers         | "Add SSN 123-45-6789 for patient PAT-2024-001"          | `createPatientIdentification` mutation             |
+| **View Patient History**       | Get patient context    | "Show me all samples for patient PAT-2024-001"          | `patientByUid` + related samples                   |
 
 #### Advanced Workflows
-| Use Case | Description | Complexity |
-|----------|-------------|------------|
-| **Bulk Patient Import** | Import from CSV/Excel with validation | High |
-| **Patient Merge** | Combine duplicate patient records | High |
-| **Patient Demographics Update** | Update province, district, client affiliation | Medium |
-| **Patient Activity Timeline** | Show all interactions chronologically | Medium |
-| **Patient Consent Management** | Track consent for data usage | Medium |
+
+| Use Case                        | Description                                   | Complexity |
+| ------------------------------- | --------------------------------------------- | ---------- |
+| **Bulk Patient Import**         | Import from CSV/Excel with validation         | High       |
+| **Patient Merge**               | Combine duplicate patient records             | High       |
+| **Patient Demographics Update** | Update province, district, client affiliation | Medium     |
+| **Patient Activity Timeline**   | Show all interactions chronologically         | Medium     |
+| **Patient Consent Management**  | Track consent for data usage                  | Medium     |
 
 #### PII Protection Strategy for Patients
+
 - **Input**: User provides patient name/DOB → System searches using encrypted indices
 - **LLM Context**: Patient referenced as `PATIENT_TOKEN_001` with non-PII metadata (age_group, gender)
 - **Output**: Display patient info directly from database, not through LLM
@@ -131,374 +136,411 @@ Create an intelligent conversational assistant that democratizes access to compl
 ### 3.2 Sample & Analysis Request Management (23 use cases)
 
 #### Sample Creation & Tracking
-| Use Case | User Intent | Example Query | Backend Operation |
-|----------|-------------|---------------|-------------------|
-| **Create Analysis Request** | New test request | "Create a CBC test request for patient PAT-2024-001" | `createAnalysisRequest` mutation |
-| **Add Samples to Request** | Sample collection | "Add 2 blood samples to request AR-2024-001" | `createSample` mutation |
-| **Derive Samples** | Create child samples | "Create 3 aliquots from sample SAM-001" | Sample creation with parent relationship |
-| **Pool Samples** | Combine samples | "Pool samples SAM-001 and SAM-002" | Sample creation with multiple parents |
-| **Update Sample Status** | Track sample lifecycle | "Mark sample SAM-001 as received" | `receiveSample` mutation |
-| **Reject Sample** | Handle QNS/unsuitable | "Reject sample SAM-001 due to hemolysis" | `cancelSamples` with rejection reason |
-| **Assign Sample Priority** | Urgent processing | "Set sample SAM-001 to high priority" | `updateSample` mutation |
-| **Track Sample Location** | Current whereabouts | "Where is sample SAM-001?" | Query sample + storage location |
+
+| Use Case                    | User Intent            | Example Query                                        | Backend Operation                        |
+| --------------------------- | ---------------------- | ---------------------------------------------------- | ---------------------------------------- |
+| **Create Analysis Request** | New test request       | "Create a CBC test request for patient PAT-2024-001" | `createAnalysisRequest` mutation         |
+| **Add Samples to Request**  | Sample collection      | "Add 2 blood samples to request AR-2024-001"         | `createSample` mutation                  |
+| **Derive Samples**          | Create child samples   | "Create 3 aliquots from sample SAM-001"              | Sample creation with parent relationship |
+| **Pool Samples**            | Combine samples        | "Pool samples SAM-001 and SAM-002"                   | Sample creation with multiple parents    |
+| **Update Sample Status**    | Track sample lifecycle | "Mark sample SAM-001 as received"                    | `receiveSample` mutation                 |
+| **Reject Sample**           | Handle QNS/unsuitable  | "Reject sample SAM-001 due to hemolysis"             | `cancelSamples` with rejection reason    |
+| **Assign Sample Priority**  | Urgent processing      | "Set sample SAM-001 to high priority"                | `updateSample` mutation                  |
+| **Track Sample Location**   | Current whereabouts    | "Where is sample SAM-001?"                           | Query sample + storage location          |
 
 #### Analysis & Testing
-| Use Case | Description | Backend Operations |
-|----------|-------------|-------------------|
-| **Add Analyses to Sample** | Modify test panel | `createAnalysisRequest` or update |
-| **Remove Analyses** | Cancel specific tests | `cancelAnalysisResults` mutation |
-| **Clone Analysis Request** | Duplicate for another patient | Query + Create pattern |
-| **Bulk Sample Creation** | Register multiple samples | Batch `createSample` calls |
-| **Sample Type Validation** | Check compatibility | Query `analysesBySampleType` |
-| **Search Samples** | Find by multiple criteria | `sampleSearch` with filters |
-| **Sample Audit History** | Track all changes | `auditLogByObjectId` query |
+
+| Use Case                   | Description                   | Backend Operations                |
+| -------------------------- | ----------------------------- | --------------------------------- |
+| **Add Analyses to Sample** | Modify test panel             | `createAnalysisRequest` or update |
+| **Remove Analyses**        | Cancel specific tests         | `cancelAnalysisResults` mutation  |
+| **Clone Analysis Request** | Duplicate for another patient | Query + Create pattern            |
+| **Bulk Sample Creation**   | Register multiple samples     | Batch `createSample` calls        |
+| **Sample Type Validation** | Check compatibility           | Query `analysesBySampleType`      |
+| **Search Samples**         | Find by multiple criteria     | `sampleSearch` with filters       |
+| **Sample Audit History**   | Track all changes             | `auditLogByObjectId` query        |
 
 #### Advanced Sample Workflows
-| Use Case | Complexity | Description |
-|----------|-----------|-------------|
-| **Sample Barcode Generation** | Medium | Generate and print barcodes |
-| **Sample Storage Assignment** | Medium | Allocate to biobank locations |
-| **Sample Retrieval** | Medium | Pull from storage for testing |
-| **Sample Disposal** | Medium | Track disposal with reasons |
-| **Sample Transfer** | High | Between laboratories/departments |
-| **Sample QC Check** | High | Pre-analytical quality validation |
+
+| Use Case                      | Complexity | Description                       |
+| ----------------------------- | ---------- | --------------------------------- |
+| **Sample Barcode Generation** | Medium     | Generate and print barcodes       |
+| **Sample Storage Assignment** | Medium     | Allocate to biobank locations     |
+| **Sample Retrieval**          | Medium     | Pull from storage for testing     |
+| **Sample Disposal**           | Medium     | Track disposal with reasons       |
+| **Sample Transfer**           | High       | Between laboratories/departments  |
+| **Sample QC Check**           | High       | Pre-analytical quality validation |
 
 ---
 
 ### 3.3 Result Entry & Verification (18 use cases)
 
 #### Result Entry
-| Use Case | User Intent | Example Query | Backend Operation |
-|----------|-------------|---------------|-------------------|
-| **Enter Single Result** | Manual result input | "Enter glucose result 95 mg/dL for sample SAM-001" | `submitAnalysisResults` mutation |
-| **Enter Multiple Results** | Batch entry | "Enter results for worksheet WS-001: [values...]" | Batch `submitAnalysisResults` |
-| **Import Instrument Results** | Auto-import | "Import results from instrument INS-001" | Instrument interface + result submission |
-| **Update Result Value** | Correction | "Update glucose result to 98 mg/dL for SAM-001" | `updateAnalysisResult` mutation |
-| **Add Result Note** | Technical comment | "Add note 'repeat dilution' to SAM-001 glucose" | `updateAnalysisResult` with remarks |
+
+| Use Case                      | User Intent         | Example Query                                      | Backend Operation                        |
+| ----------------------------- | ------------------- | -------------------------------------------------- | ---------------------------------------- |
+| **Enter Single Result**       | Manual result input | "Enter glucose result 95 mg/dL for sample SAM-001" | `submitAnalysisResults` mutation         |
+| **Enter Multiple Results**    | Batch entry         | "Enter results for worksheet WS-001: [values...]"  | Batch `submitAnalysisResults`            |
+| **Import Instrument Results** | Auto-import         | "Import results from instrument INS-001"           | Instrument interface + result submission |
+| **Update Result Value**       | Correction          | "Update glucose result to 98 mg/dL for SAM-001"    | `updateAnalysisResult` mutation          |
+| **Add Result Note**           | Technical comment   | "Add note 'repeat dilution' to SAM-001 glucose"    | `updateAnalysisResult` with remarks      |
 
 #### Result Verification
-| Use Case | Description | Operations |
-|----------|-------------|-----------|
-| **Verify Single Result** | Approve test result | `approveAnalysisResults` mutation |
-| **Verify Worksheet** | Batch verification | Approve all results in worksheet |
-| **Reject Result** | QC failure | `retractAnalysisResults` mutation |
-| **Request Retest** | Repeat analysis | `retestAnalysisResults` mutation |
-| **Multi-level Verification** | Staged approval | Multiple `approveAnalysisResults` calls |
+
+| Use Case                     | Description         | Operations                              |
+| ---------------------------- | ------------------- | --------------------------------------- |
+| **Verify Single Result**     | Approve test result | `approveAnalysisResults` mutation       |
+| **Verify Worksheet**         | Batch verification  | Approve all results in worksheet        |
+| **Reject Result**            | QC failure          | `retractAnalysisResults` mutation       |
+| **Request Retest**           | Repeat analysis     | `retestAnalysisResults` mutation        |
+| **Multi-level Verification** | Staged approval     | Multiple `approveAnalysisResults` calls |
 
 #### Result Workflows
-| Use Case | Complexity | Description |
-|----------|-----------|-------------|
-| **Result Out-of-Range Check** | Medium | Auto-flag results against specifications |
-| **Delta Check** | High | Compare with patient's historical results |
-| **Critical Result Notification** | Medium | Alert clinician for panic values |
-| **Result Amendment** | Medium | Track result corrections with audit |
-| **Result Invalidation** | High | Void results with reasoning and audit |
-| **Result Publishing** | Medium | Make results available for reporting |
-| **Result Interpretation** | High | AI-assisted clinical significance |
+
+| Use Case                         | Complexity | Description                               |
+| -------------------------------- | ---------- | ----------------------------------------- |
+| **Result Out-of-Range Check**    | Medium     | Auto-flag results against specifications  |
+| **Delta Check**                  | High       | Compare with patient's historical results |
+| **Critical Result Notification** | Medium     | Alert clinician for panic values          |
+| **Result Amendment**             | Medium     | Track result corrections with audit       |
+| **Result Invalidation**          | High       | Void results with reasoning and audit     |
+| **Result Publishing**            | Medium     | Make results available for reporting      |
+| **Result Interpretation**        | High       | AI-assisted clinical significance         |
 
 ---
 
 ### 3.4 Worksheet Management (15 use cases)
 
 #### Worksheet Creation
-| Use Case | User Intent | Example Query | Backend Operation |
-|----------|-------------|---------------|-------------------|
-| **Create Worksheet** | New batch | "Create a new chemistry worksheet" | `createWorksheet` mutation |
-| **From Template** | Use preset | "Create worksheet from template CHEM-001" | Query template + create |
-| **Assign Samples** | Add to worksheet | "Add samples SAM-001 to SAM-010 to worksheet WS-001" | `updateWorksheet` mutation |
-| **Assign Instrument** | Link equipment | "Assign worksheet WS-001 to instrument INS-001" | `updateWorksheet` mutation |
-| **Set Analyst** | Assign technologist | "Assign worksheet WS-001 to analyst John Doe" | `updateWorksheet` mutation |
+
+| Use Case              | User Intent         | Example Query                                        | Backend Operation          |
+| --------------------- | ------------------- | ---------------------------------------------------- | -------------------------- |
+| **Create Worksheet**  | New batch           | "Create a new chemistry worksheet"                   | `createWorksheet` mutation |
+| **From Template**     | Use preset          | "Create worksheet from template CHEM-001"            | Query template + create    |
+| **Assign Samples**    | Add to worksheet    | "Add samples SAM-001 to SAM-010 to worksheet WS-001" | `updateWorksheet` mutation |
+| **Assign Instrument** | Link equipment      | "Assign worksheet WS-001 to instrument INS-001"      | `updateWorksheet` mutation |
+| **Set Analyst**       | Assign technologist | "Assign worksheet WS-001 to analyst John Doe"        | `updateWorksheet` mutation |
 
 #### Worksheet Operations
-| Use Case | Description | Operations |
-|----------|-------------|-----------|
-| **Add QC Samples** | Include controls | Add QC samples to worksheet |
-| **Rearrange Sample Order** | Optimize workflow | Update sample positions |
-| **Remove Sample** | Unassign from worksheet | Update worksheet samples |
-| **Clone Worksheet** | Duplicate structure | Query + Create pattern |
-| **Print Worksheet** | Generate work list | Query + report generation |
+
+| Use Case                   | Description             | Operations                  |
+| -------------------------- | ----------------------- | --------------------------- |
+| **Add QC Samples**         | Include controls        | Add QC samples to worksheet |
+| **Rearrange Sample Order** | Optimize workflow       | Update sample positions     |
+| **Remove Sample**          | Unassign from worksheet | Update worksheet samples    |
+| **Clone Worksheet**        | Duplicate structure     | Query + Create pattern      |
+| **Print Worksheet**        | Generate work list      | Query + report generation   |
 
 #### Worksheet Lifecycle
-| Use Case | Complexity | Description |
-|----------|-----------|-------------|
-| **Submit Worksheet** | Medium | Change state to pending verification |
-| **Verify Worksheet** | Medium | Batch approve all results |
-| **Worksheet QC Review** | High | Validate QC results before approval |
-| **Worksheet Audit** | Medium | Track all worksheet changes |
-| **Worksheet Metrics** | Medium | TAT, completion rate analysis |
+
+| Use Case                | Complexity | Description                          |
+| ----------------------- | ---------- | ------------------------------------ |
+| **Submit Worksheet**    | Medium     | Change state to pending verification |
+| **Verify Worksheet**    | Medium     | Batch approve all results            |
+| **Worksheet QC Review** | High       | Validate QC results before approval  |
+| **Worksheet Audit**     | Medium     | Track all worksheet changes          |
+| **Worksheet Metrics**   | Medium     | TAT, completion rate analysis        |
 
 ---
 
 ### 3.5 Quality Control (12 use cases)
 
 #### QC Setup
-| Use Case | User Intent | Example Query | Backend Operation |
-|----------|-------------|---------------|-------------------|
-| **Create QC Level** | Define control type | "Create QC level 'High Normal Control'" | `createQCLevel` mutation |
-| **Create QC Set** | Group controls | "Create QC set for Chemistry panel" | `createQCSet` mutation |
-| **Create QC Template** | Reusable config | "Create template with levels L1, L2, L3" | `createQCTemplate` mutation |
-| **Add QC Sample** | Control sample | "Add QC sample QC-001 to set QCSET-001" | QC sample creation |
+
+| Use Case               | User Intent         | Example Query                            | Backend Operation           |
+| ---------------------- | ------------------- | ---------------------------------------- | --------------------------- |
+| **Create QC Level**    | Define control type | "Create QC level 'High Normal Control'"  | `createQCLevel` mutation    |
+| **Create QC Set**      | Group controls      | "Create QC set for Chemistry panel"      | `createQCSet` mutation      |
+| **Create QC Template** | Reusable config     | "Create template with levels L1, L2, L3" | `createQCTemplate` mutation |
+| **Add QC Sample**      | Control sample      | "Add QC sample QC-001 to set QCSET-001"  | QC sample creation          |
 
 #### QC Operations
-| Use Case | Description | Operations |
-|----------|-------------|-----------|
-| **Run QC** | Execute controls | Add QC samples to worksheet + enter results |
-| **QC Chart Generation** | Levey-Jennings chart | Query QC results + visualization |
-| **QC Rule Evaluation** | Westgard rules | Analyze QC data for violations |
-| **QC Failure Investigation** | Root cause analysis | Query audit logs + results |
+
+| Use Case                     | Description          | Operations                                  |
+| ---------------------------- | -------------------- | ------------------------------------------- |
+| **Run QC**                   | Execute controls     | Add QC samples to worksheet + enter results |
+| **QC Chart Generation**      | Levey-Jennings chart | Query QC results + visualization            |
+| **QC Rule Evaluation**       | Westgard rules       | Analyze QC data for violations              |
+| **QC Failure Investigation** | Root cause analysis  | Query audit logs + results                  |
 
 #### QC Management
-| Use Case | Complexity | Description |
-|----------|-----------|-------------|
-| **QC Expiry Tracking** | Medium | Monitor QC material shelf life |
-| **QC Lot Change** | Medium | Transition to new QC material |
-| **QC Trend Analysis** | High | Statistical process control |
-| **QC Material Ordering** | Medium | Inventory management integration |
+
+| Use Case                 | Complexity | Description                      |
+| ------------------------ | ---------- | -------------------------------- |
+| **QC Expiry Tracking**   | Medium     | Monitor QC material shelf life   |
+| **QC Lot Change**        | Medium     | Transition to new QC material    |
+| **QC Trend Analysis**    | High       | Statistical process control      |
+| **QC Material Ordering** | Medium     | Inventory management integration |
 
 ---
 
 ### 3.6 Shipment & Referral (11 use cases)
 
 #### Shipment Creation
-| Use Case | User Intent | Example Query | Backend Operation |
-|----------|-------------|---------------|-------------------|
-| **Create Shipment** | New referral | "Create shipment to RefLab-001" | `createShipment` mutation |
-| **Add Samples to Shipment** | Include samples | "Add samples SAM-001 to SAM-005 to shipment SHIP-001" | `updateShipment` mutation |
-| **Set Courier** | Assign transport | "Assign DHL courier to shipment SHIP-001" | `updateShipment` mutation |
-| **Generate Manifest** | Shipment documentation | Query shipment + generate manifest |
+
+| Use Case                    | User Intent            | Example Query                                         | Backend Operation         |
+| --------------------------- | ---------------------- | ----------------------------------------------------- | ------------------------- |
+| **Create Shipment**         | New referral           | "Create shipment to RefLab-001"                       | `createShipment` mutation |
+| **Add Samples to Shipment** | Include samples        | "Add samples SAM-001 to SAM-005 to shipment SHIP-001" | `updateShipment` mutation |
+| **Set Courier**             | Assign transport       | "Assign DHL courier to shipment SHIP-001"             | `updateShipment` mutation |
+| **Generate Manifest**       | Shipment documentation | Query shipment + generate manifest                    |
 
 #### Shipment Tracking
-| Use Case | Description | Operations |
-|----------|-------------|-----------|
+
+| Use Case                    | Description       | Operations                               |
+| --------------------------- | ----------------- | ---------------------------------------- |
 | **Mark Ready for Dispatch** | Finalize shipment | `actionShipment` mutation (state: READY) |
-| **Dispatch Shipment** | Send out | `dispatchShipment` mutation |
-| **Receive Shipment** | Incoming samples | `receiveShipment` mutation |
-| **Track Shipment Status** | Current state | Query shipment details |
+| **Dispatch Shipment**       | Send out          | `dispatchShipment` mutation              |
+| **Receive Shipment**        | Incoming samples  | `receiveShipment` mutation               |
+| **Track Shipment Status**   | Current state     | Query shipment details                   |
 
 #### Advanced Shipment
-| Use Case | Complexity | Description |
-|----------|-----------|-------------|
-| **Chain of Custody** | High | Track all sample handlers |
-| **Shipment Temperature Log** | Medium | Monitor cold chain |
-| **Return Shipment** | Medium | Send results/samples back |
+
+| Use Case                     | Complexity | Description               |
+| ---------------------------- | ---------- | ------------------------- |
+| **Chain of Custody**         | High       | Track all sample handlers |
+| **Shipment Temperature Log** | Medium     | Monitor cold chain        |
+| **Return Shipment**          | Medium     | Send results/samples back |
 
 ---
 
 ### 3.7 Inventory Management (14 use cases)
 
 #### Stock Operations
-| Use Case | User Intent | Example Query | Backend Operation |
-|----------|-------------|---------------|-------------------|
-| **Add Stock Item** | New product | "Add reagent 'Glucose Reagent Kit'" | `createStockItem` mutation |
-| **Receive Stock** | Incoming inventory | "Receive 10 units of item ITEM-001, lot LOT-2024-001" | `createStockReceipt` mutation |
-| **Adjust Stock** | Correction | "Adjust stock for ITEM-001 to 50 units due to count discrepancy" | `createStockAdjustment` mutation |
-| **Create Stock Order** | Purchase request | "Create order for 20 units of item ITEM-001 from supplier SUP-001" | `createStockOrder` mutation |
-| **Check Stock Level** | Inventory query | "What's the current stock of item ITEM-001?" | `stockItemByUid` query |
+
+| Use Case               | User Intent        | Example Query                                                      | Backend Operation                |
+| ---------------------- | ------------------ | ------------------------------------------------------------------ | -------------------------------- |
+| **Add Stock Item**     | New product        | "Add reagent 'Glucose Reagent Kit'"                                | `createStockItem` mutation       |
+| **Receive Stock**      | Incoming inventory | "Receive 10 units of item ITEM-001, lot LOT-2024-001"              | `createStockReceipt` mutation    |
+| **Adjust Stock**       | Correction         | "Adjust stock for ITEM-001 to 50 units due to count discrepancy"   | `createStockAdjustment` mutation |
+| **Create Stock Order** | Purchase request   | "Create order for 20 units of item ITEM-001 from supplier SUP-001" | `createStockOrder` mutation      |
+| **Check Stock Level**  | Inventory query    | "What's the current stock of item ITEM-001?"                       | `stockItemByUid` query           |
 
 #### Inventory Monitoring
-| Use Case | Description | Operations |
-|----------|-------------|-----------|
-| **Low Stock Alerts** | Reorder notifications | Query inventory KPIs |
-| **Expiry Tracking** | Monitor shelf life | Query stock lots by expiry |
-| **Stock Audit** | Physical count | Create adjustments |
-| **Stock Transfer** | Between locations | Create transaction records |
+
+| Use Case             | Description           | Operations                 |
+| -------------------- | --------------------- | -------------------------- |
+| **Low Stock Alerts** | Reorder notifications | Query inventory KPIs       |
+| **Expiry Tracking**  | Monitor shelf life    | Query stock lots by expiry |
+| **Stock Audit**      | Physical count        | Create adjustments         |
+| **Stock Transfer**   | Between locations     | Create transaction records |
 
 #### Advanced Inventory
-| Use Case | Complexity | Description |
-|----------|-----------|-------------|
-| **Reorder Point Calculation** | High | AI-based demand forecasting |
-| **Usage Analytics** | High | Consumption patterns by test volume |
-| **Cost Tracking** | Medium | COGS per test analysis |
-| **Supplier Performance** | Medium | Lead time and quality metrics |
-| **Lot Traceability** | High | Track usage in specific tests |
+
+| Use Case                      | Complexity | Description                         |
+| ----------------------------- | ---------- | ----------------------------------- |
+| **Reorder Point Calculation** | High       | AI-based demand forecasting         |
+| **Usage Analytics**           | High       | Consumption patterns by test volume |
+| **Cost Tracking**             | Medium     | COGS per test analysis              |
+| **Supplier Performance**      | Medium     | Lead time and quality metrics       |
+| **Lot Traceability**          | High       | Track usage in specific tests       |
 
 ---
 
 ### 3.8 Billing Operations (13 use cases)
 
 #### Billing Creation
-| Use Case | User Intent | Example Query | Backend Operation |
-|----------|-------------|---------------|-------------------|
-| **Generate Bill** | Invoice creation | "Create bill for patient PAT-2024-001 for request AR-001" | `createTestBill` mutation |
-| **Apply Discount** | Reduce charges | "Apply 10% discount to bill BILL-001" | `applyDiscount` mutation |
-| **Apply Voucher** | Promotional code | "Apply voucher code PROMO2024 to bill BILL-001" | `applyVoucher` mutation |
-| **Check Insurance** | Coverage query | "What's covered for patient PAT-001?" | Query patient + insurance info |
+
+| Use Case            | User Intent      | Example Query                                             | Backend Operation              |
+| ------------------- | ---------------- | --------------------------------------------------------- | ------------------------------ |
+| **Generate Bill**   | Invoice creation | "Create bill for patient PAT-2024-001 for request AR-001" | `createTestBill` mutation      |
+| **Apply Discount**  | Reduce charges   | "Apply 10% discount to bill BILL-001"                     | `applyDiscount` mutation       |
+| **Apply Voucher**   | Promotional code | "Apply voucher code PROMO2024 to bill BILL-001"           | `applyVoucher` mutation        |
+| **Check Insurance** | Coverage query   | "What's covered for patient PAT-001?"                     | Query patient + insurance info |
 
 #### Payment Processing
-| Use Case | Description | Operations |
-|----------|-------------|-----------|
-| **Record Payment** | Cash/card transaction | `createBillTransaction` mutation |
-| **Partial Payment** | Split payments | Multiple transaction records |
-| **Payment Refund** | Process return | Create negative transaction |
-| **Bill Adjustment** | Correct billing error | Update bill amounts |
+
+| Use Case            | Description           | Operations                       |
+| ------------------- | --------------------- | -------------------------------- |
+| **Record Payment**  | Cash/card transaction | `createBillTransaction` mutation |
+| **Partial Payment** | Split payments        | Multiple transaction records     |
+| **Payment Refund**  | Process return        | Create negative transaction      |
+| **Bill Adjustment** | Correct billing error | Update bill amounts              |
 
 #### Billing Analytics
-| Use Case | Complexity | Description |
-|----------|-----------|-------------|
-| **Outstanding Balance Report** | Medium | Query unpaid bills |
-| **Revenue by Test** | Medium | Analysis-level revenue analysis |
-| **Collection Rate** | Medium | Payment efficiency metrics |
-| **Discount Analysis** | High | Promotion effectiveness |
-| **Insurance Claims** | High | Integration with payer systems |
+
+| Use Case                       | Complexity | Description                     |
+| ------------------------------ | ---------- | ------------------------------- |
+| **Outstanding Balance Report** | Medium     | Query unpaid bills              |
+| **Revenue by Test**            | Medium     | Analysis-level revenue analysis |
+| **Collection Rate**            | Medium     | Payment efficiency metrics      |
+| **Discount Analysis**          | High       | Promotion effectiveness         |
+| **Insurance Claims**           | High       | Integration with payer systems  |
 
 ---
 
 ### 3.9 Document Management (10 use cases)
 
 #### Document Operations
-| Use Case | User Intent | Example Query | Backend Operation |
-|----------|-------------|---------------|-------------------|
-| **Create Document** | New QMS doc | "Create SOP for sample handling" | `createDocument` mutation |
-| **Search Documents** | Find by criteria | "Find all SOPs related to blood collection" | `documentSearch` query |
-| **Create Version** | Update document | "Create new version of document DOC-001" | `createDocumentVersion` mutation |
-| **Assign Reviewers** | Review workflow | "Assign reviewers [users] to document DOC-001" | `assignDocumentReviewers` mutation |
-| **Approve Document** | Publishing | "Approve document DOC-001" | `approveDocument` mutation |
+
+| Use Case             | User Intent      | Example Query                                  | Backend Operation                  |
+| -------------------- | ---------------- | ---------------------------------------------- | ---------------------------------- |
+| **Create Document**  | New QMS doc      | "Create SOP for sample handling"               | `createDocument` mutation          |
+| **Search Documents** | Find by criteria | "Find all SOPs related to blood collection"    | `documentSearch` query             |
+| **Create Version**   | Update document  | "Create new version of document DOC-001"       | `createDocumentVersion` mutation   |
+| **Assign Reviewers** | Review workflow  | "Assign reviewers [users] to document DOC-001" | `assignDocumentReviewers` mutation |
+| **Approve Document** | Publishing       | "Approve document DOC-001"                     | `approveDocument` mutation         |
 
 #### Document Workflows
-| Use Case | Description | Operations |
-|----------|-------------|-----------|
-| **Document Subscription** | Follow updates | Subscribe to document |
-| **Review Cycle** | Formal review | Create review steps + track |
-| **Archive Document** | Deprecate | Update document status |
-| **Document Linking** | Relationships | Link related documents |
-| **Document Templates** | Reusable structure | Create + use templates |
+
+| Use Case                  | Description        | Operations                  |
+| ------------------------- | ------------------ | --------------------------- |
+| **Document Subscription** | Follow updates     | Subscribe to document       |
+| **Review Cycle**          | Formal review      | Create review steps + track |
+| **Archive Document**      | Deprecate          | Update document status      |
+| **Document Linking**      | Relationships      | Link related documents      |
+| **Document Templates**    | Reusable structure | Create + use templates      |
 
 ---
 
 ### 3.10 Microbiology Workflows (16 use cases)
 
 #### Organism Management
-| Use Case | User Intent | Example Query | Backend Operation |
-|----------|-------------|---------------|-------------------|
-| **Create Organism** | Add microbe | "Create organism 'E. coli O157:H7'" | `createOrganism` mutation |
-| **Report Organism** | Culture result | "Report E. coli for sample SAM-001" | Create organism result |
-| **Add Serotype** | Subspecies | "Add serotype O157:H7 to E. coli" | `createOrganismSerotype` mutation |
+
+| Use Case            | User Intent    | Example Query                       | Backend Operation                 |
+| ------------------- | -------------- | ----------------------------------- | --------------------------------- |
+| **Create Organism** | Add microbe    | "Create organism 'E. coli O157:H7'" | `createOrganism` mutation         |
+| **Report Organism** | Culture result | "Report E. coli for sample SAM-001" | Create organism result            |
+| **Add Serotype**    | Subspecies     | "Add serotype O157:H7 to E. coli"   | `createOrganismSerotype` mutation |
 
 #### AST Management
-| Use Case | Description | Operations |
-|----------|-------------|-----------|
-| **Create AST Panel** | Antibiotic grouping | `createASTPanel` mutation |
-| **Run AST** | Susceptibility testing | Create AST results for organism |
-| **Enter MIC/Zone** | Test values | Submit AST result values |
-| **Interpret Result** | S/I/R determination | Apply breakpoints |
-| **Add Breakpoint** | Reference values | `createBreakpoint` mutation |
+
+| Use Case             | Description            | Operations                      |
+| -------------------- | ---------------------- | ------------------------------- |
+| **Create AST Panel** | Antibiotic grouping    | `createASTPanel` mutation       |
+| **Run AST**          | Susceptibility testing | Create AST results for organism |
+| **Enter MIC/Zone**   | Test values            | Submit AST result values        |
+| **Interpret Result** | S/I/R determination    | Apply breakpoints               |
+| **Add Breakpoint**   | Reference values       | `createBreakpoint` mutation     |
 
 #### Microbiology Advanced
-| Use Case | Complexity | Description |
-|----------|-----------|-------------|
-| **WHONET Export** | High | Export for surveillance |
-| **Expert Interpretation** | High | Apply resistance rules |
-| **Phenotype Detection** | High | ESBL, MRSA, etc. detection |
-| **Medium QC** | Medium | Culture media quality tracking |
-| **AST QC** | Medium | Control strain testing |
-| **Resistance Trend Analysis** | High | Antibiogram generation |
-| **Outbreak Detection** | High | Pattern recognition for epidemiology |
+
+| Use Case                      | Complexity | Description                          |
+| ----------------------------- | ---------- | ------------------------------------ |
+| **WHONET Export**             | High       | Export for surveillance              |
+| **Expert Interpretation**     | High       | Apply resistance rules               |
+| **Phenotype Detection**       | High       | ESBL, MRSA, etc. detection           |
+| **Medium QC**                 | Medium     | Culture media quality tracking       |
+| **AST QC**                    | Medium     | Control strain testing               |
+| **Resistance Trend Analysis** | High       | Antibiogram generation               |
+| **Outbreak Detection**        | High       | Pattern recognition for epidemiology |
 
 ---
 
 ### 3.11 Storage & Biobanking (8 use cases)
 
 #### Storage Operations
-| Use Case | User Intent | Example Query | Backend Operation |
-|----------|-------------|---------------|-------------------|
-| **Create Storage Container** | New freezer/rack | "Create storage container 'Freezer-001'" | `createStorageContainer` mutation |
-| **Store Sample** | Biobank sample | "Store sample SAM-001 in container CONT-001 slot A1" | `storeSamples` mutation |
-| **Retrieve Sample** | Pull from storage | "Retrieve sample SAM-001 from storage" | Update stored_by field |
-| **Search Storage** | Find samples | "What samples are in container CONT-001?" | Query stored samples |
+
+| Use Case                     | User Intent       | Example Query                                        | Backend Operation                 |
+| ---------------------------- | ----------------- | ---------------------------------------------------- | --------------------------------- |
+| **Create Storage Container** | New freezer/rack  | "Create storage container 'Freezer-001'"             | `createStorageContainer` mutation |
+| **Store Sample**             | Biobank sample    | "Store sample SAM-001 in container CONT-001 slot A1" | `storeSamples` mutation           |
+| **Retrieve Sample**          | Pull from storage | "Retrieve sample SAM-001 from storage"               | Update stored_by field            |
+| **Search Storage**           | Find samples      | "What samples are in container CONT-001?"            | Query stored samples              |
 
 #### Storage Management
-| Use Case | Description | Operations |
-|----------|-------------|-----------|
-| **Storage Capacity** | Monitor space | Query container + count |
-| **Temperature Monitoring** | Cold chain | Log temperature readings |
-| **Sample Disposition** | Long-term tracking | Update storage status |
-| **Storage Audit** | Physical verification | Compare database vs. physical count |
+
+| Use Case                   | Description           | Operations                          |
+| -------------------------- | --------------------- | ----------------------------------- |
+| **Storage Capacity**       | Monitor space         | Query container + count             |
+| **Temperature Monitoring** | Cold chain            | Log temperature readings            |
+| **Sample Disposition**     | Long-term tracking    | Update storage status               |
+| **Storage Audit**          | Physical verification | Compare database vs. physical count |
 
 ---
 
 ### 3.12 Reflex Testing (6 use cases)
 
 #### Reflex Setup
-| Use Case | User Intent | Example Query | Backend Operation |
-|----------|-------------|---------------|-------------------|
-| **Create Reflex Trigger** | Define trigger | "Create reflex trigger for TSH > 10" | `createReflexTrigger` mutation |
-| **Add Decision Logic** | Define rules | "Add rule: if TSH > 10, add Free T4 test" | `createReflexDecision` mutation |
-| **Test Reflex Rule** | Validation | "Test reflex rule with TSH = 15" | Query + simulate |
+
+| Use Case                  | User Intent    | Example Query                             | Backend Operation               |
+| ------------------------- | -------------- | ----------------------------------------- | ------------------------------- |
+| **Create Reflex Trigger** | Define trigger | "Create reflex trigger for TSH > 10"      | `createReflexTrigger` mutation  |
+| **Add Decision Logic**    | Define rules   | "Add rule: if TSH > 10, add Free T4 test" | `createReflexDecision` mutation |
+| **Test Reflex Rule**      | Validation     | "Test reflex rule with TSH = 15"          | Query + simulate                |
 
 #### Reflex Operations
-| Use Case | Description | Operations |
-|----------|-------------|-----------|
-| **View Reflex History** | Execution tracking | Query reflex executions |
-| **Disable Reflex** | Turn off rule | Update reflex trigger status |
-| **Reflex Analytics** | Usage statistics | Query execution counts + patterns |
+
+| Use Case                | Description        | Operations                        |
+| ----------------------- | ------------------ | --------------------------------- |
+| **View Reflex History** | Execution tracking | Query reflex executions           |
+| **Disable Reflex**      | Turn off rule      | Update reflex trigger status      |
+| **Reflex Analytics**    | Usage statistics   | Query execution counts + patterns |
 
 ---
 
 ### 3.13 User & Access Management (9 use cases)
 
 #### User Operations
-| Use Case | User Intent | Example Query | Backend Operation |
-|----------|-------------|---------------|-------------------|
-| **Create User** | New account | "Create user account for John Doe, email john@lab.com" | `createUser` mutation |
-| **Assign Roles** | Grant permissions | "Assign role 'Analyst' to user USER-001" | `updateUser` mutation |
-| **Assign Laboratory** | Multi-lab access | "Give user USER-001 access to Lab-002" | User-lab assignment |
-| **Reset Password** | Password recovery | "Reset password for user USER-001" | Password reset workflow |
+
+| Use Case              | User Intent       | Example Query                                          | Backend Operation       |
+| --------------------- | ----------------- | ------------------------------------------------------ | ----------------------- |
+| **Create User**       | New account       | "Create user account for John Doe, email john@lab.com" | `createUser` mutation   |
+| **Assign Roles**      | Grant permissions | "Assign role 'Analyst' to user USER-001"               | `updateUser` mutation   |
+| **Assign Laboratory** | Multi-lab access  | "Give user USER-001 access to Lab-002"                 | User-lab assignment     |
+| **Reset Password**    | Password recovery | "Reset password for user USER-001"                     | Password reset workflow |
 
 #### Access Management
-| Use Case | Description | Operations |
-|----------|-------------|-----------|
-| **View User Permissions** | Check access | Query user + groups + permissions |
-| **Audit User Activity** | Track actions | Query audit logs by user |
-| **Block User Account** | Disable access | Update user active status |
-| **Create User Group** | Role definition | Create group + assign permissions |
-| **Preference Management** | User settings | Update user preferences |
+
+| Use Case                  | Description     | Operations                        |
+| ------------------------- | --------------- | --------------------------------- |
+| **View User Permissions** | Check access    | Query user + groups + permissions |
+| **Audit User Activity**   | Track actions   | Query audit logs by user          |
+| **Block User Account**    | Disable access  | Update user active status         |
+| **Create User Group**     | Role definition | Create group + assign permissions |
+| **Preference Management** | User settings   | Update user preferences           |
 
 ---
 
 ### 3.14 Reporting & Analytics (12 use cases)
 
 #### Report Generation
-| Use Case | User Intent | Example Query | Backend Operation |
-|----------|-------------|---------------|-------------------|
-| **Generate Patient Report** | Test results report | "Generate report for patient PAT-001" | Query results + impress generation |
-| **Print Sample Labels** | Barcode printing | "Print labels for samples in request AR-001" | Generate barcodes + print |
-| **Export to PDF** | Document export | "Export report to PDF for patient PAT-001" | Report generation + PDF conversion |
-| **Send Report by Email** | Electronic delivery | "Email report to patient@example.com" | Report + messaging service |
+
+| Use Case                    | User Intent         | Example Query                                | Backend Operation                  |
+| --------------------------- | ------------------- | -------------------------------------------- | ---------------------------------- |
+| **Generate Patient Report** | Test results report | "Generate report for patient PAT-001"        | Query results + impress generation |
+| **Print Sample Labels**     | Barcode printing    | "Print labels for samples in request AR-001" | Generate barcodes + print          |
+| **Export to PDF**           | Document export     | "Export report to PDF for patient PAT-001"   | Report generation + PDF conversion |
+| **Send Report by Email**    | Electronic delivery | "Email report to patient@example.com"        | Report + messaging service         |
 
 #### Analytics & Dashboards
-| Use Case | Description | Operations |
-|----------|-------------|-----------|
-| **TAT Analysis** | Turnaround time metrics | Query analytics data |
-| **Test Volume Report** | Workload analysis | Query sample/result counts |
-| **QC Performance** | Quality metrics | QC result aggregation |
-| **Revenue Dashboard** | Financial metrics | Billing analytics queries |
+
+| Use Case               | Description             | Operations                 |
+| ---------------------- | ----------------------- | -------------------------- |
+| **TAT Analysis**       | Turnaround time metrics | Query analytics data       |
+| **Test Volume Report** | Workload analysis       | Query sample/result counts |
+| **QC Performance**     | Quality metrics         | QC result aggregation      |
+| **Revenue Dashboard**  | Financial metrics       | Billing analytics queries  |
 
 #### Advanced Analytics
-| Use Case | Complexity | Description |
-|----------|-----------|-------------|
-| **Predictive Analytics** | High | Forecast test volumes, identify trends |
-| **Resource Optimization** | High | Staff scheduling, instrument utilization |
-| **Clinical Insights** | High | Population health analysis |
-| **Compliance Reporting** | Medium | Regulatory submissions (CAP, CLIA) |
+
+| Use Case                  | Complexity | Description                              |
+| ------------------------- | ---------- | ---------------------------------------- |
+| **Predictive Analytics**  | High       | Forecast test volumes, identify trends   |
+| **Resource Optimization** | High       | Staff scheduling, instrument utilization |
+| **Clinical Insights**     | High       | Population health analysis               |
+| **Compliance Reporting**  | Medium     | Regulatory submissions (CAP, CLIA)       |
 
 ---
 
 ### 3.15 System Administration (7 use cases)
 
 #### Configuration
-| Use Case | User Intent | Example Query | Backend Operation |
-|----------|-------------|---------------|-------------------|
-| **Configure Laboratory** | Lab settings | "Update laboratory TAT to 24 hours" | `updateLaboratory` mutation |
-| **Setup Test Method** | Method configuration | "Create test method 'Automated Chemistry'" | `createMethod` mutation |
-| **Add Instrument** | Equipment setup | "Add instrument 'Cobas 6000'" | `createInstrument` mutation |
-| **Configure Notifications** | Alert setup | "Enable SMS notifications for critical results" | SMS template configuration |
+
+| Use Case                    | User Intent          | Example Query                                   | Backend Operation           |
+| --------------------------- | -------------------- | ----------------------------------------------- | --------------------------- |
+| **Configure Laboratory**    | Lab settings         | "Update laboratory TAT to 24 hours"             | `updateLaboratory` mutation |
+| **Setup Test Method**       | Method configuration | "Create test method 'Automated Chemistry'"      | `createMethod` mutation     |
+| **Add Instrument**          | Equipment setup      | "Add instrument 'Cobas 6000'"                   | `createInstrument` mutation |
+| **Configure Notifications** | Alert setup          | "Enable SMS notifications for critical results" | SMS template configuration  |
 
 #### Maintenance
-| Use Case | Description | Operations |
-|----------|-------------|-----------|
-| **Audit Log Review** | System monitoring | Query audit logs |
-| **Data Export** | Backup/archival | Bulk data extraction |
-| **System Health Check** | Diagnostics | Query system status endpoints |
+
+| Use Case                | Description       | Operations                    |
+| ----------------------- | ----------------- | ----------------------------- |
+| **Audit Log Review**    | System monitoring | Query audit logs              |
+| **Data Export**         | Backup/archival   | Bulk data extraction          |
+| **System Health Check** | Diagnostics       | Query system status endpoints |
 
 ---
 
@@ -507,20 +549,22 @@ Create an intelligent conversational assistant that democratizes access to compl
 ### 4.1 Core Protection Principles
 
 #### Zero PII/PHI to LLM
+
 All personally identifiable information (PII) and protected health information (PHI) **MUST NEVER** be sent to external LLM providers.
 
 #### Data Classification
 
-| Classification | Examples | Protection Strategy |
-|----------------|----------|---------------------|
-| **PII (Encrypted)** | Patient name, DOB, email, phone, SSN | Tokenize before LLM, use tokens in conversation |
+| Classification      | Examples                               | Protection Strategy                                     |
+| ------------------- | -------------------------------------- | ------------------------------------------------------- |
+| **PII (Encrypted)** | Patient name, DOB, email, phone, SSN   | Tokenize before LLM, use tokens in conversation         |
 | **PHI (Encrypted)** | Test results, symptoms, clinical notes | Tokenize with type hints (e.g., RESULT_001: "elevated") |
-| **Non-sensitive** | Sample IDs, Test names, Dates, Status | Safe to include in LLM context |
-| **Aggregate** | Counts, averages, ranges | Safe when properly aggregated |
+| **Non-sensitive**   | Sample IDs, Test names, Dates, Status  | Safe to include in LLM context                          |
+| **Aggregate**       | Counts, averages, ranges               | Safe when properly aggregated                           |
 
 ### 4.2 Tokenization Architecture
 
 #### Token Mapping System
+
 ```python
 class TokenManager:
     """Manages token generation and mapping for PII/PHI"""
@@ -553,6 +597,7 @@ class TokenManager:
 ```
 
 #### Example Flow
+
 ```
 User: "Show me results for patient John Doe"
 
@@ -570,6 +615,7 @@ User: "Show me results for patient John Doe"
 ### 4.3 Implementation Details
 
 #### Pre-LLM Sanitization
+
 ```python
 def sanitize_for_llm(context: dict) -> dict:
     """Remove all PII/PHI before sending to LLM"""
@@ -593,6 +639,7 @@ def sanitize_for_llm(context: dict) -> dict:
 ```
 
 #### Post-LLM De-tokenization
+
 ```python
 def detokenize_response(response: str, token_map: dict) -> str:
     """Replace tokens with actual values for user display"""
@@ -604,6 +651,7 @@ def detokenize_response(response: str, token_map: dict) -> str:
 ### 4.4 Safe LLM Use Cases
 
 #### Approved LLM Contexts
+
 1. **Intent Classification**: Understanding user's goal (no PII needed)
 2. **Response Generation**: Templated responses with token placeholders
 3. **Workflow Orchestration**: Determining which operations to execute
@@ -611,6 +659,7 @@ def detokenize_response(response: str, token_map: dict) -> str:
 5. **Aggregated Analytics**: Working with counts, percentages, trends
 
 #### Example Safe Prompt
+
 ```
 User query: "Create a patient"
 
@@ -635,6 +684,7 @@ NO PII is involved in this interaction.
 ### 5.1 Backend Components
 
 #### 5.1.1 AI Assistant Service Layer
+
 ```
 felicity/apps/assistant/
 ├── __init__.py
@@ -657,6 +707,7 @@ felicity/apps/assistant/
 ```
 
 #### 5.1.2 GraphQL Integration
+
 ```python
 # felicity/api/gql/assistant/
 ├── __init__.py
@@ -704,6 +755,7 @@ class TokenMap(BaseEntity):
 ### 5.2 Frontend Components
 
 #### 5.2.1 Vue 3 Chat Interface
+
 ```
 webapp/components/assistant/
 ├── AIChatInterface.vue       # Main chat component
@@ -716,6 +768,7 @@ webapp/components/assistant/
 ```
 
 #### 5.2.2 Chat Component Features
+
 - **Streaming responses**: Real-time message generation using GraphQL subscriptions
 - **Rich formatting**: Markdown support, tables, lists
 - **Action buttons**: Quick actions (e.g., "View Patient", "Print Labels")
@@ -727,6 +780,7 @@ webapp/components/assistant/
 ### 5.3 Intent Classification System
 
 #### 5.3.1 Intent Taxonomy
+
 ```python
 class IntentCategory(Enum):
     PATIENT_MANAGEMENT = "patient"
@@ -757,6 +811,7 @@ class Intent(Enum):
 ```
 
 #### 5.3.2 Intent Handler Pattern
+
 ```python
 class IntentHandler(ABC):
     """Base class for intent handlers"""
@@ -778,6 +833,7 @@ class IntentHandler(ABC):
 ```
 
 #### 5.3.3 Example: Create Patient Intent
+
 ```python
 class CreatePatientIntent(IntentHandler):
     """Handle patient creation"""
@@ -837,6 +893,7 @@ class CreatePatientIntent(IntentHandler):
 ### 5.4 LLM Integration
 
 #### 5.4.1 LLM Provider Abstraction
+
 ```python
 class LLMClient(ABC):
     """Abstract LLM client for provider flexibility"""
@@ -878,6 +935,7 @@ class OpenAIClient(LLMClient):
 ```
 
 #### 5.4.2 Function Calling Schema
+
 ```python
 # Define tools for LLM function calling
 PATIENT_TOOLS = [
@@ -916,6 +974,7 @@ PATIENT_TOOLS = [
 ### 5.5 Context Management
 
 #### 5.5.1 Conversation Context
+
 ```python
 class ConversationContext:
     """Maintain conversation state"""
@@ -953,6 +1012,7 @@ class ConversationContext:
 ```
 
 #### 5.5.2 Multi-turn Conversation Flow
+
 ```
 User: "Register a new patient John Doe born on 1990-05-15"
   → LLM: Extract parameters, call create_patient tool
@@ -979,31 +1039,33 @@ User: "Add 2 blood samples"
 ### Phase 1: Foundation (Weeks 1-4)
 
 #### Deliverables
+
 1. **Backend Infrastructure**
-   - AI Assistant service module structure
-   - Conversation and message data models
-   - Token management system
-   - Basic GraphQL API (queries, mutations)
+    - AI Assistant service module structure
+    - Conversation and message data models
+    - Token management system
+    - Basic GraphQL API (queries, mutations)
 
 2. **Frontend Components**
-   - Basic chat interface
-   - Message display
-   - Input box with send button
-   - Conversation list
+    - Basic chat interface
+    - Message display
+    - Input box with send button
+    - Conversation list
 
 3. **LLM Integration**
-   - LLM client abstraction (Claude/OpenAI)
-   - Basic prompt templates
-   - Function calling setup
+    - LLM client abstraction (Claude/OpenAI)
+    - Basic prompt templates
+    - Function calling setup
 
 4. **Core Capabilities (5 intents)**
-   - Create patient
-   - Search patient
-   - Create sample
-   - Create analysis request
-   - Enter result
+    - Create patient
+    - Search patient
+    - Create sample
+    - Create analysis request
+    - Enter result
 
 #### Success Criteria
+
 - User can have basic conversation
 - Create patient and samples via chat
 - All PII properly tokenized
@@ -1014,31 +1076,33 @@ User: "Add 2 blood samples"
 ### Phase 2: Core Workflows (Weeks 5-8)
 
 #### Deliverables
+
 1. **Patient Management (Complete)**
-   - All patient CRUD operations
-   - Patient search with encrypted fields
-   - Patient identification management
-   - Patient history queries
+    - All patient CRUD operations
+    - Patient search with encrypted fields
+    - Patient identification management
+    - Patient history queries
 
 2. **Sample Management (Complete)**
-   - Sample lifecycle operations
-   - Sample relationships (parent-child, pooling)
-   - Sample status updates
-   - Rejection handling
+    - Sample lifecycle operations
+    - Sample relationships (parent-child, pooling)
+    - Sample status updates
+    - Rejection handling
 
 3. **Result Entry (Basic)**
-   - Single result entry
-   - Multiple result entry
-   - Result verification
-   - Result retesting
+    - Single result entry
+    - Multiple result entry
+    - Result verification
+    - Result retesting
 
 4. **Enhanced UI**
-   - Streaming responses
-   - Rich formatting (markdown)
-   - Action buttons
-   - Context panel
+    - Streaming responses
+    - Rich formatting (markdown)
+    - Action buttons
+    - Context panel
 
 #### Success Criteria
+
 - Complete patient-sample-result workflow via chat
 - Context maintained across conversations
 - Streaming responses working
@@ -1049,31 +1113,33 @@ User: "Add 2 blood samples"
 ### Phase 3: Advanced Workflows (Weeks 9-12)
 
 #### Deliverables
+
 1. **Worksheet Management**
-   - Worksheet creation and assignment
-   - Sample-to-worksheet assignment
-   - Worksheet verification
-   - QC integration
+    - Worksheet creation and assignment
+    - Sample-to-worksheet assignment
+    - Worksheet verification
+    - QC integration
 
 2. **Quality Control**
-   - QC setup (levels, sets, templates)
-   - QC result entry
-   - QC chart generation
-   - QC rule evaluation
+    - QC setup (levels, sets, templates)
+    - QC result entry
+    - QC chart generation
+    - QC rule evaluation
 
 3. **Shipment Operations**
-   - Shipment creation
-   - Sample assignment
-   - Dispatch tracking
-   - Manifest generation
+    - Shipment creation
+    - Sample assignment
+    - Dispatch tracking
+    - Manifest generation
 
 4. **Inventory Management**
-   - Stock operations
-   - Low stock alerts
-   - Expiry tracking
-   - Reorder management
+    - Stock operations
+    - Low stock alerts
+    - Expiry tracking
+    - Reorder management
 
 #### Success Criteria
+
 - All major workflows available via chat
 - Complex multi-step workflows simplified
 - Integration with existing features
@@ -1084,31 +1150,33 @@ User: "Add 2 blood samples"
 ### Phase 4: Specialized Modules (Weeks 13-16)
 
 #### Deliverables
+
 1. **Billing Operations**
-   - Bill generation
-   - Payment processing
-   - Discount application
-   - Revenue analytics
+    - Bill generation
+    - Payment processing
+    - Discount application
+    - Revenue analytics
 
 2. **Microbiology**
-   - Organism reporting
-   - AST panel management
-   - MIC/Zone entry
-   - Breakpoint interpretation
+    - Organism reporting
+    - AST panel management
+    - MIC/Zone entry
+    - Breakpoint interpretation
 
 3. **Document Management**
-   - Document creation
-   - Version management
-   - Review workflows
-   - Search and retrieval
+    - Document creation
+    - Version management
+    - Review workflows
+    - Search and retrieval
 
 4. **Storage & Biobanking**
-   - Sample storage
-   - Location tracking
-   - Retrieval operations
-   - Storage analytics
+    - Sample storage
+    - Location tracking
+    - Retrieval operations
+    - Storage analytics
 
 #### Success Criteria
+
 - All specialized workflows available
 - Domain-specific language understanding
 - Seamless integration with existing modules
@@ -1119,27 +1187,29 @@ User: "Add 2 blood samples"
 ### Phase 5: Intelligence & Analytics (Weeks 17-20)
 
 #### Deliverables
+
 1. **Natural Language Analytics**
-   - "Show me TAT trends for CBC tests this month"
-   - "Which tests have the highest failure rate?"
-   - "What's our collection rate for bills last quarter?"
+    - "Show me TAT trends for CBC tests this month"
+    - "Which tests have the highest failure rate?"
+    - "What's our collection rate for bills last quarter?"
 
 2. **Predictive Insights**
-   - "When will we run out of glucose reagent?"
-   - "Predict test volume for next month"
-   - "Identify samples at risk of TAT breach"
+    - "When will we run out of glucose reagent?"
+    - "Predict test volume for next month"
+    - "Identify samples at risk of TAT breach"
 
 3. **Automated Workflows**
-   - "Create worksheet for all pending chemistry samples"
-   - "Verify all results in worksheet WS-001 that pass QC"
-   - "Generate end-of-month reports"
+    - "Create worksheet for all pending chemistry samples"
+    - "Verify all results in worksheet WS-001 that pass QC"
+    - "Generate end-of-month reports"
 
 4. **Learning & Personalization**
-   - Learn user preferences (e.g., default test panels)
-   - Suggest actions based on context
-   - Proactive notifications
+    - Learn user preferences (e.g., default test panels)
+    - Suggest actions based on context
+    - Proactive notifications
 
 #### Success Criteria
+
 - AI generates actionable insights
 - Predictive analytics functional
 - User productivity increased 30%
@@ -1150,31 +1220,33 @@ User: "Add 2 blood samples"
 ### Phase 6: Polish & Production (Weeks 21-24)
 
 #### Deliverables
+
 1. **Performance Optimization**
-   - Response time < 500ms for simple queries
-   - Streaming latency < 100ms
-   - Token caching for frequent operations
-   - Database query optimization
+    - Response time < 500ms for simple queries
+    - Streaming latency < 100ms
+    - Token caching for frequent operations
+    - Database query optimization
 
 2. **Enhanced UX**
-   - Voice input/output
-   - Mobile-optimized interface
-   - Keyboard shortcuts
-   - Multi-language support
+    - Voice input/output
+    - Mobile-optimized interface
+    - Keyboard shortcuts
+    - Multi-language support
 
 3. **Admin & Monitoring**
-   - Usage analytics dashboard
-   - Token usage tracking (cost management)
-   - Error logging and alerting
-   - A/B testing framework
+    - Usage analytics dashboard
+    - Token usage tracking (cost management)
+    - Error logging and alerting
+    - A/B testing framework
 
 4. **Documentation & Training**
-   - User guide with examples
-   - Video tutorials
-   - In-app help
-   - Admin configuration guide
+    - User guide with examples
+    - Video tutorials
+    - In-app help
+    - Admin configuration guide
 
 #### Success Criteria
+
 - Production-ready quality
 - Comprehensive documentation
 - User satisfaction > 4.5/5
@@ -1187,6 +1259,7 @@ User: "Add 2 blood samples"
 ### 7.1 Authentication & Authorization
 
 #### Multi-Tenant Isolation
+
 ```python
 async def process_chat_message(message: str, user: User) -> str:
     """All assistant operations respect tenant context"""
@@ -1211,6 +1284,7 @@ async def process_chat_message(message: str, user: User) -> str:
 ```
 
 #### Permission Checks
+
 ```python
 async def execute_intent(intent: Intent, params: dict) -> dict:
     """Check permissions before executing operations"""
@@ -1230,6 +1304,7 @@ async def execute_intent(intent: Intent, params: dict) -> dict:
 ### 7.2 Audit Logging
 
 #### Comprehensive Tracking
+
 ```python
 class AIAssistantAuditLog(BaseEntity):
     """Track all AI-assisted operations"""
@@ -1260,6 +1335,7 @@ class AIAssistantAuditLog(BaseEntity):
 ```
 
 #### Compliance Reports
+
 - **HIPAA Audit Trail**: All patient data access via assistant
 - **User Activity Report**: Track operations by user
 - **LLM Cost Tracking**: Token usage and costs per user/lab
@@ -1268,6 +1344,7 @@ class AIAssistantAuditLog(BaseEntity):
 ### 7.3 Data Privacy
 
 #### Token Expiration
+
 ```python
 class TokenExpirationPolicy:
     """Auto-expire tokens after conversation ends"""
@@ -1285,6 +1362,7 @@ class TokenExpirationPolicy:
 ```
 
 #### PII Logging Policy
+
 ```python
 # NEVER log PII to application logs
 logger.info(f"Created patient {patient.uid}")  # ✅ OK
@@ -1301,6 +1379,7 @@ await audit_service.log(
 ### 7.4 LLM Safety
 
 #### Content Filtering
+
 ```python
 def validate_user_input(message: str) -> tuple[bool, str]:
     """Check for injection attacks and inappropriate content"""
@@ -1325,6 +1404,7 @@ def validate_user_input(message: str) -> tuple[bool, str]:
 ```
 
 #### Rate Limiting
+
 ```python
 class RateLimiter:
     """Prevent abuse and control costs"""
@@ -1344,6 +1424,7 @@ class RateLimiter:
 ### 8.1 Existing Backend Services
 
 #### Leverage Existing Patterns
+
 ```python
 # Assistant uses same services as GraphQL API
 from felicity.apps.patient.services import PatientService
@@ -1359,6 +1440,7 @@ class CreatePatientIntent(IntentHandler):
 ```
 
 #### Reuse GraphQL Operations
+
 ```python
 # Assistant can execute GraphQL operations directly
 from felicity.api.gql.patient.mutations import PatientMutations
@@ -1374,33 +1456,35 @@ result = await mutations.create_patient(
 ### 8.2 Frontend Integration
 
 #### Chat Widget
+
 ```vue
 <!-- Can be embedded anywhere in the app -->
 <template>
-  <div class="ai-assistant-widget">
-    <!-- Floating chat button -->
-    <button @click="toggleChat" class="chat-button">
-      <MessageIcon />
-      <span v-if="unreadCount" class="badge">{{ unreadCount }}</span>
-    </button>
+    <div class="ai-assistant-widget">
+        <!-- Floating chat button -->
+        <button @click="toggleChat" class="chat-button">
+            <MessageIcon />
+            <span v-if="unreadCount" class="badge">{{ unreadCount }}</span>
+        </button>
 
-    <!-- Chat panel -->
-    <AIChatInterface v-if="isOpen" @close="toggleChat" />
-  </div>
+        <!-- Chat panel -->
+        <AIChatInterface v-if="isOpen" @close="toggleChat" />
+    </div>
 </template>
 ```
 
 #### Context Injection
+
 ```typescript
 // Inject current page context into assistant
-const assistantStore = useAssistantStore()
+const assistantStore = useAssistantStore();
 
 // User is viewing patient detail page
 assistantStore.setContext({
-  page: 'patient-detail',
-  patientUid: route.params.patientUid,
-  availableActions: ['create_sample', 'view_history', 'edit_patient']
-})
+    page: 'patient-detail',
+    patientUid: route.params.patientUid,
+    availableActions: ['create_sample', 'view_history', 'edit_patient'],
+});
 
 // Assistant can now use this context:
 // User: "Create a sample"
@@ -1408,6 +1492,7 @@ assistantStore.setContext({
 ```
 
 #### Quick Actions
+
 ```vue
 <!-- Throughout the app, add quick action buttons -->
 <button @click="openAssistant('Create patient')">
@@ -1422,6 +1507,7 @@ assistantStore.setContext({
 ### 8.3 External Integrations
 
 #### Instrument Interfaces
+
 ```python
 # AI can trigger instrument data import
 class ImportInstrumentResultsIntent(IntentHandler):
@@ -1439,6 +1525,7 @@ class ImportInstrumentResultsIntent(IntentHandler):
 ```
 
 #### Notification Services
+
 ```python
 # AI can send SMS/email via existing services
 class SendReportIntent(IntentHandler):
@@ -1501,11 +1588,13 @@ class SendReportIntent(IntentHandler):
 ### 9.2 Message Types
 
 #### User Messages
+
 - Simple text bubbles (right-aligned)
 - File attachments (CSV, Excel)
 - Voice messages
 
 #### Assistant Messages
+
 - Rich formatting (markdown)
 - Tables for data display
 - Action buttons
@@ -1514,6 +1603,7 @@ class SendReportIntent(IntentHandler):
 - Confirmation prompts
 
 #### System Messages
+
 - Notifications (e.g., "Operation completed")
 - Errors (with helpful suggestions)
 - Status updates (e.g., "Processing...")
@@ -1521,6 +1611,7 @@ class SendReportIntent(IntentHandler):
 ### 9.3 Interaction Patterns
 
 #### Conversational Forms
+
 ```
 User: "Register a patient"
 Assistant: "I'll help you register a new patient. Let me collect some information."
@@ -1539,6 +1630,7 @@ Assistant: "I'll help you register a new patient. Let me collect some informatio
 ```
 
 #### Quick Actions
+
 ```
 Assistant: "Patient PAT-2024-001 created successfully!"
 
@@ -1547,6 +1639,7 @@ Quick actions:
 ```
 
 #### Confirmations
+
 ```
 Assistant: "I'm about to delete sample SAM-001. This action cannot be undone."
 
@@ -1554,6 +1647,7 @@ Assistant: "I'm about to delete sample SAM-001. This action cannot be undone."
 ```
 
 #### Multi-Step Workflows
+
 ```
 User: "Create a worksheet for chemistry samples"
 
@@ -1572,12 +1666,14 @@ Step 3/3: "Assign analyst?"
 ### 9.4 Mobile Responsiveness
 
 #### Compact Chat Interface
+
 - Bottom-sheet style on mobile
 - Swipe gestures for conversation switching
 - Voice input as primary input method
 - Simplified action buttons
 
 #### Offline Support
+
 - Queue messages when offline
 - Sync when connection restored
 - Indicate offline status clearly
@@ -1589,6 +1685,7 @@ Step 3/3: "Assign analyst?"
 ### 10.1 Unit Testing
 
 #### Intent Classification Tests
+
 ```python
 class TestPatientIntents:
     """Test patient-related intent classification"""
@@ -1611,6 +1708,7 @@ class TestPatientIntents:
 ```
 
 #### Tokenization Tests
+
 ```python
 class TestTokenization:
     """Test PII/PHI tokenization"""
@@ -1647,6 +1745,7 @@ class TestTokenization:
 ### 10.2 Integration Testing
 
 #### End-to-End Workflow Tests
+
 ```python
 class TestPatientWorkflow:
     """Test complete patient workflow"""
@@ -1683,6 +1782,7 @@ class TestPatientWorkflow:
 ### 10.3 Security Testing
 
 #### PII Leakage Tests
+
 ```python
 class TestPIIProtection:
     """Ensure no PII reaches LLM"""
@@ -1708,6 +1808,7 @@ class TestPIIProtection:
 ```
 
 #### Authorization Tests
+
 ```python
 class TestAuthorization:
     """Test permission enforcement"""
@@ -1748,6 +1849,7 @@ class TestAuthorization:
 ### 10.4 Performance Testing
 
 #### Load Testing
+
 ```python
 class TestPerformance:
     """Test system under load"""
@@ -1779,12 +1881,13 @@ class TestPerformance:
 ### 10.5 User Acceptance Testing
 
 #### UAT Scenarios
-| Scenario | Steps | Expected Outcome |
-|----------|-------|------------------|
-| **New User Onboarding** | 1. New lab tech logs in<br>2. Opens assistant<br>3. Asks "How do I register a patient?" | Assistant guides through process |
-| **Complex Workflow** | 1. Create patient<br>2. Create request<br>3. Add samples<br>4. Create worksheet<br>5. Enter results<br>6. Verify | Complete workflow via chat only |
-| **Error Recovery** | 1. Create sample with invalid data<br>2. View error message<br>3. Correct and retry | Clear error, successful retry |
-| **Context Switching** | 1. Working on Patient A<br>2. Switch to Patient B<br>3. Return to Patient A | Context preserved correctly |
+
+| Scenario                | Steps                                                                                                            | Expected Outcome                 |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| **New User Onboarding** | 1. New lab tech logs in<br>2. Opens assistant<br>3. Asks "How do I register a patient?"                          | Assistant guides through process |
+| **Complex Workflow**    | 1. Create patient<br>2. Create request<br>3. Add samples<br>4. Create worksheet<br>5. Enter results<br>6. Verify | Complete workflow via chat only  |
+| **Error Recovery**      | 1. Create sample with invalid data<br>2. View error message<br>3. Correct and retry                              | Clear error, successful retry    |
+| **Context Switching**   | 1. Working on Patient A<br>2. Switch to Patient B<br>3. Return to Patient A                                      | Context preserved correctly      |
 
 ---
 
@@ -1793,29 +1896,31 @@ class TestPerformance:
 ### 11.1 Infrastructure Requirements
 
 #### Backend Services
+
 ```yaml
 # docker-compose additions
 services:
-  felicity-assistant:
-    build:
-      context: .
-      dockerfile: Dockerfile.assistant
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - MONGODB_URL=${MONGODB_URL}
-      - REDIS_URL=${REDIS_URL}
-      - LLM_PROVIDER=${LLM_PROVIDER}  # claude, openai
-      - LLM_API_KEY=${LLM_API_KEY}
-      - LLM_MODEL=${LLM_MODEL}
-    depends_on:
-      - postgres
-      - mongodb
-      - redis
-    volumes:
-      - ./felicity:/app/felicity
+    felicity-assistant:
+        build:
+            context: .
+            dockerfile: Dockerfile.assistant
+        environment:
+            - DATABASE_URL=${DATABASE_URL}
+            - MONGODB_URL=${MONGODB_URL}
+            - REDIS_URL=${REDIS_URL}
+            - LLM_PROVIDER=${LLM_PROVIDER} # claude, openai
+            - LLM_API_KEY=${LLM_API_KEY}
+            - LLM_MODEL=${LLM_MODEL}
+        depends_on:
+            - postgres
+            - mongodb
+            - redis
+        volumes:
+            - ./felicity:/app/felicity
 ```
 
 #### Resource Allocation
+
 - **CPU**: 2-4 cores per instance
 - **Memory**: 4-8 GB RAM
 - **Storage**: 50 GB for conversation logs
@@ -1824,6 +1929,7 @@ services:
 ### 11.2 Configuration Management
 
 #### Environment Variables
+
 ```bash
 # LLM Configuration
 LLM_PROVIDER=claude  # or openai
@@ -1853,6 +1959,7 @@ ASSISTANT_MAX_FILE_SIZE_MB=10
 ### 11.3 Monitoring & Observability
 
 #### Key Metrics to Track
+
 ```python
 # Performance metrics
 - assistant_message_processing_time_seconds (histogram)
@@ -1880,6 +1987,7 @@ ASSISTANT_MAX_FILE_SIZE_MB=10
 ```
 
 #### Logging Strategy
+
 ```python
 # Structured logging
 logger.info(
@@ -1897,65 +2005,68 @@ logger.info(
 ```
 
 #### Alerting Rules
+
 ```yaml
 alerts:
-  - name: high_error_rate
-    condition: assistant_errors_total > 10% of assistant_messages_total
-    severity: warning
-    action: notify_team
+    - name: high_error_rate
+      condition: assistant_errors_total > 10% of assistant_messages_total
+      severity: warning
+      action: notify_team
 
-  - name: high_llm_cost
-    condition: assistant_llm_cost_usd_total > MAX_COST_PER_DAY
-    severity: critical
-    action: disable_assistant, notify_admin
+    - name: high_llm_cost
+      condition: assistant_llm_cost_usd_total > MAX_COST_PER_DAY
+      severity: critical
+      action: disable_assistant, notify_admin
 
-  - name: slow_response_time
-    condition: assistant_message_processing_time_seconds_p95 > 5s
-    severity: warning
-    action: notify_team
+    - name: slow_response_time
+      condition: assistant_message_processing_time_seconds_p95 > 5s
+      severity: warning
+      action: notify_team
 
-  - name: llm_api_down
-    condition: assistant_llm_errors_total > 10 in 5 minutes
-    severity: critical
-    action: enable_fallback_mode, notify_team
+    - name: llm_api_down
+      condition: assistant_llm_errors_total > 10 in 5 minutes
+      severity: critical
+      action: enable_fallback_mode, notify_team
 ```
 
 ### 11.4 Deployment Process
 
 #### CI/CD Pipeline
+
 ```yaml
 # .github/workflows/deploy-assistant.yml
 name: Deploy AI Assistant
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'felicity/apps/assistant/**'
-      - 'felicity/api/gql/assistant/**'
+    push:
+        branches: [main]
+        paths:
+            - 'felicity/apps/assistant/**'
+            - 'felicity/api/gql/assistant/**'
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Run tests
-        run: |
-          pytest felicity/tests/assistant/ -v
-          pytest felicity/tests/integration/assistant/ -v
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Run tests
+              run: |
+                  pytest felicity/tests/assistant/ -v
+                  pytest felicity/tests/integration/assistant/ -v
 
-  deploy:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to staging
-        run: |
-          # Deploy to staging environment
-          # Run smoke tests
-          # If passed, deploy to production
+    deploy:
+        needs: test
+        runs-on: ubuntu-latest
+        steps:
+            - name: Deploy to staging
+              run: |
+                  # Deploy to staging environment
+                  # Run smoke tests
+                  # If passed, deploy to production
 ```
 
 #### Rollout Strategy
+
 1. **Canary Deployment**: 5% of users initially
 2. **Monitor**: Track error rates, performance, user feedback
 3. **Gradual Rollout**: 25% → 50% → 100% over 2 weeks
@@ -1964,6 +2075,7 @@ jobs:
 ### 11.5 Disaster Recovery
 
 #### Backup Strategy
+
 ```python
 # Backup conversation data daily
 async def backup_conversations():
@@ -1983,17 +2095,18 @@ async def backup_conversations():
 ```
 
 #### Failover Procedures
+
 1. **LLM Provider Failure**
-   - Automatic fallback to secondary provider
-   - Or disable AI features, allow manual operations
+    - Automatic fallback to secondary provider
+    - Or disable AI features, allow manual operations
 
 2. **Database Failure**
-   - Read from replica
-   - Queue write operations
+    - Read from replica
+    - Queue write operations
 
 3. **Complete System Failure**
-   - Users can still access regular LIMS UI
-   - Assistant operations queued for later processing
+    - Users can still access regular LIMS UI
+    - Assistant operations queued for later processing
 
 ---
 
@@ -2002,10 +2115,12 @@ async def backup_conversations():
 ### 12.1 LLM Costs
 
 #### Claude 3.5 Sonnet Pricing (as of 2024)
+
 - **Input**: $3 per million tokens
 - **Output**: $15 per million tokens
 
 #### Example Usage Calculation
+
 ```
 Assumptions:
 - 50 active users per day
@@ -2029,39 +2144,42 @@ Yearly cost: $135 × 12 = $1,620/year
 
 ### 12.2 Infrastructure Costs
 
-| Component | Monthly Cost | Notes |
-|-----------|--------------|-------|
-| **Backend Service** | $50-100 | 2-4 core VPS |
-| **Database Storage** | $10-20 | Conversation history |
-| **Redis Cache** | $10-20 | Session management |
-| **Bandwidth** | $20-50 | API calls |
-| **Monitoring** | $0-30 | Application monitoring |
-| **Total Infrastructure** | $90-220/month | ~$1,000-2,600/year |
+| Component                | Monthly Cost  | Notes                  |
+| ------------------------ | ------------- | ---------------------- |
+| **Backend Service**      | $50-100       | 2-4 core VPS           |
+| **Database Storage**     | $10-20        | Conversation history   |
+| **Redis Cache**          | $10-20        | Session management     |
+| **Bandwidth**            | $20-50        | API calls              |
+| **Monitoring**           | $0-30         | Application monitoring |
+| **Total Infrastructure** | $90-220/month | ~$1,000-2,600/year     |
 
 ### 12.3 Total Cost of Ownership (TCO)
 
 #### Year 1 Costs
-| Category | Cost | Notes |
-|----------|------|-------|
-| **Development** | $80,000 | 6 months, 1 senior developer |
-| **LLM Costs** | $1,620 | Based on usage estimate |
-| **Infrastructure** | $1,800 | Hosting and services |
-| **Testing & QA** | $10,000 | Integration testing |
-| **Training** | $5,000 | User training materials |
-| **Total Year 1** | **$98,420** | |
+
+| Category           | Cost        | Notes                        |
+| ------------------ | ----------- | ---------------------------- |
+| **Development**    | $80,000     | 6 months, 1 senior developer |
+| **LLM Costs**      | $1,620      | Based on usage estimate      |
+| **Infrastructure** | $1,800      | Hosting and services         |
+| **Testing & QA**   | $10,000     | Integration testing          |
+| **Training**       | $5,000      | User training materials      |
+| **Total Year 1**   | **$98,420** |                              |
 
 #### Ongoing Costs (Per Year)
-| Category | Cost | Notes |
-|----------|------|-------|
-| **LLM Costs** | $1,620 | Scales with usage |
-| **Infrastructure** | $1,800 | Hosting |
-| **Maintenance** | $20,000 | 25% of dev cost |
-| **Support** | $5,000 | User support |
-| **Total Ongoing** | **$28,420/year** | |
+
+| Category           | Cost             | Notes             |
+| ------------------ | ---------------- | ----------------- |
+| **LLM Costs**      | $1,620           | Scales with usage |
+| **Infrastructure** | $1,800           | Hosting           |
+| **Maintenance**    | $20,000          | 25% of dev cost   |
+| **Support**        | $5,000           | User support      |
+| **Total Ongoing**  | **$28,420/year** |                   |
 
 ### 12.4 ROI Analysis
 
 #### Time Savings Calculation
+
 ```
 Assumptions:
 - 50 lab staff using system
@@ -2082,6 +2200,7 @@ ROI:
 ```
 
 #### Quality Improvements
+
 - **Reduced Errors**: 20-30% reduction in data entry errors
 - **Faster TAT**: 10-15% improvement in sample processing time
 - **Better Compliance**: Comprehensive audit trails, reduced violations
@@ -2093,38 +2212,38 @@ ROI:
 
 ### 13.1 Adoption Metrics
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| **Active Users** | 80% of lab staff | Weekly active users |
-| **Messages per User** | 15+ per day | Average daily messages |
-| **Workflows via AI** | 50%+ of operations | Percentage of operations via assistant |
-| **User Retention** | 90%+ return rate | Users who return after first use |
+| Metric                | Target             | Measurement                            |
+| --------------------- | ------------------ | -------------------------------------- |
+| **Active Users**      | 80% of lab staff   | Weekly active users                    |
+| **Messages per User** | 15+ per day        | Average daily messages                 |
+| **Workflows via AI**  | 50%+ of operations | Percentage of operations via assistant |
+| **User Retention**    | 90%+ return rate   | Users who return after first use       |
 
 ### 13.2 Performance Metrics
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| **Response Time** | < 500ms | P95 response time |
+| Metric                | Target  | Measurement         |
+| --------------------- | ------- | ------------------- |
+| **Response Time**     | < 500ms | P95 response time   |
 | **Streaming Latency** | < 100ms | Time to first token |
-| **Uptime** | 99.9% | System availability |
-| **Error Rate** | < 1% | Failed operations |
+| **Uptime**            | 99.9%   | System availability |
+| **Error Rate**        | < 1%    | Failed operations   |
 
 ### 13.3 Business Metrics
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| **Time Saved** | 30 min/user/day | Tracked via timestamps |
-| **Error Reduction** | 25% fewer errors | Compare pre/post |
-| **Training Time** | 50% reduction | New user onboarding time |
-| **User Satisfaction** | 4.5/5 stars | In-app feedback surveys |
+| Metric                | Target           | Measurement              |
+| --------------------- | ---------------- | ------------------------ |
+| **Time Saved**        | 30 min/user/day  | Tracked via timestamps   |
+| **Error Reduction**   | 25% fewer errors | Compare pre/post         |
+| **Training Time**     | 50% reduction    | New user onboarding time |
+| **User Satisfaction** | 4.5/5 stars      | In-app feedback surveys  |
 
 ### 13.4 Cost Metrics
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| **LLM Cost per User** | < $3/month | Total cost / active users |
-| **Cost per Message** | < $0.005 | Total cost / messages |
-| **ROI** | > 200% in 1 year | Savings vs. costs |
+| Metric                | Target           | Measurement               |
+| --------------------- | ---------------- | ------------------------- |
+| **LLM Cost per User** | < $3/month       | Total cost / active users |
+| **Cost per Message**  | < $0.005         | Total cost / messages     |
+| **ROI**               | > 200% in 1 year | Savings vs. costs         |
 
 ---
 
@@ -2132,30 +2251,30 @@ ROI:
 
 ### 14.1 Technical Risks
 
-| Risk | Impact | Probability | Mitigation |
-|------|--------|-------------|------------|
-| **LLM Provider Outage** | High | Medium | Multi-provider support, fallback mode |
-| **PII Leakage** | Critical | Low | Comprehensive tokenization, regular audits |
-| **Performance Degradation** | Medium | Medium | Caching, optimization, load testing |
-| **Integration Bugs** | Medium | High | Extensive testing, phased rollout |
+| Risk                        | Impact   | Probability | Mitigation                                 |
+| --------------------------- | -------- | ----------- | ------------------------------------------ |
+| **LLM Provider Outage**     | High     | Medium      | Multi-provider support, fallback mode      |
+| **PII Leakage**             | Critical | Low         | Comprehensive tokenization, regular audits |
+| **Performance Degradation** | Medium   | Medium      | Caching, optimization, load testing        |
+| **Integration Bugs**        | Medium   | High        | Extensive testing, phased rollout          |
 
 ### 14.2 Business Risks
 
-| Risk | Impact | Probability | Mitigation |
-|------|--------|-------------|------------|
-| **Low Adoption** | High | Medium | User training, clear value demonstration |
-| **High Costs** | Medium | Low | Rate limiting, cost monitoring, alerts |
-| **Regulatory Issues** | High | Low | Legal review, HIPAA compliance validation |
-| **User Resistance** | Medium | Medium | Change management, optional feature |
+| Risk                  | Impact | Probability | Mitigation                                |
+| --------------------- | ------ | ----------- | ----------------------------------------- |
+| **Low Adoption**      | High   | Medium      | User training, clear value demonstration  |
+| **High Costs**        | Medium | Low         | Rate limiting, cost monitoring, alerts    |
+| **Regulatory Issues** | High   | Low         | Legal review, HIPAA compliance validation |
+| **User Resistance**   | Medium | Medium      | Change management, optional feature       |
 
 ### 14.3 Security Risks
 
-| Risk | Impact | Probability | Mitigation |
-|------|--------|-------------|------------|
-| **Prompt Injection** | Medium | Medium | Input validation, sandboxing |
-| **Unauthorized Access** | High | Low | Strong authentication, RBAC |
-| **Data Breach** | Critical | Very Low | Encryption, tokenization, audit logs |
-| **LLM Hallucination** | Medium | Medium | Confirmation prompts, validation |
+| Risk                    | Impact   | Probability | Mitigation                           |
+| ----------------------- | -------- | ----------- | ------------------------------------ |
+| **Prompt Injection**    | Medium   | Medium      | Input validation, sandboxing         |
+| **Unauthorized Access** | High     | Low         | Strong authentication, RBAC          |
+| **Data Breach**         | Critical | Very Low    | Encryption, tokenization, audit logs |
+| **LLM Hallucination**   | Medium   | Medium      | Confirmation prompts, validation     |
 
 ---
 
@@ -2164,34 +2283,38 @@ ROI:
 ### Phase 7+: Advanced Capabilities
 
 #### 15.1 Multimodal Capabilities
+
 - **Image Analysis**: Upload images (culture plates, gels) for AI analysis
 - **Voice Conversations**: Full voice-based interaction
 - **Document Processing**: Extract data from PDFs, scanned forms
 - **Video Guidance**: AI-generated video tutorials
 
 #### 15.2 Advanced AI Features
+
 - **Predictive Analytics**:
-  - Predict test failures before they occur
-  - Forecast reagent needs
-  - Identify at-risk samples
+    - Predict test failures before they occur
+    - Forecast reagent needs
+    - Identify at-risk samples
 
 - **Anomaly Detection**:
-  - Automatic identification of unusual patterns
-  - Outlier detection in QC data
-  - Fraud detection in billing
+    - Automatic identification of unusual patterns
+    - Outlier detection in QC data
+    - Fraud detection in billing
 
 - **Natural Language Reporting**:
-  - Generate clinical interpretations
-  - Auto-write lab reports
-  - Summarize patient history
+    - Generate clinical interpretations
+    - Auto-write lab reports
+    - Summarize patient history
 
 #### 15.3 Collaboration Features
+
 - **Team Chats**: Multi-user conversations
 - **Expert Consultation**: AI routes complex cases to specialists
 - **Knowledge Base**: AI learns from organization's SOPs
 - **Case Discussions**: AI-facilitated case reviews
 
 #### 15.4 Integration Expansions
+
 - **EHR Integration**: Two-way sync with hospital systems
 - **LIMS-to-LIMS**: Transfer data between facilities
 - **Billing Systems**: Insurance claim automation
@@ -2280,5 +2403,7 @@ class IntentTaxonomy:
 ### Appendix B: Example Conversations
 
 #### Example 1: Complete Patient-Sample-Result Workflow
+
 ```
 User: Register a new patient John Doe, born 1990-05-15, male
+```

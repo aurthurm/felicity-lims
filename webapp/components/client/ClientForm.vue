@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
-import { computed, watch, onMounted } from 'vue';
+import { watch, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { ClientType } from '@/types/gql';
 import {
@@ -49,7 +49,7 @@ const clientSchema = yup.object({
   districtUid: yup.string().nullable(),
 });
 
-const { handleSubmit, setFieldValue, setValues, resetForm } = useForm({
+const { handleSubmit, setFieldValue, setValues } = useForm({
   validationSchema: clientSchema,
   initialValues: {
     name: props.client?.name ?? '',

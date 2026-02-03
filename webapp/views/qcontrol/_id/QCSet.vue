@@ -290,8 +290,7 @@ function toggleView(choice: string): void {
   <hr />
   <div class="flex justify-end">
     <button
-      :class="[
-        'focus:outline-none',
+      :class="['focus:outline-none',
         { 'fill-current text-foreground': gridView === true },
         { 'fill-current text-muted-foreground': gridView === false },
       ]"
@@ -300,8 +299,7 @@ function toggleView(choice: string): void {
       <font-awesome-icon icon="th" />
     </button>
     <button
-      :class="[
-        'focus:outline-none ml-2',
+      :class="['focus:outline-none ml-2',
         { 'fill-current text-foreground': gridView === false },
         { 'fill-current text-muted-foreground': gridView === true },
       ]"
@@ -314,36 +312,36 @@ function toggleView(choice: string): void {
     <div
       class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg"
     >
-      <table class="min-w-full fel-table">
-        <thead>
-          <tr>
-            <th
+      <Table class="min-w-full">
+        <TableHeader>
+          <TableRow>
+            <TableHead
               class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
-            ></th>
-            <th
+            ></TableHead>
+            <TableHead
               class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
             >
               Analysis
-            </th>
-            <th
+            </TableHead>
+            <TableHead
               v-for="level in qcSet?.levels"
               :key="level.uid"
               class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
             >
               {{ level?.level }}
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border"></th>
-          </tr>
-        </thead>
-        <tbody class="bg-background">
-          <tr v-for="analyte in qcSet?.analytes" :key="analyte.uid">
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border"></td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            </TableHead>
+            <TableHead class="px-1 py-1 border-b-2 border-border"></TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody class="bg-background">
+          <TableRow v-for="analyte in qcSet?.analytes" :key="analyte.uid">
+            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border"></TableCell>
+            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-foreground">
                 {{ analyte?.name }}
               </div>
-            </td>
-            <td
+            </TableCell>
+            <TableCell
               v-for="result in analyte?.items"
               :key="result.uid"
               class="px-1 py-1 whitespace-no-wrap border-b border-border"
@@ -352,12 +350,10 @@ function toggleView(choice: string): void {
                 <div>
                   <div class="text-md font-semibold italics text-primary"> {{ result?.sample?.qcLevel?.level }}</div>
                   <div class="text-sm italics text-primary">({{ result?.status }})</div>
-                  <input
-                    type="checkbox"
-                    class="mr-2"
-                    v-model="result.checked"
-                    @change="checkCheck()"
+                  <Checkbox
+                    :checked="result.checked"
                     :disabled="isDisabledRowCheckBox(result)"
+                    @update:checked="(value) => { result.checked = value; checkCheck(); }"
                   />
                 </div>
                 <div class="w-3/5">
@@ -426,10 +422,10 @@ function toggleView(choice: string): void {
 
                 </div>
               </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
     </div>
   </section>
 
@@ -437,46 +433,47 @@ function toggleView(choice: string): void {
     <div
       class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg"
     >
-      <table class="min-w-full fel-table">
-        <thead>
-          <tr>
-            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">
-              <input type="checkbox"  @change="toggleCheckAll()"  v-model="allChecked" />
-            </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"></th>
-            <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">Analysis</th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Methods</th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Instrument </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Analyst</th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Reviewer</th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Interims </th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Result</th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Retest</th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Submitted</th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Reviewed</th>
-            <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Status</th>
-            <th class="px-1 py-1 border-b-2 border-border"></th>
-          </tr>
-        </thead>
-        <tbody class="bg-background">
-          <tr v-for="result in getResults()" :key="result.uid">
-            <td>
-              <input
-                type="checkbox"
-                class=""
-                v-model="result.checked"
-                @change="checkCheck()"
-                :disabled="isDisabledRowCheckBox(result)"
+      <Table class="min-w-full">
+        <TableHeader>
+          <TableRow>
+            <TableHead class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">
+              <Checkbox
+                :checked="allChecked"
+                @update:checked="(value) => { allChecked = value; toggleCheckAll(); }"
               />
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border"></td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            </TableHead>
+            <TableHead class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"></TableHead>
+            <TableHead class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">Analysis</TableHead>
+            <TableHead class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Methods</TableHead>
+            <TableHead class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Instrument </TableHead>
+            <TableHead class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Analyst</TableHead>
+            <TableHead class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Reviewer</TableHead>
+            <TableHead class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Interims </TableHead>
+            <TableHead class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Result</TableHead>
+            <TableHead class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Retest</TableHead>
+            <TableHead class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Submitted</TableHead>
+            <TableHead class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Reviewed</TableHead>
+            <TableHead class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">Status</TableHead>
+            <TableHead class="px-1 py-1 border-b-2 border-border"></TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody class="bg-background">
+          <TableRow v-for="result in getResults()" :key="result.uid">
+            <TableCell>
+              <Checkbox
+                :checked="result.checked"
+                :disabled="isDisabledRowCheckBox(result)"
+                @update:checked="(value) => { result.checked = value; checkCheck(); }"
+              />
+            </TableCell>
+            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border"></TableCell>
+            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ result.analysis?.name }}
               </div>
               <div class="italic text-sm text-muted-foreground">({{ result?.sample?.qcLevel?.level }})</div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            </TableCell>
+            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
                 {{ result.laboratoryInstrument?.labName || "---" }}
               </div>
@@ -494,8 +491,8 @@ function toggleView(choice: string): void {
                   </template>
                 </select>
               </label>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            </TableCell>
+            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
                 {{ result.method?.name }}
               </div>
@@ -508,20 +505,20 @@ function toggleView(choice: string): void {
                   </option>
                 </select>
               </label>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            </TableCell>
+            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ `${result.submittedBy?.firstName ?? '--'} ${result.submittedBy?.lastName ?? '--'}` }}
               </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            </TableCell>
+            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 <span v-for="reviewer in result.verifiedBy" :key="reviewer.firstName" class="ml-1">
                   {{ `${reviewer?.firstName ?? '--'} ${reviewer?.lastName ?? '--'},` }}
                 </span>
               </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            </TableCell>
+            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div v-if="!isEditable(result) || result?.analysis?.interims?.length === 0"
                 class="text-sm leading-5 text-primary">
                 ---
@@ -535,8 +532,8 @@ function toggleView(choice: string): void {
                   </option>
                 </select>
               </label>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            </TableCell>
+            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
                 {{ result?.result }}
               </div>
@@ -566,8 +563,8 @@ function toggleView(choice: string): void {
                   </option>
                 </select>
               </label>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            </TableCell>
+            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 <span v-if="result?.retest" class="text-primary">
                   <font-awesome-icon icon="fa-check-circle" />
@@ -576,28 +573,28 @@ function toggleView(choice: string): void {
                   <font-awesome-icon icon="fa-times-circle" />
                 </span>
               </div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            </TableCell>
+            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">{{ parseDate(result?.dateSubmitted) }}</div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            </TableCell>
+            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <div class="text-sm leading-5 text-primary">{{ parseDate(result?.dateVerified) }}</div>
-            </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            </TableCell>
+            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
               <button
                 type="button"
                 class="p-1 bg-primary text-primary-foreground rounded-sm leading-none"
               >
                 {{ result.status }}
               </button>
-            </td>
-            <td
+            </TableCell>
+            <TableCell
               class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5"
             >
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
     </div>
   </section>
 

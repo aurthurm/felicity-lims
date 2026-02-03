@@ -6,72 +6,67 @@ import { AddClientDocument, AddClientMutation, AddClientMutationVariables,
 import { useLocationStore } from '@/stores/location';
 import { useClientStore } from '@/stores/client';
 import { ClientType } from '@/types/gql';
-import useApiUtil  from '@/composables/api_util'
+import useApiUtil from '@/composables/api_util';
+import { Spinner } from '@/components/ui/spinner';
+import ClientForm from '@/components/client/ClientForm.vue';
 
-import * as shield from '@/guards'
+import * as shield from '@/guards';
 
+defineOptions({ name: 'ClientView' });
 const locationStore = useLocationStore();
-const { withClientMutation } = useApiUtil()
+const { withClientMutation } = useApiUtil();
 const route = useRoute();
 
-const clientStore = useClientStore()
+const clientStore = useClientStore();
 onMounted(() => {
-  clientStore.fetchClientByUid(route.query.clientUid!)
+  clientStore.fetchClientByUid(route.query.clientUid!);
   locationStore.fetchCountries();
-})
+});
 
-let showClientModal = ref<boolean>(false);
-let createItem = ref<boolean>(false);
-
-
-let formTitle = ref<string>('');
-let form = ref<ClientType>({} as ClientType);
-let countryUid = ref<string>();
-let provinceUid = ref<string>();
-
-function getProvinces(event: Event) {
-  locationStore.filterProvincesByCountry(countryUid.value!)
-}
-
-function getDistricts(event: Event) {
-  locationStore.filterDistrictsByProvince(provinceUid.value!)
-}
+const showClientModal = ref<boolean>(false);
+const createItem = ref<boolean>(false);
+const formTitle = ref<string>('');
+const form = ref<ClientType>({} as ClientType);
 
 function FormManager(create: boolean, obj: ClientType = {} as ClientType) {
   createItem.value = create;
   formTitle.value = `${create ? 'CREATE' : 'EDIT'} CLIENT`;
   showClientModal.value = true;
-  if (create) {
-    form.value = {} as ClientType;
-  } else {
-    countryUid.value = obj?.district?.province?.countryUid;
-    provinceUid.value = obj?.district?.provinceUid
-    form.value = obj;
-  }
+  form.value = create ? ({} as ClientType) : obj;
 }
 
-function addClient() {
-  withClientMutation<AddClientMutation, AddClientMutationVariables>(AddClientDocument, { payload: { name: form?.value?.name, code: form?.value?.code, districtUid: form?.value?.districtUid } }, "createClient")
-    .then((res) => clientStore.addClient(res));
+function addClient(payload: { name: string; code: string; districtUid?: string }) {
+  withClientMutation<AddClientMutation, AddClientMutationVariables>(
+    AddClientDocument,
+    { payload: { name: payload.name, code: payload.code, districtUid: payload.districtUid } },
+    'createClient'
+  ).then((res) => clientStore.addClient(res));
 }
 
-function editClient() {
-  withClientMutation<EditClientMutation, EditClientMutationVariables>(EditClientDocument, {
-    uid: form?.value?.uid,
-    payload: {
-      name: form?.value?.name,
-      code: form?.value?.code,
-      districtUid: form?.value?.districtUid
-    }
-  }, "updateClient")
-    .then((result) => clientStore.updateClient(result));
+function editClient(payload: { name: string; code: string; districtUid?: string }) {
+  withClientMutation<EditClientMutation, EditClientMutationVariables>(
+    EditClientDocument,
+    {
+      uid: form.value?.uid,
+      payload: {
+        name: payload.name,
+        code: payload.code,
+        districtUid: payload.districtUid,
+      },
+    },
+    'updateClient'
+  ).then((result) => clientStore.updateClient(result));
 }
 
-function saveForm() {
-  if (createItem.value) addClient();
-  if (!createItem.value) editClient();
+function onFormSubmit(payload: { name: string; code: string; districtUid: string | undefined }) {
+  if (createItem.value) addClient(payload);
+  else editClient(payload);
   showClientModal.value = false;
   form.value = {} as ClientType;
+}
+
+function onFormClose() {
+  showClientModal.value = false;
 }
 
 </script>
@@ -84,7 +79,10 @@ function saveForm() {
         <!-- Listing Item Card -->
         <div class="bg-background rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4">
           <div v-if="clientStore.fetchingClient" class="py-4 text-center">
-            <fel-loader message="Fetching client metadata ..." />
+            <span class="inline-flex items-center gap-2">
+              <Spinner class="size-4" />
+              <span class="text-sm">Fetching client metadata ...</span>
+            </span>
           </div>
           <div class="grid grid-cols-12 gap-3" v-else>
             <!-- Summary Column -->
@@ -95,7 +93,7 @@ function saveForm() {
                   <button 
                     v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.CLIENT)"
                     @click="FormManager(false, clientStore.client)"
-                    class="p-1 ml-2 rounded-sm border border-foreground text-muted-foreground text-md transition duration-300 hover:text-primary focus:outline-none"
+                    class="p-1 ml-2 rounded-sm text-muted-foreground text-md transition duration-300 hover:text-primary focus:outline-none"
                   >
                     <font-awesome-icon icon="fa-edit" />
                   </button>
@@ -138,95 +136,19 @@ function saveForm() {
     <router-view />
   </div>
 
-  <!-- Location Edit Form Modal -->
-  <fel-modal v-if="showClientModal" @close="showClientModal = false">
+  <!-- Client form modal (shadcn Form + vee-validate) -->
+  <Modal v-if="showClientModal" @close="onFormClose">
     <template v-slot:header>
       <h3>{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
-      <form action="post" class="p-1">
-        <div class="grid grid-cols-2 gap-x-4 mb-4">
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Name</span>
-            <input 
-              class="form-input mt-1 block w-full" 
-              v-model="form.name" 
-              placeholder="Name ..." 
-            />
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Code</span>
-            <input 
-              class="form-input mt-1 block w-full" 
-              v-model="form.code" 
-              placeholder="Code ..." 
-            />
-          </label>
-        </div>
-
-        <div class="grid grid-cols-3 gap-x-4 mb-4">
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Country</span>
-            <select 
-              class="form-select block w-full mt-1" 
-              v-model="countryUid" 
-              @change="getProvinces($event)"
-            >
-              <option></option>
-              <option 
-                v-for="country in locationStore.countries" 
-                :key="country.uid" 
-                :value="country.uid"
-              >
-                {{ country.name }}
-              </option>
-            </select>
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">Province</span>
-            <select 
-              class="form-select block w-full mt-1" 
-              v-model="provinceUid" 
-              @change="getDistricts($event)"
-            >
-              <option></option>
-              <option 
-                v-for="province in locationStore.provinces" 
-                :key="province.uid" 
-                :value="province.uid"
-              >
-                {{ province.name }}
-              </option>
-            </select>
-          </label>
-          <label class="block col-span-1 mb-2">
-            <span class="text-foreground">District</span>
-            <select 
-              class="form-select block w-full mt-1" 
-              v-model="form.districtUid"
-            >
-              <option></option>
-              <option 
-                v-for="district in locationStore.districts" 
-                :key="district.uid" 
-                :value="district.uid"
-              >
-                {{ district.name }}
-              </option>
-            </select>
-          </label>
-        </div>
-
-        <hr />
-        <button 
-          type="button" 
-          @click.prevent="saveForm()"
-          class="m-2 -mb-4 w-full rounded-sm border border-primary bg-primary px-4 py-2 text-primary-foreground transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
-        >
-          Save Form
-        </button>
-      </form>
+      <ClientForm
+        :client="form"
+        :create="createItem"
+        @submit="onFormSubmit"
+        @close="onFormClose"
+      />
     </template>
-  </fel-modal>
+  </Modal>
 </template>

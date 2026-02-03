@@ -1,25 +1,68 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { onMounted, watch, reactive, ref } from "vue";
+import { computed, onMounted, watch, ref, nextTick } from "vue";
 import { Chart } from "@antv/g2";
 import dayjs from "dayjs";
+import { CalendarDate } from "@internationalized/date";
 import { useDashBoardStore } from "@/stores/dashboard";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import { Spinner } from "@/components/ui/spinner";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { RangeCalendar } from "@/components/ui/range-calendar";
+import { Button } from "@/components/ui/button";
 
+defineOptions({ name: 'ResourceView' })
 // Initialize store
 const dashBoardStore = useDashBoardStore();
 const { dashboard } = storeToRefs(dashBoardStore);
 
-// Local state
-const localState = reactive({
-  range: { from: "", to: "" },
-});
-const showModal = ref(false);
+// Popover open state for date range picker
+const dateRangeOpen = ref(false);
+// Date range for RangeCalendar (reka-ui DateRange: start/end as CalendarDate)
+const dateRange = ref<{ start?: CalendarDate; end?: CalendarDate }>({});
+// Minimum selectable date (year dropdown and calendar) – 2025
+const minCalendarDate = new CalendarDate(2025, 1, 1);
+// Maximum selectable date – last day of current year
+const maxCalendarDate = computed(() => new CalendarDate(dayjs().year(), 12, 31));
 
-// Event handlers
-const setCustomRange = () => {
-  dashBoardStore.setFilterRange(dayjs(localState.range.from), dayjs(localState.range.to));
-  showModal.value = false;
-};
+// Sync dateRange from store when popover opens (so calendar shows current filter)
+watch(dateRangeOpen, (open) => {
+  if (open) {
+    const from = dashboard.value.filterRange.fromIso;
+    const to = dashboard.value.filterRange.toIso;
+    if (from && to) {
+      const dFrom = dayjs(from);
+      const dTo = dayjs(to);
+      dateRange.value = {
+        start: new CalendarDate(dFrom.year(), dFrom.month() + 1, dFrom.date()),
+        end: new CalendarDate(dTo.year(), dTo.month() + 1, dTo.date()),
+      };
+    } else {
+      const today = dayjs();
+      dateRange.value = {
+        start: new CalendarDate(today.year(), today.month() + 1, today.date()),
+        end: new CalendarDate(today.year(), today.month() + 1, today.date()),
+      };
+    }
+  }
+});
+
+function applyDateRange() {
+  const start = dateRange.value.start;
+  const end = dateRange.value.end;
+  if (start && end) {
+    const from = dayjs(new Date(start.year, start.month - 1, start.day)).startOf("day");
+    const to = dayjs(new Date(end.year, end.month - 1, end.day)).endOf("day");
+    dashBoardStore.setFilterRange(from, to);
+  }
+  dateRangeOpen.value = false;
+}
+
+// Computed so the button label updates when store filterRange changes
+const dateRangeButtonLabel = computed(
+  () => `${dashboard.value.filterRange.from} – ${dashboard.value.filterRange.to}`
+);
 
 // Load initial data
 onMounted(async () => {
@@ -40,25 +83,36 @@ watch(
 // Watch for sample stats changes
 watch(
   () => dashboard.value.resourceStats?.samples,
-  (samples) => {
-    samples?.forEach((group) => {
-      interface UserData {
-        item: string;
-        count: number;
-        percent: number;
-      }
-      const users: UserData[] = [];
-      const total = group.counts?.reduce((sum: number, sample: any) => sum + sample.count, 0) || 0;
-      
-      group.counts?.forEach((count: any) => {
-        users.push({
-          item: count.group,
-          count: count.count,
-          percent: count.count / total,
+  async (samples) => {
+    if (!samples?.length) return;
+    await nextTick();
+    samples.forEach((group) => {
+      try {
+        interface UserData {
+          item: string;
+          count: number;
+          percent: number;
+        }
+        const users: UserData[] = [];
+        const total = group.counts?.reduce((sum: number, sample: any) => sum + sample.count, 0) || 0;
+
+        group.counts?.forEach((count: any) => {
+          const itemName = count?.group != null ? String(count.group) : null;
+          if (itemName == null) return;
+          const cnt = Number(count?.count) || 0;
+          users.push({
+            item: itemName,
+            count: cnt,
+            percent: total > 0 ? cnt / total : 0,
+          });
         });
-      });
-      
-      plotUserMatrix(users, group.group, group.group);
+
+        const validUsers = users.filter((u) => u.item != null && u.item !== "");
+        if (validUsers.length === 0) return;
+        plotUserMatrix(validUsers, group.group, group.group);
+      } catch (err) {
+        console.warn("[ResourceView] Failed to plot user matrix for", group.group, err);
+      }
     });
   }
 );
@@ -72,7 +126,23 @@ const instrumentPerf = (count: number) => {
   return `${pct.toFixed(2)}%`;
 };
 
-const plotUserMatrix = (data: any[], elem: string, grpName: string) => {
+// Explicit palette so G2 never receives null in color/gradient (avoids toRGB null error)
+const USER_MATRIX_PALETTE = [
+  "#1890ff",
+  "#52c41a",
+  "#faad14",
+  "#f5222d",
+  "#722ed1",
+  "#13c2c2",
+  "#eb2f96",
+  "#fa8c16",
+];
+
+const plotUserMatrix = (data: any[], elem: string, _grpName: string) => {
+  const container = document.getElementById(elem);
+  if (!container) return;
+  container.innerHTML = "";
+
   const chart = new Chart({
     container: elem,
     autoFit: true,
@@ -92,14 +162,14 @@ const plotUserMatrix = (data: any[], elem: string, grpName: string) => {
     formatter: (val: number) => `${(val * 100).toFixed(2)}%`,
   });
 
-  chart.tooltip({
-    showTitle: false,
-    showMarkers: false,
+  chart.scale("item", {
+    range: USER_MATRIX_PALETTE,
   });
 
   chart.legend(false);
   chart
     .interval()
+    .adjust("stack")
     .position("percent")
     .color("item")
     .label("percent", {
@@ -112,18 +182,7 @@ const plotUserMatrix = (data: any[], elem: string, grpName: string) => {
           lineWidth: 0.5,
         },
       },
-    })
-    .adjust("stack");
-
-  const view = chart.createView();
-  view.annotation().text({
-    position: ["50%", "50%"],
-    content: grpName,
-    style: {
-      fill: "hsl(var(--foreground))",
-      textAlign: "center",
-    },
-  });
+    });
 
   chart.interaction("element-active");
   chart.render();
@@ -158,37 +217,55 @@ const resetUserMatrix = () => {
         class="flex justify-end items-center"
         v-show="dashboard.showFilters"
       >
-        <VTooltip
+        <Tooltip
           v-for="(filter, index) in dashboard.filters"
           :key="index"
-          v-show="filter !== dashboard.filters[dashboard.filters.length]"
-          :placements="['right-start']"
         >
-          <button
-            @click="dashBoardStore.setCurrentFilter(filter)"
-            type="button"
-            :class="[
-              'px-2 py-1 mr-2 border border-foreground text-foreground rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none',
-              { 'bg-primary text-primary-foreground': dashboard.currentFilter === filter },
-            ]"
-          >
-            {{ filter }}
-          </button>
-          <template #popper>{{ dashBoardStore.filterToolTip(filter) }}</template>
-        </VTooltip>
+          <TooltipTrigger as-child>
+            <button
+              v-show="filter !== dashboard.filters[dashboard.filters.length]"
+              @click="dashBoardStore.setCurrentFilter(filter)"
+              type="button"
+              :class="[
+                'px-2 py-1 mr-2 border border-foreground text-foreground rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none',
+                { 'bg-primary text-primary-foreground': dashboard.currentFilter === filter },
+              ]"
+            >
+              {{ filter }}
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="right" align="start">
+            {{ dashBoardStore.filterToolTip(filter) }}
+          </TooltipContent>
+        </Tooltip>
 
-        <button
-          @click="showModal = true"
-          class="ml-4 mr-1 px-2 py-1 border border-border text-muted-foreground rounded-sm transition duration-300 hover:bg-muted hover:text-primary-foreground focus:outline-none"
-        >
-          {{ dashboard.filterRange.from }} - {{ dashboard.filterRange.to }}
-        </button>
+        <Popover v-model:open="dateRangeOpen">
+          <PopoverTrigger as-child>
+            <Button
+              variant="outline"
+              class="ml-4 mr-1 min-w-[180px] justify-center border-border text-muted-foreground rounded-sm transition-[border-color,box-shadow] duration-200 hover:border-primary/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {{ dateRangeButtonLabel }}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent class="w-auto p-0" align="end">
+            <RangeCalendar v-model="dateRange" :min-value="minCalendarDate" :max-value="maxCalendarDate" class="rounded-md border-0" />
+            <div class="border-t p-3">
+              <Button class="w-full" @click="applyDateRange">
+                Apply range
+              </Button>
+            </div>
+          </PopoverContent>
+        </Popover>
       </div>
     </section>
 
     <!-- Loading State -->
     <div v-if="dashboard.fetchingResourceStats" class="text-start my-4">
-      <fel-loader message="Fetching resource stats..." />
+      <span class="inline-flex items-center gap-2">
+        <Spinner class="size-4" />
+        <span class="text-sm">Fetching resource stats...</span>
+      </span>
     </div>
 
     <!-- Content Section -->
@@ -197,9 +274,14 @@ const resetUserMatrix = () => {
       <div class="mb-8">
         <h1 class="text-xl text-foreground font-semibold">Instrument Matrix / Load</h1>
         <hr class="my-2" />
-        <div v-if="!dashboard.resourceStats?.instruments?.length" class="text-muted-foreground">
-          No instrument data available
-        </div>
+        <Empty v-if="!dashboard.resourceStats?.instruments?.length" class="border-0 bg-transparent p-0 text-left">
+          <EmptyContent>
+            <EmptyHeader>
+              <EmptyTitle>No instrument data</EmptyTitle>
+              <EmptyDescription>No instrument metrics available for this range.</EmptyDescription>
+            </EmptyHeader>
+          </EmptyContent>
+        </Empty>
         <div v-else class="flex justify-start">
           <div
             v-for="instr in dashboard.resourceStats?.instruments"
@@ -235,48 +317,6 @@ const resetUserMatrix = () => {
       </div>
     </section>
 
-    <!-- Custom Date Range Modal -->
-    <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/4'">
-      <template v-slot:header>
-        <h3>Custom Filter Date Range</h3>
-      </template>
-
-      <template v-slot:body>
-        <form action="post" class="p-1">
-          <div class="grid grid-cols-2 gap-x-4 mb-4">
-            <label class="block col-span-2 mb-2">
-              <span class="text-foreground">Date From</span>
-              <input
-                type="datetime-local"
-                class="form-input mt-1 block w-full"
-                autocomplete="off"
-                v-model="localState.range.from"
-                placeholder="Select start date..."
-              />
-            </label>
-            <label class="block col-span-2 mb-2">
-              <span class="text-foreground">Date To</span>
-              <input
-                type="datetime-local"
-                class="form-input mt-1 block w-full"
-                autocomplete="off"
-                v-model="localState.range.to"
-                placeholder="Select end date..."
-              />
-            </label>
-          </div>
-
-          <hr />
-          <button
-            type="button"
-            @click.prevent="setCustomRange()"
-            class="m-2 -mb-4 w-full rounded-sm border border-primary bg-primary px-4 py-2 text-primary-foreground transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
-          >
-            Apply Filter
-          </button>
-        </form>
-      </template>
-    </fel-modal>
   </div>
 </template>
 

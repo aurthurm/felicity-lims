@@ -57,7 +57,7 @@ export const storageSlotMapper = (
     colNum: number,
     rowNum: number,
     isColumn: boolean,
-    byRow: boolean
+    byRow: boolean,
 ): Array<{ storageSlot: string; storageSlotIndex: number }> => {
     const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
     const columns = letters.slice(0, colNum);

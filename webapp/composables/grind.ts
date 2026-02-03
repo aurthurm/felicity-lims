@@ -26,7 +26,7 @@ export function useCommentComposable() {
             const result = await withClientQuery<GetGrindErrandDiscussionsQuery, GetGrindErrandDiscussionsQueryVariables>(
                 GetGrindErrandDiscussionsDocument,
                 { errandUid },
-                'grindErrandDiscussions'
+                'grindErrandDiscussions',
             );
             return result ? (result as GrindErrandDiscussionType[]) : [];
         } catch (error) {
@@ -42,7 +42,7 @@ export function useCommentComposable() {
                 {
                     payload: { comment, errandUid, parentUid },
                 },
-                'createGrindErrandDiscussion'
+                'createGrindErrandDiscussion',
             );
 
             if (response) {
@@ -64,7 +64,7 @@ export function useCommentComposable() {
                     uid,
                     payload: { errandUid, comment },
                 },
-                'updateGrindErrandDiscussion'
+                'updateGrindErrandDiscussion',
             );
 
             if (response) {

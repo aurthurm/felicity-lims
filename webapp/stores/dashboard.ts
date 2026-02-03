@@ -119,7 +119,8 @@ export const useDashBoardStore = defineStore('dashboard', () => {
             await countAnalysisGroupsByStatus();
             await countWrksheetGroupsByStatus();
             await countExtrasGroupsByStatus();
-        } catch {} finally {
+        } catch {
+        } finally {
             dashboard.value.fetchingOverViewStats = false;
         }
     };
@@ -130,7 +131,8 @@ export const useDashBoardStore = defineStore('dashboard', () => {
         try {
             await countAnalysisGroupsByInstrument();
             await getSampleGroupByAction();
-        } catch {} finally {
+        } catch {
+        } finally {
             dashboard.value.fetchingResourceStats = false;
         }
     };
@@ -144,14 +146,14 @@ export const useDashBoardStore = defineStore('dashboard', () => {
                 GetSampleGroupByStatusDocument,
                 filters,
                 'countSampleGroupByStatus',
-                'network-only'
+                'network-only',
             );
 
             if (result && typeof result === 'object' && 'data' in result) {
                 dashboard.value.overViewStats.samples = mapOrder(
                     result.data,
                     ['scheduled', 'expected', 'received', 'awaiting', 'approved'],
-                    'group'
+                    'group',
                 );
             } else {
             }
@@ -167,7 +169,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
                 GetAnalysisGroupByStatusDocument,
                 {},
                 'countAnalyteGroupByStatus',
-                'network-only'
+                'network-only',
             );
 
             if (result && typeof result === 'object' && 'data' in result) {
@@ -186,7 +188,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
                 GetWorksheetGroupByStatusDocument,
                 filters,
                 'countWorksheetGroupByStatus',
-                'network-only'
+                'network-only',
             );
 
             if (result && typeof result === 'object' && 'data' in result) {
@@ -205,14 +207,14 @@ export const useDashBoardStore = defineStore('dashboard', () => {
                 GetExtrasGroupByStatusDocument,
                 filters,
                 'countExtrasGroupByStatus',
-                'network-only'
+                'network-only',
             );
 
             if (result && typeof result === 'object' && 'data' in result) {
                 dashboard.value.overViewStats.extras = mapOrder(
                     result.data,
                     ['sample cancelled', 'sample rejected', 'sample invalidated', 'analysis retracted', 'analysis retested'],
-                    'group'
+                    'group',
                 );
             } else {
             }
@@ -231,7 +233,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
                 GetAnalysisGroupByInstrumentDocument,
                 filters,
                 'countAnalyteGroupByInstrument',
-                'network-only'
+                'network-only',
             );
 
             if (result && typeof result === 'object' && 'data' in result) {
@@ -253,7 +255,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
                 SampleGroupByActionDocument,
                 filters,
                 'countSampleGroupByAction',
-                'network-only'
+                'network-only',
             );
 
             if (result && typeof result === 'object' && 'data' in result) {
@@ -277,14 +279,15 @@ export const useDashBoardStore = defineStore('dashboard', () => {
                 SampleProcessPeformanceDocument,
                 filters,
                 'sampleProcessPerformance',
-                'network-only'
+                'network-only',
             );
 
             if (result && typeof result === 'object' && 'data' in result) {
                 dashboard.value.peformanceStats.sample = result.data as unknown as Process[];
             } else {
             }
-        } catch {} finally {
+        } catch {
+        } finally {
             dashboard.value.fetchingSampePeformanceStats = false;
         }
     };
@@ -304,14 +307,15 @@ export const useDashBoardStore = defineStore('dashboard', () => {
                 GetAnalysisProcessPeformanceDocument,
                 filters,
                 'analysisProcessPerformance',
-                'network-only'
+                'network-only',
             );
 
             if (result && typeof result === 'object' && 'data' in result) {
                 dashboard.value.peformanceStats.analysis = result.data as unknown as Process[];
             } else {
             }
-        } catch {} finally {
+        } catch {
+        } finally {
             dashboard.value.fetchingAnalysisPeformanceStats = false;
         }
     };
@@ -325,14 +329,15 @@ export const useDashBoardStore = defineStore('dashboard', () => {
                 GetSampleLaggardsDocument,
                 {},
                 'sampleLaggards',
-                'network-only'
+                'network-only',
             );
 
             if (result && typeof result === 'object' && 'data' in result) {
                 dashboard.value.laggards = result.data as unknown as Record<string, LaggardData[]>;
             } else {
             }
-        } catch {} finally {
+        } catch {
+        } finally {
             dashboard.value.fetchingLaggards = false;
         }
     };
@@ -346,10 +351,12 @@ export const useDashBoardStore = defineStore('dashboard', () => {
     };
 
     const setFilterRange = (from: dayjs.Dayjs, to: dayjs.Dayjs): void => {
-        dashboard.value.filterRange.from = from.toDate().toLocaleDateString();
-        dashboard.value.filterRange.fromIso = from.toISOString();
-        dashboard.value.filterRange.to = to.toDate().toLocaleDateString();
-        dashboard.value.filterRange.toIso = to.toISOString();
+        dashboard.value.filterRange = {
+            from: from.toDate().toLocaleDateString(),
+            fromIso: from.toISOString(),
+            to: to.toDate().toLocaleDateString(),
+            toIso: to.toISOString(),
+        };
     };
 
     const setCurrentPeformance = (event: Event): void => {
@@ -416,7 +423,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
         () => dashboard.value.currentFilter,
         filter => {
             calculateFilterRange(filter);
-        }
+        },
     );
 
     return {

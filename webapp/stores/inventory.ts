@@ -124,14 +124,15 @@ export const useInventoryStore = defineStore('inventory', {
                 const result = await withClientQuery<GetAllHazardsQuery, GetAllHazardsQueryVariables>(
                     GetAllHazardsDocument,
                     {},
-                    'hazardAll'
+                    'hazardAll',
                 );
 
                 if (result && Array.isArray(result)) {
                     this.hazards = result as HazardType[];
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingHazards = false;
             }
         },
@@ -160,14 +161,15 @@ export const useInventoryStore = defineStore('inventory', {
                 const result = await withClientQuery<GetAllStockCategoriesQuery, GetAllStockCategoriesQueryVariables>(
                     GetAllStockCategoriesDocument,
                     {},
-                    'stockCategoryAll'
+                    'stockCategoryAll',
                 );
 
                 if (result && Array.isArray(result)) {
                     this.categories = result as StockCategoryType[];
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingCategories = false;
             }
         },
@@ -196,14 +198,15 @@ export const useInventoryStore = defineStore('inventory', {
                 const result = await withClientQuery<GetAllStockUnitsQuery, GetAllStockUnitsQueryVariables>(
                     GetAllStockUnitsDocument,
                     {},
-                    'stockUnitAll'
+                    'stockUnitAll',
                 );
 
                 if (result && Array.isArray(result)) {
                     this.units = result as StockUnitType[];
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingUnits = false;
             }
         },
@@ -232,7 +235,7 @@ export const useInventoryStore = defineStore('inventory', {
                 const result = await withClientQuery<GetAllStockProductsQuery, GetAllStockProductsQueryVariables>(
                     GetAllStockProductsDocument,
                     params,
-                    'stockProductAll'
+                    'stockProductAll',
                 );
 
                 if (result && typeof result === 'object' && 'items' in result) {
@@ -241,7 +244,8 @@ export const useInventoryStore = defineStore('inventory', {
                     this.productsPaging.pageInfo = result.pageInfo;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingProducts = false;
             }
         },
@@ -271,7 +275,7 @@ export const useInventoryStore = defineStore('inventory', {
                 const result = await withClientQuery<GetAllStockItemsQuery, GetAllStockItemsQueryVariables>(
                     GetAllStockItemsDocument,
                     params,
-                    'stockItemAll'
+                    'stockItemAll',
                 );
 
                 if (result && typeof result === 'object' && 'items' in result) {
@@ -280,7 +284,8 @@ export const useInventoryStore = defineStore('inventory', {
                     this.stockItemsPaging.pageInfo = result.pageInfo;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingItems = false;
             }
         },
@@ -310,7 +315,7 @@ export const useInventoryStore = defineStore('inventory', {
                 const result = await withClientQuery<GetAllStockItemVariantsQuery, GetAllStockItemVariantsQueryVariables>(
                     GetAllStockItemVariantsDocument,
                     { stockItemUid },
-                    'stockItemVariants'
+                    'stockItemVariants',
                 );
 
                 if (result && Array.isArray(result)) {
@@ -361,7 +366,7 @@ export const useInventoryStore = defineStore('inventory', {
                 const result = await withClientQuery<GetAllStockOrdersQuery, GetAllStockOrdersQueryVariables>(
                     GetAllStockOrdersDocument,
                     params,
-                    'stockOrderAll'
+                    'stockOrderAll',
                 );
 
                 if (result && typeof result === 'object' && 'items' in result) {
@@ -370,7 +375,8 @@ export const useInventoryStore = defineStore('inventory', {
                     this.stockOrdersPaging.pageInfo = result.pageInfo;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingStockOrders = false;
             }
         },
@@ -415,7 +421,7 @@ export const useInventoryStore = defineStore('inventory', {
                 const result = await withClientQuery<GetAllStockAdjustmentsQuery, GetAllStockAdjustmentsQueryVariables>(
                     GetAllStockAdjustmentsDocument,
                     params,
-                    'stockAdjustmentAll'
+                    'stockAdjustmentAll',
                 );
 
                 if (result && typeof result === 'object' && 'items' in result) {
@@ -424,7 +430,8 @@ export const useInventoryStore = defineStore('inventory', {
                     this.adjustmentsPaging.pageInfo = result.pageInfo;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingAdjustments = false;
             }
         },

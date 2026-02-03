@@ -7,12 +7,15 @@ import { useSampleStore } from "@/stores/sample";
 import { useRoute, useRouter } from "vue-router";
 import { parseDate } from "@/utils";
 import useApiUtil from "@/composables/api_util";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 import {
   GetSampleGenealogyDocument,
   GetSampleGenealogyQuery,
   GetSampleGenealogyQueryVariables,
 } from "@/graphql/operations/analyses.queries";
+import { Spinner } from "@/components/ui/spinner";
 
+defineOptions({ name: 'SampleView' })
 const sampleStore = useSampleStore();
 const route = useRoute();
 const router = useRouter();
@@ -284,7 +287,10 @@ const handleDerived = (derivedSamples: SampleType[]) => {
 
     <div class="bg-background rounded-lg shadow-sm p-6 space-y-6" v-motion-slide-right>
       <div v-if="fetchingSample" class="py-4 text-center">
-        <fel-loader message="Fetching sample details ..." />
+        <span class="inline-flex items-center gap-2">
+          <Spinner class="size-4" />
+          <span class="text-sm">Fetching sample details ...</span>
+        </span>
       </div>
       <div class="space-y-6" v-else>
         <!-- Summary Column -->
@@ -495,7 +501,7 @@ const handleDerived = (derivedSamples: SampleType[]) => {
       </ul>
     </div>
 
-    <fel-modal
+    <Modal
       v-if="showGenealogyModal"
       @close="showGenealogyModal = false"
       :content-width="'w-3/4'"
@@ -506,14 +512,22 @@ const handleDerived = (derivedSamples: SampleType[]) => {
       <template #body>
         <div class="space-y-4">
           <div v-if="genealogyLoading" class="py-6 text-center">
-            <fel-loader message="Fetching genealogy ..." />
+            <span class="inline-flex items-center gap-2">
+              <Spinner class="size-4" />
+              <span class="text-sm">Fetching genealogy ...</span>
+            </span>
           </div>
           <div v-else-if="genealogyError" class="text-destructive">
             {{ genealogyError }}
           </div>
-          <div v-else-if="!genealogyRows.length" class="text-muted-foreground">
-            Sample has no genealogy.
-          </div>
+          <Empty v-else-if="!genealogyRows.length" class="border-0 bg-transparent p-0">
+            <EmptyContent>
+              <EmptyHeader>
+                <EmptyTitle>No genealogy</EmptyTitle>
+                <EmptyDescription>Sample has no genealogy.</EmptyDescription>
+              </EmptyHeader>
+            </EmptyContent>
+          </Empty>
           <div v-else class="space-y-2">
             <div
               v-for="row in genealogyRows"
@@ -531,7 +545,7 @@ const handleDerived = (derivedSamples: SampleType[]) => {
           </div>
         </div>
       </template>
-    </fel-modal>
+    </Modal>
 
     <derive-samples-modal
       :show="showDeriveModal"

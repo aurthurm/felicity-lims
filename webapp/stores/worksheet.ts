@@ -77,7 +77,7 @@ export const useWorksheetStore = defineStore('worksheet', {
                 const payload = await withClientQuery<GetAllWorksheetTemplatesQuery, GetAllWorksheetTemplatesQueryVariables>(
                     GetAllWorksheetTemplatesDocument,
                     {},
-                    'worksheetTemplateAll'
+                    'worksheetTemplateAll',
                 );
 
                 if (Array.isArray(payload)) {
@@ -128,7 +128,7 @@ export const useWorksheetStore = defineStore('worksheet', {
                 const payload = await withClientQuery<GetAllWorksheetsQuery, GetAllWorksheetsQueryVariables>(
                     GetAllWorksheetsDocument,
                     params,
-                    undefined
+                    undefined,
                 );
 
                 const page = (payload as any).worksheetAll;
@@ -159,7 +159,7 @@ export const useWorksheetStore = defineStore('worksheet', {
                 const payload = await withClientQuery<GetWorkSheetByUidQuery, GetWorkSheetByUidQueryVariables>(
                     GetWorkSheetByUidDocument,
                     { worksheetUid },
-                    'worksheetByUid'
+                    'worksheetByUid',
                 );
                 this.workSheet = sortAnalysisResults(payload);
             } catch (error) {
@@ -183,7 +183,7 @@ export const useWorksheetStore = defineStore('worksheet', {
                 await withClientMutation<UpdateWorkSheetMutation, UpdateWorkSheetMutationVariables>(
                     UpdateWorkSheetDocument,
                     payload,
-                    'updateWorksheet'
+                    'updateWorksheet',
                 );
             } catch (error) {
                 if (error instanceof Error) {
@@ -228,7 +228,7 @@ export const useWorksheetStore = defineStore('worksheet', {
                 const payload = await withClientQuery<GetAnalysesResultsForWsAssignQuery, GetAnalysesResultsForWsAssignQueryVariables>(
                     GetAnalysesResultsForWsAssignDocument,
                     params,
-                    undefined
+                    undefined,
                 );
 
                 const page = (payload as any).analysisResultsForWsAssign;

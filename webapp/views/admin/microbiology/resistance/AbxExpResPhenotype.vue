@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Button } from "@/components/ui/button";
 import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
 import { useForm, useField } from 'vee-validate';
 import * as yup from 'yup';
@@ -7,9 +8,9 @@ import useApiUtil from '@/composables/api_util';
 import { AbxExpResPhenotypeType, AbxGuidelineType } from "@/types/gql";
 import { GetAbxExpResPhenotypeAllDocument, GetAbxExpResPhenotypeAllQuery, GetAbxExpResPhenotypeAllQueryVariables, GetAbxGuidelinesAllDocument, GetAbxGuidelinesAllQuery, GetAbxGuidelinesAllQueryVariables } from "@/graphql/operations/microbiology.queries";
 import { AddAbxExpResPhenotypeMutation, AddAbxExpResPhenotypeMutationVariables, AddAbxExpResPhenotypeDocument, EditAbxExpResPhenotypeMutation, EditAbxExpResPhenotypeMutationVariables, EditAbxExpResPhenotypeDocument } from '@/graphql/operations/microbiology.mutations';
-
+import PageHeading from "@/components/common/PageHeading.vue"
 const DataTable = defineAsyncComponent(
-  () => import('@/components/ui/datatable/FelDataTable.vue')
+  () => import('@/components/common/DataTable.vue')
 )
 const VueMultiselect = defineAsyncComponent(
   () => import('vue-multiselect')
@@ -306,9 +307,9 @@ const saveForm = handleSubmit((formValues) => {
 </script>
 
 <template>
-  <fel-heading title="Expected Resistance Phenotypes">
-    <fel-button @click="FormManager(true)">Add Expected Resistance Phenotype</fel-button>
-  </fel-heading>
+  <PageHeading title="Expected Resistance Phenotypes">
+    <Button @click="FormManager(true)">Add Expected Resistance Phenotype</Button>
+  </PageHeading>
 
   <div class="rounded-lg bg-card p-6 shadow-sm">
     <DataTable 
@@ -333,7 +334,7 @@ const saveForm = handleSubmit((formValues) => {
   </div>
 
   <!-- Expected Resistance Phenotype Edit Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false">
+  <Modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
       <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -448,7 +449,7 @@ const saveForm = handleSubmit((formValues) => {
         </button>
       </form>
     </template>
-  </fel-modal>
+  </Modal>
 </template>
 
 <style lang="postcss" scoped>

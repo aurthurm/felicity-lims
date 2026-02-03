@@ -1,8 +1,8 @@
 <script setup lang="ts">
   import { computed, defineAsyncComponent } from 'vue';
   import { useWorksheetStore } from '@/stores/worksheet'
-  const FelTabs = defineAsyncComponent(
-    () => import("@/components/ui/tabs/FelTabs.vue")
+  const TabsNav = defineAsyncComponent(
+    () => import("@/components/ui/tabs/TabsNav.vue")
   )
 
   let worksheetStore = useWorksheetStore();
@@ -24,7 +24,7 @@
     {
       id: "logs",
       label: "logs",
-      component: defineAsyncComponent(() => import("@/components/audit/FelAuditLog.vue")),
+      component: defineAsyncComponent(() => import("@/components/audit/AuditLog.vue")),
       props: {targetType: "worksheet", targetUid: targetUid?.value}
     },
   ]
@@ -32,6 +32,6 @@
 
 <template>
   <section class="col-span-12 bg-background rounded-lg shadow-sm p-6">
-    <FelTabs :tabs="tabs" initial-tab="default" />
+    <TabsNav :tabs="tabs" initial-tab="default" />
   </section>
 </template>

@@ -397,7 +397,7 @@ export const useNavigationStore = defineStore('navigation', () => {
             item =>
                 item.label.toLowerCase().includes(query) ||
                 item.description?.toLowerCase().includes(query) ||
-                item.route.toLowerCase().includes(query)
+                item.route.toLowerCase().includes(query),
         );
     });
 
@@ -586,7 +586,7 @@ export const useNavigationStore = defineStore('navigation', () => {
     // Find navigation item by route
     const findNavigationItem = (routePath: string): NavigationItem | undefined => {
         return availableNavigationItems.value.find(
-            item => item.route === routePath || routePath.startsWith(item.route + '/') || routePath.startsWith(item.route + '?')
+            item => item.route === routePath || routePath.startsWith(item.route + '/') || routePath.startsWith(item.route + '?'),
         );
     };
 
@@ -607,7 +607,7 @@ export const useNavigationStore = defineStore('navigation', () => {
         () => route.path,
         newPath => {
             addToRecentRoutes(newPath);
-        }
+        },
     );
 
     // Initialize preferences on store creation

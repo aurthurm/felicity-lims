@@ -9,521 +9,501 @@ export const getOptions = (title, content) => {
     };
 };
 
-
 const defaultoptions = {
-    "editorKey": "Felicity DMS",
-    "locale": "en-US",
-    "theme": "auto",
-    "height": "100%",
-    "fullscreenZIndex": 10,
-    "dicts": {
-        "fonts": [
+    editorKey: 'Felicity DMS',
+    locale: 'en-US',
+    theme: 'auto',
+    height: '100%',
+    fullscreenZIndex: 10,
+    dicts: {
+        fonts: [
             {
-                "label": {
-                    "en_US": "Default Font",
-                    "zh_CN": "默认字体"
+                label: {
+                    en_US: 'Default Font',
+                    zh_CN: '默认字体',
                 },
-                "value": null
+                value: null,
             },
             {
-                "label": {
-                    "en_US": "Songti",
-                    "zh_CN": "宋体"
+                label: {
+                    en_US: 'Songti',
+                    zh_CN: '宋体',
                 },
-                "value": "SimSun"
+                value: 'SimSun',
             },
             {
-                "label": {
-                    "en_US": "Heiti",
-                    "zh_CN": "黑体"
+                label: {
+                    en_US: 'Heiti',
+                    zh_CN: '黑体',
                 },
-                "value": "SimHei"
+                value: 'SimHei',
             },
             {
-                "label": {
-                    "en_US": "Kaiti",
-                    "zh_CN": "楷体"
+                label: {
+                    en_US: 'Kaiti',
+                    zh_CN: '楷体',
                 },
-                "value": "KaiTi"
+                value: 'KaiTi',
             },
             {
-                "label": {
-                    "en_US": "Kaiti GB2312",
-                    "zh_CN": "楷体_GB2312"
+                label: {
+                    en_US: 'Kaiti GB2312',
+                    zh_CN: '楷体_GB2312',
                 },
-                "value": "KaiTi_GB2312"
+                value: 'KaiTi_GB2312',
             },
             {
-                "label": {
-                    "en_US": "Fangsong",
-                    "zh_CN": "仿宋"
+                label: {
+                    en_US: 'Fangsong',
+                    zh_CN: '仿宋',
                 },
-                "value": "FangSong"
+                value: 'FangSong',
             },
             {
-                "label": {
-                    "en_US": "Fangsong GB2312",
-                    "zh_CN": "仿宋_GB2312"
+                label: {
+                    en_US: 'Fangsong GB2312',
+                    zh_CN: '仿宋_GB2312',
                 },
-                "value": "FangSong_GB2312"
+                value: 'FangSong_GB2312',
             },
             {
-                "label": {
-                    "en_US": "STSong",
-                    "zh_CN": "华文宋体"
+                label: {
+                    en_US: 'STSong',
+                    zh_CN: '华文宋体',
                 },
-                "value": "STSong"
+                value: 'STSong',
             },
             {
-                "label": {
-                    "en_US": "STFangsong",
-                    "zh_CN": "华文仿宋"
+                label: {
+                    en_US: 'STFangsong',
+                    zh_CN: '华文仿宋',
                 },
-                "value": "STFangsong"
+                value: 'STFangsong',
             },
             {
-                "label": {
-                    "en_US": "FZ Fangsong Simplified",
-                    "zh_CN": "方正仿宋简体"
+                label: {
+                    en_US: 'FZ Fangsong Simplified',
+                    zh_CN: '方正仿宋简体',
                 },
-                "value": "FZFangSong-Z02S"
+                value: 'FZFangSong-Z02S',
             },
             {
-                "label": {
-                    "en_US": "FZ Xiaobiao Song",
-                    "zh_CN": "方正小标宋"
+                label: {
+                    en_US: 'FZ Xiaobiao Song',
+                    zh_CN: '方正小标宋',
                 },
-                "value": "FZXiaoBiaoSong-B05S"
+                value: 'FZXiaoBiaoSong-B05S',
             },
             {
-                "label": {
-                    "en_US": "Microsoft Yahei",
-                    "zh_CN": "微软雅黑"
+                label: {
+                    en_US: 'Microsoft Yahei',
+                    zh_CN: '微软雅黑',
                 },
-                "value": "Microsoft Yahei"
+                value: 'Microsoft Yahei',
             },
             {
-                "label": "Arial",
-                "value": "Arial"
+                label: 'Arial',
+                value: 'Arial',
             },
             {
-                "label": "Times New Roman",
-                "value": "Times New Roman"
+                label: 'Times New Roman',
+                value: 'Times New Roman',
             },
             {
-                "label": "Verdana",
-                "value": "Verdana"
+                label: 'Verdana',
+                value: 'Verdana',
             },
             {
-                "label": "Helvetica",
-                "value": "Helvetica"
+                label: 'Helvetica',
+                value: 'Helvetica',
             },
             {
-                "label": "Calibri",
-                "value": "Calibri"
+                label: 'Calibri',
+                value: 'Calibri',
             },
             {
-                "label": "Cambria",
-                "value": "Cambria"
+                label: 'Cambria',
+                value: 'Cambria',
             },
             {
-                "label": "Tahoma",
-                "value": "Tahoma"
+                label: 'Tahoma',
+                value: 'Tahoma',
             },
             {
-                "label": "Georgia",
-                "value": "Georgia"
+                label: 'Georgia',
+                value: 'Georgia',
             },
             {
-                "label": "Comic Sans MS",
-                "value": "Comic Sans MS"
+                label: 'Comic Sans MS',
+                value: 'Comic Sans MS',
             },
             {
-                "label": "Impact",
-                "value": "Impact"
-            }
+                label: 'Impact',
+                value: 'Impact',
+            },
         ],
-        "colors": [
-            "#FFF",
-            "#000",
-            "#4A5366",
-            "#3B74EC",
-            "#45A2EF",
-            "#529867",
-            "#CD4A3F",
-            "#EA8D40",
-            "#EEC543",
-            "#8E45D0",
-            "#F2F2F2",
-            "#7F7F7F",
-            "#F4F5F7",
-            "#CBDCFC",
-            "#E8F6FE",
-            "#EDFAF2",
-            "#FCEAE9",
-            "#FDF3EC",
-            "#FEF9E5",
-            "#FAECFE",
-            "#EEE",
-            "#595959",
-            "#C6CAD2",
-            "#CEEBFD",
-            "#CBDCFC",
-            "#CBE9D7",
-            "#F7CBC9",
-            "#FADDC7",
-            "#FDEEB5",
-            "#EBCAFC",
-            "#BFBFBF",
-            "#3F3F3F",
-            "#828B9D",
-            "#A0BEFA",
-            "#A7DCFC",
-            "#A6D5B8",
-            "#F2A19C",
-            "#F5BC8C",
-            "#FBE281",
-            "#CB94F9",
-            "#A5A5A5",
-            "#262626",
-            "#363B44",
-            "#2452B2",
-            "#3473A1",
-            "#417A53",
-            "#922B22",
-            "#AD642A",
-            "#9E8329",
-            "#57297D",
-            "#939393",
-            "#0D0D0D",
-            "#25272E",
-            "#15316A",
-            "#1C415A",
-            "#284D34",
-            "#511712",
-            "#573213",
-            "#635217",
-            "#36194E"
+        colors: [
+            '#FFF',
+            '#000',
+            '#4A5366',
+            '#3B74EC',
+            '#45A2EF',
+            '#529867',
+            '#CD4A3F',
+            '#EA8D40',
+            '#EEC543',
+            '#8E45D0',
+            '#F2F2F2',
+            '#7F7F7F',
+            '#F4F5F7',
+            '#CBDCFC',
+            '#E8F6FE',
+            '#EDFAF2',
+            '#FCEAE9',
+            '#FDF3EC',
+            '#FEF9E5',
+            '#FAECFE',
+            '#EEE',
+            '#595959',
+            '#C6CAD2',
+            '#CEEBFD',
+            '#CBDCFC',
+            '#CBE9D7',
+            '#F7CBC9',
+            '#FADDC7',
+            '#FDEEB5',
+            '#EBCAFC',
+            '#BFBFBF',
+            '#3F3F3F',
+            '#828B9D',
+            '#A0BEFA',
+            '#A7DCFC',
+            '#A6D5B8',
+            '#F2A19C',
+            '#F5BC8C',
+            '#FBE281',
+            '#CB94F9',
+            '#A5A5A5',
+            '#262626',
+            '#363B44',
+            '#2452B2',
+            '#3473A1',
+            '#417A53',
+            '#922B22',
+            '#AD642A',
+            '#9E8329',
+            '#57297D',
+            '#939393',
+            '#0D0D0D',
+            '#25272E',
+            '#15316A',
+            '#1C415A',
+            '#284D34',
+            '#511712',
+            '#573213',
+            '#635217',
+            '#36194E',
         ],
-        "lineHeights": [
+        lineHeights: [
             {
-                "label": {
-                    "en_US": "Single",
-                    "zh_CN": "单倍行距"
+                label: {
+                    en_US: 'Single',
+                    zh_CN: '单倍行距',
                 },
-                "value": 1
+                value: 1,
             },
             {
-                "label": {
-                    "en_US": "1.5 Line Spacing",
-                    "zh_CN": "1.5 倍行距"
+                label: {
+                    en_US: '1.5 Line Spacing',
+                    zh_CN: '1.5 倍行距',
                 },
-                "value": 1.5,
-                "default": true
+                value: 1.5,
+                default: true,
             },
             {
-                "label": {
-                    "en_US": "Double",
-                    "zh_CN": "2 倍行距"
+                label: {
+                    en_US: 'Double',
+                    zh_CN: '2 倍行距',
                 },
-                "value": 2
+                value: 2,
             },
             {
-                "label": {
-                    "en_US": "2.5 Line Spacing",
-                    "zh_CN": "2.5 倍行距"
+                label: {
+                    en_US: '2.5 Line Spacing',
+                    zh_CN: '2.5 倍行距',
                 },
-                "value": 2.5
+                value: 2.5,
             },
             {
-                "label": {
-                    "en_US": "Triple",
-                    "zh_CN": "3 倍行距"
+                label: {
+                    en_US: 'Triple',
+                    zh_CN: '3 倍行距',
                 },
-                "value": 3
-            }
+                value: 3,
+            },
         ],
-        "symbols": [
+        symbols: [
             {
-                "label": {
-                    "en_US": "Plain Text",
-                    "zh_CN": "普通文本"
+                label: {
+                    en_US: 'Plain Text',
+                    zh_CN: '普通文本',
                 },
-                "items": "‹›«»‘’“”‚„¡¿‥…‡‰‱‼⁈⁉⁇©®™§¶⁋"
+                items: '‹›«»‘’“”‚„¡¿‥…‡‰‱‼⁈⁉⁇©®™§¶⁋',
             },
             {
-                "label": {
-                    "en_US": "Currency Symbols",
-                    "zh_CN": "货币符号"
+                label: {
+                    en_US: 'Currency Symbols',
+                    zh_CN: '货币符号',
                 },
-                "items": "$€¥£¢₠₡₢₣₤¤₿₥₦₧₨₩₪₫₭₮₯₰₱₲₳₴₵₶₷₸₹₺₻₼₽"
+                items: '$€¥£¢₠₡₢₣₤¤₿₥₦₧₨₩₪₫₭₮₯₰₱₲₳₴₵₶₷₸₹₺₻₼₽',
             },
             {
-                "label": {
-                    "en_US": "Mathematical Symbols",
-                    "zh_CN": "数学符号"
+                label: {
+                    en_US: 'Mathematical Symbols',
+                    zh_CN: '数学符号',
                 },
-                "items": "<>≤≥–—¯‾°−±÷⁄×ƒ∫∑∞√∼≅≈≠≡∈∉∋∏∧∨¬∩∪∂∀∃∅∇∗∝∠¼½¾"
+                items: '<>≤≥–—¯‾°−±÷⁄×ƒ∫∑∞√∼≅≈≠≡∈∉∋∏∧∨¬∩∪∂∀∃∅∇∗∝∠¼½¾',
             },
             {
-                "label": {
-                    "en_US": "Arrows",
-                    "zh_CN": "箭头"
+                label: {
+                    en_US: 'Arrows',
+                    zh_CN: '箭头',
                 },
-                "items": "←→↑↓⇐⇒⇑⇓⇠⇢⇡⇣⇤⇥⤒⤓↨"
+                items: '←→↑↓⇐⇒⇑⇓⇠⇢⇡⇣⇤⇥⤒⤓↨',
             },
             {
-                "label": {
-                    "en_US": "Latin Script",
-                    "zh_CN": "拉丁语"
+                label: {
+                    en_US: 'Latin Script',
+                    zh_CN: '拉丁语',
                 },
-                "items": "ĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſ"
-            }
+                items: 'ĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſ',
+            },
         ],
-        "emojis": [
+        emojis: [
             {
-                "label": {
-                    "en_US": "Emotions & People",
-                    "zh_CN": "表情与角色"
+                label: {
+                    en_US: 'Emotions & People',
+                    zh_CN: '表情与角色',
                 },
-                "items": "😀 😃 😄 😁 😆 😅 🤣 😂 🙂 🙃 😉 😊 😇 🥰 😍 🤩 😘 😗 😚 😙 😋 😛 😜 🤪 😝 🤑 🤗 🤭 🤫 🤔 🤐 🤨 😐 😑 😶 😶‍ 😏 😒 🙄 😬 😮‍ 🤥 😌 😔 😪 🤤 😴 😷 🤒 🤕 🤢 🤮 🤧 🥵 🥶 🥴 😵 😵‍💫 🤯 🤠 🥳 😎 🤓 🧐 😕 😟 🙁 ☹️ 😮 😯 😲 😳 🥺 😦 😧 😨 😰 😥 😢 😭 😱 😖 😣 😞 😓 😩 😫 🥱 😤 😡 😠 🤬 😈 👿 💀 ☠️ 💩 🤡 👹 👺 👻 👽 👾 🤖 👋 🤚 🖐️ ✋ 🖖 👌 🤏 ✌️ 🤞 🤟 🤘 🤙 👈 👉 👆 🖕 👇 ☝️ 👍 👎 ✊ 👊 🤛 🤜 👏 🙌 👐 🤲 🤝 🙏 ✍️ 💅 🤳 💪 🦾 🦿 🦵 🦶 👂 🦻"
+                items: '😀 😃 😄 😁 😆 😅 🤣 😂 🙂 🙃 😉 😊 😇 🥰 😍 🤩 😘 😗 😚 😙 😋 😛 😜 🤪 😝 🤑 🤗 🤭 🤫 🤔 🤐 🤨 😐 😑 😶 😶‍ 😏 😒 🙄 😬 😮‍ 🤥 😌 😔 😪 🤤 😴 😷 🤒 🤕 🤢 🤮 🤧 🥵 🥶 🥴 😵 😵‍💫 🤯 🤠 🥳 😎 🤓 🧐 😕 😟 🙁 ☹️ 😮 😯 😲 😳 🥺 😦 😧 😨 😰 😥 😢 😭 😱 😖 😣 😞 😓 😩 😫 🥱 😤 😡 😠 🤬 😈 👿 💀 ☠️ 💩 🤡 👹 👺 👻 👽 👾 🤖 👋 🤚 🖐️ ✋ 🖖 👌 🤏 ✌️ 🤞 🤟 🤘 🤙 👈 👉 👆 🖕 👇 ☝️ 👍 👎 ✊ 👊 🤛 🤜 👏 🙌 👐 🤲 🤝 🙏 ✍️ 💅 🤳 💪 🦾 🦿 🦵 🦶 👂 🦻',
             },
             {
-                "label": {
-                    "en_US": "Animals & Nature",
-                    "zh_CN": "动物与自然"
+                label: {
+                    en_US: 'Animals & Nature',
+                    zh_CN: '动物与自然',
                 },
-                "items": "🐵 🐒 🦍 🦧 🐶 🐕 🦮 🐕‍🦺 🐩 🐺 🦊 🦝 🐱 🐈 🐈‍⬛ 🦁 🐯 🐅 🐆 🐴 🐎 🦄 🦓 🦌 🐮 🐂 🐃 🐄 🐷 🐖 🐗 🐽 🐏 🐑 🐐 🐪 🐫 🦙 🦒 🐘 🦏 🦛 🐭 🐁 🐀 🐹 🐰 🐇 🐿️ 🦔 🦇 🐻 🐻‍❄️ 🐨 🐼 🦥 🦦 🦨 🦘 🦡 🐾 🦃 🐔 🐓 🐣 🐤 🐥 🐦 🐧 🕊️ 🦅 🦆 🦢 🦉 🦩 🦚 🦜 🐸 🐊 🐢 🦎 🐍 🐲 🐉 🦕 🦖 🐳 🐋 🐬 🦭 🐟 🐠 🐡 🦈 🐙 🐚 🐌 🦋 🐛 🐜 🐝 🐞 🦗 🕷️ 🕸️ 🦂 🦟 🦠 💐 🌸 💮 🏵️ 🌹 🥀 🌺 🌻 🌼 🌷 🌱 🌲 🌳 🌴 🌵 🌾 🌿 ☘️ 🍀 🍁 🍂 🍃 🌒 🌓 🌔 🌕 🌖 🌗 🌘 🌙 🌚 🌛 🌜 ☀️ 🌝 🌞 🪐 🌟 🌠 🌌 ☁️ ⛅ ⛈️ 🌤️ 🌥️ 🌦️ 🌧️ 🌨️ 🌩️ 🌪️ 🌫️ 🌬️ 🌀 🌈 🌂 ☂️ ☔ ⛱️ ⚡ ❄️ ☃️ ⛄ ☄️ 🔥 💧 🌊"
+                items: '🐵 🐒 🦍 🦧 🐶 🐕 🦮 🐕‍🦺 🐩 🐺 🦊 🦝 🐱 🐈 🐈‍⬛ 🦁 🐯 🐅 🐆 🐴 🐎 🦄 🦓 🦌 🐮 🐂 🐃 🐄 🐷 🐖 🐗 🐽 🐏 🐑 🐐 🐪 🐫 🦙 🦒 🐘 🦏 🦛 🐭 🐁 🐀 🐹 🐰 🐇 🐿️ 🦔 🦇 🐻 🐻‍❄️ 🐨 🐼 🦥 🦦 🦨 🦘 🦡 🐾 🦃 🐔 🐓 🐣 🐤 🐥 🐦 🐧 🕊️ 🦅 🦆 🦢 🦉 🦩 🦚 🦜 🐸 🐊 🐢 🦎 🐍 🐲 🐉 🦕 🦖 🐳 🐋 🐬 🦭 🐟 🐠 🐡 🦈 🐙 🐚 🐌 🦋 🐛 🐜 🐝 🐞 🦗 🕷️ 🕸️ 🦂 🦟 🦠 💐 🌸 💮 🏵️ 🌹 🥀 🌺 🌻 🌼 🌷 🌱 🌲 🌳 🌴 🌵 🌾 🌿 ☘️ 🍀 🍁 🍂 🍃 🌒 🌓 🌔 🌕 🌖 🌗 🌘 🌙 🌚 🌛 🌜 ☀️ 🌝 🌞 🪐 🌟 🌠 🌌 ☁️ ⛅ ⛈️ 🌤️ 🌥️ 🌦️ 🌧️ 🌨️ 🌩️ 🌪️ 🌫️ 🌬️ 🌀 🌈 🌂 ☂️ ☔ ⛱️ ⚡ ❄️ ☃️ ⛄ ☄️ 🔥 💧 🌊',
             },
             {
-                "label": {
-                    "en_US": "Food & Drink",
-                    "zh_CN": "食物与食品"
+                label: {
+                    en_US: 'Food & Drink',
+                    zh_CN: '食物与食品',
                 },
-                "items": "🍇 🍉 🍊 🍋 🍌 🍍 🥭 🍎 🍏 🍐 🍑 🍒 🍓 🥝 🍅 🥥 🥑 🍆 🥔 🥕 🌽 🌶️ 🥬 🥦 🧄 🧅 🍄 🥜 🌰 🍞 🥐 🥖 🥨 🥯 🥞 🧇 🧀 🍖 🍗 🥩 🥓 🍔 🍟 🍕 🌭 🥪 🌮 🌯 🥙 🧆 🥚 🍳 🥘 🍲 🥣 🥗 🍿 🧈 🧂 🥫 🍱 🍘 🍙 🍚 🍛 🍜 🍝 🍠 🍢 🍣 🍤 🍥 🥮 🍡 🥟 🥠 🥡 🦀 🦞 🦐 🦑 🦪 🍦 🍧 🍨 🍩 🍪 🎂 🍰 🧁 🥧 🍫 🍬 🍭 🍮 🍯 🍼 🥛 ☕ 🍵 🍶 🍾 🍷 🍸 🍹 🍺 🍻 🥂 🥃 🥤 🧃 🧉 🧊 🥢 🍽️ 🍴 🥄 🔪 🏺"
+                items: '🍇 🍉 🍊 🍋 🍌 🍍 🥭 🍎 🍏 🍐 🍑 🍒 🍓 🥝 🍅 🥥 🥑 🍆 🥔 🥕 🌽 🌶️ 🥬 🥦 🧄 🧅 🍄 🥜 🌰 🍞 🥐 🥖 🥨 🥯 🥞 🧇 🧀 🍖 🍗 🥩 🥓 🍔 🍟 🍕 🌭 🥪 🌮 🌯 🥙 🧆 🥚 🍳 🥘 🍲 🥣 🥗 🍿 🧈 🧂 🥫 🍱 🍘 🍙 🍚 🍛 🍜 🍝 🍠 🍢 🍣 🍤 🍥 🥮 🍡 🥟 🥠 🥡 🦀 🦞 🦐 🦑 🦪 🍦 🍧 🍨 🍩 🍪 🎂 🍰 🧁 🥧 🍫 🍬 🍭 🍮 🍯 🍼 🥛 ☕ 🍵 🍶 🍾 🍷 🍸 🍹 🍺 🍻 🥂 🥃 🥤 🧃 🧉 🧊 🥢 🍽️ 🍴 🥄 🔪 🏺',
             },
             {
-                "label": {
-                    "en_US": "Activities",
-                    "zh_CN": "活动"
+                label: {
+                    en_US: 'Activities',
+                    zh_CN: '活动',
                 },
-                "items": "🧧 🎁 🎄 🧨 ✨ 🎈 🎉 🏮 🎗️ 🎟️ 🎫 🎖️ 🏆 🏅 🥇 🥈 🥉 ⚽ ⚾ 🥎 🏀 🏐 🏈 🏉 🎾 🥏 🎳 🏏 🏑 🏒 🥍 🏓 🏸 🥊 🥋 🥅 ⛳ ⛸️ 🎣 🤿 🎽 🎿 🛷 🥌 🎯 🪀 🪁 🎱 🔮 🧿 🎮 🕹️ 🎰 🎲 🧩 🧸 ♟️ 🃏 🀄 🎴 🎭 🖼️ 🎨 🧵 🧶"
+                items: '🧧 🎁 🎄 🧨 ✨ 🎈 🎉 🏮 🎗️ 🎟️ 🎫 🎖️ 🏆 🏅 🥇 🥈 🥉 ⚽ ⚾ 🥎 🏀 🏐 🏈 🏉 🎾 🥏 🎳 🏏 🏑 🏒 🥍 🏓 🏸 🥊 🥋 🥅 ⛳ ⛸️ 🎣 🤿 🎽 🎿 🛷 🥌 🎯 🪀 🪁 🎱 🔮 🧿 🎮 🕹️ 🎰 🎲 🧩 🧸 ♟️ 🃏 🀄 🎴 🎭 🖼️ 🎨 🧵 🧶',
             },
             {
-                "label": {
-                    "en_US": "Travel & Places",
-                    "zh_CN": "旅行与景点"
+                label: {
+                    en_US: 'Travel & Places',
+                    zh_CN: '旅行与景点',
                 },
-                "items": "🚈 🚉 🚊 🚝 🚞 🚋 🚌 🚍 🚎 🚐 🚑 🚒 🚓 🚔 🚕 🚖 🚗 🚘 🚙 🚚 🚛 🚜 🏎️ 🏍️ 🛵 🦽 🦼 🛺 🚲 🛴 🛹 🚏 🛣️ 🛤️ 🛢️ ⛽ 🚨 🚥 🚦 🛑 🚧 ⚓ ⛵ 🛶 🚤 🛳️ ⛴️ 🛥️ 🚢 ✈️ 🛩️ 🛫 🛬 🪂 💺 🚁 🚟 🚠 🚡 🛰️ 🚀 🛸 🛎️ 🧳 🧭 ⌚ ⏰ ⏱️ ⏲️ 🕰️ 🕛 🕧 🕐 🕜 🕑 🕝 🕒 🕞 🕓 🕟 🕔 🕠 🕕 🕡 🕖 🕢 🕗 🕣 🕘 🕤 🕙 🕥 🕚 🕦"
+                items: '🚈 🚉 🚊 🚝 🚞 🚋 🚌 🚍 🚎 🚐 🚑 🚒 🚓 🚔 🚕 🚖 🚗 🚘 🚙 🚚 🚛 🚜 🏎️ 🏍️ 🛵 🦽 🦼 🛺 🚲 🛴 🛹 🚏 🛣️ 🛤️ 🛢️ ⛽ 🚨 🚥 🚦 🛑 🚧 ⚓ ⛵ 🛶 🚤 🛳️ ⛴️ 🛥️ 🚢 ✈️ 🛩️ 🛫 🛬 🪂 💺 🚁 🚟 🚠 🚡 🛰️ 🚀 🛸 🛎️ 🧳 🧭 ⌚ ⏰ ⏱️ ⏲️ 🕰️ 🕛 🕧 🕐 🕜 🕑 🕝 🕒 🕞 🕓 🕟 🕔 🕠 🕕 🕡 🕖 🕢 🕗 🕣 🕘 🕤 🕙 🕥 🕚 🕦',
             },
             {
-                "label": {
-                    "en_US": "Objects",
-                    "zh_CN": "物品"
+                label: {
+                    en_US: 'Objects',
+                    zh_CN: '物品',
                 },
-                "items": "📔 📕 📖 📗 📘 📙 📚 📒 📃 📜 📄 📰 🗞️ 📑 🔖 🏷️ 💰 🔍 🔎 💴 💵 💶 💷 💸 💳 🧾 💹 ✉️ 📧 📨 📩 📤 📥 📦 📫 📪 📬 📭 📮 🗳️ ✏️ ✒️ 🖋️ 🖊️ 🖌️ 🖍️ 📝 💼 📁 📂 🗂️ 📅 📆 🗒️ 🗓️ 📇 📈 📉 📊 📋 📌 📍 📎 🖇️ 📏 📐 ✂️ 🗃️ 🗄️ 🗑️ 🔒 🔓 🔏 🔐 🔑 🗝️ 🔨 🪓 ⛏️ ⚒️ 🛠️ 🗡️ ⚔️ 🔫 🏹 🛡️ 🔧 🔩 ⚙️ 🗜️ ⚖️ 🦯 🔗 ⛓️ 🧰 🧲 ⚗️ 🧪 🧫 🧬 🔬 🔭 📡 💉 🩸 💊 🩹 🩺 🚪 🛏️ 🛋️ 🪑 🚽 🚿 🛁 🪒 🧴 🧷 🧹 🧺 🧻 🧼 🧽 🧯 🛒 🚬 ⚰️ ⚱️ 💎 🔇 🔈 🔉 🔊 🔔 🔕 🔋 🔌 💻 🖥️ 🖨️ ⌨️ 🖱️ 🖲️ 📷 🧱"
+                items: '📔 📕 📖 📗 📘 📙 📚 📒 📃 📜 📄 📰 🗞️ 📑 🔖 🏷️ 💰 🔍 🔎 💴 💵 💶 💷 💸 💳 🧾 💹 ✉️ 📧 📨 📩 📤 📥 📦 📫 📪 📬 📭 📮 🗳️ ✏️ ✒️ 🖋️ 🖊️ 🖌️ 🖍️ 📝 💼 📁 📂 🗂️ 📅 📆 🗒️ 🗓️ 📇 📈 📉 📊 📋 📌 📍 📎 🖇️ 📏 📐 ✂️ 🗃️ 🗄️ 🗑️ 🔒 🔓 🔏 🔐 🔑 🗝️ 🔨 🪓 ⛏️ ⚒️ 🛠️ 🗡️ ⚔️ 🔫 🏹 🛡️ 🔧 🔩 ⚙️ 🗜️ ⚖️ 🦯 🔗 ⛓️ 🧰 🧲 ⚗️ 🧪 🧫 🧬 🔬 🔭 📡 💉 🩸 💊 🩹 🩺 🚪 🛏️ 🛋️ 🪑 🚽 🚿 🛁 🪒 🧴 🧷 🧹 🧺 🧻 🧼 🧽 🧯 🛒 🚬 ⚰️ ⚱️ 💎 🔇 🔈 🔉 🔊 🔔 🔕 🔋 🔌 💻 🖥️ 🖨️ ⌨️ 🖱️ 🖲️ 📷 🧱',
             },
             {
-                "label": {
-                    "en_US": "Symbols",
-                    "zh_CN": "符号"
+                label: {
+                    en_US: 'Symbols',
+                    zh_CN: '符号',
                 },
-                "items": "💡 ✅ ☑️ ✔️ ❌ ❎ ❓ ❗ ❔ ❕ ⌛ ⏳ 💰 🆒 🆕 🆖 🅾️ 🆗 🆘 🈲 🉑 🈸 ⛔ 🚫 📵 ✳️ ✴️ ❇️ 🔟 🔠 🔡 🔢 🔣 🔤 🅰️ 🆎 🅱️ 🆑 🆒 🆓 ℹ️ 🆔 🆕 🆖 🅾️ 🆗 🅿️ 🆘 🆙 🆚 🈁 🈂️ 🔴 🟠 🟡 🟢 🔵 🟣 🟤 ⚫ ⚪ 🟥 🟧 🟨 🟩 🟦 🟪 🟫 🔶 🔷 🔸 🔹 🔺 🔻 💠 🔘 🔳 🔲 💌 💘 💝 💖 💗 💓 💞 💕 💟 ❣️ 💔 🤍 💯 💢 💥 💬 💤 ➰ ➿ 🔅 📴 ➡️ 🔃 🔄 🔙 🔚 🔛 🔝 🔀 🔁 🔂"
+                items: '💡 ✅ ☑️ ✔️ ❌ ❎ ❓ ❗ ❔ ❕ ⌛ ⏳ 💰 🆒 🆕 🆖 🅾️ 🆗 🆘 🈲 🉑 🈸 ⛔ 🚫 📵 ✳️ ✴️ ❇️ 🔟 🔠 🔡 🔢 🔣 🔤 🅰️ 🆎 🅱️ 🆑 🆒 🆓 ℹ️ 🆔 🆕 🆖 🅾️ 🆗 🅿️ 🆘 🆙 🆚 🈁 🈂️ 🔴 🟠 🟡 🟢 🔵 🟣 🟤 ⚫ ⚪ 🟥 🟧 🟨 🟩 🟦 🟪 🟫 🔶 🔷 🔸 🔹 🔺 🔻 💠 🔘 🔳 🔲 💌 💘 💝 💖 💗 💓 💞 💕 💟 ❣️ 💔 🤍 💯 💢 💥 💬 💤 ➰ ➿ 🔅 📴 ➡️ 🔃 🔄 🔙 🔚 🔛 🔝 🔀 🔁 🔂',
             },
             {
-                "label": {
-                    "en_US": "Flags",
-                    "zh_CN": "旗帜"
+                label: {
+                    en_US: 'Flags',
+                    zh_CN: '旗帜',
                 },
-                "items": "🏁 🚩 🏴 🏳️ 🏳️‍🌈‍"
-            }
+                items: '🏁 🚩 🏴 🏳️ 🏳️‍🌈‍',
+            },
         ],
-        "pageSizes": [
+        pageSizes: [
             {
-                "label": "A4",
-                "width": 21,
-                "height": 29.7,
-                "default": true
+                label: 'A4',
+                width: 21,
+                height: 29.7,
+                default: true,
             },
             {
-                "label": "A3",
-                "width": 29.7,
-                "height": 42
+                label: 'A3',
+                width: 29.7,
+                height: 42,
             },
             {
-                "label": "A5",
-                "width": 14.8,
-                "height": 21
+                label: 'A5',
+                width: 14.8,
+                height: 21,
             },
             {
-                "label": "B5",
-                "width": 17.6,
-                "height": 25
+                label: 'B5',
+                width: 17.6,
+                height: 25,
             },
             {
-                "label": {
-                    "en_US": "No. 5 Envelope",
-                    "zh_CN": "5号信封"
+                label: {
+                    en_US: 'No. 5 Envelope',
+                    zh_CN: '5号信封',
                 },
-                "width": 10.9,
-                "height": 12.9
+                width: 10.9,
+                height: 12.9,
             },
             {
-                "label": {
-                    "en_US": "No. 6 Envelope",
-                    "zh_CN": "6号信封"
+                label: {
+                    en_US: 'No. 6 Envelope',
+                    zh_CN: '6号信封',
                 },
-                "width": 11.9,
-                "height": 22.9
+                width: 11.9,
+                height: 22.9,
             },
             {
-                "label": {
-                    "en_US": "No. 7 Envelope",
-                    "zh_CN": "7号信封"
+                label: {
+                    en_US: 'No. 7 Envelope',
+                    zh_CN: '7号信封',
                 },
-                "width": 16.1,
-                "height": 22.8
+                width: 16.1,
+                height: 22.8,
             },
             {
-                "label": {
-                    "en_US": "No. 9 Envelope",
-                    "zh_CN": "9号信封"
+                label: {
+                    en_US: 'No. 9 Envelope',
+                    zh_CN: '9号信封',
                 },
-                "width": 22.8,
-                "height": 32.3
+                width: 22.8,
+                height: 32.3,
             },
             {
-                "label": {
-                    "en_US": "Legal Paper",
-                    "zh_CN": "法律用纸"
+                label: {
+                    en_US: 'Legal Paper',
+                    zh_CN: '法律用纸',
                 },
-                "width": 21.5,
-                "height": 33.5
+                width: 21.5,
+                height: 33.5,
             },
             {
-                "label": {
-                    "en_US": "Letter Paper",
-                    "zh_CN": "信纸"
+                label: {
+                    en_US: 'Letter Paper',
+                    zh_CN: '信纸',
                 },
-                "width": 21.5,
-                "height": 27.9
-            }
-        ]
-    },
-    "toolbar": {
-        "showSaveLabel": true,
-        "defaultMode": "ribbon",
-        "menus": [
-            "base",
-            "insert",
-            "table",
-            "tools",
-            "page",
-            "export"
+                width: 21.5,
+                height: 27.9,
+            },
         ],
     },
-    "page": {
-        "layouts": [
-            "page",
-            "web"
-        ],
-        "defaultMargin": {
-            "left": 3.18,
-            "right": 3.18,
-            "top": 2.54,
-            "bottom": 2.54
+    toolbar: {
+        showSaveLabel: true,
+        defaultMode: 'ribbon',
+        menus: ['base', 'insert', 'table', 'tools', 'page', 'export'],
+    },
+    page: {
+        layouts: ['page', 'web'],
+        defaultMargin: {
+            left: 3.18,
+            right: 3.18,
+            top: 2.54,
+            bottom: 2.54,
         },
-        "defaultOrientation": "portrait",
-        "defaultBackground": "#fff",
-        "showBreakMarks": true,
-        "showBookmark": false,
-        "showLineNumber": false,
-        "showToc": false,
-        "watermark": {
-            "type": "compact",
-            "alpha": 0.2,
-            "fontColor": "#000",
-            "fontFamily": "SimSun",
-            "fontSize": 16,
-            "fontWeight": "normal",
-            "text": ""
+        defaultOrientation: 'portrait',
+        defaultBackground: '#fff',
+        showBreakMarks: true,
+        showBookmark: false,
+        showLineNumber: false,
+        showToc: false,
+        watermark: {
+            type: 'compact',
+            alpha: 0.2,
+            fontColor: '#000',
+            fontFamily: 'SimSun',
+            fontSize: 16,
+            fontWeight: 'normal',
+            text: '',
         },
     },
-    "document": {
-        "title": "Sample Document",
-        "content": "",
-        "placeholder": {
-            "en_US": "Please enter the document content...",
-            "zh_CN": "请输入文档内容..."
+    document: {
+        title: 'Sample Document',
+        content: '',
+        placeholder: {
+            en_US: 'Please enter the document content...',
+            zh_CN: '请输入文档内容...',
         },
-        "enableSpellcheck": true,
-        "enableMarkdown": true,
-        "enableBubbleMenu": true,
-        "enableBlockMenu": true,
-        "readOnly": false,
-        "autofocus": true,
-        "characterLimit": 0,
-        "typographyRules": {},
-        "editorProps": {},
-        "parseOptions": {
-            "preserveWhitespace": "full"
+        enableSpellcheck: true,
+        enableMarkdown: true,
+        enableBubbleMenu: true,
+        enableBlockMenu: true,
+        readOnly: false,
+        autofocus: true,
+        characterLimit: 0,
+        typographyRules: {},
+        editorProps: {},
+        parseOptions: {
+            preserveWhitespace: 'full',
         },
-        "autoSave": {
-            "enabled": true,
-            "interval": 300000
-        }
+        autoSave: {
+            enabled: true,
+            interval: 300000,
+        },
     },
-    "echarts": {
-        "mode": 1,
-        "renderImage": false
+    echarts: {
+        mode: 1,
+        renderImage: false,
     },
-    "shareUrl": "https://www.umodoc.com/en/demo",
-    "cdnUrl": "https://cdn.umodoc.com",
-    "diagrams": {
-        "domain": "https://embed.diagrams.net",
-        "params": {}
+    shareUrl: 'https://www.umodoc.com/en/demo',
+    cdnUrl: 'https://cdn.umodoc.com',
+    diagrams: {
+        domain: 'https://embed.diagrams.net',
+        params: {},
     },
-    "file": {
-        "allowedMimeTypes": [],
-        "maxSize": 104857600,
-        "preview": [
+    file: {
+        allowedMimeTypes: [],
+        maxSize: 104857600,
+        preview: [
             {
-                "extensions": [
-                    "pdf"
-                ],
-                "url": "{url}"
+                extensions: ['pdf'],
+                url: '{url}',
             },
             {
-                "extensions": [
-                    "doc",
-                    "docx",
-                    "xls",
-                    "xlsx",
-                    "ppt",
-                    "pptx"
-                ],
-                "url": "https://view.officeapps.live.com/op/embed.aspx?src={{url}}&amp;wdStartOn=1&amp;wdPrint=0&amp;wdEmbedCode=0"
-            }
-        ]
+                extensions: ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'],
+                url: 'https://view.officeapps.live.com/op/embed.aspx?src={{url}}&amp;wdStartOn=1&amp;wdPrint=0&amp;wdEmbedCode=0',
+            },
+        ],
     },
-    "importWord": {
-        "enabled": true,
-        "maxSize": 5242880,
-        "options": {},
-        "useCustomMethod": false
+    importWord: {
+        enabled: true,
+        maxSize: 5242880,
+        options: {},
+        useCustomMethod: false,
     },
-    "user": {
-        "id": "8nihtpmk",
-        "name": "User-8nihtpmk",
-        "color": "#9173a6",
-        "avatar": "https://api.dicebear.com/9.x/bottts/svg?seed=User-8nihtpmk"
+    user: {
+        id: '8nihtpmk',
+        name: 'User-8nihtpmk',
+        color: '#9173a6',
+        avatar: 'https://api.dicebear.com/9.x/bottts/svg?seed=User-8nihtpmk',
     },
-    "users": [],
-    "extensions": [],
-    "disableExtensions": [],
-    "translations": {
-        "en_US": {},
-        "zh_CN": {}
+    users: [],
+    extensions: [],
+    disableExtensions: [],
+    translations: {
+        en_US: {},
+        zh_CN: {},
     },
-    "templates": []
-}
+    templates: [],
+};

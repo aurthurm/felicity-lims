@@ -1,20 +1,5 @@
-import Swal from 'sweetalert2';
-// import JSConfetti from 'js-confetti';
-import { Notyf } from 'notyf';
-import { notify } from '@kyvg/vue3-notification';
-
-// const jsConfetti = new JSConfetti();
-
-// jsConfetti.addConfetti({
-//     emojis: ['🌈', '⚡️', '💥', '✨', '💫', '🌸'],
-// });
-
-// Define types for notification options
-interface ToastOptions {
-    text: string;
-    type: 'success' | 'info' | 'warn' | 'error';
-    duration?: number;
-}
+import { toast } from 'vue-sonner';
+import { useConfirmDialog } from '@/composables/confirm_dialog';
 
 interface SwalOptions {
     title?: string;
@@ -23,141 +8,109 @@ interface SwalOptions {
     confirmButtonText?: string;
     showCancelButton?: boolean;
     cancelButtonText?: string;
-    confirmButtonColor?: string;
-    cancelButtonColor?: string;
 }
 
-// Configure Notyf with better defaults
-const notyf = new Notyf({
-    // https://github.com/caroso1222/notyf
-    duration: 5000,
-    position: {
-        x: 'right',
-        y: 'bottom',
-    },
-    types: [
-        {
-            type: 'info',
-            className: 'bg-primary text-primary-foreground',
-            icon: false,
-        },
-        {
-            type: 'warning',
-            background: 'hsl(var(--warning))',
-            icon: {
-                className: 'material-icons',
-                tagName: 'i',
-                text: 'warning',
-            },
-        },
-        {
-            type: 'error',
-            background: 'hsl(var(--destructive))',
-            duration: 10000,
-            dismissible: true,
-        },
-    ],
-});
-
-/**
- * Fire a SweetAlert2 dialog with the given options
- * @param options - Configuration options for the alert
- * @returns Promise that resolves when the alert is closed
- */
-const fireAlert = async (options: SwalOptions): Promise<any> => {
-    try {
-        return await Swal.fire({
-            title: options.title || 'Yay!',
-            text: options.text,
-            icon: options.icon,
-            confirmButtonText: options.confirmButtonText || 'OK',
-            showCancelButton: options.showCancelButton || false,
-            cancelButtonText: options.cancelButtonText || 'Cancel',
-            confirmButtonColor: options.confirmButtonColor || 'hsl(var(--primary))',
-            cancelButtonColor: options.cancelButtonColor || 'hsl(var(--destructive))',
-        });
-    } catch (error) {
-        return null;
-    }
-};
-
-/**
- * Truncate a message to a reasonable length for display
- * @param message - The message to truncate
- * @param maxLength - Maximum length before truncation
- * @returns Truncated message
- */
-const truncateMessage = (message: string, maxLength: number = 50): string => {
+const truncateMessage = (message: string, maxLength: number = 120): string => {
     if (!message) return '';
     if (message.length <= maxLength) return message;
     return `${message.substring(0, maxLength)}...`;
 };
 
+const mapVariant = (icon: SwalOptions['icon']) => {
+    if (icon === 'warning' || icon === 'error') return 'destructive';
+    return 'default';
+};
+
 export default function useNotifyToast() {
+    const { confirm, alert } = useConfirmDialog();
+
     return {
-        // Toast notifications using vue3-notification
-        toastSuccess: (message: string, duration?: number) => notify({ text: message, type: 'success', duration }),
+        toastSuccess: (message: string, duration?: number) => toast.success(message, { duration }),
 
-        toastInfo: (message: string, duration?: number) => notify({ text: message, type: 'info', duration }),
+        toastInfo: (message: string, duration?: number) => toast(message, { duration }),
 
-        toastWarning: (message: string, duration?: number) => notify({ text: message, type: 'warn', duration }),
+        toastWarning: (message: string, duration?: number) => toast.warning(message, { duration }),
 
         toastError: (message: string, duration?: number) => {
             const errorMessage = truncateMessage(message?.toString() || 'Unknown error');
-            notify({ text: errorMessage, type: 'error', duration: duration || 10000 });
+            toast.error(errorMessage, { duration: duration ?? 10000 });
         },
 
-        // SweetAlert2 dialogs
-        swalSuccess: (message: string, title?: string) =>
-            fireAlert({
+        swalSuccess: async (message: string, title?: string) => {
+            await alert({
                 title: title || 'Success',
-                text: message,
-                icon: 'success',
-                confirmButtonText: 'OK',
-            }),
+                description: message,
+                confirmText: 'OK',
+                variant: 'default',
+            });
+            return { isConfirmed: true };
+        },
 
-        swalInfo: (message: string, title?: string) =>
-            fireAlert({
+        swalInfo: async (message: string, title?: string) => {
+            await alert({
                 title: title || 'Information',
-                text: message,
-                icon: 'info',
-                confirmButtonText: 'OK',
-            }),
+                description: message,
+                confirmText: 'OK',
+                variant: 'default',
+            });
+            return { isConfirmed: true };
+        },
 
-        swalWarning: (message: string, title?: string) =>
-            fireAlert({
+        swalWarning: async (message: string, title?: string) => {
+            await alert({
                 title: title || 'Warning',
-                text: message,
-                icon: 'warning',
-                confirmButtonText: 'OK',
-            }),
+                description: message,
+                confirmText: 'OK',
+                variant: 'destructive',
+            });
+            return { isConfirmed: true };
+        },
 
-        swalError: (message: string, title?: string) =>
-            fireAlert({
+        swalError: async (message: string, title?: string) => {
+            await alert({
                 title: title || 'Error',
-                text: message,
-                icon: 'error',
-                confirmButtonText: 'OK',
-            }),
+                description: message,
+                confirmText: 'OK',
+                variant: 'destructive',
+            });
+            return { isConfirmed: true };
+        },
 
-        // Confirmation dialog
-        swalConfirm: (message: string, title?: string) =>
-            fireAlert({
+        swalConfirm: async (message: string, title?: string) => {
+            const isConfirmed = await confirm({
                 title: title || 'Confirm',
-                text: message,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Yes',
-                cancelButtonText: 'No',
-            }),
+                description: message,
+                confirmText: 'Yes',
+                cancelText: 'No',
+                variant: 'default',
+            });
+            return { isConfirmed };
+        },
 
-        // Custom alert with full options
-        swalCustom: (options: SwalOptions) => fireAlert(options),
+        swalCustom: async (options: SwalOptions) => {
+            if (options.showCancelButton) {
+                const isConfirmed = await confirm({
+                    title: options.title || 'Confirm',
+                    description: options.text,
+                    confirmText: options.confirmButtonText || 'Confirm',
+                    cancelText: options.cancelButtonText || 'Cancel',
+                    variant: mapVariant(options.icon),
+                });
+                return { isConfirmed };
+            }
 
-        // Notyf notifications (alternative to vue3-notification)
-        notyfSuccess: (message: string) => notyf.success(message),
-        notyfError: (message: string) => notyf.error(truncateMessage(message)),
-        notyfInfo: (message: string) => notyf.open({ type: 'info', message }),
-        notyfWarning: (message: string) => notyf.open({ type: 'warning', message }),
+            await alert({
+                title: options.title || 'Notice',
+                description: options.text,
+                confirmText: options.confirmButtonText || 'OK',
+                variant: mapVariant(options.icon),
+            });
+            return { isConfirmed: true };
+        },
+
+        notyfSuccess: (message: string) => toast.success(message),
+        notyfError: (message: string) => toast.error(truncateMessage(message)),
+        notyfInfo: (message: string) => toast(truncateMessage(message)),
+        notyfWarning: (message: string) => toast.warning(truncateMessage(message)),
     };
 }

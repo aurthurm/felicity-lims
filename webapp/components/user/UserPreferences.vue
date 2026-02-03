@@ -10,6 +10,8 @@ import useNotifyToast from '@/composables/alert_toast';
 import userPreferenceComposable from '@/composables/preferences';
 import { pages } from '@/router/constants';
 import * as guards from '@/guards';
+import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
 
 const { withClientQuery, withClientMutation } = useApiUtil();
 const setupStore = useSetupStore();
@@ -102,7 +104,10 @@ async function savePreferences() {
   <div class="w-full space-y-6">
     <!-- Loading state -->
     <div v-if="loading" class="flex justify-center items-center h-32">
-      <fel-loader message="Loading preferences..." variant="muted" />
+      <span class="inline-flex items-center gap-2">
+        <Spinner class="size-4" />
+        <span class="text-sm">Loading preferences...</span>
+      </span>
     </div>
 
     <!-- Main content -->
@@ -120,14 +125,7 @@ async function savePreferences() {
           >
             <option value="light">Light</option>
             <option value="dark">Dark</option>
-            <option value="black-and-white">Black and White</option>
-            <option value="sterile">Sterile</option>            
-            <option value="clinical-blue">Clinical Blue</option>
-            <option value="emergency-red">Emergency Red</option>
-            <option value="sterile-green">Sterile Green</option>
-            <option value="warm-neutral">Warm Neutral</option>
-            <option value="cool-slate">Cool Slate</option>
-            <option value="corporate-navy">Corporate Navy</option>
+            <option value="system">System</option>
           </select>
         </div>
 
@@ -192,12 +190,10 @@ async function savePreferences() {
             :key="department.uid"
             class="flex items-center"
           >
-            <input
+            <Checkbox
               :id="`dept-${department.uid}`"
-              type="checkbox"
               :checked="isDepartmentSelected(department.uid)"
-              @change="toggleDepartment(department)"
-              class="h-4 w-4 rounded border-input bg-background cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring"
+              @update:checked="() => toggleDepartment(department)"
             />
             <label
               :for="`dept-${department.uid}`"
@@ -219,15 +215,15 @@ async function savePreferences() {
         >
           Cancel
         </button>
-        <fel-button
+        <Button
           type="button"
           @click="savePreferences"
           :disabled="saving || loading"
-          :loading="saving"
           class="px-4 py-2"
         >
+          <Spinner v-if="saving" class="mr-2 size-4" />
           Save Preferences
-        </fel-button>
+        </Button>
       </div>
     </div>
   </div>

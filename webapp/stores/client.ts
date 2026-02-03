@@ -72,7 +72,7 @@ export const useClientStore = defineStore('client', {
                 const result = await withClientQuery<GetAllClientsQuery, GetAllClientsQueryVariables>(
                     GetAllClientsDocument,
                     params,
-                    undefined
+                    undefined,
                 );
 
                 if (result && typeof result === 'object' && 'clientAll' in result) {
@@ -90,7 +90,8 @@ export const useClientStore = defineStore('client', {
                     this.clientPageInfo = page?.pageInfo || defaultPageInfo;
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingClients = false;
             }
         },
@@ -101,7 +102,7 @@ export const useClientStore = defineStore('client', {
                 const result = await withClientQuery<SearchClientsQuery, SearchClientsQueryVariables>(
                     SearchClientsDocument,
                     { queryString },
-                    'clientSearch'
+                    'clientSearch',
                 );
 
                 if (result && Array.isArray(result)) {
@@ -109,7 +110,8 @@ export const useClientStore = defineStore('client', {
                     this.clients = result as unknown as ClientType[];
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingClients = false;
             }
         },
@@ -124,7 +126,7 @@ export const useClientStore = defineStore('client', {
                 const result = await withClientQuery<GetClientByUidQuery, GetClientByUidQueryVariables>(
                     GetClientByUidDocument,
                     { uid },
-                    'clientByUid'
+                    'clientByUid',
                 );
 
                 if (result && typeof result === 'object') {
@@ -137,7 +139,8 @@ export const useClientStore = defineStore('client', {
                     }
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingClient = false;
             }
         },
@@ -169,7 +172,7 @@ export const useClientStore = defineStore('client', {
                 const result = await withClientQuery<GetClientContactsByClientUidQuery, GetClientContactsByClientUidQueryVariables>(
                     GetClientContactsByClientUidDocument,
                     { clientUid },
-                    'clientContactByClientUid'
+                    'clientContactByClientUid',
                 );
 
                 if (result && Array.isArray(result)) {
@@ -177,7 +180,8 @@ export const useClientStore = defineStore('client', {
                     this.clientContacts = result as unknown as ClientContactType[];
                 } else {
                 }
-            } catch {} finally {
+            } catch {
+            } finally {
                 this.fetchingClientContacts = false;
             }
         },
