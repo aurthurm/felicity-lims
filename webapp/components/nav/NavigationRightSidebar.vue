@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, watch, defineAsyncComponent } from "vue"
-import Drawer from "@/components/ui/Drawer.vue"
 import { useNotificationStore } from "@/stores/notification"
 import { useStreamStore } from "@/stores/stream"
 import useApiUtil from "@/composables/api_util"
@@ -8,23 +7,48 @@ import * as guards from "@/guards"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ChevronRight } from "lucide-vue-next"
+import { RightSidebarPanel } from "@/components/ui/sidebar"
+import { adminLinksConfig } from "@/config/adminLinks"
 
 const UserPreferences = defineAsyncComponent(() => import("@/components/user/UserPreferences.vue"))
 
 type SheetPanel = "errors" | "notifications" | "preferences" | "settings" | null
 
+const rightSidebarTitle = (panel: SheetPanel) => {
+  switch (panel) {
+    case "errors": return "Errors"
+    case "notifications": return "Notifications"
+    case "preferences": return "Preferences"
+    case "settings": return "Settings"
+    default: return ""
+  }
+}
+const rightSidebarIcon = (panel: SheetPanel) => {
+  switch (panel) {
+    case "errors": return "exclamation-circle"
+    case "notifications": return "bell"
+    case "preferences": return "user-gear"
+    case "settings": return "cog"
+    default: return "user"
+  }
+}
+
 const openSheet = ref<SheetPanel>(null)
+const rightPanelOpen = defineModel<boolean>('rightPanelOpen', { default: false })
 const notificationStore = useNotificationStore()
 const streamStore = useStreamStore()
 const { errors, clearErrors } = useApiUtil()
 
-// When store asks to show notifications (e.g. addNotification), open the notifications sheet
+// When store asks to show notifications (e.g. addNotification), open the notifications panel
 watch(
   () => notificationStore.show,
   (show) => {
     if (show) openSheet.value = "notifications"
   }
 )
+watch(openSheet, (v) => {
+  rightPanelOpen.value = v !== null
+}, { immediate: true })
 
 const open = (panel: SheetPanel) => {
   openSheet.value = panel
@@ -78,210 +102,183 @@ const rightNavItems = [
 </script>
 
 <template>
-  <div class="relative flex shrink-0">
-    <!-- Sheets render first so the aside can stack above them (slide from beneath) -->
-    <!-- Errors sheet -->
-    <Drawer
-      :show="openSheet === 'errors'"
-      side="right"
-      contentWidth="sm:max-w-md w-full max-w-[calc(100vw-2rem)]"
-      disable-portal
-      @close="close"
+  <div
+    class="right-sidebar-wrapper flex shrink-0"
+    :style="{ '--right-sidebar-panel-width': '320px' }"
+  >
+    <!-- Panel is fixed: width = min-width = max-width so content cannot change the panel size -->
+    <div
+      class="right-sidebar-panel-fixed fixed inset-y-0 z-20 flex flex-col transition-[transform] duration-200 ease-linear md:z-10 overflow-hidden"
+      :style="{
+        right: 'var(--right-sidebar-width, 3rem)',
+        width: 'var(--right-sidebar-panel-width)',
+        minWidth: 'var(--right-sidebar-panel-width)',
+        maxWidth: 'var(--right-sidebar-panel-width)',
+      }"
+      :class="openSheet ? 'translate-x-0' : 'translate-x-full'"
     >
-    <template #header>
-      <div class="flex flex-col gap-1.5">
-        <h3 class="font-semibold text-lg text-foreground">Errors List</h3>
-        <p v-if="errors.length > 0" class="text-xs text-muted-foreground">
-          {{ errors.length }} error{{ errors.length !== 1 ? 's' : '' }} to display
-        </p>
-      </div>
-    </template>
-    <template #body>
-      <div v-if="errors.length === 0" class="flex flex-col items-center justify-center py-12 text-center">
-        <p class="text-sm text-muted-foreground">No errors to display</p>
-      </div>
-      <div v-else class="divide-y divide-border" role="list" aria-label="Error messages">
-        <div
-          v-for="(err, idx) in errors"
-          :key="idx"
-          class="flex items-start gap-2 py-3 first:pt-0 last:pb-0 text-sm text-destructive"
-        >
-          <ChevronRight class="mt-0.5 size-4 shrink-0 text-destructive" aria-hidden="true" />
-          <span class="whitespace-pre-wrap wrap-break-word">{{ err }}</span>
-        </div>
-      </div>
-    </template>
-    <template #footer>
-      <Button variant="outline" size="sm" @click="close">
-        Close
-      </Button>
-      <Button
-        variant="destructive"
-        size="sm"
-        @click="clearErrors(); close()"
-        :disabled="errors.length === 0"
-        aria-label="Clear all errors"
+      <RightSidebarPanel
+        :open="openSheet !== null"
+        :title="rightSidebarTitle(openSheet)"
+        :icon="rightSidebarIcon(openSheet)"
+        fill-parent
+        @close="close"
       >
-        <font-awesome-icon icon="trash-alt" class="mr-2 size-3.5" aria-hidden="true" />
-        Clear all
-      </Button>
-    </template>
-  </Drawer>
+        <template #default>
+          <div class="w-full min-w-0 max-w-full overflow-x-hidden">
+            <!-- Errors panel -->
+            <template v-if="openSheet === 'errors'">
+              <div v-if="errors.length === 0" class="flex flex-col items-center justify-center py-8 text-center">
+                <p class="text-xs text-muted-foreground">No errors to display</p>
+              </div>
+              <div v-else class="divide-y divide-border space-y-1" role="list" aria-label="Error messages">
+                <div
+                  v-for="(err, idx) in errors"
+                  :key="idx"
+                  class="flex items-start gap-1.5 py-2 text-xs text-destructive"
+                >
+                  <ChevronRight class="mt-0.5 size-3 shrink-0 text-destructive" aria-hidden="true" />
+                  <span class="whitespace-pre-wrap wrap-break-word min-w-0">{{ err }}</span>
+                </div>
+              </div>
+            </template>
 
-  <!-- Notifications sheet -->
-  <Drawer
-    :show="openSheet === 'notifications'"
-    side="right"
-    contentWidth="sm:max-w-md w-full max-w-[calc(100vw-2rem)]"
-    disable-portal
-    @close="close"
-  >
-    <template #header>
-      <div class="flex items-center gap-3">
-        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-          <font-awesome-icon icon="bell" class="h-4 w-4 text-primary" aria-hidden="true" />
-        </div>
-        <div>
-          <h2 class="text-lg font-semibold tracking-tight text-foreground">Notifications</h2>
-          <p class="text-xs text-muted-foreground">Activity and updates</p>
-        </div>
-      </div>
-    </template>
-    <template #body>
-      <div class="space-y-2">
-        <div
-          v-if="!streamStore.streams?.length"
-          class="flex flex-col items-center justify-center py-12 text-center"
-        >
-          <div class="rounded-full bg-muted p-4 mb-4">
-            <font-awesome-icon icon="bell" class="text-2xl text-muted-foreground" aria-hidden="true" />
+            <!-- Notifications panel -->
+            <template v-else-if="openSheet === 'notifications'">
+              <div class="space-y-1.5">
+                <div
+                  v-if="!streamStore.streams?.length"
+                  class="flex flex-col items-center justify-center py-8 text-center px-1"
+                >
+                  <div class="rounded-full bg-muted p-3 mb-3">
+                    <font-awesome-icon icon="bell" class="text-lg text-muted-foreground" aria-hidden="true" />
+                  </div>
+                  <p class="text-xs font-medium text-foreground">No notifications yet</p>
+                  <p class="mt-1 text-[11px] text-muted-foreground">
+                    When you receive activity updates, they'll appear here.
+                  </p>
+                </div>
+                <article
+                  v-for="stream of streamStore.streams"
+                  :key="stream?.uid"
+                  class="flex gap-2 rounded-md border border-border bg-card p-3 shadow-sm transition-colors hover:bg-accent/50"
+                  :aria-label="`Notification from ${stream?.actor?.firstName} ${stream?.actor?.lastName}`"
+                >
+                  <div
+                    class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10"
+                    aria-hidden="true"
+                  >
+                    <font-awesome-icon icon="user" class="size-3 text-primary" aria-hidden="true" />
+                  </div>
+                  <div class="min-w-0 flex-1 space-y-0.5 overflow-hidden">
+                    <p class="text-xs leading-snug text-foreground line-clamp-2 wrap-break-word">
+                      <span class="font-medium text-foreground">{{ stream?.actor?.firstName }} {{ stream?.actor?.lastName }}</span>
+                      <span class="mx-0.5 text-destructive italic">{{ stream.verb }}</span>
+                      <span class="text-muted-foreground">{{ stream.actionObjectType }}</span>
+                      <span class="ml-0.5 font-medium text-foreground">{{ stream?.actionObject?.sample?.sampleId ?? stream?.actionObject?.sampleId ?? stream?.actionObject?.sampleUid ?? stream?.actionObject?.worksheetId }}</span>
+                    </p>
+                  </div>
+                </article>
+              </div>
+            </template>
+
+            <!-- Settings panel -->
+            <template v-else-if="openSheet === 'settings'">
+              <div class="flex flex-col gap-2">
+                <router-link
+                  v-show="guards.canAccessPage(guards.pages.ADMINISTRATION)"
+                  to="/admin"
+                  class="flex items-center gap-2 rounded-md border border-border bg-card p-3 shadow-sm transition-colors hover:bg-accent/50"
+                  @click="close"
+                >
+                  <font-awesome-icon icon="house" class="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                  <span class="text-sm font-medium truncate">Home</span>
+                  <font-awesome-icon icon="chevron-right" class="ml-auto size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
+                </router-link>
+                <router-link
+                  v-for="link in adminLinksConfig"
+                  :key="link.path"
+                  v-show="guards.canAccessPage(guards.pages.ADMINISTRATION)"
+                  :to="link.path"
+                  class="flex items-center gap-2 rounded-md border border-border bg-card p-3 shadow-sm transition-colors hover:bg-accent/50"
+                  @click="close"
+                >
+                  <font-awesome-icon :icon="link.icon" class="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                  <span class="text-sm font-medium truncate min-w-0">{{ link.title }}</span>
+                  <font-awesome-icon icon="chevron-right" class="ml-auto size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
+                </router-link>
+              </div>
+            </template>
+
+            <!-- Preferences panel -->
+            <template v-else-if="openSheet === 'preferences'">
+              <div class="rounded-md border border-border bg-card p-3 shadow-sm">
+                <UserPreferences compact />
+              </div>
+            </template>
           </div>
-          <p class="text-sm font-medium text-foreground">No notifications yet</p>
-          <p class="mt-1 text-xs text-muted-foreground max-w-[200px]">
-            When you receive activity updates, they'll appear here.
-          </p>
-        </div>
-        <article
-          v-for="stream of streamStore.streams"
-          :key="stream?.uid"
-          class="flex gap-3 rounded-lg border border-border bg-card p-4 shadow-sm transition-colors hover:bg-accent/50"
-          :aria-label="`Notification from ${stream?.actor?.firstName} ${stream?.actor?.lastName}`"
-        >
-          <div
-            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10"
-            aria-hidden="true"
-          >
-            <font-awesome-icon icon="user" class="text-primary" aria-hidden="true" />
+        </template>
+
+        <template #footer>
+          <div v-if="openSheet === 'errors'" class="flex flex-wrap gap-1.5">
+            <Button variant="outline" size="sm" class="h-7 text-xs px-2" @click="close">Close</Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              class="h-7 text-xs px-2"
+              :disabled="errors.length === 0"
+              aria-label="Clear all errors"
+              @click="clearErrors(); close()"
+            >
+              <font-awesome-icon icon="trash-alt" class="mr-1 size-3" aria-hidden="true" />
+              Clear all
+            </Button>
           </div>
-          <div class="min-w-0 flex-1 space-y-1">
-            <p class="text-sm leading-snug text-foreground">
-              <span class="font-medium text-foreground">{{ stream?.actor?.firstName }} {{ stream?.actor?.lastName }}</span>
-              <span class="mx-1 text-destructive italic">{{ stream.verb }}</span>
-              <span class="text-muted-foreground">{{ stream.actionObjectType }}</span>
-              <span class="ml-1 font-medium text-foreground">{{ stream?.actionObject?.sample?.sampleId ?? stream?.actionObject?.sampleId ?? stream?.actionObject?.sampleUid ?? stream?.actionObject?.worksheetId }}</span>
-            </p>
-          </div>
-        </article>
-      </div>
-    </template>
-  </Drawer>
-
-  <!-- Settings sheet -->
-  <Drawer
-    :show="openSheet === 'settings'"
-    side="right"
-    contentWidth="sm:max-w-md w-full max-w-[calc(100vw-2rem)]"
-    disable-portal
-    @close="close"
-  >
-    <template #header>
-      <div class="flex items-center gap-3">
-        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-          <font-awesome-icon icon="cog" class="h-4 w-4 text-primary" aria-hidden="true" />
-        </div>
-        <div>
-          <h2 class="text-lg font-semibold tracking-tight text-foreground">Settings</h2>
-          <p class="text-xs text-muted-foreground">Administration and preferences</p>
-        </div>
-      </div>
-    </template>
-    <template #body>
-      <div class="flex flex-col gap-4">
-        <router-link
-          v-show="guards.canAccessPage(guards.pages.ADMINISTRATION)"
-          to="/admin"
-          class="flex items-center gap-3 rounded-lg border border-border bg-card p-4 shadow-sm transition-colors hover:bg-accent/50"
-          @click="close"
-        >
-          <font-awesome-icon icon="cog" class="size-5 text-muted-foreground" aria-hidden="true" />
-          <span class="font-medium">Administration</span>
-          <font-awesome-icon icon="chevron-right" class="ml-auto size-4 text-muted-foreground" aria-hidden="true" />
-        </router-link>
-      </div>
-    </template>
-  </Drawer>
-
-  <!-- Preferences sheet -->
-  <Drawer
-    :show="openSheet === 'preferences'"
-    side="right"
-    contentWidth="sm:max-w-md w-full max-w-[calc(100vw-2rem)]"
-    disable-portal
-    @close="close"
-  >
-    <template #header>
-      <div class="flex items-center gap-3">
-        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-          <font-awesome-icon icon="user-gear" class="h-4 w-4 text-primary" aria-hidden="true" />
-        </div>
-        <div>
-          <h2 class="text-lg font-semibold tracking-tight text-foreground">Preferences</h2>
-          <p class="text-xs text-muted-foreground">Customize your experience</p>
-        </div>
-      </div>
-    </template>
-    <template #body>
-      <div class="rounded-lg border border-border bg-card p-4 shadow-sm">
-        <UserPreferences />
-      </div>
-    </template>
-  </Drawer>
-
-  <aside
-    class="relative z-60 flex shrink-0 flex-col border-l border-border bg-sidebar py-2 w-(--right-sidebar-width) min-w-(--right-sidebar-width)"
-    role="navigation"
-    aria-label="Right sidebar"
-  >
-    <div class="flex flex-col items-center gap-1 px-2">
-      <template v-for="item in rightNavItems" :key="item.id">
-        <Button
-          v-if="item.show()"
-          variant="ghost"
-          size="icon"
-          :class="[
-            'relative h-10 w-10 rounded-lg',
-            openSheet === item.id && 'bg-sidebar-accent text-sidebar-accent-foreground',
-            item.id === 'errors' && (errors.length > 0 ? 'text-destructive' : 'text-destructive/70')
-          ]"
-          :aria-label="item.ariaLabel"
-          :aria-expanded="openSheet === item.id"
-          @click="open(item.id)"
-        >
-          <font-awesome-icon
-            :icon="item.icon"
-            class="size-5 shrink-0"
-            aria-hidden="true"
-          />
-          <Badge
-            v-if="item.showBadge()"
-            :variant="item.id === 'errors' ? 'destructive' : 'secondary'"
-            class="absolute -right-0.5 -top-0.5 size-4 min-w-4 justify-center rounded-full p-0 text-[10px]"
-          >
-            {{ item.badge() }}
-          </Badge>
-        </Button>
-      </template>
+        </template>
+      </RightSidebarPanel>
     </div>
-  </aside>
+
+    <!-- Spacer reserves width so main content doesn't shift when icon bar is fixed -->
+    <div
+      class="w-(--right-sidebar-width) min-w-(--right-sidebar-width) shrink-0 bg-transparent"
+      aria-hidden="true"
+    />
+    <!-- Icon bar: fixed so it stays visible on scroll (matches left sidebar behavior) -->
+    <aside
+      class="fixed right-0 top-0 bottom-0 z-10 flex h-svh shrink-0 flex-col border-l border-border bg-sidebar py-2 w-(--right-sidebar-width) min-w-(--right-sidebar-width) transition-[width] duration-200 ease-linear"
+      role="navigation"
+      aria-label="Right sidebar"
+    >
+      <div class="flex flex-col items-center gap-1 px-2">
+        <template v-for="item in rightNavItems" :key="item.id">
+          <Button
+            v-if="item.show()"
+            variant="ghost"
+            size="icon"
+            :class="[
+              'relative h-10 w-10 rounded-lg',
+              openSheet === item.id && 'bg-sidebar-accent text-sidebar-accent-foreground',
+              item.id === 'errors' && (errors.length > 0 ? 'text-destructive' : 'text-destructive/70')
+            ]"
+            :aria-label="item.ariaLabel"
+            :aria-expanded="openSheet === item.id"
+            @click="open(openSheet === item.id ? null : item.id)"
+          >
+            <font-awesome-icon
+              :icon="item.icon"
+              class="size-5 shrink-0"
+              aria-hidden="true"
+            />
+            <Badge
+              v-if="item.showBadge()"
+              :variant="item.id === 'errors' ? 'destructive' : 'secondary'"
+              class="absolute -right-0.5 -top-0.5 size-4 min-w-4 justify-center rounded-full p-0 text-[10px]"
+            >
+              {{ item.badge() }}
+            </Badge>
+          </Button>
+        </template>
+      </div>
+    </aside>
   </div>
 </template>

@@ -78,6 +78,7 @@ import {
     faUserInjured,
     faUsers,
     faVial,
+    faHouse,
 } from '@fortawesome/free-solid-svg-icons';
 
 import 'vue-multiselect/dist/vue-multiselect.css';
@@ -168,6 +169,7 @@ const icons = [
     faShuffle,
     faChevronCircleLeft,
     faChevronCircleRight,
+    faHouse,
 ];
 library.add(...icons);
 

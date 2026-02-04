@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue'
+import { defineAsyncComponent, ref } from 'vue'
 import { useFullscreen } from '@vueuse/core'
 import { VITE_USE_MEGA_MENU } from '@/conf'
 import {
@@ -13,6 +13,9 @@ const SideBar = defineAsyncComponent(() => import('@/components/nav/NavigationSi
 const RightSidebar = defineAsyncComponent(() => import('@/components/nav/NavigationRightSidebar.vue'))
 
 useFullscreen()
+
+// Lifted state so main content can animate margin-right when right panel opens/closes
+const rightPanelOpen = ref(false)
 </script>
 
 <template>
@@ -29,12 +32,18 @@ useFullscreen()
     <Sidebar collapsible="icon">
       <side-bar />
     </Sidebar>
-    <SidebarInset class="min-w-0">
+    <SidebarInset
+      class="min-w-0 flex-1 transition-[margin-right] duration-200 ease-linear"
+      :style="{ marginRight: rightPanelOpen ? 'var(--right-sidebar-panel-width)' : '0' }"
+    >
       <header-main :show-sidebar-toggle="true" />
-      <main class="flex-1 px-8 pt-4">
+      <main class="flex-1 min-w-0 px-8 pt-4">
         <slot />
       </main>
     </SidebarInset>
-    <RightSidebar class="shrink-0" />
+    <RightSidebar
+      v-model:right-panel-open="rightPanelOpen"
+      class="shrink-0"
+    />
   </SidebarProvider>
 </template>

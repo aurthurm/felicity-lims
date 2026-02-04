@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
+
+const props = withDefaults(defineProps<{ compact?: boolean }>(), { compact: false });
 import { UserPreferenceType } from '@/types/gql';
 import { EditUserPreferencesDocument, EditUserPreferencesMutation, EditUserPreferencesMutationVariables } from '@/graphql/operations/_mutations';
 import { UserPreferenceInput } from '@/types/gql';
@@ -101,27 +103,27 @@ async function savePreferences() {
 </script>
 
 <template>
-  <div class="w-full space-y-6">
+  <div class="w-full" :class="props.compact ? 'space-y-4' : 'space-y-6'">
     <!-- Loading state -->
-    <div v-if="loading" class="flex justify-center items-center h-32">
+    <div v-if="loading" class="flex justify-center items-center" :class="props.compact ? 'h-24' : 'h-32'">
       <span class="inline-flex items-center gap-2">
-        <Spinner class="size-4" />
-        <span class="text-sm">Loading preferences...</span>
+        <Spinner :class="props.compact ? 'size-3' : 'size-4'" />
+        <span :class="props.compact ? 'text-xs' : 'text-sm'">Loading preferences...</span>
       </span>
     </div>
 
     <!-- Main content -->
-    <div v-else class="space-y-6">
-      <!-- Theme and Default Route in one line -->
-      <div class="grid grid-cols-2 gap-4">
+    <div v-else :class="props.compact ? 'space-y-3' : 'space-y-6'">
+      <!-- Theme and Default Route -->
+      <div :class="props.compact ? 'space-y-3' : 'grid grid-cols-2 gap-4'">
         <!-- Theme Preference -->
-        <div class="space-y-2">
-          <label class="block text-l font-semibold text-foreground">
+        <div :class="props.compact ? 'space-y-1' : 'space-y-2'">
+          <label :class="['block font-semibold text-foreground', props.compact ? 'text-xs' : 'text-l']">
             Theme
           </label>
           <select
             v-model="theme"
-            class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+            :class="['w-full border border-input bg-background text-foreground rounded focus:outline-none focus:ring-2 focus:ring-ring', props.compact ? 'px-2 py-1.5 text-xs rounded-md' : 'px-3 py-2 rounded-lg']"
           >
             <option value="light">Light</option>
             <option value="dark">Dark</option>
@@ -130,13 +132,13 @@ async function savePreferences() {
         </div>
 
         <!-- Default Route -->
-        <div class="space-y-2">
-          <label class="block text-l font-semibold text-foreground">
+        <div :class="props.compact ? 'space-y-1' : 'space-y-2'">
+          <label :class="['block font-semibold text-foreground', props.compact ? 'text-xs' : 'text-l']">
             Default Route
           </label>
           <select
             v-model="defaultRoute"
-            class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+            :class="['w-full border border-input bg-background text-foreground rounded focus:outline-none focus:ring-2 focus:ring-ring', props.compact ? 'px-2 py-1.5 text-xs rounded-md' : 'px-3 py-2 rounded-lg']"
           >
             <option value="">No preference (Dashboard)</option>
             <option
@@ -151,8 +153,8 @@ async function savePreferences() {
       </div>
 
       <!-- Expanded Menu Toggle -->
-      <div class="flex items-center justify-between">
-        <label class="text-l font-semibold text-foreground">
+      <div class="flex items-center justify-between gap-2">
+        <label :class="['font-semibold text-foreground shrink-0', props.compact ? 'text-xs' : 'text-l']">
           Expanded Menu
         </label>
         <button
@@ -173,18 +175,18 @@ async function savePreferences() {
         </button>
       </div>
 
-      <!-- Departments in 2 columns -->
-      <div class="space-y-3">
-        <label class="block text-l font-semibold text-foreground ">
+      <!-- Departments -->
+      <div :class="props.compact ? 'space-y-2' : 'space-y-3'">
+        <label :class="['block font-semibold text-foreground', props.compact ? 'text-xs' : 'text-l']">
           Departments Filter
         </label>
         <div
           v-if="allDepartments.length === 0"
-          class="text-sm text-muted-foreground italic"
+          :class="['text-muted-foreground italic', props.compact ? 'text-xs' : 'text-sm']"
         >
           No departments available
         </div>
-        <div v-else class="grid grid-cols-2 gap-4">
+        <div v-else :class="props.compact ? 'space-y-1.5' : 'grid grid-cols-2 gap-4'">
           <div
             v-for="department in allDepartments"
             :key="department.uid"
@@ -197,7 +199,7 @@ async function savePreferences() {
             />
             <label
               :for="`dept-${department.uid}`"
-              class="ml-2 text-sm font-medium text-foreground cursor-pointer"
+              :class="['font-medium text-foreground cursor-pointer truncate', props.compact ? 'ml-1.5 text-xs' : 'ml-2 text-sm']"
             >
               {{ department.name }}
             </label>
@@ -206,12 +208,12 @@ async function savePreferences() {
       </div>
 
       <!-- Action Buttons -->
-      <div class="flex justify-end gap-3 pt-4">
+      <div :class="['flex flex-wrap justify-end', props.compact ? 'gap-2 pt-2' : 'gap-3 pt-4']">
         <button
           type="button"
           @click="fetchUserPreferences"
           :disabled="saving"
-          class="px-4 py-2 text-sm font-medium rounded-lg border border-input bg-background text-foreground hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
+          :class="['font-medium border border-input bg-background text-foreground hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed', props.compact ? 'px-2 py-1 text-xs rounded-md' : 'px-4 py-2 text-sm rounded-lg']"
         >
           Cancel
         </button>
@@ -219,10 +221,10 @@ async function savePreferences() {
           type="button"
           @click="savePreferences"
           :disabled="saving || loading"
-          class="px-4 py-2"
+          :class="props.compact ? 'h-7 px-2 text-xs' : 'px-4 py-2'"
         >
-          <Spinner v-if="saving" class="mr-2 size-4" />
-          Save Preferences
+          <Spinner v-if="saving" :class="props.compact ? 'mr-1 size-3' : 'mr-2 size-4'" />
+          Save
         </Button>
       </div>
     </div>
