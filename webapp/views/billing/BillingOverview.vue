@@ -1,56 +1,48 @@
 <template>
-  <div class="space-y-6">
-    <!-- Page header -->
-    <div class="flex flex-col gap-1">
-      <h2 class="text-2xl font-semibold tracking-tight text-foreground">Billing Overview</h2>
-      <p class="text-sm text-muted-foreground">Comprehensive overview of billing metrics and statistics</p>
+  <div class="space-y-4">
+    <!-- Date Range Filters -->
+    <div class="flex flex-col gap-2">
+      <div class="flex flex-wrap gap-2">
+        <Button
+          v-for="period in periodOptions"
+          :key="period.id"
+          :variant="selectedPeriod === period.id ? 'default' : 'outline'"
+          size="sm"
+          @click="selectPeriod(period.id)"
+        >
+          {{ period.label }}
+        </Button>
+      </div>
+
+      <!-- Custom Date Range -->
+      <div v-if="selectedPeriod === 'custom'" class="flex flex-col gap-4 border-t border-border pt-4 sm:flex-row">
+        <div class="flex-1 space-y-2">
+          <Label for="custom-start">Start Date</Label>
+          <Input
+            id="custom-start"
+            v-model="customStartDate"
+            type="date"
+            @change="applyCustomRange"
+          />
+        </div>
+        <div class="flex-1 space-y-2">
+          <Label for="custom-end">End Date</Label>
+          <Input
+            id="custom-end"
+            v-model="customEndDate"
+            type="date"
+            @change="applyCustomRange"
+          />
+        </div>
+      </div>
+
+      <p class="text-xs text-muted-foreground">
+        <template v-if="selectedPeriod === 'all-time'">Showing metrics for all time</template>
+        <template v-else>From {{ formatDate(dateRange.startDate) }} to {{ formatDate(dateRange.endDate) }}</template>
+      </p>
     </div>
 
-    <!-- Date Range Filters -->
-    <Card>
-      <CardContent class="pt-6">
-        <div class="flex flex-col gap-4">
-          <div class="flex flex-wrap gap-2">
-            <Button
-              v-for="period in periodOptions"
-              :key="period.id"
-              :variant="selectedPeriod === period.id ? 'default' : 'outline'"
-              size="sm"
-              @click="selectPeriod(period.id)"
-            >
-              {{ period.label }}
-            </Button>
-          </div>
-
-          <!-- Custom Date Range -->
-          <div v-if="selectedPeriod === 'custom'" class="flex flex-col gap-4 border-t border-border pt-4 sm:flex-row">
-            <div class="flex-1 space-y-2">
-              <Label for="custom-start">Start Date</Label>
-              <Input
-                id="custom-start"
-                v-model="customStartDate"
-                type="date"
-                @change="applyCustomRange"
-              />
-            </div>
-            <div class="flex-1 space-y-2">
-              <Label for="custom-end">End Date</Label>
-              <Input
-                id="custom-end"
-                v-model="customEndDate"
-                type="date"
-                @change="applyCustomRange"
-              />
-            </div>
-          </div>
-
-          <p class="text-xs text-muted-foreground">
-            <template v-if="selectedPeriod === 'all-time'">Showing metrics for all time</template>
-            <template v-else>From {{ formatDate(dateRange.startDate) }} to {{ formatDate(dateRange.endDate) }}</template>
-          </p>
-        </div>
-      </CardContent>
-    </Card>
+    <hr class="border-border" />
 
     <!-- Loading State -->
     <div v-if="fetching" class="grid grid-cols-1 gap-4 md:grid-cols-4">
@@ -93,7 +85,7 @@
     </div>
 
     <!-- Volume & Transactions -->
-    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <Card>
         <CardHeader>
           <CardTitle class="text-base">Bill Volume</CardTitle>

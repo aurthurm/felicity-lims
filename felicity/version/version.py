@@ -83,6 +83,7 @@ class FelicityVersion:
                 "update_available": latest > current,
                 "release_notes": latest_release.get("body", ""),
                 "release_url": latest_release["html_url"],
+                "version_released": latest_release.get("published_at"),
                 "last_checked": now.isoformat(),
             }
 

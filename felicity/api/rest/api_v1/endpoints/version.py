@@ -41,5 +41,6 @@ async def updates(response: Response) -> Any:
             "error": str(e) if logger.level == logging.DEBUG else None,
             "release_notes": "",
             "release_url": "",
+            "version_released": None,
             "last_checked": timenow_dt().isoformat(),
         }

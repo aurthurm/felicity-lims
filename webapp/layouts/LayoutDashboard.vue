@@ -33,7 +33,7 @@ const rightPanelOpen = ref(false)
       <side-bar />
     </Sidebar>
     <SidebarInset
-      class="min-w-0 flex-1 transition-[margin-right] duration-200 ease-linear"
+      class="min-w-0 flex-1 relative z-20 transition-[margin-right] duration-200 ease-linear"
       :style="{ marginRight: rightPanelOpen ? 'var(--right-sidebar-panel-width)' : '0' }"
     >
       <header-main :show-sidebar-toggle="true" />

@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { Separator } from "@/components/ui/separator";
 interface Props {
   title: string;
   subtitle?: string;
-
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -12,7 +10,7 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <div class="mb-6">
+  <div class="mb-4">
     <div class="flex items-center justify-between">
       <div>
         <h1 class="text-2xl font-bold text-card-foreground">{{ title }}</h1>
@@ -23,7 +21,6 @@ const props = withDefaults(defineProps<Props>(), {
         <slot />
       </div>
     </div>
-    <Separator class="mt-1" />
   </div>
 </template>
   

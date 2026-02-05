@@ -6,13 +6,15 @@ import useApiUtil from "@/composables/api_util"
 import * as guards from "@/guards"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { ChevronRight } from "lucide-vue-next"
 import { RightSidebarPanel } from "@/components/ui/sidebar"
 import { adminLinksConfig } from "@/config/adminLinks"
 
 const UserPreferences = defineAsyncComponent(() => import("@/components/user/UserPreferences.vue"))
+const VersionDisplay = defineAsyncComponent(() => import("@/views/admin/VersionDisplay.vue"))
 
-type SheetPanel = "errors" | "notifications" | "preferences" | "settings" | null
+type SheetPanel = "errors" | "notifications" | "preferences" | "settings" | "version" | null
 
 const rightSidebarTitle = (panel: SheetPanel) => {
   switch (panel) {
@@ -20,6 +22,7 @@ const rightSidebarTitle = (panel: SheetPanel) => {
     case "notifications": return "Notifications"
     case "preferences": return "Preferences"
     case "settings": return "Settings"
+    case "version": return "Felicity Version"
     default: return ""
   }
 }
@@ -29,6 +32,7 @@ const rightSidebarIcon = (panel: SheetPanel) => {
     case "notifications": return "bell"
     case "preferences": return "user-gear"
     case "settings": return "cog"
+    case "version": return "tag"
     default: return "user"
   }
 }
@@ -99,6 +103,15 @@ const rightNavItems = [
     show: () => guards.canAccessPage(guards.pages.ADMINISTRATION),
   },
 ]
+const versionNavItem = {
+  id: "version" as const,
+  label: "Version",
+  icon: "tag",
+  ariaLabel: "Version & updates",
+  badge: () => 0,
+  showBadge: () => false,
+  show: () => true,
+}
 </script>
 
 <template>
@@ -107,15 +120,15 @@ const rightNavItems = [
     :style="{ '--right-sidebar-panel-width': '320px' }"
   >
     <!-- Panel is fixed: width = min-width = max-width so content cannot change the panel size -->
+    <!-- Panel sits below main content (z-5) and is revealed when main content slides left -->
     <div
-      class="right-sidebar-panel-fixed fixed inset-y-0 z-20 flex flex-col transition-[transform] duration-200 ease-linear md:z-10 overflow-hidden"
+      class="right-sidebar-panel-fixed fixed inset-y-0 z-5 flex flex-col overflow-hidden"
       :style="{
         right: 'var(--right-sidebar-width, 3rem)',
         width: 'var(--right-sidebar-panel-width)',
         minWidth: 'var(--right-sidebar-panel-width)',
         maxWidth: 'var(--right-sidebar-panel-width)',
       }"
-      :class="openSheet ? 'translate-x-0' : 'translate-x-full'"
     >
       <RightSidebarPanel
         :open="openSheet !== null"
@@ -184,15 +197,14 @@ const rightNavItems = [
 
             <!-- Settings panel -->
             <template v-else-if="openSheet === 'settings'">
-              <div class="flex flex-col gap-2">
+              <div class="flex flex-col gap-0.5">
                 <router-link
                   v-show="guards.canAccessPage(guards.pages.ADMINISTRATION)"
                   to="/admin"
-                  class="flex items-center gap-2 rounded-md border border-border bg-card p-3 shadow-sm transition-colors hover:bg-accent/50"
-                  @click="close"
+                  class="flex items-center gap-2 rounded-sm px-2 py-2 text-sm font-medium transition-colors hover:bg-accent/50"
                 >
                   <font-awesome-icon icon="house" class="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-                  <span class="text-sm font-medium truncate">Home</span>
+                  <span class="truncate">Home</span>
                   <font-awesome-icon icon="chevron-right" class="ml-auto size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
                 </router-link>
                 <router-link
@@ -200,11 +212,10 @@ const rightNavItems = [
                   :key="link.path"
                   v-show="guards.canAccessPage(guards.pages.ADMINISTRATION)"
                   :to="link.path"
-                  class="flex items-center gap-2 rounded-md border border-border bg-card p-3 shadow-sm transition-colors hover:bg-accent/50"
-                  @click="close"
+                  class="flex items-center gap-2 rounded-sm px-2 py-2 text-sm font-medium transition-colors hover:bg-accent/50"
                 >
                   <font-awesome-icon :icon="link.icon" class="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-                  <span class="text-sm font-medium truncate min-w-0">{{ link.title }}</span>
+                  <span class="truncate min-w-0">{{ link.title }}</span>
                   <font-awesome-icon icon="chevron-right" class="ml-auto size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
                 </router-link>
               </div>
@@ -212,23 +223,25 @@ const rightNavItems = [
 
             <!-- Preferences panel -->
             <template v-else-if="openSheet === 'preferences'">
-              <div class="rounded-md border border-border bg-card p-3 shadow-sm">
-                <UserPreferences compact />
-              </div>
+              <UserPreferences compact />
+            </template>
+
+            <!-- Version panel -->
+            <template v-else-if="openSheet === 'version'">
+              <VersionDisplay />
             </template>
           </div>
         </template>
 
         <template #footer>
           <div v-if="openSheet === 'errors'" class="flex flex-wrap gap-1.5">
-            <Button variant="outline" size="sm" class="h-7 text-xs px-2" @click="close">Close</Button>
             <Button
               variant="destructive"
               size="sm"
               class="h-7 text-xs px-2"
               :disabled="errors.length === 0"
               aria-label="Clear all errors"
-              @click="clearErrors(); close()"
+              @click="clearErrors()"
             >
               <font-awesome-icon icon="trash-alt" class="mr-1 size-3" aria-hidden="true" />
               Clear all
@@ -244,40 +257,73 @@ const rightNavItems = [
       aria-hidden="true"
     />
     <!-- Icon bar: fixed so it stays visible on scroll (matches left sidebar behavior) -->
+    <!-- Icon bar sits above everything (z-30) so it's always accessible -->
     <aside
-      class="fixed right-0 top-0 bottom-0 z-10 flex h-svh shrink-0 flex-col border-l border-border bg-sidebar py-2 w-(--right-sidebar-width) min-w-(--right-sidebar-width) transition-[width] duration-200 ease-linear"
+      class="fixed right-0 top-0 bottom-0 z-30 flex h-svh shrink-0 flex-col border-l border-border bg-sidebar py-2 w-(--right-sidebar-width) min-w-(--right-sidebar-width) transition-[width] duration-200 ease-linear"
       role="navigation"
       aria-label="Right sidebar"
     >
-      <div class="flex flex-col items-center gap-1 px-2">
+      <div class="flex flex-1 flex-col items-center gap-1 px-2">
         <template v-for="item in rightNavItems" :key="item.id">
-          <Button
-            v-if="item.show()"
-            variant="ghost"
-            size="icon"
-            :class="[
-              'relative h-10 w-10 rounded-lg',
-              openSheet === item.id && 'bg-sidebar-accent text-sidebar-accent-foreground',
-              item.id === 'errors' && (errors.length > 0 ? 'text-destructive' : 'text-destructive/70')
-            ]"
-            :aria-label="item.ariaLabel"
-            :aria-expanded="openSheet === item.id"
-            @click="open(openSheet === item.id ? null : item.id)"
-          >
-            <font-awesome-icon
-              :icon="item.icon"
-              class="size-5 shrink-0"
-              aria-hidden="true"
-            />
-            <Badge
-              v-if="item.showBadge()"
-              :variant="item.id === 'errors' ? 'destructive' : 'secondary'"
-              class="absolute -right-0.5 -top-0.5 size-4 min-w-4 justify-center rounded-full p-0 text-[10px]"
-            >
-              {{ item.badge() }}
-            </Badge>
-          </Button>
+          <Tooltip v-if="item.show()">
+            <TooltipTrigger as-child>
+              <Button
+                variant="ghost"
+                size="icon"
+                :class="[
+                  'relative h-10 w-10 rounded-lg',
+                  openSheet === item.id && 'bg-sidebar-accent text-sidebar-accent-foreground',
+                  item.id === 'errors' && (errors.length > 0 ? 'text-destructive' : 'text-destructive/70')
+                ]"
+                :aria-label="item.ariaLabel"
+                :aria-expanded="openSheet === item.id"
+                @click="open(openSheet === item.id ? null : item.id)"
+              >
+                <font-awesome-icon
+                  :icon="item.icon"
+                  class="size-5 shrink-0"
+                  aria-hidden="true"
+                />
+                <Badge
+                  v-if="item.showBadge()"
+                  :variant="item.id === 'errors' ? 'destructive' : 'secondary'"
+                  class="absolute -right-0.5 -top-0.5 size-4 min-w-4 justify-center rounded-full p-0 text-[10px]"
+                >
+                  {{ item.badge() }}
+                </Badge>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="left" align="center">
+              {{ item.label }}
+            </TooltipContent>
+          </Tooltip>
         </template>
+      </div>
+      <div class="mt-auto flex flex-col items-center gap-1 px-2 pb-2">
+        <Tooltip v-if="versionNavItem.show()">
+          <TooltipTrigger as-child>
+            <Button
+              variant="ghost"
+              size="icon"
+              :class="[
+                'relative h-10 w-10 rounded-lg',
+                openSheet === versionNavItem.id && 'bg-sidebar-accent text-sidebar-accent-foreground'
+              ]"
+              :aria-label="versionNavItem.ariaLabel"
+              :aria-expanded="openSheet === versionNavItem.id"
+              @click="open(openSheet === versionNavItem.id ? null : versionNavItem.id)"
+            >
+              <font-awesome-icon
+                :icon="versionNavItem.icon"
+                class="size-5 shrink-0"
+                aria-hidden="true"
+              />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="left" align="center">
+            {{ versionNavItem.label }}
+          </TooltipContent>
+        </Tooltip>
       </div>
     </aside>
   </div>

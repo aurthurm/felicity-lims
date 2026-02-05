@@ -295,51 +295,47 @@ const countNone = computed(
 </script>
 
 <template>
-  <div class="space-y-6">
+  <div class="space-y-4">
     <!-- Filters -->
-    <Card>
-      <CardContent class="pt-6">
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div class="space-y-2">
-            <Label for="billing-type">Billing Type</Label>
-            <Select
-              :model-value="selectedPartial ?? 'all'"
-              @update:model-value="(v) => handlePartialFilter(v as string)"
-            >
-              <SelectTrigger id="billing-type" class="w-full">
-                <SelectValue placeholder="All Types" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="complete">Complete Bills</SelectItem>
-                <SelectItem value="partial">Partial Bills</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+    <div class="flex flex-wrap items-end gap-4">
+      <div class="min-w-[180px] space-y-1.5">
+        <Label for="billing-type">Billing Type</Label>
+        <Select
+          :model-value="selectedPartial ?? 'all'"
+          @update:model-value="(v) => handlePartialFilter(v as string)"
+        >
+          <SelectTrigger id="billing-type" class="w-full">
+            <SelectValue placeholder="All Types" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Types</SelectItem>
+            <SelectItem value="complete">Complete Bills</SelectItem>
+            <SelectItem value="partial">Partial Bills</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
-          <div class="space-y-2">
-            <Label for="bill-status">Bill Status</Label>
-            <Select
-              :model-value="selectedIsActive ?? 'all'"
-              @update:model-value="(v) => handleIsActiveFilter(v as string)"
-            >
-              <SelectTrigger id="bill-status" class="w-full">
-                <SelectValue placeholder="All Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="inactive">Inactive</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+      <div class="min-w-[180px] space-y-1.5">
+        <Label for="bill-status">Bill Status</Label>
+        <Select
+          :model-value="selectedIsActive ?? 'all'"
+          @update:model-value="(v) => handleIsActiveFilter(v as string)"
+        >
+          <SelectTrigger id="bill-status" class="w-full">
+            <SelectValue placeholder="All Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Status</SelectItem>
+            <SelectItem value="active">Active</SelectItem>
+            <SelectItem value="inactive">Inactive</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
 
     <!-- Data Table -->
     <Card>
-      <CardContent class="pt-6">
+      <CardContent class="pt-4">
         <DataTable
         :columns="tableColumns"
         :data="bills"

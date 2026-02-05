@@ -146,6 +146,7 @@ watch(
         v-for="tab in visibleTabs"
         :key="tab.id"
         :value="tab.id"
+        class="mt-4"
       >
         <component
           v-if="currentTabId === tab.id"

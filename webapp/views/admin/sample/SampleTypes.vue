@@ -106,7 +106,7 @@ import PageHeading from "@/components/common/PageHeading.vue"
 
     <div class="overflow-x-auto">
       <div class="inline-block min-w-full align-middle">
-        <div class="overflow-hidden shadow-md rounded-lg bg-background p-6">
+        <div class="overflow-hidden shadow-md rounded-lg bg-background">
           <Table class="min-w-full divide-y divide-border">
             <TableHeader class="bg-muted">
               <TableRow>
