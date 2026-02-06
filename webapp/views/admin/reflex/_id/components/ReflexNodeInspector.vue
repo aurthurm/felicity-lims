@@ -456,14 +456,16 @@ const handleDelete = () => {
 <style scoped>
 @import "tailwindcss";
 .node-inspector {
-  @apply w-80 bg-card border-l border-border shadow-sm;
-  @apply flex flex-col h-full overflow-hidden;
+  @apply w-80 flex flex-col h-full overflow-hidden shadow-sm;
+  background-color: var(--card);
+  border-left: 1px solid var(--border);
 }
 
 /* Header */
 .inspector-header {
-  @apply flex items-center justify-between px-4 py-3 border-b border-border;
-  @apply bg-muted;
+  @apply flex items-center justify-between px-4 py-3;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--muted);
 }
 
 /* Empty State */
@@ -490,22 +492,28 @@ const handleDelete = () => {
 }
 
 .form-label {
-  @apply block text-sm font-medium text-foreground;
+  @apply block text-sm font-medium;
+  color: var(--foreground);
 }
 
 .form-input {
-  @apply w-full px-3 py-2 border border-input rounded-lg;
-  @apply focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary;
-  @apply text-sm;
+  @apply w-full px-3 py-2 rounded-lg text-sm focus:outline-none;
+  border: 1px solid var(--input);
+}
+.form-input:focus {
+  box-shadow: 0 0 0 2px var(--ring);
+  border-color: var(--primary);
 }
 
 .form-hint {
-  @apply text-xs text-muted-foreground italic;
+  @apply text-xs italic;
+  color: var(--muted-foreground);
 }
 
 /* Analyses List */
 .analyses-list {
-  @apply max-h-48 overflow-y-auto space-y-2 p-2 border border-border rounded-lg;
+  @apply max-h-48 overflow-y-auto space-y-2 p-2 rounded-lg;
+  border: 1px solid var(--border);
 }
 
 .analysis-checkbox {
@@ -514,20 +522,26 @@ const handleDelete = () => {
 
 /* Info Box */
 .info-box {
-  @apply flex items-start space-x-2 p-3 bg-primary/10 border border-primary/30 rounded-lg;
+  @apply flex items-start space-x-2 p-3 rounded-lg;
+  background-color: color-mix(in oklch, var(--primary), transparent 90%);
+  border: 1px solid color-mix(in oklch, var(--primary), transparent 70%);
 }
 
 /* Footer */
 .inspector-footer {
-  @apply mt-6 pt-4 border-t border-border;
+  @apply mt-6 pt-4;
+  border-top: 1px solid var(--border);
 }
 
 .btn-delete {
-  @apply w-full flex items-center justify-center space-x-2;
-  @apply px-4 py-2 bg-destructive/10 text-destructive border border-destructive/40 rounded-lg;
-  @apply hover:bg-destructive/15 hover:border-destructive/50;
-  @apply transition-colors duration-200;
-  @apply text-sm font-medium;
+  @apply w-full flex items-center justify-center space-x-2 px-4 py-2 rounded-lg transition-colors duration-200 text-sm font-medium;
+  background-color: color-mix(in oklch, var(--destructive), transparent 90%);
+  color: var(--destructive);
+  border: 1px solid color-mix(in oklch, var(--destructive), transparent 60%);
+}
+.btn-delete:hover {
+  background-color: color-mix(in oklch, var(--destructive), transparent 85%);
+  border-color: color-mix(in oklch, var(--destructive), transparent 50%);
 }
 
 /* Node Type Badge */

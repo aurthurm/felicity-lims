@@ -350,10 +350,10 @@ defineOptions({ name: 'BillingView' })
                 </FormField>
               </div>
 
-              <FormField name="isActive" v-slot="{ value, handleChange }">
+              <FormField name="isActive" type="checkbox" :checked-value="true" :unchecked-value="false" v-slot="{ componentField }">
                 <FormItem class="flex items-center space-x-2">
                   <FormControl>
-                    <Checkbox id="isActive" :checked="value" @update:checked="handleChange" />
+                    <Checkbox id="isActive" v-bind="componentField" />
                   </FormControl>
                   <FormLabel>Active</FormLabel>
                   <FormMessage />

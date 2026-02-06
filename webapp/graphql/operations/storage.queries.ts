@@ -3,316 +3,353 @@ import type * as Types from '../schema';
 import gql from 'graphql-tag';
 import * as Urql from '@urql/vue';
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-export type GetAllStoreRoomsQueryVariables = Types.Exact<{ [key: string]: never }>;
+export type GetAllStoreRoomsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
-export type GetAllStoreRoomsQuery = { __typename?: 'Query' } & {
-    storeRoomAll: Array<{ __typename?: 'StoreRoomType' } & Pick<Types.StoreRoomType, 'uid' | 'name' | 'description'>>;
-};
+
+export type GetAllStoreRoomsQuery = (
+  { __typename?: 'Query' }
+  & { storeRoomAll: Array<(
+    { __typename?: 'StoreRoomType' }
+    & Pick<Types.StoreRoomType, 'uid' | 'name' | 'description'>
+  )> }
+);
 
 export type GetStoreRoomByUidQueryVariables = Types.Exact<{
-    uid: Types.Scalars['String']['input'];
+  uid: Types.Scalars['String']['input'];
 }>;
 
-export type GetStoreRoomByUidQuery = { __typename?: 'Query' } & {
-    storeRoomByUid?: Types.Maybe<{ __typename?: 'StoreRoomType' } & Pick<Types.StoreRoomType, 'uid' | 'name' | 'description'>>;
-};
+
+export type GetStoreRoomByUidQuery = (
+  { __typename?: 'Query' }
+  & { storeRoomByUid?: Types.Maybe<(
+    { __typename?: 'StoreRoomType' }
+    & Pick<Types.StoreRoomType, 'uid' | 'name' | 'description'>
+  )> }
+);
 
 export type GetAllStorageLocationsQueryVariables = Types.Exact<{
-    storeRoomUid: Types.Scalars['String']['input'];
+  storeRoomUid: Types.Scalars['String']['input'];
 }>;
 
-export type GetAllStorageLocationsQuery = { __typename?: 'Query' } & {
-    storageLocations: Array<
-        { __typename?: 'StorageLocationType' } & Pick<Types.StorageLocationType, 'uid' | 'name' | 'description' | 'storeRoomUid'>
-    >;
-};
+
+export type GetAllStorageLocationsQuery = (
+  { __typename?: 'Query' }
+  & { storageLocations: Array<(
+    { __typename?: 'StorageLocationType' }
+    & Pick<
+      Types.StorageLocationType,
+      | 'uid'
+      | 'name'
+      | 'description'
+      | 'storeRoomUid'
+    >
+  )> }
+);
 
 export type GetStorageLocationByUidQueryVariables = Types.Exact<{
-    uid: Types.Scalars['String']['input'];
+  uid: Types.Scalars['String']['input'];
 }>;
 
-export type GetStorageLocationByUidQuery = { __typename?: 'Query' } & {
-    storageLocationByUid?: Types.Maybe<
-        { __typename?: 'StorageLocationType' } & Pick<Types.StorageLocationType, 'uid' | 'name' | 'description' | 'storeRoomUid'>
-    >;
-};
+
+export type GetStorageLocationByUidQuery = (
+  { __typename?: 'Query' }
+  & { storageLocationByUid?: Types.Maybe<(
+    { __typename?: 'StorageLocationType' }
+    & Pick<
+      Types.StorageLocationType,
+      | 'uid'
+      | 'name'
+      | 'description'
+      | 'storeRoomUid'
+    >
+  )> }
+);
 
 export type GetAllStorageSectionsQueryVariables = Types.Exact<{
-    storageLocationUid: Types.Scalars['String']['input'];
+  storageLocationUid: Types.Scalars['String']['input'];
 }>;
 
-export type GetAllStorageSectionsQuery = { __typename?: 'Query' } & {
-    storageSections: Array<
-        { __typename?: 'StorageSectionType' } & Pick<Types.StorageSectionType, 'uid' | 'name' | 'description' | 'storageLocationUid'>
-    >;
-};
+
+export type GetAllStorageSectionsQuery = (
+  { __typename?: 'Query' }
+  & { storageSections: Array<(
+    { __typename?: 'StorageSectionType' }
+    & Pick<
+      Types.StorageSectionType,
+      | 'uid'
+      | 'name'
+      | 'description'
+      | 'storageLocationUid'
+    >
+  )> }
+);
 
 export type GetStorageSectionByUidQueryVariables = Types.Exact<{
-    uid: Types.Scalars['String']['input'];
+  uid: Types.Scalars['String']['input'];
 }>;
 
-export type GetStorageSectionByUidQuery = { __typename?: 'Query' } & {
-    storageSectionByUid?: Types.Maybe<
-        { __typename?: 'StorageSectionType' } & Pick<Types.StorageSectionType, 'uid' | 'name' | 'description' | 'storageLocationUid'>
-    >;
-};
+
+export type GetStorageSectionByUidQuery = (
+  { __typename?: 'Query' }
+  & { storageSectionByUid?: Types.Maybe<(
+    { __typename?: 'StorageSectionType' }
+    & Pick<
+      Types.StorageSectionType,
+      | 'uid'
+      | 'name'
+      | 'description'
+      | 'storageLocationUid'
+    >
+  )> }
+);
 
 export type GetAllStorageContainersQueryVariables = Types.Exact<{
-    storageSectionUid: Types.Scalars['String']['input'];
+  storageSectionUid: Types.Scalars['String']['input'];
 }>;
 
-export type GetAllStorageContainersQuery = { __typename?: 'Query' } & {
-    storageContainers: Array<
-        { __typename?: 'StorageContainerType' } & Pick<
-            Types.StorageContainerType,
-            'uid' | 'name' | 'description' | 'storageSectionUid' | 'grid' | 'rowWise' | 'cols' | 'rows' | 'slots'
-        >
-    >;
-};
+
+export type GetAllStorageContainersQuery = (
+  { __typename?: 'Query' }
+  & { storageContainers: Array<(
+    { __typename?: 'StorageContainerType' }
+    & Pick<
+      Types.StorageContainerType,
+      | 'uid'
+      | 'name'
+      | 'description'
+      | 'storageSectionUid'
+      | 'grid'
+      | 'rowWise'
+      | 'cols'
+      | 'rows'
+      | 'slots'
+    >
+  )> }
+);
 
 export type GetSrorageContainerByUidQueryVariables = Types.Exact<{
-    uid: Types.Scalars['String']['input'];
+  uid: Types.Scalars['String']['input'];
 }>;
 
-export type GetSrorageContainerByUidQuery = { __typename?: 'Query' } & {
-    storageContainerByUid?: Types.Maybe<
-        { __typename?: 'StorageContainerType' } & Pick<
-            Types.StorageContainerType,
-            'uid' | 'name' | 'description' | 'storageSectionUid' | 'grid' | 'rowWise' | 'cols' | 'rows' | 'slots' | 'storedCount'
+
+export type GetSrorageContainerByUidQuery = (
+  { __typename?: 'Query' }
+  & { storageContainerByUid?: Types.Maybe<(
+    { __typename?: 'StorageContainerType' }
+    & Pick<
+      Types.StorageContainerType,
+      | 'uid'
+      | 'name'
+      | 'description'
+      | 'storageSectionUid'
+      | 'grid'
+      | 'rowWise'
+      | 'cols'
+      | 'rows'
+      | 'slots'
+      | 'storedCount'
+    >
+  )> }
+);
+
+export type GetStoreRoomsTreeQueryVariables = Types.Exact<{ [key: string]: never; }>;
+
+
+export type GetStoreRoomsTreeQuery = (
+  { __typename?: 'Query' }
+  & { storeRoomAll: Array<(
+    { __typename?: 'StoreRoomType' }
+    & Pick<
+      Types.StoreRoomType,
+      | 'uid'
+      | 'name'
+      | 'description'
+      | 'tag'
+    >
+    & { children?: Types.Maybe<Array<(
+      { __typename?: 'StorageLocationType' }
+      & Pick<
+        Types.StorageLocationType,
+        | 'uid'
+        | 'name'
+        | 'description'
+        | 'tag'
+      >
+      & { children?: Types.Maybe<Array<(
+        { __typename?: 'StorageSectionType' }
+        & Pick<
+          Types.StorageSectionType,
+          | 'uid'
+          | 'name'
+          | 'description'
+          | 'tag'
         >
-    >;
-};
+        & { children?: Types.Maybe<Array<(
+          { __typename?: 'StorageContainerType' }
+          & Pick<
+            Types.StorageContainerType,
+            | 'uid'
+            | 'name'
+            | 'description'
+            | 'tag'
+          >
+        )>> }
+      )>> }
+    )>> }
+  )> }
+);
 
-export type GetStoreRoomsTreeQueryVariables = Types.Exact<{ [key: string]: never }>;
-
-export type GetStoreRoomsTreeQuery = { __typename?: 'Query' } & {
-    storeRoomAll: Array<
-        { __typename?: 'StoreRoomType' } & Pick<Types.StoreRoomType, 'uid' | 'name' | 'description' | 'tag'> & {
-                children?: Types.Maybe<
-                    Array<
-                        { __typename?: 'StorageLocationType' } & Pick<Types.StorageLocationType, 'uid' | 'name' | 'description' | 'tag'> & {
-                                children?: Types.Maybe<
-                                    Array<
-                                        { __typename?: 'StorageSectionType' } & Pick<
-                                            Types.StorageSectionType,
-                                            'uid' | 'name' | 'description' | 'tag'
-                                        > & {
-                                                children?: Types.Maybe<
-                                                    Array<
-                                                        { __typename?: 'StorageContainerType' } & Pick<
-                                                            Types.StorageContainerType,
-                                                            'uid' | 'name' | 'description' | 'tag'
-                                                        >
-                                                    >
-                                                >;
-                                            }
-                                    >
-                                >;
-                            }
-                    >
-                >;
-            }
-    >;
-};
 
 export const GetAllStoreRoomsDocument = gql`
     query getAllStoreRooms {
-        storeRoomAll {
-            uid
-            name
-            description
-        }
-    }
-`;
+  storeRoomAll {
+    uid
+    name
+    description
+  }
+}
+    `;
 
 export function useGetAllStoreRoomsQuery(options?: Omit<Urql.UseQueryArgs<never, GetAllStoreRoomsQueryVariables | undefined>, 'query'>) {
-    return Urql.useQuery<GetAllStoreRoomsQuery, GetAllStoreRoomsQueryVariables | undefined>({
-        query: GetAllStoreRoomsDocument,
-        variables: undefined,
-        ...options,
-    });
-}
+  return Urql.useQuery<GetAllStoreRoomsQuery, GetAllStoreRoomsQueryVariables | undefined>({ query: GetAllStoreRoomsDocument, variables: undefined, ...options });
+};
 export const GetStoreRoomByUidDocument = gql`
     query getStoreRoomByUid($uid: String!) {
-        storeRoomByUid(uid: $uid) {
-            uid
-            name
-            description
-        }
-    }
-`;
+  storeRoomByUid(uid: $uid) {
+    uid
+    name
+    description
+  }
+}
+    `;
 
 export function useGetStoreRoomByUidQuery(options?: Omit<Urql.UseQueryArgs<never, GetStoreRoomByUidQueryVariables | undefined>, 'query'>) {
-    return Urql.useQuery<GetStoreRoomByUidQuery, GetStoreRoomByUidQueryVariables | undefined>({
-        query: GetStoreRoomByUidDocument,
-        variables: undefined,
-        ...options,
-    });
-}
+  return Urql.useQuery<GetStoreRoomByUidQuery, GetStoreRoomByUidQueryVariables | undefined>({ query: GetStoreRoomByUidDocument, variables: undefined, ...options });
+};
 export const GetAllStorageLocationsDocument = gql`
     query getAllStorageLocations($storeRoomUid: String!) {
-        storageLocations(storeRoomUid: $storeRoomUid) {
-            uid
-            name
-            description
-            storeRoomUid
-        }
-    }
-`;
-
-export function useGetAllStorageLocationsQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GetAllStorageLocationsQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GetAllStorageLocationsQuery, GetAllStorageLocationsQueryVariables | undefined>({
-        query: GetAllStorageLocationsDocument,
-        variables: undefined,
-        ...options,
-    });
+  storageLocations(storeRoomUid: $storeRoomUid) {
+    uid
+    name
+    description
+    storeRoomUid
+  }
 }
+    `;
+
+export function useGetAllStorageLocationsQuery(options?: Omit<Urql.UseQueryArgs<never, GetAllStorageLocationsQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetAllStorageLocationsQuery, GetAllStorageLocationsQueryVariables | undefined>({ query: GetAllStorageLocationsDocument, variables: undefined, ...options });
+};
 export const GetStorageLocationByUidDocument = gql`
     query getStorageLocationByUid($uid: String!) {
-        storageLocationByUid(uid: $uid) {
-            uid
-            name
-            description
-            storeRoomUid
-        }
-    }
-`;
-
-export function useGetStorageLocationByUidQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GetStorageLocationByUidQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GetStorageLocationByUidQuery, GetStorageLocationByUidQueryVariables | undefined>({
-        query: GetStorageLocationByUidDocument,
-        variables: undefined,
-        ...options,
-    });
+  storageLocationByUid(uid: $uid) {
+    uid
+    name
+    description
+    storeRoomUid
+  }
 }
+    `;
+
+export function useGetStorageLocationByUidQuery(options?: Omit<Urql.UseQueryArgs<never, GetStorageLocationByUidQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetStorageLocationByUidQuery, GetStorageLocationByUidQueryVariables | undefined>({ query: GetStorageLocationByUidDocument, variables: undefined, ...options });
+};
 export const GetAllStorageSectionsDocument = gql`
     query getAllStorageSections($storageLocationUid: String!) {
-        storageSections(storageLocationUid: $storageLocationUid) {
-            uid
-            name
-            description
-            storageLocationUid
-        }
-    }
-`;
-
-export function useGetAllStorageSectionsQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GetAllStorageSectionsQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GetAllStorageSectionsQuery, GetAllStorageSectionsQueryVariables | undefined>({
-        query: GetAllStorageSectionsDocument,
-        variables: undefined,
-        ...options,
-    });
+  storageSections(storageLocationUid: $storageLocationUid) {
+    uid
+    name
+    description
+    storageLocationUid
+  }
 }
+    `;
+
+export function useGetAllStorageSectionsQuery(options?: Omit<Urql.UseQueryArgs<never, GetAllStorageSectionsQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetAllStorageSectionsQuery, GetAllStorageSectionsQueryVariables | undefined>({ query: GetAllStorageSectionsDocument, variables: undefined, ...options });
+};
 export const GetStorageSectionByUidDocument = gql`
     query getStorageSectionByUid($uid: String!) {
-        storageSectionByUid(uid: $uid) {
-            uid
-            name
-            description
-            storageLocationUid
-        }
-    }
-`;
-
-export function useGetStorageSectionByUidQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GetStorageSectionByUidQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GetStorageSectionByUidQuery, GetStorageSectionByUidQueryVariables | undefined>({
-        query: GetStorageSectionByUidDocument,
-        variables: undefined,
-        ...options,
-    });
+  storageSectionByUid(uid: $uid) {
+    uid
+    name
+    description
+    storageLocationUid
+  }
 }
+    `;
+
+export function useGetStorageSectionByUidQuery(options?: Omit<Urql.UseQueryArgs<never, GetStorageSectionByUidQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetStorageSectionByUidQuery, GetStorageSectionByUidQueryVariables | undefined>({ query: GetStorageSectionByUidDocument, variables: undefined, ...options });
+};
 export const GetAllStorageContainersDocument = gql`
     query getAllStorageContainers($storageSectionUid: String!) {
-        storageContainers(storageSectionUid: $storageSectionUid) {
-            uid
-            name
-            description
-            storageSectionUid
-            grid
-            rowWise
-            cols
-            rows
-            slots
-        }
-    }
-`;
-
-export function useGetAllStorageContainersQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GetAllStorageContainersQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GetAllStorageContainersQuery, GetAllStorageContainersQueryVariables | undefined>({
-        query: GetAllStorageContainersDocument,
-        variables: undefined,
-        ...options,
-    });
+  storageContainers(storageSectionUid: $storageSectionUid) {
+    uid
+    name
+    description
+    storageSectionUid
+    grid
+    rowWise
+    cols
+    rows
+    slots
+  }
 }
+    `;
+
+export function useGetAllStorageContainersQuery(options?: Omit<Urql.UseQueryArgs<never, GetAllStorageContainersQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetAllStorageContainersQuery, GetAllStorageContainersQueryVariables | undefined>({ query: GetAllStorageContainersDocument, variables: undefined, ...options });
+};
 export const GetSrorageContainerByUidDocument = gql`
     query getSrorageContainerByUid($uid: String!) {
-        storageContainerByUid(uid: $uid) {
-            uid
-            name
-            description
-            storageSectionUid
-            grid
-            rowWise
-            cols
-            rows
-            slots
-            storedCount
-        }
-    }
-`;
-
-export function useGetSrorageContainerByUidQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GetSrorageContainerByUidQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GetSrorageContainerByUidQuery, GetSrorageContainerByUidQueryVariables | undefined>({
-        query: GetSrorageContainerByUidDocument,
-        variables: undefined,
-        ...options,
-    });
+  storageContainerByUid(uid: $uid) {
+    uid
+    name
+    description
+    storageSectionUid
+    grid
+    rowWise
+    cols
+    rows
+    slots
+    storedCount
+  }
 }
+    `;
+
+export function useGetSrorageContainerByUidQuery(options?: Omit<Urql.UseQueryArgs<never, GetSrorageContainerByUidQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetSrorageContainerByUidQuery, GetSrorageContainerByUidQueryVariables | undefined>({ query: GetSrorageContainerByUidDocument, variables: undefined, ...options });
+};
 export const GetStoreRoomsTreeDocument = gql`
     query getStoreRoomsTree {
-        storeRoomAll {
-            uid
-            name
-            description
-            tag
-            children {
-                uid
-                name
-                description
-                tag
-                children {
-                    uid
-                    name
-                    description
-                    tag
-                    children {
-                        uid
-                        name
-                        description
-                        tag
-                    }
-                }
-            }
+  storeRoomAll {
+    uid
+    name
+    description
+    tag
+    children {
+      uid
+      name
+      description
+      tag
+      children {
+        uid
+        name
+        description
+        tag
+        children {
+          uid
+          name
+          description
+          tag
         }
+      }
     }
-`;
+  }
+}
+    `;
 
 export function useGetStoreRoomsTreeQuery(options?: Omit<Urql.UseQueryArgs<never, GetStoreRoomsTreeQueryVariables | undefined>, 'query'>) {
-    return Urql.useQuery<GetStoreRoomsTreeQuery, GetStoreRoomsTreeQueryVariables | undefined>({
-        query: GetStoreRoomsTreeDocument,
-        variables: undefined,
-        ...options,
-    });
-}
+  return Urql.useQuery<GetStoreRoomsTreeQuery, GetStoreRoomsTreeQueryVariables | undefined>({ query: GetStoreRoomsTreeDocument, variables: undefined, ...options });
+};

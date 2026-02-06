@@ -553,7 +553,7 @@ const sampleTypes = computed<SampleTypeTyp[]>(() => sampleStore.getSampleTypes);
                   </option>
                 </select>
                 <button
-                  @click.prevent="appyQCTemplate()"
+                  @click="appyQCTemplate()"
                   class="shrink-0 rounded-lg border border-accent px-3 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
                   Apply
@@ -561,7 +561,7 @@ const sampleTypes = computed<SampleTypeTyp[]>(() => sampleStore.getSampleTypes);
               </div>
             </label>
             <button
-              @click.prevent="addReserved()"
+              @click="addReserved()"
               class="shrink-0 rounded-lg border border-accent px-3 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             >
               Add Reserve Slot
@@ -601,7 +601,7 @@ const sampleTypes = computed<SampleTypeTyp[]>(() => sampleStore.getSampleTypes);
               </div>
               <div class="shrink-0">
                 <button
-                  @click.prevent="removeReserved(index)"
+                  @click="removeReserved(index)"
                   class="rounded-lg border border-destructive px-3 py-2 text-sm font-medium text-destructive transition-colors hover:bg-destructive hover:text-destructive-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 >
                   Remove
@@ -615,7 +615,7 @@ const sampleTypes = computed<SampleTypeTyp[]>(() => sampleStore.getSampleTypes);
         <hr class="border-t border-border" />
         <button
           type="button"
-          @click.prevent="saveForm()"
+          @click="saveForm()"
           class="w-full rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
           Save Form

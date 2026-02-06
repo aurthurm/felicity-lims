@@ -181,7 +181,7 @@ function areAllChecked(): boolean {
           <button
             v-show="shield.hasRights(shield.actions.CREATE, shield.objects.WORKSHEET)"
             type="button"
-            @click.prevent="applyTemplate()"
+            @click="applyTemplate()"
             class="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
           >
             Apply Template
@@ -233,7 +233,7 @@ function areAllChecked(): boolean {
         <div class="ml-6 mt-2">
           <Button
             v-show="true"
-            @click.prevent="filterAnalysis()"
+            @click="filterAnalysis()"
             class="p-1"
             >Apply Filters</Button
           >
@@ -352,7 +352,7 @@ function areAllChecked(): boolean {
       </div>
     </form>
 
-    <Button v-show="true" @click.prevent="assignToWorkSheet"
+    <Button v-show="true" @click="assignToWorkSheet"
       >Assign Analyses</Button
     >
   </section>

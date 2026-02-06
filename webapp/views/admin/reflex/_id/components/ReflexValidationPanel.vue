@@ -207,9 +207,8 @@ const toggleCollapse = () => {
 <style scoped>
 @import "tailwindcss";
 .validation-panel {
-  @apply fixed bottom-4 right-4 w-80 bg-card border-2 rounded-lg shadow-xl;
-  @apply transition-all duration-300;
-  @apply z-50;
+  @apply fixed bottom-4 right-4 w-80 border-2 rounded-lg shadow-xl transition-all duration-300 z-50;
+  background-color: var(--card);
 }
 
 .panel-collapsed {
@@ -217,21 +216,28 @@ const toggleCollapse = () => {
 }
 
 .panel-has-errors {
-  @apply border-destructive/50;
+  border-color: color-mix(in oklch, var(--destructive), transparent 50%);
 }
 
 .panel-has-warnings {
-  @apply border-warning/40;
+  border-color: color-mix(in oklch, var(--chart-4), transparent 60%);
 }
 
 /* Header */
 .panel-header {
-  @apply flex items-center justify-between px-4 py-3 border-b border-border;
-  @apply bg-muted cursor-pointer hover:bg-muted transition-colors;
+  @apply flex items-center justify-between px-4 py-3 cursor-pointer transition-colors;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--muted);
+}
+.panel-header:hover {
+  background-color: var(--muted);
 }
 
 .collapse-btn {
-  @apply p-1 hover:bg-muted rounded transition-colors;
+  @apply p-1 rounded transition-colors;
+}
+.collapse-btn:hover {
+  background-color: var(--muted);
 }
 
 /* Badge */
@@ -240,11 +246,13 @@ const toggleCollapse = () => {
 }
 
 .badge-error {
-  @apply bg-destructive/15 text-destructive;
+  background-color: color-mix(in oklch, var(--destructive), transparent 85%);
+  color: var(--destructive);
 }
 
 .badge-warning {
-  @apply bg-warning/15 text-warning;
+  background-color: color-mix(in oklch, var(--chart-4), transparent 85%);
+  color: var(--chart-4);
 }
 
 /* Content */
@@ -263,7 +271,8 @@ const toggleCollapse = () => {
 }
 
 .section-header {
-  @apply pb-2 border-b border-border;
+  @apply pb-2;
+  border-bottom: 1px solid var(--border);
 }
 
 /* Issues List */
@@ -272,16 +281,22 @@ const toggleCollapse = () => {
 }
 
 .issue-item {
-  @apply p-3 rounded-lg cursor-pointer;
-  @apply transition-all duration-200;
-  @apply hover:shadow-md;
+  @apply p-3 rounded-lg cursor-pointer transition-all duration-200 hover:shadow-md;
 }
 
 .issue-error {
-  @apply bg-destructive/10 border border-destructive/40 hover:bg-destructive/15;
+  background-color: color-mix(in oklch, var(--destructive), transparent 90%);
+  border: 1px solid color-mix(in oklch, var(--destructive), transparent 60%);
+}
+.issue-error:hover {
+  background-color: color-mix(in oklch, var(--destructive), transparent 85%);
 }
 
 .issue-warning {
-  @apply bg-warning/10 border border-warning/40 hover:bg-warning/15;
+  background-color: color-mix(in oklch, var(--chart-4), transparent 90%);
+  border: 1px solid color-mix(in oklch, var(--chart-4), transparent 60%);
+}
+.issue-warning:hover {
+  background-color: color-mix(in oklch, var(--chart-4), transparent 85%);
 }
 </style>

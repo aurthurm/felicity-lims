@@ -64,6 +64,44 @@ query getLaboratory {
     }
 }
 
+query getLaboratoryByUid($uid: String!) {
+    laboratoryByUid(uid: $uid) {
+        uid
+        name
+        tagLine
+        labManagerUid
+        email
+        emailCc
+        mobilePhone
+        businessPhone
+        address
+        banking
+        logo
+        qualityStatement
+        settings {
+            uid
+            laboratoryUid
+            allowSelfVerification
+            allowPatientRegistration
+            allowSampleRegistration
+            allowWorksheetCreation
+            defaultRoute
+            passwordLifetime
+            inactivityLogOut
+            defaultTheme
+            autoReceiveSamples
+            stickerCopies
+            allowBilling
+            allowAutoBilling
+            processBilledOnly
+            minPaymentStatus
+            minPartialPerentage
+            currency
+            paymentTermsDays
+        }
+    }
+}
+
 query getAllLaboratories($first: Int, $after: String, $text: String, $sortBy: [String!] = ["uid"]) {
     laboratoryAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {
         totalCount

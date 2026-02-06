@@ -444,29 +444,29 @@ const uploadLogo = async () => {
         </div>
         <hr class="border-border" />
         <div class="grid grid-cols-2 gap-6">
-          <FormField name="allowBilling" v-slot="{ value, handleChange }">
+          <FormField name="allowBilling" type="checkbox" :checked-value="true" :unchecked-value="false" v-slot="{ componentField }">
             <FormItem class="flex items-center space-x-2">
               <FormControl>
-                <Checkbox :checked="value" @update:checked="handleChange" :disabled="processing" />
+                <Checkbox v-bind="componentField" :disabled="processing" />
               </FormControl>
               <FormLabel>Enable Sample Billing</FormLabel>
               <FormMessage />
             </FormItem>
           </FormField>
-          <FormField name="allowAutoBilling" v-slot="{ value, handleChange }">
+          <FormField name="allowAutoBilling" type="checkbox" :checked-value="true" :unchecked-value="false" v-slot="{ componentField }">
             <FormItem class="flex items-center space-x-2">
               <FormControl>
-                <Checkbox :checked="value" @update:checked="handleChange" :disabled="processing" />
+                <Checkbox v-bind="componentField" :disabled="processing" />
               </FormControl>
               <FormLabel>Allow automatic billing on sample registration</FormLabel>
               <FormMessage />
             </FormItem>
           </FormField>
 
-          <FormField name="processBilledOnly" v-slot="{ value, handleChange }">
+          <FormField name="processBilledOnly" type="checkbox" :checked-value="true" :unchecked-value="false" v-slot="{ componentField }">
             <FormItem class="flex items-center space-x-2">
               <FormControl>
-                <Checkbox :checked="value" @update:checked="handleChange" :disabled="processing" />
+                <Checkbox v-bind="componentField" :disabled="processing" />
               </FormControl>
               <FormLabel>Only process billed analysis requests</FormLabel>
               <FormMessage />

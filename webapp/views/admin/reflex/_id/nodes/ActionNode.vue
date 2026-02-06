@@ -177,9 +177,7 @@ const actionDetail = computed(() => {
 <style scoped>
 @import "tailwindcss";
 .action-node {
-  @apply border-2 rounded-lg shadow-md;
-  @apply px-4 py-3 min-w-[220px] max-w-[280px];
-  @apply transition-all duration-200;
+  @apply border-2 rounded-lg shadow-md px-4 py-3 min-w-[220px] max-w-[280px] transition-all duration-200;
 }
 
 .action-node:hover {
@@ -188,21 +186,25 @@ const actionDetail = computed(() => {
 
 /* Validation states */
 .action-node.node-error {
-  @apply border-destructive/60 bg-destructive/10;
+  border-color: color-mix(in oklch, var(--destructive), transparent 40%);
+  background-color: color-mix(in oklch, var(--destructive), transparent 90%);
 }
 
 .action-node.node-warning {
-  @apply border-warning/50 bg-warning/10;
+  border-color: color-mix(in oklch, var(--chart-4), transparent 50%);
+  background-color: color-mix(in oklch, var(--chart-4), transparent 90%);
 }
 
 /* Add action specific valid state */
-.action-node.node-valid.border-success/50 {
-  @apply border-success/50 bg-card;
+.action-node.node-valid.border-success\/50 {
+  background-color: var(--card);
+  border-color: color-mix(in oklch, var(--chart-2), transparent 50%);
 }
 
 /* Finalize action specific valid state */
-.action-node.node-valid.border-accent/50 {
-  @apply border-accent/50 bg-card;
+.action-node.node-valid.border-accent\/50 {
+  background-color: var(--card);
+  border-color: color-mix(in oklch, var(--accent), transparent 50%);
 }
 
 /* Selected state */

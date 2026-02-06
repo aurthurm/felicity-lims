@@ -479,7 +479,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
           <Button 
             v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && canSave(pickedOrg.uid)" 
             key="save" 
-            @click.prevent="saveAntibiotics(pickedOrg.uid)" 
+            @click="saveAntibiotics(pickedOrg.uid)" 
             :color="'primary'"
             :disabled="savingAntibiotics"
           >
@@ -489,7 +489,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
           <Button 
             v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && canSubmit(pickedOrg.uid)" 
             key="submit" 
-            @click.prevent="submitAntibiotics(pickedOrg.uid)" 
+            @click="submitAntibiotics(pickedOrg.uid)" 
             :color="'warning'"
           >
             Submit Antibiotics
@@ -498,7 +498,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
           <Button 
             v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && canApprove(pickedOrg.uid)" 
             key="approve" 
-            @click.prevent="approveAntibiotics(pickedOrg.uid)" 
+            @click="approveAntibiotics(pickedOrg.uid)" 
             :color="'success'"
           >
             Approve Antibiotics

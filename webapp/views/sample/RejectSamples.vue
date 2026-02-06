@@ -154,7 +154,7 @@ const rejectSamples_ = async () => {
     <div class="flex justify-end">
       <button
         v-if="state.rejections?.length > 0"
-        @click.prevent="rejectSamples_()"
+        @click="rejectSamples_()"
         class="px-4 py-2 bg-destructive text-destructive-foreground rounded-md hover:bg-destructive/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-destructive/50"
       >
         Reject Samples

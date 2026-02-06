@@ -38,3 +38,37 @@
 ## Configuration Tips
 
 - Copy `env.example` to `.env` and adjust for local ports, DB credentials, and service URLs.
+
+## Frontend Component Patterns
+
+### Checkbox with vee-validate FormField
+
+When using the `Checkbox` component with vee-validate's `FormField`, bind `componentField` directly to the checkbox:
+
+```vue
+<!-- CORRECT -->
+<FormField name="myBooleanField" type="checkbox" :checked-value="true" :unchecked-value="false" v-slot="{ componentField }">
+  <FormItem class="flex items-center space-x-2">
+    <FormControl>
+      <Checkbox v-bind="componentField" :disabled="processing" />
+    </FormControl>
+    <FormLabel>My checkbox label</FormLabel>
+  </FormItem>
+</FormField>
+```
+
+```vue
+<!-- INCORRECT - Do NOT use these patterns -->
+<!-- value/handleChange pattern is discouraged for checkbox fields in this codebase -->
+<FormField name="myField" v-slot="{ value, handleChange }">
+  <Checkbox :checked="value" @update:checked="handleChange" />
+</FormField>
+```
+
+Use `v-slot="{ componentField }"` and bind directly with `v-bind="componentField"` for `Checkbox` fields.
+Always include `type="checkbox"` + checked/unchecked values so submitted values remain booleans.
+Avoid deprecated `Form` component usage from `@/components/ui/form`.
+Use the current pattern: `useForm` + native `<form @submit.prevent="...">` + `FormField`.
+For pages with multiple submit actions/sections sharing one form state, prefer separate `useForm` instances per section or submit current `values` directly for section-specific actions to avoid unrelated validation blocking submit.
+If checkboxes appear not to bind despite correct template markup, verify there are no stale references to removed form instances (for example, `setSettingValues` after consolidating to one `useForm`), and use one consistent `useForm` source for the fields being rendered.
+For laboratory settings updates, include `laboratoryUid` in the mutation payload when required by GraphQL input types.

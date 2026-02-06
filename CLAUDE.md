@@ -112,3 +112,39 @@ The project uses Docker Compose for local development with:
 - **Integration Tests**: `felicity/tests/integration/` - Test service interactions
 - **Test Configuration**: pytest with async support, separate test database
 - **Environment**: Set `TESTING=True` environment variable for test runs
+
+## Frontend Component Patterns
+
+### Checkbox with vee-validate FormField
+
+When using the `Checkbox` component from `@/components/ui/checkbox` with vee-validate's `FormField`, bind `componentField` directly on the checkbox:
+
+```vue
+<script setup lang="ts">
+import { Checkbox } from '@/components/ui/checkbox';
+import { FormField, FormItem, FormControl, FormLabel, FormMessage } from '@/components/ui/form';
+</script>
+
+<template>
+    <FormField name="myBooleanField" type="checkbox" :checked-value="true" :unchecked-value="false" v-slot="{ componentField }">
+        <FormItem class="flex items-center space-x-2">
+            <FormControl>
+                <Checkbox v-bind="componentField" :disabled="processing" />
+            </FormControl>
+            <FormLabel>My checkbox label</FormLabel>
+            <FormMessage />
+        </FormItem>
+    </FormField>
+</template>
+```
+
+**Important**:
+
+- Use `v-slot="{ componentField }"` with `<Checkbox v-bind="componentField" />`.
+- Add `type="checkbox"` with `:checked-value="true"` and `:unchecked-value="false"` on checkbox `FormField`s.
+- Avoid `v-slot="{ value, handleChange }"` for checkbox form fields in this codebase.
+- Avoid deprecated `Form` component usage from `@/components/ui/form`.
+- Use the current form pattern: `useForm` + native `<form @submit.prevent="handleSubmit(...)">` + `FormField`.
+- For pages with multiple submit actions or tabbed sections sharing one form state, avoid wrapping every action in `handleSubmit(...)`; either use separate `useForm` instances per section or submit the current `values` directly for section-specific actions.
+- If checkbox UI renders but values do not bind, check for stale references to removed form instances (for example, `setSettingValues`) and ensure all rendered fields come from the active `useForm` context.
+- For laboratory settings mutation payloads, include `laboratoryUid` when the GraphQL input requires it.

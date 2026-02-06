@@ -294,7 +294,7 @@ function toggleView(choice: string): void {
         { 'fill-current text-foreground': gridView === true },
         { 'fill-current text-muted-foreground': gridView === false },
       ]"
-      @click.prevent="toggleView('grid')"
+      @click="toggleView('grid')"
     >
       <font-awesome-icon icon="th" />
     </button>
@@ -303,7 +303,7 @@ function toggleView(choice: string): void {
         { 'fill-current text-foreground': gridView === false },
         { 'fill-current text-muted-foreground': gridView === true },
       ]"
-      @click.prevent="toggleView('list')"
+      @click="toggleView('list')"
     >
       <font-awesome-icon icon="th-list" />
     </button>
@@ -601,7 +601,7 @@ function toggleView(choice: string): void {
   <section class="my-4">
     <button
       v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_submit"
-      @click.prevent="cancelResults()"
+      @click="cancelResults()"
       class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
     >
       Cancel
@@ -610,35 +610,35 @@ function toggleView(choice: string): void {
       v-if="
         shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_reinstate
       "
-      @click.prevent="reInstateResults()"
+      @click="reInstateResults()"
       class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
     >
       Re-Instate
     </button>
     <button
       v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_submit"
-      @click.prevent="submitResults()"
+      @click="submitResults()"
       class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
     >
       Submit
     </button>
     <button
       v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_retract"
-      @click.prevent="retractResults()"
+      @click="retractResults()"
       class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
     >
       Retract
     </button>
     <button
       v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_verify"
-      @click.prevent="verifyResults()"
+      @click="verifyResults()"
       class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
     >
       Verify
     </button>
     <button
       v-if="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && can_retest"
-      @click.prevent="retestResults()"
+      @click="retestResults()"
       class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none"
     >
       Retest

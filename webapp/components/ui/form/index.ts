@@ -4,4 +4,5 @@ export { default as FormItem } from './FormItem.vue';
 export { default as FormLabel } from './FormLabel.vue';
 export { default as FormMessage } from './FormMessage.vue';
 export { FORM_ITEM_INJECTION_KEY } from './injectionKeys';
-export { Form, Field as FormField, FieldArray as FormFieldArray } from 'vee-validate';
+export { Form } from 'vee-validate';
+export { Field as FormField, FieldArray as FormFieldArray } from 'vee-validate';

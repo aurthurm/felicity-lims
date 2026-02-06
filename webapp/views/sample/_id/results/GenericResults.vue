@@ -510,7 +510,7 @@ const retestResults = () =>
       <Button 
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_cancel"
         key="cancel" 
-        @click.prevent="cancelResults" 
+        @click="cancelResults" 
         :color="'destructive'"
       >
         Cancel
@@ -518,7 +518,7 @@ const retestResults = () =>
       <Button 
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_reinstate"
         key="reinstate" 
-        @click.prevent="reInstateResults" 
+        @click="reInstateResults" 
         :color="'warning'"
       >
         Re-Instate
@@ -526,7 +526,7 @@ const retestResults = () =>
       <Button 
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_submit"
         key="submit" 
-        @click.prevent="submitResults" 
+        @click="submitResults" 
         :color="'primary'"
       >
         Submit
@@ -534,7 +534,7 @@ const retestResults = () =>
       <Button 
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_retract"
         key="retract" 
-        @click.prevent="retractResults" 
+        @click="retractResults" 
         :color="'warning'"
       >
         Retract
@@ -542,7 +542,7 @@ const retestResults = () =>
       <Button 
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_approve"
         key="verify" 
-        @click.prevent="approveResults" 
+        @click="approveResults" 
         :color="'success'"
       >
         Verify
@@ -550,7 +550,7 @@ const retestResults = () =>
       <Button 
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_retest"
         key="retest" 
-        @click.prevent="retestResults" 
+        @click="retestResults" 
         :color="'warning'"
       >
         Retest

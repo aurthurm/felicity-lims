@@ -569,7 +569,7 @@ function saveMappingForm(): void {
         <hr class="border-border my-4" />
         <button
           type="button"
-          @click.prevent="saveForm()"
+          @click="saveForm()"
           class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
         >
           Save Form
@@ -634,7 +634,7 @@ function saveMappingForm(): void {
         <hr class="border-border my-4" />
         <button
           type="button"
-          @click.prevent="saveMappingForm()"
+          @click="saveMappingForm()"
           class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
         >
           Save Form

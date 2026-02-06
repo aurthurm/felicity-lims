@@ -191,34 +191,52 @@ const handleClearDraft = () => {
 
 /* Draft Notification */
 .draft-notification {
-  @apply p-4 bg-info/10 border border-info/30 rounded-lg;
+  @apply p-4 rounded-lg;
+  background-color: color-mix(in oklch, var(--chart-2), transparent 90%);
+  border: 1px solid color-mix(in oklch, var(--chart-2), transparent 70%);
 }
 
 .btn-load {
-  @apply px-3 py-1.5 bg-primary text-primary-foreground rounded-lg text-sm font-medium;
-  @apply hover:bg-primary/90 transition-colors;
+  @apply px-3 py-1.5 rounded-lg text-sm font-medium transition-colors;
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+.btn-load:hover {
+  filter: brightness(0.9);
 }
 
 .btn-discard {
-  @apply px-3 py-1.5 bg-card border border-border text-foreground rounded-lg text-sm font-medium;
-  @apply hover:bg-muted transition-colors;
+  @apply px-3 py-1.5 rounded-lg text-sm font-medium transition-colors;
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+}
+.btn-discard:hover {
+  background-color: var(--muted);
 }
 
 /* Draft Status Bar */
 .draft-status-bar {
-  @apply flex items-center justify-between space-x-3;
-  @apply px-3 py-2 bg-muted border border-border rounded-lg;
+  @apply flex items-center justify-between space-x-3 px-3 py-2 rounded-lg;
+  background-color: var(--muted);
+  border: 1px solid var(--border);
 }
 
 /* Save Button */
 .btn-save {
-  @apply flex items-center space-x-1.5 px-3 py-1.5;
-  @apply bg-primary text-primary-foreground rounded-lg text-sm font-medium;
-  @apply hover:bg-primary/90 transition-colors;
+  @apply flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors;
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+.btn-save:hover {
+  filter: brightness(0.9);
 }
 
 .btn-save-disabled {
-  @apply opacity-60 cursor-not-allowed hover:bg-primary;
+  @apply opacity-60 cursor-not-allowed;
+}
+.btn-save-disabled:hover {
+  background-color: var(--primary);
 }
 
 /* Animations */

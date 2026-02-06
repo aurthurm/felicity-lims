@@ -343,20 +343,20 @@ import PageHeading from "@/components/common/PageHeading.vue"
             </FormItem>
           </FormField>
 
-          <FormField name="autoReconnect" v-slot="{ value, handleChange }">
+          <FormField name="autoReconnect" type="checkbox" :checked-value="true" :unchecked-value="false" v-slot="{ componentField }">
             <FormItem class="flex items-center space-x-2">
               <FormControl>
-                <Checkbox :checked="value" @update:checked="handleChange" />
+                <Checkbox v-bind="componentField" />
               </FormControl>
               <FormLabel>Auto Reconnect</FormLabel>
               <FormMessage />
             </FormItem>
           </FormField>
 
-          <FormField name="isActive" v-slot="{ value, handleChange }">
+          <FormField name="isActive" type="checkbox" :checked-value="true" :unchecked-value="false" v-slot="{ componentField }">
             <FormItem class="flex items-center space-x-2">
               <FormControl>
-                <Checkbox :checked="value" @update:checked="handleChange" />
+                <Checkbox v-bind="componentField" />
               </FormControl>
               <FormLabel>Is Active</FormLabel>
               <FormMessage />

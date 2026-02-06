@@ -272,9 +272,9 @@ const toggleCollapse = () => {
 <style scoped>
 @import "tailwindcss";
 .node-palette {
-  @apply w-64 bg-card border-r border-border shadow-sm;
-  @apply flex flex-col h-full overflow-hidden;
-  @apply transition-all duration-300;
+  @apply w-64 flex flex-col h-full overflow-hidden transition-all duration-300 shadow-sm;
+  background-color: var(--card);
+  border-right: 1px solid var(--border);
 }
 
 .palette-collapsed {
@@ -283,8 +283,9 @@ const toggleCollapse = () => {
 
 /* Header */
 .palette-header {
-  @apply flex items-center justify-between px-4 py-3 border-b border-border;
-  @apply bg-muted;
+  @apply flex items-center justify-between px-4 py-3;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--muted);
 }
 
 .palette-collapsed .palette-header {
@@ -298,14 +299,14 @@ const toggleCollapse = () => {
 
 /* Instructions */
 .palette-instructions {
-  @apply px-3 py-2 bg-primary/10 border border-primary/30 rounded-lg;
+  @apply px-3 py-2 rounded-lg;
+  background-color: color-mix(in oklch, var(--primary), transparent 90%);
+  border: 1px solid color-mix(in oklch, var(--primary), transparent 70%);
 }
 
 /* Node Card */
 .node-card {
-  @apply border-2 rounded-lg p-3 cursor-move;
-  @apply transition-all duration-200;
-  @apply hover:shadow-md hover:scale-105;
+  @apply border-2 rounded-lg p-3 cursor-move transition-all duration-200 hover:shadow-md hover:scale-105;
 }
 
 .node-card:active {
@@ -314,16 +315,22 @@ const toggleCollapse = () => {
 
 /* Help Section */
 .palette-help {
-  @apply px-3 py-2 bg-muted border border-border rounded-lg;
+  @apply px-3 py-2 rounded-lg;
+  background-color: var(--muted);
+  border: 1px solid var(--border);
 }
 
 /* Shortcuts Section */
 .palette-shortcuts {
-  @apply px-3 py-2 bg-muted border border-border rounded-lg;
+  @apply px-3 py-2 rounded-lg;
+  background-color: var(--muted);
+  border: 1px solid var(--border);
 }
 
 kbd {
-  @apply px-1.5 py-0.5 bg-card border border-input rounded text-xs font-mono;
+  @apply px-1.5 py-0.5 rounded text-xs font-mono;
+  background-color: var(--card);
+  border: 1px solid var(--input);
 }
 
 /* Collapsed State */
@@ -332,8 +339,6 @@ kbd {
 }
 
 .collapsed-node-icon {
-  @apply w-12 h-12 flex items-center justify-center rounded-lg border-2;
-  @apply cursor-move transition-all duration-200;
-  @apply hover:scale-110 hover:shadow-md flex-shrink-0;
+  @apply w-12 h-12 flex items-center justify-center rounded-lg border-2 cursor-move transition-all duration-200 hover:scale-110 hover:shadow-md flex-shrink-0;
 }
 </style>

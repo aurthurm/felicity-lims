@@ -257,7 +257,7 @@ import PageHeading from "@/components/common/PageHeading.vue"
     <div class="flex justify-start items-start gap-x-4">
       <Button
         v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SAMPLE)"
-        @click.prevent="showModal = !showModal">
+        @click="showModal = !showModal">
         Add Reference Runs
       </Button>
       <router-link to="/quality-control/charts" id="control-charts"
@@ -321,7 +321,7 @@ import PageHeading from "@/components/common/PageHeading.vue"
               <h5>Add Control Samples</h5>
               <button
                 v-if="form.samples?.length < 20"
-                @click.prevent="addQCSet()"
+                @click="addQCSet()"
                 class="px-2 py-1 mr-2 border-primary border text-primary rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none">Add QCSet</button>
             </div>
             <hr class="mb-4">
@@ -380,7 +380,7 @@ import PageHeading from "@/components/common/PageHeading.vue"
                         </div>
                     </div>
                     <div class="ml-4">
-                      <button @click.prevent="removeQCSet(index)"
+                      <button @click="removeQCSet(index)"
                         class="px-2 py-1 mr-2 border-destructive border text-orange-600rounded-smtransition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none">Remove</button>
                     </div>
                 </div>
@@ -391,7 +391,7 @@ import PageHeading from "@/components/common/PageHeading.vue"
         <hr />
         <button
           type="button"
-          @click.prevent="saveForm()"
+          @click="saveForm()"
           class="-mb-4 w-full border border-primary bg-primary text-primary-foreground rounded-sm px-4 py-2 m-2 transition-colors duration-500 ease select-none hover:bg-primary focus:outline-none focus:shadow-outline"
         >
           Save Form

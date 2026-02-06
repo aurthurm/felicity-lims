@@ -4,11 +4,11 @@ import strawberry  # noqa
 
 from felicity.api.gql.types import PageInfo
 from felicity.api.gql.user.types import UserType
+from felicity.apps.billing.enum import PaymentStatus
 from felicity.apps.setup.services import (
     LaboratorySettingService,
     OrganizationSettingService,
 )
-from felicity.apps.billing.enum import PaymentStatus
 
 
 @strawberry.type
@@ -59,6 +59,11 @@ class CountryType:
     name: str | None = None
     code: str | None = None
     active: str | None = None
+    email: str | None = None
+    email_cc: str | None = None
+    mobile_phone: str | None = None
+    business_phone: str | None = None
+
     #
     created_by_uid: str | None = None
     created_by: Optional[UserType] = None

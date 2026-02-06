@@ -303,7 +303,7 @@ const switchLabNow = () => {
 
         <Button
           type="button"
-          @click.prevent="switchLabNow()"
+          @click="switchLabNow()"
           :disabled="switching"
           class="w-full"
         >

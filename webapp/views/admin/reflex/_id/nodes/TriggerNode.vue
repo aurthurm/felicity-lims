@@ -126,9 +126,9 @@ const levelBadgeColor = computed(() => {
 <style scoped>
 @import "tailwindcss";
 .trigger-node {
-  @apply bg-card border-2 border-primary/50 rounded-lg shadow-md;
-  @apply px-4 py-3 min-w-[220px] max-w-[280px];
-  @apply transition-all duration-200;
+  @apply border-2 rounded-lg shadow-md px-4 py-3 min-w-[220px] max-w-[280px] transition-all duration-200;
+  background-color: var(--card);
+  border-color: color-mix(in oklch, var(--primary), transparent 50%);
 }
 
 .trigger-node:hover {
@@ -137,15 +137,18 @@ const levelBadgeColor = computed(() => {
 
 /* Validation states */
 .trigger-node.node-error {
-  @apply border-destructive/60 bg-destructive/10;
+  border-color: color-mix(in oklch, var(--destructive), transparent 40%);
+  background-color: color-mix(in oklch, var(--destructive), transparent 90%);
 }
 
 .trigger-node.node-warning {
-  @apply border-warning/50 bg-warning/10;
+  border-color: color-mix(in oklch, var(--chart-4), transparent 50%);
+  background-color: color-mix(in oklch, var(--chart-4), transparent 90%);
 }
 
 .trigger-node.node-valid {
-  @apply border-primary/50 bg-card;
+  background-color: var(--card);
+  border-color: color-mix(in oklch, var(--primary), transparent 50%);
 }
 
 /* Selected state */

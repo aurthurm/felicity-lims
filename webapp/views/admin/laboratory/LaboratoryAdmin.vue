@@ -1,8 +1,17 @@
 <script setup lang="ts">
-  import { defineAsyncComponent } from 'vue';
+  import { defineAsyncComponent, onMounted } from 'vue';
+  import { useSetupStore } from '@/stores/setup';
+
   const TabsNav = defineAsyncComponent(
     () => import("@/components/ui/tabs/TabsNav.vue")
   )
+
+  const setupStore = useSetupStore();
+
+  onMounted(() => {
+    setupStore.fetchLaboratory();
+    setupStore.fetchOrganization();
+  });
 
   const tabs = [
     {

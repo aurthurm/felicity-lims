@@ -691,82 +691,82 @@ const handleDerived = async (derivedSamples: SampleType[]) => {
           <Button v-show="
             shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
             state.can_cancel
-          " @click.prevent="cancelSamples_()"
+          " @click="cancelSamples_()"
             >
             Cancel
           </Button>
           <Button v-show="
             shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
             state.can_reinstate
-          " @click.prevent="reInstateSamples_()"
+          " @click="reInstateSamples_()"
             >
             ReInstate
           </Button>
           <Button v-show="
             shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
             state.can_receive
-          " @click.prevent="receiveSamples_()"
+          " @click="receiveSamples_()"
             >
             Reveive
           </Button>
           <Button v-show="
             shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
             state.can_store
-          " @click.prevent="prepareStorages()"
+          " @click="prepareStorages()"
             >
             Store
           </Button>
           <Button v-show="
             shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
             state.can_recover
-          " @click.prevent="recoverSamples_()"
+          " @click="recoverSamples_()"
             >
             Recover
           </Button>
           <Button v-show="
             shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
             state.can_reject
-          " @click.prevent="prepareRejections()"
+          " @click="prepareRejections()"
             >
             Reject
           </Button>
           <Button v-show="
             shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
             state.can_copy_to
-          " @click.prevent="cloneSamples_()"
+          " @click="cloneSamples_()"
             >
             Copy to New
           </Button>
           <Button v-show="
             shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
             state.can_download
-          " @click.prevent="impressDownload_()"
+          " @click="impressDownload_()"
             >
             Download
           </Button>
           <Button v-show="
             shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
             state.can_publish
-          " @click.prevent="publishReports_()"
+          " @click="publishReports_()"
             >
             Publish
           </Button>
           <Button v-show="
             shield.hasRights(shield.actions.CANCEL, shield.objects.SAMPLE) &&
             state.can_print
-          " @click.prevent="printReports_()"
+          " @click="printReports_()"
             >
             Print
           </Button>
           <Button 
             v-show="state.barcodes"
-            @click.prevent="printBarCodes"
+            @click="printBarCodes"
             >
             Print Barcodes
           </Button>
           <Button 
             v-show="state.can_derive"
-            @click.prevent="openDeriveModal"
+            @click="openDeriveModal"
             >
             Derive
           </Button>

@@ -177,9 +177,9 @@ const logicSummary = computed(() => {
 <style scoped>
 @import "tailwindcss";
 .decision-node {
-  @apply bg-card border-2 border-accent/50 rounded-lg shadow-md;
-  @apply px-4 py-3 min-w-[240px] max-w-[300px];
-  @apply transition-all duration-200;
+  @apply border-2 rounded-lg shadow-md px-4 py-3 min-w-[240px] max-w-[300px] transition-all duration-200;
+  background-color: var(--card);
+  border-color: color-mix(in oklch, var(--accent), transparent 50%);
 }
 
 .decision-node:hover {
@@ -193,15 +193,18 @@ const logicSummary = computed(() => {
 
 /* Validation states */
 .decision-node.node-error {
-  @apply border-destructive/60 bg-destructive/10;
+  border-color: color-mix(in oklch, var(--destructive), transparent 40%);
+  background-color: color-mix(in oklch, var(--destructive), transparent 90%);
 }
 
 .decision-node.node-warning {
-  @apply border-warning/50 bg-warning/10;
+  border-color: color-mix(in oklch, var(--chart-4), transparent 50%);
+  background-color: color-mix(in oklch, var(--chart-4), transparent 90%);
 }
 
 .decision-node.node-valid {
-  @apply border-accent/50 bg-card;
+  background-color: var(--card);
+  border-color: color-mix(in oklch, var(--accent), transparent 50%);
 }
 
 /* Selected state */

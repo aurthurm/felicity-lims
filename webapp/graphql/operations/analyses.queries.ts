@@ -3,635 +3,1460 @@ import type * as Types from '../schema';
 import gql from 'graphql-tag';
 import * as Urql from '@urql/vue';
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-export type GetAllCodingStandardsQueryVariables = Types.Exact<{ [key: string]: never }>;
+export type GetAllCodingStandardsQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
-export type GetAllCodingStandardsQuery = { __typename?: 'Query' } & {
-    codingStandardAll: Array<{ __typename?: 'CodingStandardType' } & Pick<Types.CodingStandardType, 'uid' | 'name' | 'description'>>;
-};
 
-export type GetAllSampleTypesQueryVariables = Types.Exact<{ [key: string]: never }>;
+export type GetAllCodingStandardsQuery = (
+  { __typename?: 'Query' }
+  & { codingStandardAll: Array<(
+    { __typename?: 'CodingStandardType' }
+    & Pick<Types.CodingStandardType, 'uid' | 'name' | 'description'>
+  )> }
+);
 
-export type GetAllSampleTypesQuery = { __typename?: 'Query' } & {
-    sampleTypeAll: Array<{ __typename?: 'SampleTypeTyp' } & Pick<Types.SampleTypeTyp, 'uid' | 'name' | 'abbr' | 'description' | 'active'>>;
-};
+export type GetAllSampleTypesQueryVariables = Types.Exact<{ [key: string]: never; }>;
+
+
+export type GetAllSampleTypesQuery = (
+  { __typename?: 'Query' }
+  & { sampleTypeAll: Array<(
+    { __typename?: 'SampleTypeTyp' }
+    & Pick<
+      Types.SampleTypeTyp,
+      | 'uid'
+      | 'name'
+      | 'abbr'
+      | 'description'
+      | 'active'
+    >
+  )> }
+);
 
 export type GeSampleTypeMappingsBySampleTypeUidQueryVariables = Types.Exact<{
-    uid: Types.Scalars['String']['input'];
+  uid: Types.Scalars['String']['input'];
 }>;
 
-export type GeSampleTypeMappingsBySampleTypeUidQuery = { __typename?: 'Query' } & {
-    sampleTypeMappingsBySampleType: Array<
-        { __typename?: 'SampleTypeMappingType' } & Pick<
-            Types.SampleTypeMappingType,
-            'uid' | 'sampleTypeUid' | 'codingStandardUid' | 'name' | 'code' | 'description'
-        > & { codingStandard?: Types.Maybe<{ __typename?: 'CodingStandardType' } & Pick<Types.CodingStandardType, 'name'>> }
-    >;
-};
+
+export type GeSampleTypeMappingsBySampleTypeUidQuery = (
+  { __typename?: 'Query' }
+  & { sampleTypeMappingsBySampleType: Array<(
+    { __typename?: 'SampleTypeMappingType' }
+    & Pick<
+      Types.SampleTypeMappingType,
+      | 'uid'
+      | 'sampleTypeUid'
+      | 'codingStandardUid'
+      | 'name'
+      | 'code'
+      | 'description'
+    >
+    & { codingStandard?: Types.Maybe<(
+      { __typename?: 'CodingStandardType' }
+      & Pick<Types.CodingStandardType, 'name'>
+    )> }
+  )> }
+);
 
 export type GetAllAnalysesServicesQueryVariables = Types.Exact<{
-    first?: Types.InputMaybe<Types.Scalars['Int']['input']>;
-    after?: Types.InputMaybe<Types.Scalars['String']['input']>;
-    text?: Types.InputMaybe<Types.Scalars['String']['input']>;
-    sortBy?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
+  first?: Types.InputMaybe<Types.Scalars['Int']['input']>;
+  after?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  text?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  sortBy?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
 }>;
 
-export type GetAllAnalysesServicesQuery = { __typename?: 'Query' } & {
-    analysisAll: { __typename?: 'AnalysisCursorPage' } & {
-        items?: Types.Maybe<
-            Array<
-                { __typename?: 'AnalysisWithProfiles' } & Pick<
-                    Types.AnalysisWithProfiles,
-                    | 'uid'
-                    | 'name'
-                    | 'keyword'
-                    | 'active'
-                    | 'sortKey'
-                    | 'tatLengthMinutes'
-                    | 'precision'
-                    | 'requiredVerifications'
-                    | 'selfVerification'
-                    | 'description'
-                    | 'categoryUid'
-                    | 'departmentUid'
-                    | 'unitUid'
-                > & {
-                        unit?: Types.Maybe<{ __typename?: 'UnitType' } & Pick<Types.UnitType, 'uid' | 'name'>>;
-                        sampleTypes?: Types.Maybe<Array<{ __typename?: 'SampleTypeTyp' } & Pick<Types.SampleTypeTyp, 'uid' | 'name'>>>;
-                        specifications?: Types.Maybe<
-                            Array<
-                                { __typename?: 'AnalysisSpecificationType' } & Pick<
-                                    Types.AnalysisSpecificationType,
-                                    | 'uid'
-                                    | 'analysisUid'
-                                    | 'unitUid'
-                                    | 'min'
-                                    | 'max'
-                                    | 'minWarn'
-                                    | 'maxWarn'
-                                    | 'minReport'
-                                    | 'maxReport'
-                                    | 'warnValues'
-                                    | 'warnReport'
-                                    | 'gender'
-                                    | 'ageMin'
-                                    | 'ageMax'
-                                    | 'methodUid'
-                                > & {
-                                        unit?: Types.Maybe<
-                                            { __typename?: 'UnitType' } & Pick<Types.UnitType, 'uid' | 'name' | 'description'>
-                                        >;
-                                    }
-                            >
-                        >;
-                        uncertainties?: Types.Maybe<
-                            Array<
-                                { __typename?: 'AnalysisUncertaintyType' } & Pick<
-                                    Types.AnalysisUncertaintyType,
-                                    'uid' | 'min' | 'max' | 'value' | 'analysisUid' | 'instrumentUid' | 'methodUid'
-                                >
-                            >
-                        >;
-                        detectionLimits?: Types.Maybe<
-                            Array<
-                                { __typename?: 'AnalysisDetectionLimitType' } & Pick<
-                                    Types.AnalysisDetectionLimitType,
-                                    'uid' | 'lowerLimit' | 'upperLimit' | 'analysisUid' | 'instrumentUid' | 'methodUid'
-                                >
-                            >
-                        >;
-                        correctionFactors?: Types.Maybe<
-                            Array<
-                                { __typename?: 'AnalysisCorrectionFactorType' } & Pick<
-                                    Types.AnalysisCorrectionFactorType,
-                                    'uid' | 'factor' | 'analysisUid' | 'instrumentUid' | 'methodUid'
-                                >
-                            >
-                        >;
-                        interims?: Types.Maybe<
-                            Array<
-                                { __typename?: 'AnalysisInterimType' } & Pick<
-                                    Types.AnalysisInterimType,
-                                    'uid' | 'key' | 'value' | 'analysisUid' | 'instrumentUid'
-                                >
-                            >
-                        >;
-                        instruments?: Types.Maybe<
-                            Array<{ __typename?: 'InstrumentType' } & Pick<Types.InstrumentType, 'uid' | 'name' | 'keyword'>>
-                        >;
-                        methods?: Types.Maybe<
-                            Array<
-                                { __typename?: 'MethodType' } & Pick<Types.MethodType, 'uid' | 'name' | 'keyword' | 'description'> & {
-                                        instruments?: Types.Maybe<
-                                            Array<
-                                                { __typename?: 'InstrumentType' } & Pick<
-                                                    Types.InstrumentType,
-                                                    'uid' | 'name' | 'keyword' | 'description'
-                                                >
-                                            >
-                                        >;
-                                    }
-                            >
-                        >;
-                        resultOptions?: Types.Maybe<
-                            Array<
-                                { __typename?: 'ResultOptionType' } & Pick<Types.ResultOptionType, 'uid' | 'optionKey' | 'value'> & {
-                                        sampleTypes?: Types.Maybe<
-                                            Array<{ __typename?: 'SampleTypeTyp' } & Pick<Types.SampleTypeTyp, 'uid' | 'name'>>
-                                        >;
-                                    }
-                            >
-                        >;
-                        category?: Types.Maybe<{ __typename?: 'AnalysisCategoryType' } & Pick<Types.AnalysisCategoryType, 'uid' | 'name'>>;
-                        profiles?: Types.Maybe<Array<{ __typename?: 'ProfileType' } & Pick<Types.ProfileType, 'uid' | 'name'>>>;
-                    }
+
+export type GetAllAnalysesServicesQuery = (
+  { __typename?: 'Query' }
+  & { analysisAll: (
+    { __typename?: 'AnalysisCursorPage' }
+    & { items?: Types.Maybe<Array<(
+      { __typename?: 'AnalysisWithProfiles' }
+      & Pick<
+        Types.AnalysisWithProfiles,
+        | 'uid'
+        | 'name'
+        | 'keyword'
+        | 'active'
+        | 'sortKey'
+        | 'tatLengthMinutes'
+        | 'precision'
+        | 'requiredVerifications'
+        | 'selfVerification'
+        | 'description'
+        | 'categoryUid'
+        | 'departmentUid'
+        | 'unitUid'
+      >
+      & {
+        unit?: Types.Maybe<(
+          { __typename?: 'UnitType' }
+          & Pick<Types.UnitType, 'uid' | 'name'>
+        )>,
+        sampleTypes?: Types.Maybe<Array<(
+          { __typename?: 'SampleTypeTyp' }
+          & Pick<Types.SampleTypeTyp, 'uid' | 'name'>
+        )>>,
+        specifications?: Types.Maybe<Array<(
+          { __typename?: 'AnalysisSpecificationType' }
+          & Pick<
+            Types.AnalysisSpecificationType,
+            | 'uid'
+            | 'analysisUid'
+            | 'unitUid'
+            | 'min'
+            | 'max'
+            | 'minWarn'
+            | 'maxWarn'
+            | 'minReport'
+            | 'maxReport'
+            | 'warnValues'
+            | 'warnReport'
+            | 'gender'
+            | 'ageMin'
+            | 'ageMax'
+            | 'methodUid'
+          >
+          & { unit?: Types.Maybe<(
+            { __typename?: 'UnitType' }
+            & Pick<Types.UnitType, 'uid' | 'name' | 'description'>
+          )> }
+        )>>,
+        uncertainties?: Types.Maybe<Array<(
+          { __typename?: 'AnalysisUncertaintyType' }
+          & Pick<
+            Types.AnalysisUncertaintyType,
+            | 'uid'
+            | 'min'
+            | 'max'
+            | 'value'
+            | 'analysisUid'
+            | 'instrumentUid'
+            | 'methodUid'
+          >
+        )>>,
+        detectionLimits?: Types.Maybe<Array<(
+          { __typename?: 'AnalysisDetectionLimitType' }
+          & Pick<
+            Types.AnalysisDetectionLimitType,
+            | 'uid'
+            | 'lowerLimit'
+            | 'upperLimit'
+            | 'analysisUid'
+            | 'instrumentUid'
+            | 'methodUid'
+          >
+        )>>,
+        correctionFactors?: Types.Maybe<Array<(
+          { __typename?: 'AnalysisCorrectionFactorType' }
+          & Pick<
+            Types.AnalysisCorrectionFactorType,
+            | 'uid'
+            | 'factor'
+            | 'analysisUid'
+            | 'instrumentUid'
+            | 'methodUid'
+          >
+        )>>,
+        interims?: Types.Maybe<Array<(
+          { __typename?: 'AnalysisInterimType' }
+          & Pick<
+            Types.AnalysisInterimType,
+            | 'uid'
+            | 'key'
+            | 'value'
+            | 'analysisUid'
+            | 'instrumentUid'
+          >
+        )>>,
+        instruments?: Types.Maybe<Array<(
+          { __typename?: 'InstrumentType' }
+          & Pick<Types.InstrumentType, 'uid' | 'name' | 'keyword'>
+        )>>,
+        methods?: Types.Maybe<Array<(
+          { __typename?: 'MethodType' }
+          & Pick<
+            Types.MethodType,
+            | 'uid'
+            | 'name'
+            | 'keyword'
+            | 'description'
+          >
+          & { instruments?: Types.Maybe<Array<(
+            { __typename?: 'InstrumentType' }
+            & Pick<
+              Types.InstrumentType,
+              | 'uid'
+              | 'name'
+              | 'keyword'
+              | 'description'
             >
-        >;
-    };
-};
+          )>> }
+        )>>,
+        resultOptions?: Types.Maybe<Array<(
+          { __typename?: 'ResultOptionType' }
+          & Pick<Types.ResultOptionType, 'uid' | 'optionKey' | 'value'>
+          & { sampleTypes?: Types.Maybe<Array<(
+            { __typename?: 'SampleTypeTyp' }
+            & Pick<Types.SampleTypeTyp, 'uid' | 'name'>
+          )>> }
+        )>>,
+        category?: Types.Maybe<(
+          { __typename?: 'AnalysisCategoryType' }
+          & Pick<Types.AnalysisCategoryType, 'uid' | 'name'>
+        )>,
+        profiles?: Types.Maybe<Array<(
+          { __typename?: 'ProfileType' }
+          & Pick<Types.ProfileType, 'uid' | 'name'>
+        )>>,
+      }
+    )>> }
+  ) }
+);
 
 export type GetAnalysesServicesByUidQueryVariables = Types.Exact<{
-    uid: Types.Scalars['String']['input'];
+  uid: Types.Scalars['String']['input'];
 }>;
 
-export type GetAnalysesServicesByUidQuery = { __typename?: 'Query' } & {
-    analysisByUid: { __typename?: 'AnalysisType' } & Pick<Types.AnalysisType, 'uid' | 'name' | 'keyword' | 'description'> & {
-            unit?: Types.Maybe<{ __typename?: 'UnitType' } & Pick<Types.UnitType, 'uid' | 'name'>>;
-            category?: Types.Maybe<{ __typename?: 'AnalysisCategoryType' } & Pick<Types.AnalysisCategoryType, 'uid' | 'name'>>;
-        };
-};
 
-export type GetAllAnalysesProfilesQueryVariables = Types.Exact<{ [key: string]: never }>;
+export type GetAnalysesServicesByUidQuery = (
+  { __typename?: 'Query' }
+  & { analysisByUid: (
+    { __typename?: 'AnalysisType' }
+    & Pick<
+      Types.AnalysisType,
+      | 'uid'
+      | 'name'
+      | 'keyword'
+      | 'description'
+    >
+    & {
+      unit?: Types.Maybe<(
+        { __typename?: 'UnitType' }
+        & Pick<Types.UnitType, 'uid' | 'name'>
+      )>,
+      category?: Types.Maybe<(
+        { __typename?: 'AnalysisCategoryType' }
+        & Pick<Types.AnalysisCategoryType, 'uid' | 'name'>
+      )>,
+    }
+  ) }
+);
 
-export type GetAllAnalysesProfilesQuery = { __typename?: 'Query' } & {
-    profileAll: Array<
-        { __typename?: 'ProfileType' } & Pick<
-            Types.ProfileType,
-            'uid' | 'name' | 'description' | 'keyword' | 'active' | 'departmentUid'
-        > & {
-                sampleTypes?: Types.Maybe<Array<{ __typename?: 'SampleTypeTyp' } & Pick<Types.SampleTypeTyp, 'uid' | 'name'>>>;
-                analyses?: Types.Maybe<
-                    Array<{ __typename?: 'AnalysisType' } & Pick<Types.AnalysisType, 'name' | 'keyword' | 'active' | 'sortKey'>>
-                >;
-            }
-    >;
-};
+export type GetAllAnalysesProfilesQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
-export type GetAllAnalysesTemplatesQueryVariables = Types.Exact<{ [key: string]: never }>;
 
-export type GetAllAnalysesTemplatesQuery = { __typename?: 'Query' } & {
-    analysisTemplateAll: Array<
-        { __typename?: 'AnalysisTemplateType' } & Pick<Types.AnalysisTemplateType, 'uid' | 'name' | 'description' | 'departmentUid'> & {
-                analyses?: Types.Maybe<Array<{ __typename?: 'AnalysisType' } & Pick<Types.AnalysisType, 'uid'>>>;
-            }
-    >;
-};
+export type GetAllAnalysesProfilesQuery = (
+  { __typename?: 'Query' }
+  & { profileAll: Array<(
+    { __typename?: 'ProfileType' }
+    & Pick<
+      Types.ProfileType,
+      | 'uid'
+      | 'name'
+      | 'description'
+      | 'keyword'
+      | 'active'
+      | 'departmentUid'
+    >
+    & {
+      sampleTypes?: Types.Maybe<Array<(
+        { __typename?: 'SampleTypeTyp' }
+        & Pick<Types.SampleTypeTyp, 'uid' | 'name'>
+      )>>,
+      analyses?: Types.Maybe<Array<(
+        { __typename?: 'AnalysisType' }
+        & Pick<
+          Types.AnalysisType,
+          | 'name'
+          | 'keyword'
+          | 'active'
+          | 'sortKey'
+        >
+      )>>,
+    }
+  )> }
+);
+
+export type GetAllAnalysesTemplatesQueryVariables = Types.Exact<{ [key: string]: never; }>;
+
+
+export type GetAllAnalysesTemplatesQuery = (
+  { __typename?: 'Query' }
+  & { analysisTemplateAll: Array<(
+    { __typename?: 'AnalysisTemplateType' }
+    & Pick<
+      Types.AnalysisTemplateType,
+      | 'uid'
+      | 'name'
+      | 'description'
+      | 'departmentUid'
+    >
+    & { analyses?: Types.Maybe<Array<(
+      { __typename?: 'AnalysisType' }
+      & Pick<Types.AnalysisType, 'uid'>
+    )>> }
+  )> }
+);
 
 export type GetAnalysisMappingsByAnalysisUidQueryVariables = Types.Exact<{
-    uid: Types.Scalars['String']['input'];
+  uid: Types.Scalars['String']['input'];
 }>;
 
-export type GetAnalysisMappingsByAnalysisUidQuery = { __typename?: 'Query' } & {
-    analysisMappingsByAnalysis: Array<
-        { __typename?: 'AnalysisMappingType' } & Pick<
-            Types.AnalysisMappingType,
-            'uid' | 'analysisUid' | 'codingStandardUid' | 'name' | 'code' | 'description'
-        > & { codingStandard?: Types.Maybe<{ __typename?: 'CodingStandardType' } & Pick<Types.CodingStandardType, 'name'>> }
-    >;
-};
 
-export type GetAllProfilesAndServicesQueryVariables = Types.Exact<{ [key: string]: never }>;
+export type GetAnalysisMappingsByAnalysisUidQuery = (
+  { __typename?: 'Query' }
+  & { analysisMappingsByAnalysis: Array<(
+    { __typename?: 'AnalysisMappingType' }
+    & Pick<
+      Types.AnalysisMappingType,
+      | 'uid'
+      | 'analysisUid'
+      | 'codingStandardUid'
+      | 'name'
+      | 'code'
+      | 'description'
+    >
+    & { codingStandard?: Types.Maybe<(
+      { __typename?: 'CodingStandardType' }
+      & Pick<Types.CodingStandardType, 'name'>
+    )> }
+  )> }
+);
 
-export type GetAllProfilesAndServicesQuery = { __typename?: 'Query' } & {
-    profileAll: Array<
-        { __typename?: 'ProfileType' } & Pick<
-            Types.ProfileType,
-            'uid' | 'name' | 'description' | 'keyword' | 'active' | 'departmentUid'
-        > & {
-                sampleTypes?: Types.Maybe<Array<{ __typename?: 'SampleTypeTyp' } & Pick<Types.SampleTypeTyp, 'uid' | 'name'>>>;
-                analyses?: Types.Maybe<
-                    Array<{ __typename?: 'AnalysisType' } & Pick<Types.AnalysisType, 'uid' | 'name' | 'keyword' | 'sortKey' | 'active'>>
-                >;
-            }
-    >;
-    analysisAll: { __typename?: 'AnalysisCursorPage' } & {
-        items?: Types.Maybe<
-            Array<
-                { __typename?: 'AnalysisWithProfiles' } & Pick<
-                    Types.AnalysisWithProfiles,
-                    | 'uid'
-                    | 'name'
-                    | 'keyword'
-                    | 'active'
-                    | 'description'
-                    | 'sortKey'
-                    | 'tatLengthMinutes'
-                    | 'precision'
-                    | 'requiredVerifications'
-                    | 'selfVerification'
-                    | 'categoryUid'
-                    | 'departmentUid'
-                    | 'unitUid'
-                > & {
-                        unit?: Types.Maybe<{ __typename?: 'UnitType' } & Pick<Types.UnitType, 'uid' | 'name'>>;
-                        sampleTypes?: Types.Maybe<Array<{ __typename?: 'SampleTypeTyp' } & Pick<Types.SampleTypeTyp, 'uid' | 'name'>>>;
-                        specifications?: Types.Maybe<
-                            Array<
-                                { __typename?: 'AnalysisSpecificationType' } & Pick<
-                                    Types.AnalysisSpecificationType,
-                                    | 'uid'
-                                    | 'analysisUid'
-                                    | 'unitUid'
-                                    | 'min'
-                                    | 'max'
-                                    | 'minWarn'
-                                    | 'maxWarn'
-                                    | 'minReport'
-                                    | 'maxReport'
-                                    | 'warnValues'
-                                    | 'warnReport'
-                                    | 'gender'
-                                    | 'ageMin'
-                                    | 'ageMax'
-                                    | 'methodUid'
-                                > & {
-                                        unit?: Types.Maybe<
-                                            { __typename?: 'UnitType' } & Pick<Types.UnitType, 'uid' | 'name' | 'description'>
-                                        >;
-                                    }
-                            >
-                        >;
-                        uncertainties?: Types.Maybe<
-                            Array<
-                                { __typename?: 'AnalysisUncertaintyType' } & Pick<
-                                    Types.AnalysisUncertaintyType,
-                                    'uid' | 'min' | 'max' | 'value' | 'analysisUid' | 'instrumentUid' | 'methodUid'
-                                >
-                            >
-                        >;
-                        detectionLimits?: Types.Maybe<
-                            Array<
-                                { __typename?: 'AnalysisDetectionLimitType' } & Pick<
-                                    Types.AnalysisDetectionLimitType,
-                                    'uid' | 'lowerLimit' | 'upperLimit' | 'analysisUid' | 'instrumentUid' | 'methodUid'
-                                >
-                            >
-                        >;
-                        correctionFactors?: Types.Maybe<
-                            Array<
-                                { __typename?: 'AnalysisCorrectionFactorType' } & Pick<
-                                    Types.AnalysisCorrectionFactorType,
-                                    'uid' | 'factor' | 'analysisUid' | 'instrumentUid' | 'methodUid'
-                                >
-                            >
-                        >;
-                        interims?: Types.Maybe<
-                            Array<
-                                { __typename?: 'AnalysisInterimType' } & Pick<
-                                    Types.AnalysisInterimType,
-                                    'uid' | 'key' | 'value' | 'analysisUid' | 'instrumentUid'
-                                >
-                            >
-                        >;
-                        instruments?: Types.Maybe<
-                            Array<
-                                { __typename?: 'InstrumentType' } & Pick<Types.InstrumentType, 'uid' | 'name' | 'keyword' | 'description'>
-                            >
-                        >;
-                        methods?: Types.Maybe<
-                            Array<{ __typename?: 'MethodType' } & Pick<Types.MethodType, 'uid' | 'name' | 'keyword' | 'description'>>
-                        >;
-                        resultOptions?: Types.Maybe<
-                            Array<
-                                { __typename?: 'ResultOptionType' } & Pick<Types.ResultOptionType, 'uid' | 'optionKey' | 'value'> & {
-                                        sampleTypes?: Types.Maybe<
-                                            Array<{ __typename?: 'SampleTypeTyp' } & Pick<Types.SampleTypeTyp, 'uid' | 'name'>>
-                                        >;
-                                    }
-                            >
-                        >;
-                        category?: Types.Maybe<{ __typename?: 'AnalysisCategoryType' } & Pick<Types.AnalysisCategoryType, 'uid' | 'name'>>;
-                        profiles?: Types.Maybe<Array<{ __typename?: 'ProfileType' } & Pick<Types.ProfileType, 'uid' | 'name'>>>;
-                    }
+export type GetAllProfilesAndServicesQueryVariables = Types.Exact<{ [key: string]: never; }>;
+
+
+export type GetAllProfilesAndServicesQuery = (
+  { __typename?: 'Query' }
+  & {
+    profileAll: Array<(
+      { __typename?: 'ProfileType' }
+      & Pick<
+        Types.ProfileType,
+        | 'uid'
+        | 'name'
+        | 'description'
+        | 'keyword'
+        | 'active'
+        | 'departmentUid'
+      >
+      & {
+        sampleTypes?: Types.Maybe<Array<(
+          { __typename?: 'SampleTypeTyp' }
+          & Pick<Types.SampleTypeTyp, 'uid' | 'name'>
+        )>>,
+        analyses?: Types.Maybe<Array<(
+          { __typename?: 'AnalysisType' }
+          & Pick<
+            Types.AnalysisType,
+            | 'uid'
+            | 'name'
+            | 'keyword'
+            | 'sortKey'
+            | 'active'
+          >
+        )>>,
+      }
+    )>,
+    analysisAll: (
+      { __typename?: 'AnalysisCursorPage' }
+      & { items?: Types.Maybe<Array<(
+        { __typename?: 'AnalysisWithProfiles' }
+        & Pick<
+          Types.AnalysisWithProfiles,
+          | 'uid'
+          | 'name'
+          | 'keyword'
+          | 'active'
+          | 'description'
+          | 'sortKey'
+          | 'tatLengthMinutes'
+          | 'precision'
+          | 'requiredVerifications'
+          | 'selfVerification'
+          | 'categoryUid'
+          | 'departmentUid'
+          | 'unitUid'
+        >
+        & {
+          unit?: Types.Maybe<(
+            { __typename?: 'UnitType' }
+            & Pick<Types.UnitType, 'uid' | 'name'>
+          )>,
+          sampleTypes?: Types.Maybe<Array<(
+            { __typename?: 'SampleTypeTyp' }
+            & Pick<Types.SampleTypeTyp, 'uid' | 'name'>
+          )>>,
+          specifications?: Types.Maybe<Array<(
+            { __typename?: 'AnalysisSpecificationType' }
+            & Pick<
+              Types.AnalysisSpecificationType,
+              | 'uid'
+              | 'analysisUid'
+              | 'unitUid'
+              | 'min'
+              | 'max'
+              | 'minWarn'
+              | 'maxWarn'
+              | 'minReport'
+              | 'maxReport'
+              | 'warnValues'
+              | 'warnReport'
+              | 'gender'
+              | 'ageMin'
+              | 'ageMax'
+              | 'methodUid'
             >
-        >;
-    };
-};
+            & { unit?: Types.Maybe<(
+              { __typename?: 'UnitType' }
+              & Pick<Types.UnitType, 'uid' | 'name' | 'description'>
+            )> }
+          )>>,
+          uncertainties?: Types.Maybe<Array<(
+            { __typename?: 'AnalysisUncertaintyType' }
+            & Pick<
+              Types.AnalysisUncertaintyType,
+              | 'uid'
+              | 'min'
+              | 'max'
+              | 'value'
+              | 'analysisUid'
+              | 'instrumentUid'
+              | 'methodUid'
+            >
+          )>>,
+          detectionLimits?: Types.Maybe<Array<(
+            { __typename?: 'AnalysisDetectionLimitType' }
+            & Pick<
+              Types.AnalysisDetectionLimitType,
+              | 'uid'
+              | 'lowerLimit'
+              | 'upperLimit'
+              | 'analysisUid'
+              | 'instrumentUid'
+              | 'methodUid'
+            >
+          )>>,
+          correctionFactors?: Types.Maybe<Array<(
+            { __typename?: 'AnalysisCorrectionFactorType' }
+            & Pick<
+              Types.AnalysisCorrectionFactorType,
+              | 'uid'
+              | 'factor'
+              | 'analysisUid'
+              | 'instrumentUid'
+              | 'methodUid'
+            >
+          )>>,
+          interims?: Types.Maybe<Array<(
+            { __typename?: 'AnalysisInterimType' }
+            & Pick<
+              Types.AnalysisInterimType,
+              | 'uid'
+              | 'key'
+              | 'value'
+              | 'analysisUid'
+              | 'instrumentUid'
+            >
+          )>>,
+          instruments?: Types.Maybe<Array<(
+            { __typename?: 'InstrumentType' }
+            & Pick<
+              Types.InstrumentType,
+              | 'uid'
+              | 'name'
+              | 'keyword'
+              | 'description'
+            >
+          )>>,
+          methods?: Types.Maybe<Array<(
+            { __typename?: 'MethodType' }
+            & Pick<
+              Types.MethodType,
+              | 'uid'
+              | 'name'
+              | 'keyword'
+              | 'description'
+            >
+          )>>,
+          resultOptions?: Types.Maybe<Array<(
+            { __typename?: 'ResultOptionType' }
+            & Pick<Types.ResultOptionType, 'uid' | 'optionKey' | 'value'>
+            & { sampleTypes?: Types.Maybe<Array<(
+              { __typename?: 'SampleTypeTyp' }
+              & Pick<Types.SampleTypeTyp, 'uid' | 'name'>
+            )>> }
+          )>>,
+          category?: Types.Maybe<(
+            { __typename?: 'AnalysisCategoryType' }
+            & Pick<Types.AnalysisCategoryType, 'uid' | 'name'>
+          )>,
+          profiles?: Types.Maybe<Array<(
+            { __typename?: 'ProfileType' }
+            & Pick<Types.ProfileType, 'uid' | 'name'>
+          )>>,
+        }
+      )>> }
+    ),
+  }
+);
 
 export type GetProfileMappingsByProfileUidQueryVariables = Types.Exact<{
-    uid: Types.Scalars['String']['input'];
+  uid: Types.Scalars['String']['input'];
 }>;
 
-export type GetProfileMappingsByProfileUidQuery = { __typename?: 'Query' } & {
-    profileMappingsByProfile: Array<
-        { __typename?: 'ProfileMappingType' } & Pick<
-            Types.ProfileMappingType,
-            'uid' | 'profileUid' | 'codingStandardUid' | 'name' | 'code' | 'description'
-        > & { codingStandard?: Types.Maybe<{ __typename?: 'CodingStandardType' } & Pick<Types.CodingStandardType, 'name'>> }
-    >;
-};
 
-export type GetAllAnalysesCategoriesQueryVariables = Types.Exact<{ [key: string]: never }>;
+export type GetProfileMappingsByProfileUidQuery = (
+  { __typename?: 'Query' }
+  & { profileMappingsByProfile: Array<(
+    { __typename?: 'ProfileMappingType' }
+    & Pick<
+      Types.ProfileMappingType,
+      | 'uid'
+      | 'profileUid'
+      | 'codingStandardUid'
+      | 'name'
+      | 'code'
+      | 'description'
+    >
+    & { codingStandard?: Types.Maybe<(
+      { __typename?: 'CodingStandardType' }
+      & Pick<Types.CodingStandardType, 'name'>
+    )> }
+  )> }
+);
 
-export type GetAllAnalysesCategoriesQuery = { __typename?: 'Query' } & {
-    analysisCategoryAll: Array<
-        { __typename?: 'AnalysisCategoryType' } & Pick<
-            Types.AnalysisCategoryType,
-            'uid' | 'name' | 'description' | 'active' | 'departmentUid'
-        > & { department?: Types.Maybe<{ __typename?: 'DepartmentType' } & Pick<Types.DepartmentType, 'uid' | 'name'>> }
-    >;
-};
+export type GetAllAnalysesCategoriesQueryVariables = Types.Exact<{ [key: string]: never; }>;
+
+
+export type GetAllAnalysesCategoriesQuery = (
+  { __typename?: 'Query' }
+  & { analysisCategoryAll: Array<(
+    { __typename?: 'AnalysisCategoryType' }
+    & Pick<
+      Types.AnalysisCategoryType,
+      | 'uid'
+      | 'name'
+      | 'description'
+      | 'active'
+      | 'departmentUid'
+    >
+    & { department?: Types.Maybe<(
+      { __typename?: 'DepartmentType' }
+      & Pick<Types.DepartmentType, 'uid' | 'name'>
+    )> }
+  )> }
+);
 
 export type GetAllSamplesQueryVariables = Types.Exact<{
-    first: Types.Scalars['Int']['input'];
-    after?: Types.InputMaybe<Types.Scalars['String']['input']>;
-    before?: Types.InputMaybe<Types.Scalars['String']['input']>;
-    status: Types.Scalars['String']['input'];
-    text: Types.Scalars['String']['input'];
-    clientUid: Types.Scalars['String']['input'];
-    sortBy?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
+  first: Types.Scalars['Int']['input'];
+  after?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  before?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  status: Types.Scalars['String']['input'];
+  text: Types.Scalars['String']['input'];
+  clientUid: Types.Scalars['String']['input'];
+  sortBy?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
 }>;
 
-export type GetAllSamplesQuery = { __typename?: 'Query' } & {
-    sampleAll: { __typename?: 'SampleCursorPage' } & Pick<Types.SampleCursorPage, 'totalCount'> & {
-            pageInfo: { __typename?: 'PageInfo' } & Pick<Types.PageInfo, 'hasNextPage' | 'hasPreviousPage' | 'endCursor' | 'startCursor'>;
-            items?: Types.Maybe<
-                Array<
-                    { __typename?: 'SamplesWithResults' } & Pick<
-                        Types.SamplesWithResults,
-                        | 'uid'
-                        | 'createdByUid'
-                        | 'createdAt'
-                        | 'dateCollected'
-                        | 'dateReceived'
-                        | 'dateSubmitted'
-                        | 'dateVerified'
-                        | 'datePublished'
-                        | 'datePrinted'
-                        | 'dateStored'
-                        | 'printed'
-                        | 'dueDate'
-                        | 'sampleId'
-                        | 'relationshipType'
-                        | 'priority'
-                        | 'status'
-                        | 'storageSlot'
-                        | 'storageContainerUid'
-                    > & {
-                            createdBy?: Types.Maybe<
-                                { __typename?: 'UserType' } & Pick<Types.UserType, 'firstName' | 'lastName' | 'userName'>
-                            >;
-                            analysisRequest?: Types.Maybe<
-                                { __typename?: 'AnalysisRequestType' } & Pick<Types.AnalysisRequestType, 'uid' | 'clientRequestId'> & {
-                                        patient: { __typename?: 'PatientType' } & Pick<
-                                            Types.PatientType,
-                                            | 'uid'
-                                            | 'firstName'
-                                            | 'lastName'
-                                            | 'clientPatientId'
-                                            | 'gender'
-                                            | 'dateOfBirth'
-                                            | 'age'
-                                            | 'ageDobEstimated'
-                                            | 'consentSms'
-                                        >;
-                                        client?: Types.Maybe<
-                                            { __typename?: 'ClientType' } & Pick<Types.ClientType, 'uid' | 'name' | 'code'> & {
-                                                    district?: Types.Maybe<
-                                                        { __typename?: 'DistrictType' } & Pick<Types.DistrictType, 'name'> & {
-                                                                province?: Types.Maybe<
-                                                                    { __typename?: 'ProvinceType' } & Pick<Types.ProvinceType, 'name'>
-                                                                >;
-                                                            }
-                                                    >;
-                                                }
-                                        >;
-                                    }
-                            >;
-                            sampleType?: Types.Maybe<{ __typename?: 'SampleTypeTyp' } & Pick<Types.SampleTypeTyp, 'uid' | 'name'>>;
-                            storageContainer?: Types.Maybe<
-                                { __typename?: 'StorageContainerType' } & Pick<Types.StorageContainerType, 'uid' | 'name'> & {
-                                        storageSection?: Types.Maybe<
-                                            { __typename?: 'StorageSectionType' } & Pick<Types.StorageSectionType, 'uid' | 'name'> & {
-                                                    storageLocation?: Types.Maybe<
-                                                        { __typename?: 'StorageLocationType' } & Pick<
-                                                            Types.StorageLocationType,
-                                                            'uid' | 'name'
-                                                        > & {
-                                                                storeRoom?: Types.Maybe<
-                                                                    { __typename?: 'StoreRoomType' } & Pick<
-                                                                        Types.StoreRoomType,
-                                                                        'uid' | 'name'
-                                                                    >
-                                                                >;
-                                                            }
-                                                    >;
-                                                }
-                                        >;
-                                    }
-                            >;
-                            analyses?: Types.Maybe<
-                                Array<{ __typename?: 'AnalysisType' } & Pick<Types.AnalysisType, 'uid' | 'name' | 'sortKey'>>
-                            >;
-                            profiles: Array<{ __typename?: 'ProfileType' } & Pick<Types.ProfileType, 'uid' | 'name'>>;
-                            rejectionReasons?: Types.Maybe<
-                                Array<{ __typename?: 'RejectionReasonType' } & Pick<Types.RejectionReasonType, 'uid' | 'reason'>>
-                            >;
-                        }
+
+export type GetAllSamplesQuery = (
+  { __typename?: 'Query' }
+  & { sampleAll: (
+    { __typename?: 'SampleCursorPage' }
+    & Pick<Types.SampleCursorPage, 'totalCount'>
+    & {
+      pageInfo: (
+        { __typename?: 'PageInfo' }
+        & Pick<
+          Types.PageInfo,
+          | 'hasNextPage'
+          | 'hasPreviousPage'
+          | 'endCursor'
+          | 'startCursor'
+        >
+      ),
+      items?: Types.Maybe<Array<(
+        { __typename?: 'SamplesWithResults' }
+        & Pick<
+          Types.SamplesWithResults,
+          | 'uid'
+          | 'createdByUid'
+          | 'createdAt'
+          | 'dateCollected'
+          | 'dateReceived'
+          | 'dateSubmitted'
+          | 'dateVerified'
+          | 'datePublished'
+          | 'datePrinted'
+          | 'dateStored'
+          | 'printed'
+          | 'dueDate'
+          | 'sampleId'
+          | 'relationshipType'
+          | 'priority'
+          | 'status'
+          | 'storageSlot'
+          | 'storageContainerUid'
+        >
+        & {
+          createdBy?: Types.Maybe<(
+            { __typename?: 'UserType' }
+            & Pick<Types.UserType, 'firstName' | 'lastName' | 'userName'>
+          )>,
+          analysisRequest?: Types.Maybe<(
+            { __typename?: 'AnalysisRequestType' }
+            & Pick<Types.AnalysisRequestType, 'uid' | 'clientRequestId'>
+            & {
+              patient: (
+                { __typename?: 'PatientType' }
+                & Pick<
+                  Types.PatientType,
+                  | 'uid'
+                  | 'firstName'
+                  | 'lastName'
+                  | 'clientPatientId'
+                  | 'gender'
+                  | 'dateOfBirth'
+                  | 'age'
+                  | 'ageDobEstimated'
+                  | 'consentSms'
                 >
-            >;
-        };
-};
+              ),
+              client?: Types.Maybe<(
+                { __typename?: 'ClientType' }
+                & Pick<Types.ClientType, 'uid' | 'name' | 'code'>
+                & { district?: Types.Maybe<(
+                  { __typename?: 'DistrictType' }
+                  & Pick<Types.DistrictType, 'name'>
+                  & { province?: Types.Maybe<(
+                    { __typename?: 'ProvinceType' }
+                    & Pick<Types.ProvinceType, 'name'>
+                  )> }
+                )> }
+              )>,
+            }
+          )>,
+          sampleType?: Types.Maybe<(
+            { __typename?: 'SampleTypeTyp' }
+            & Pick<Types.SampleTypeTyp, 'uid' | 'name'>
+          )>,
+          storageContainer?: Types.Maybe<(
+            { __typename?: 'StorageContainerType' }
+            & Pick<Types.StorageContainerType, 'uid' | 'name'>
+            & { storageSection?: Types.Maybe<(
+              { __typename?: 'StorageSectionType' }
+              & Pick<Types.StorageSectionType, 'uid' | 'name'>
+              & { storageLocation?: Types.Maybe<(
+                { __typename?: 'StorageLocationType' }
+                & Pick<Types.StorageLocationType, 'uid' | 'name'>
+                & { storeRoom?: Types.Maybe<(
+                  { __typename?: 'StoreRoomType' }
+                  & Pick<Types.StoreRoomType, 'uid' | 'name'>
+                )> }
+              )> }
+            )> }
+          )>,
+          analyses?: Types.Maybe<Array<(
+            { __typename?: 'AnalysisType' }
+            & Pick<Types.AnalysisType, 'uid' | 'name' | 'sortKey'>
+          )>>,
+          profiles: Array<(
+            { __typename?: 'ProfileType' }
+            & Pick<Types.ProfileType, 'uid' | 'name'>
+          )>,
+          rejectionReasons?: Types.Maybe<Array<(
+            { __typename?: 'RejectionReasonType' }
+            & Pick<Types.RejectionReasonType, 'uid' | 'reason'>
+          )>>,
+        }
+      )>>,
+    }
+  ) }
+);
 
 export type GetSamplesForShipmentAssignQueryVariables = Types.Exact<{
-    first: Types.Scalars['Int']['input'];
-    after?: Types.InputMaybe<Types.Scalars['String']['input']>;
-    text: Types.Scalars['String']['input'];
-    sortBy?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
-    analysisUid?: Types.InputMaybe<Types.Scalars['String']['input']>;
-    sampleTypeUid: Types.Scalars['String']['input'];
+  first: Types.Scalars['Int']['input'];
+  after?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  text: Types.Scalars['String']['input'];
+  sortBy?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
+  analysisUid?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  sampleTypeUid: Types.Scalars['String']['input'];
 }>;
 
-export type GetSamplesForShipmentAssignQuery = { __typename?: 'Query' } & {
-    samplesForShipmentAssign: { __typename?: 'SampleCursorPage' } & Pick<Types.SampleCursorPage, 'totalCount'> & {
-            pageInfo: { __typename?: 'PageInfo' } & Pick<Types.PageInfo, 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | 'endCursor'>;
-            items?: Types.Maybe<
-                Array<
-                    { __typename?: 'SamplesWithResults' } & Pick<
-                        Types.SamplesWithResults,
-                        'uid' | 'sampleId' | 'status' | 'createdAt' | 'dateReceived'
-                    > & {
-                            sampleType?: Types.Maybe<{ __typename?: 'SampleTypeTyp' } & Pick<Types.SampleTypeTyp, 'name'>>;
-                            analysisRequest?: Types.Maybe<
-                                { __typename?: 'AnalysisRequestType' } & Pick<Types.AnalysisRequestType, 'clientRequestId'>
-                            >;
-                            analysisResults?: Types.Maybe<
-                                Array<
-                                    { __typename?: 'AnalysisResultType' } & Pick<
-                                        Types.AnalysisResultType,
-                                        'uid' | 'assigned' | 'status'
-                                    > & { analysis?: Types.Maybe<{ __typename?: 'AnalysisType' } & Pick<Types.AnalysisType, 'name'>> }
-                                >
-                            >;
-                        }
-                >
-            >;
-        };
-};
+
+export type GetSamplesForShipmentAssignQuery = (
+  { __typename?: 'Query' }
+  & { samplesForShipmentAssign: (
+    { __typename?: 'SampleCursorPage' }
+    & Pick<Types.SampleCursorPage, 'totalCount'>
+    & {
+      pageInfo: (
+        { __typename?: 'PageInfo' }
+        & Pick<
+          Types.PageInfo,
+          | 'hasNextPage'
+          | 'hasPreviousPage'
+          | 'startCursor'
+          | 'endCursor'
+        >
+      ),
+      items?: Types.Maybe<Array<(
+        { __typename?: 'SamplesWithResults' }
+        & Pick<
+          Types.SamplesWithResults,
+          | 'uid'
+          | 'sampleId'
+          | 'status'
+          | 'createdAt'
+          | 'dateReceived'
+        >
+        & {
+          sampleType?: Types.Maybe<(
+            { __typename?: 'SampleTypeTyp' }
+            & Pick<Types.SampleTypeTyp, 'name'>
+          )>,
+          analysisRequest?: Types.Maybe<(
+            { __typename?: 'AnalysisRequestType' }
+            & Pick<Types.AnalysisRequestType, 'clientRequestId'>
+          )>,
+          analysisResults?: Types.Maybe<Array<(
+            { __typename?: 'AnalysisResultType' }
+            & Pick<Types.AnalysisResultType, 'uid' | 'assigned' | 'status'>
+            & { analysis?: Types.Maybe<(
+              { __typename?: 'AnalysisType' }
+              & Pick<Types.AnalysisType, 'name'>
+            )> }
+          )>>,
+        }
+      )>>,
+    }
+  ) }
+);
 
 export type GetAnalysesRequestsByPatientUidQueryVariables = Types.Exact<{
-    uid: Types.Scalars['String']['input'];
+  uid: Types.Scalars['String']['input'];
 }>;
 
-export type GetAnalysesRequestsByPatientUidQuery = { __typename?: 'Query' } & {
-    analysisRequestsByPatientUid: Array<
-        { __typename?: 'AnalysisRequestWithSamples' } & Pick<
-            Types.AnalysisRequestWithSamples,
-            'uid' | 'clientRequestId' | 'requestId' | 'createdAt'
-        > & {
-                patient: { __typename?: 'PatientType' } & Pick<
-                    Types.PatientType,
-                    | 'uid'
-                    | 'firstName'
-                    | 'lastName'
-                    | 'clientPatientId'
-                    | 'gender'
-                    | 'dateOfBirth'
-                    | 'age'
-                    | 'ageDobEstimated'
-                    | 'consentSms'
-                >;
-                client?: Types.Maybe<{ __typename?: 'ClientType' } & Pick<Types.ClientType, 'uid' | 'name'>>;
-                samples?: Types.Maybe<
-                    Array<
-                        { __typename?: 'SampleType' } & Pick<
-                            Types.SampleType,
-                            | 'uid'
-                            | 'createdByUid'
-                            | 'createdAt'
-                            | 'sampleId'
-                            | 'priority'
-                            | 'status'
-                            | 'storageSlot'
-                            | 'storageContainerUid'
-                        > & {
-                                createdBy?: Types.Maybe<
-                                    { __typename?: 'UserType' } & Pick<Types.UserType, 'firstName' | 'lastName' | 'userName'>
-                                >;
-                                sampleType?: Types.Maybe<{ __typename?: 'SampleTypeTyp' } & Pick<Types.SampleTypeTyp, 'uid' | 'name'>>;
-                                storageContainer?: Types.Maybe<
-                                    { __typename?: 'StorageContainerType' } & Pick<Types.StorageContainerType, 'uid' | 'name'> & {
-                                            storageSection?: Types.Maybe<
-                                                { __typename?: 'StorageSectionType' } & Pick<Types.StorageSectionType, 'uid' | 'name'> & {
-                                                        storageLocation?: Types.Maybe<
-                                                            { __typename?: 'StorageLocationType' } & Pick<
-                                                                Types.StorageLocationType,
-                                                                'uid' | 'name'
-                                                            > & {
-                                                                    storeRoom?: Types.Maybe<
-                                                                        { __typename?: 'StoreRoomType' } & Pick<
-                                                                            Types.StoreRoomType,
-                                                                            'uid' | 'name'
-                                                                        >
-                                                                    >;
-                                                                }
-                                                        >;
-                                                    }
-                                            >;
-                                        }
-                                >;
-                                analyses?: Types.Maybe<
-                                    Array<{ __typename?: 'AnalysisType' } & Pick<Types.AnalysisType, 'uid' | 'name' | 'sortKey'>>
-                                >;
-                                rejectionReasons?: Types.Maybe<
-                                    Array<{ __typename?: 'RejectionReasonType' } & Pick<Types.RejectionReasonType, 'uid' | 'reason'>>
-                                >;
-                                profiles: Array<{ __typename?: 'ProfileType' } & Pick<Types.ProfileType, 'uid' | 'name'>>;
-                            }
-                    >
-                >;
-            }
-    >;
-};
+
+export type GetAnalysesRequestsByPatientUidQuery = (
+  { __typename?: 'Query' }
+  & { analysisRequestsByPatientUid: Array<(
+    { __typename?: 'AnalysisRequestWithSamples' }
+    & Pick<
+      Types.AnalysisRequestWithSamples,
+      | 'uid'
+      | 'clientRequestId'
+      | 'requestId'
+      | 'createdAt'
+    >
+    & {
+      patient: (
+        { __typename?: 'PatientType' }
+        & Pick<
+          Types.PatientType,
+          | 'uid'
+          | 'firstName'
+          | 'lastName'
+          | 'clientPatientId'
+          | 'gender'
+          | 'dateOfBirth'
+          | 'age'
+          | 'ageDobEstimated'
+          | 'consentSms'
+        >
+      ),
+      client?: Types.Maybe<(
+        { __typename?: 'ClientType' }
+        & Pick<Types.ClientType, 'uid' | 'name'>
+      )>,
+      samples?: Types.Maybe<Array<(
+        { __typename?: 'SampleType' }
+        & Pick<
+          Types.SampleType,
+          | 'uid'
+          | 'createdByUid'
+          | 'createdAt'
+          | 'sampleId'
+          | 'priority'
+          | 'status'
+          | 'storageSlot'
+          | 'storageContainerUid'
+        >
+        & {
+          createdBy?: Types.Maybe<(
+            { __typename?: 'UserType' }
+            & Pick<Types.UserType, 'firstName' | 'lastName' | 'userName'>
+          )>,
+          sampleType?: Types.Maybe<(
+            { __typename?: 'SampleTypeTyp' }
+            & Pick<Types.SampleTypeTyp, 'uid' | 'name'>
+          )>,
+          storageContainer?: Types.Maybe<(
+            { __typename?: 'StorageContainerType' }
+            & Pick<Types.StorageContainerType, 'uid' | 'name'>
+            & { storageSection?: Types.Maybe<(
+              { __typename?: 'StorageSectionType' }
+              & Pick<Types.StorageSectionType, 'uid' | 'name'>
+              & { storageLocation?: Types.Maybe<(
+                { __typename?: 'StorageLocationType' }
+                & Pick<Types.StorageLocationType, 'uid' | 'name'>
+                & { storeRoom?: Types.Maybe<(
+                  { __typename?: 'StoreRoomType' }
+                  & Pick<Types.StoreRoomType, 'uid' | 'name'>
+                )> }
+              )> }
+            )> }
+          )>,
+          analyses?: Types.Maybe<Array<(
+            { __typename?: 'AnalysisType' }
+            & Pick<Types.AnalysisType, 'uid' | 'name' | 'sortKey'>
+          )>>,
+          rejectionReasons?: Types.Maybe<Array<(
+            { __typename?: 'RejectionReasonType' }
+            & Pick<Types.RejectionReasonType, 'uid' | 'reason'>
+          )>>,
+          profiles: Array<(
+            { __typename?: 'ProfileType' }
+            & Pick<Types.ProfileType, 'uid' | 'name'>
+          )>,
+        }
+      )>>,
+    }
+  )> }
+);
 
 export type GetAnalysesRequestsByClientUidQueryVariables = Types.Exact<{
-    uid: Types.Scalars['String']['input'];
+  uid: Types.Scalars['String']['input'];
 }>;
 
-export type GetAnalysesRequestsByClientUidQuery = { __typename?: 'Query' } & {
-    analysisRequestsByClientUid: Array<
-        { __typename?: 'AnalysisRequestWithSamples' } & Pick<Types.AnalysisRequestWithSamples, 'uid' | 'clientRequestId' | 'createdAt'> & {
-                patient: { __typename?: 'PatientType' } & Pick<
-                    Types.PatientType,
-                    | 'uid'
-                    | 'firstName'
-                    | 'lastName'
-                    | 'clientPatientId'
-                    | 'gender'
-                    | 'dateOfBirth'
-                    | 'age'
-                    | 'ageDobEstimated'
-                    | 'consentSms'
-                >;
-                client?: Types.Maybe<{ __typename?: 'ClientType' } & Pick<Types.ClientType, 'uid' | 'name'>>;
-                samples?: Types.Maybe<
-                    Array<
-                        { __typename?: 'SampleType' } & Pick<
-                            Types.SampleType,
-                            | 'uid'
-                            | 'createdByUid'
-                            | 'createdAt'
-                            | 'sampleId'
-                            | 'priority'
-                            | 'status'
-                            | 'storageSlot'
-                            | 'storageContainerUid'
-                        > & {
-                                createdBy?: Types.Maybe<
-                                    { __typename?: 'UserType' } & Pick<Types.UserType, 'firstName' | 'lastName' | 'userName'>
-                                >;
-                                sampleType?: Types.Maybe<{ __typename?: 'SampleTypeTyp' } & Pick<Types.SampleTypeTyp, 'uid' | 'name'>>;
-                                storageContainer?: Types.Maybe<
-                                    { __typename?: 'StorageContainerType' } & Pick<Types.StorageContainerType, 'uid' | 'name'> & {
-                                            storageSection?: Types.Maybe<
-                                                { __typename?: 'StorageSectionType' } & Pick<Types.StorageSectionType, 'uid' | 'name'> & {
-                                                        storageLocation?: Types.Maybe<
-                                                            { __typename?: 'StorageLocationType' } & Pick<
-                                                                Types.StorageLocationType,
-                                                                'uid' | 'name'
-                                                            > & {
-                                                                    storeRoom?: Types.Maybe<
-                                                                        { __typename?: 'StoreRoomType' } & Pick<
-                                                                            Types.StoreRoomType,
-                                                                            'uid' | 'name'
-                                                                        >
-                                                                    >;
-                                                                }
-                                                        >;
-                                                    }
-                                            >;
-                                        }
-                                >;
-                                rejectionReasons?: Types.Maybe<
-                                    Array<{ __typename?: 'RejectionReasonType' } & Pick<Types.RejectionReasonType, 'uid' | 'reason'>>
-                                >;
-                                analyses?: Types.Maybe<
-                                    Array<{ __typename?: 'AnalysisType' } & Pick<Types.AnalysisType, 'uid' | 'name' | 'sortKey'>>
-                                >;
-                                profiles: Array<{ __typename?: 'ProfileType' } & Pick<Types.ProfileType, 'uid' | 'name'>>;
-                            }
-                    >
-                >;
-            }
-    >;
-};
+
+export type GetAnalysesRequestsByClientUidQuery = (
+  { __typename?: 'Query' }
+  & { analysisRequestsByClientUid: Array<(
+    { __typename?: 'AnalysisRequestWithSamples' }
+    & Pick<Types.AnalysisRequestWithSamples, 'uid' | 'clientRequestId' | 'createdAt'>
+    & {
+      patient: (
+        { __typename?: 'PatientType' }
+        & Pick<
+          Types.PatientType,
+          | 'uid'
+          | 'firstName'
+          | 'lastName'
+          | 'clientPatientId'
+          | 'gender'
+          | 'dateOfBirth'
+          | 'age'
+          | 'ageDobEstimated'
+          | 'consentSms'
+        >
+      ),
+      client?: Types.Maybe<(
+        { __typename?: 'ClientType' }
+        & Pick<Types.ClientType, 'uid' | 'name'>
+      )>,
+      samples?: Types.Maybe<Array<(
+        { __typename?: 'SampleType' }
+        & Pick<
+          Types.SampleType,
+          | 'uid'
+          | 'createdByUid'
+          | 'createdAt'
+          | 'sampleId'
+          | 'priority'
+          | 'status'
+          | 'storageSlot'
+          | 'storageContainerUid'
+        >
+        & {
+          createdBy?: Types.Maybe<(
+            { __typename?: 'UserType' }
+            & Pick<Types.UserType, 'firstName' | 'lastName' | 'userName'>
+          )>,
+          sampleType?: Types.Maybe<(
+            { __typename?: 'SampleTypeTyp' }
+            & Pick<Types.SampleTypeTyp, 'uid' | 'name'>
+          )>,
+          storageContainer?: Types.Maybe<(
+            { __typename?: 'StorageContainerType' }
+            & Pick<Types.StorageContainerType, 'uid' | 'name'>
+            & { storageSection?: Types.Maybe<(
+              { __typename?: 'StorageSectionType' }
+              & Pick<Types.StorageSectionType, 'uid' | 'name'>
+              & { storageLocation?: Types.Maybe<(
+                { __typename?: 'StorageLocationType' }
+                & Pick<Types.StorageLocationType, 'uid' | 'name'>
+                & { storeRoom?: Types.Maybe<(
+                  { __typename?: 'StoreRoomType' }
+                  & Pick<Types.StoreRoomType, 'uid' | 'name'>
+                )> }
+              )> }
+            )> }
+          )>,
+          rejectionReasons?: Types.Maybe<Array<(
+            { __typename?: 'RejectionReasonType' }
+            & Pick<Types.RejectionReasonType, 'uid' | 'reason'>
+          )>>,
+          analyses?: Types.Maybe<Array<(
+            { __typename?: 'AnalysisType' }
+            & Pick<Types.AnalysisType, 'uid' | 'name' | 'sortKey'>
+          )>>,
+          profiles: Array<(
+            { __typename?: 'ProfileType' }
+            & Pick<Types.ProfileType, 'uid' | 'name'>
+          )>,
+        }
+      )>>,
+    }
+  )> }
+);
 
 export type GetAnalysesResultsBySampleUidQueryVariables = Types.Exact<{
-    uid: Types.Scalars['String']['input'];
+  uid: Types.Scalars['String']['input'];
 }>;
 
-export type GetAnalysesResultsBySampleUidQuery = { __typename?: 'Query' } & {
-    analysisResultBySampleUid: Array<
-        { __typename?: 'AnalysisResultType' } & Pick<
+
+export type GetAnalysesResultsBySampleUidQuery = (
+  { __typename?: 'Query' }
+  & { analysisResultBySampleUid: Array<(
+    { __typename?: 'AnalysisResultType' }
+    & Pick<
+      Types.AnalysisResultType,
+      | 'uid'
+      | 'status'
+      | 'sampleUid'
+      | 'result'
+      | 'analysisUid'
+      | 'retest'
+      | 'reportable'
+      | 'dateSubmitted'
+      | 'dueDate'
+      | 'dateVerified'
+      | 'createdAt'
+      | 'createdByUid'
+      | 'updatedAt'
+      | 'updatedByUid'
+      | 'worksheetUid'
+      | 'worksheetId'
+    >
+    & {
+      method?: Types.Maybe<(
+        { __typename?: 'MethodType' }
+        & Pick<Types.MethodType, 'uid' | 'name'>
+      )>,
+      laboratoryInstrument?: Types.Maybe<(
+        { __typename?: 'LaboratoryInstrumentType' }
+        & Pick<Types.LaboratoryInstrumentType, 'uid' | 'labName'>
+        & { instrument?: Types.Maybe<(
+          { __typename?: 'InstrumentType' }
+          & Pick<Types.InstrumentType, 'uid' | 'name'>
+        )> }
+      )>,
+      sample: (
+        { __typename?: 'SampleType' }
+        & Pick<Types.SampleType, 'uid' | 'sampleId' | 'status'>
+        & { rejectionReasons?: Types.Maybe<Array<(
+          { __typename?: 'RejectionReasonType' }
+          & Pick<Types.RejectionReasonType, 'uid' | 'reason'>
+        )>> }
+      ),
+      analysis?: Types.Maybe<(
+        { __typename?: 'AnalysisType' }
+        & Pick<
+          Types.AnalysisType,
+          | 'uid'
+          | 'name'
+          | 'unitUid'
+          | 'sortKey'
+        >
+        & {
+          unit?: Types.Maybe<(
+            { __typename?: 'UnitType' }
+            & Pick<Types.UnitType, 'uid' | 'name'>
+          )>,
+          interims?: Types.Maybe<Array<(
+            { __typename?: 'AnalysisInterimType' }
+            & Pick<
+              Types.AnalysisInterimType,
+              | 'uid'
+              | 'key'
+              | 'value'
+              | 'analysisUid'
+              | 'instrumentUid'
+            >
+          )>>,
+          resultOptions?: Types.Maybe<Array<(
+            { __typename?: 'ResultOptionType' }
+            & Pick<Types.ResultOptionType, 'uid' | 'optionKey' | 'value'>
+            & { sampleTypes?: Types.Maybe<Array<(
+              { __typename?: 'SampleTypeTyp' }
+              & Pick<Types.SampleTypeTyp, 'uid' | 'name'>
+            )>> }
+          )>>,
+          instruments?: Types.Maybe<Array<(
+            { __typename?: 'InstrumentType' }
+            & Pick<Types.InstrumentType, 'uid' | 'name'>
+            & { laboratoryInstruments?: Types.Maybe<Array<(
+              { __typename?: 'LaboratoryInstrumentType' }
+              & Pick<Types.LaboratoryInstrumentType, 'uid' | 'labName' | 'serialNumber'>
+            )>> }
+          )>>,
+          methods?: Types.Maybe<Array<(
+            { __typename?: 'MethodType' }
+            & Pick<Types.MethodType, 'uid' | 'name'>
+          )>>,
+        }
+      )>,
+      submittedBy?: Types.Maybe<(
+        { __typename?: 'UserType' }
+        & Pick<
+          Types.UserType,
+          | 'uid'
+          | 'firstName'
+          | 'lastName'
+          | 'userName'
+        >
+      )>,
+      verifiedBy?: Types.Maybe<Array<(
+        { __typename?: 'UserType' }
+        & Pick<
+          Types.UserType,
+          | 'uid'
+          | 'firstName'
+          | 'lastName'
+          | 'userName'
+        >
+      )>>,
+    }
+  )> }
+);
+
+export type GetAnalysesResultsForWsAssignQueryVariables = Types.Exact<{
+  first: Types.Scalars['Int']['input'];
+  after?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  text: Types.Scalars['String']['input'];
+  sortBy?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
+  analysisUid: Types.Scalars['String']['input'];
+  sampleTypeUid: Types.Scalars['String']['input'];
+}>;
+
+
+export type GetAnalysesResultsForWsAssignQuery = (
+  { __typename?: 'Query' }
+  & { analysisResultsForWsAssign: (
+    { __typename?: 'AnalysisResultCursorPage' }
+    & Pick<Types.AnalysisResultCursorPage, 'totalCount'>
+    & {
+      pageInfo: (
+        { __typename?: 'PageInfo' }
+        & Pick<
+          Types.PageInfo,
+          | 'hasNextPage'
+          | 'hasPreviousPage'
+          | 'startCursor'
+          | 'endCursor'
+        >
+      ),
+      items?: Types.Maybe<Array<(
+        { __typename?: 'AnalysisResultType' }
+        & Pick<
+          Types.AnalysisResultType,
+          | 'uid'
+          | 'assigned'
+          | 'sampleUid'
+          | 'status'
+          | 'analysisUid'
+        >
+        & {
+          sample: (
+            { __typename?: 'SampleType' }
+            & Pick<
+              Types.SampleType,
+              | 'sampleId'
+              | 'priority'
+              | 'status'
+              | 'dateReceived'
+              | 'createdAt'
+            >
+            & { sampleType?: Types.Maybe<(
+              { __typename?: 'SampleTypeTyp' }
+              & Pick<Types.SampleTypeTyp, 'name'>
+            )> }
+          ),
+          analysis?: Types.Maybe<(
+            { __typename?: 'AnalysisType' }
+            & Pick<Types.AnalysisType, 'name'>
+          )>,
+        }
+      )>>,
+    }
+  ) }
+);
+
+export type GetAnalysisResultMutationQueryVariables = Types.Exact<{
+  resultUid: Types.Scalars['String']['input'];
+}>;
+
+
+export type GetAnalysisResultMutationQuery = (
+  { __typename?: 'Query' }
+  & { resultMutationByResultUid?: Types.Maybe<(
+    { __typename?: 'ResultMutationType' }
+    & Pick<
+      Types.ResultMutationType,
+      | 'uid'
+      | 'resultUid'
+      | 'before'
+      | 'after'
+      | 'mutation'
+      | 'date'
+      | 'createdByUid'
+    >
+    & { createdBy?: Types.Maybe<(
+      { __typename?: 'UserType' }
+      & Pick<
+        Types.UserType,
+        | 'uid'
+        | 'firstName'
+        | 'lastName'
+        | 'userName'
+      >
+    )> }
+  )> }
+);
+
+export type GetSampleByUidQueryVariables = Types.Exact<{
+  uid: Types.Scalars['String']['input'];
+}>;
+
+
+export type GetSampleByUidQuery = (
+  { __typename?: 'Query' }
+  & { sampleByUid: (
+    { __typename?: 'SampleType' }
+    & Pick<
+      Types.SampleType,
+      | 'uid'
+      | 'createdByUid'
+      | 'createdAt'
+      | 'dateReceived'
+      | 'receivedByUid'
+      | 'dateCollected'
+      | 'dateSubmitted'
+      | 'submittedByUid'
+      | 'dateVerified'
+      | 'verifiedByUid'
+      | 'datePublished'
+      | 'datePrinted'
+      | 'printedByUid'
+      | 'dateInvalidated'
+      | 'invalidatedByUid'
+      | 'dateCancelled'
+      | 'cancelledByUid'
+      | 'dueDate'
+      | 'sampleId'
+      | 'priority'
+      | 'status'
+      | 'relationshipType'
+      | 'dateStored'
+      | 'storageSlot'
+      | 'storageContainerUid'
+    >
+    & {
+      createdBy?: Types.Maybe<(
+        { __typename?: 'UserType' }
+        & Pick<Types.UserType, 'firstName' | 'lastName' | 'userName'>
+      )>,
+      analysisRequest?: Types.Maybe<(
+        { __typename?: 'AnalysisRequestType' }
+        & Pick<Types.AnalysisRequestType, 'uid' | 'clientRequestId'>
+        & {
+          patient: (
+            { __typename?: 'PatientType' }
+            & Pick<
+              Types.PatientType,
+              | 'uid'
+              | 'firstName'
+              | 'lastName'
+              | 'clientPatientId'
+              | 'gender'
+              | 'dateOfBirth'
+              | 'age'
+              | 'ageDobEstimated'
+              | 'consentSms'
+            >
+          ),
+          client?: Types.Maybe<(
+            { __typename?: 'ClientType' }
+            & Pick<Types.ClientType, 'uid' | 'name'>
+          )>,
+        }
+      )>,
+      sampleType?: Types.Maybe<(
+        { __typename?: 'SampleTypeTyp' }
+        & Pick<Types.SampleTypeTyp, 'uid' | 'name'>
+      )>,
+      storageContainer?: Types.Maybe<(
+        { __typename?: 'StorageContainerType' }
+        & Pick<Types.StorageContainerType, 'uid' | 'name'>
+        & { storageSection?: Types.Maybe<(
+          { __typename?: 'StorageSectionType' }
+          & Pick<Types.StorageSectionType, 'uid' | 'name'>
+          & { storageLocation?: Types.Maybe<(
+            { __typename?: 'StorageLocationType' }
+            & Pick<Types.StorageLocationType, 'uid' | 'name'>
+            & { storeRoom?: Types.Maybe<(
+              { __typename?: 'StoreRoomType' }
+              & Pick<Types.StoreRoomType, 'uid' | 'name'>
+            )> }
+          )> }
+        )> }
+      )>,
+      analyses?: Types.Maybe<Array<(
+        { __typename?: 'AnalysisType' }
+        & Pick<Types.AnalysisType, 'uid' | 'name'>
+      )>>,
+      profiles: Array<(
+        { __typename?: 'ProfileType' }
+        & Pick<Types.ProfileType, 'uid' | 'name'>
+      )>,
+      rejectionReasons?: Types.Maybe<Array<(
+        { __typename?: 'RejectionReasonType' }
+        & Pick<Types.RejectionReasonType, 'uid' | 'reason'>
+      )>>,
+    }
+  ) }
+);
+
+export type GetSampleParentIdQueryVariables = Types.Exact<{
+  parentId: Types.Scalars['String']['input'];
+  text?: Types.InputMaybe<Types.Scalars['String']['input']>;
+}>;
+
+
+export type GetSampleParentIdQuery = (
+  { __typename?: 'Query' }
+  & { sampleByParentId: Array<(
+    { __typename?: 'SampleType' }
+    & Pick<Types.SampleType, 'uid' | 'sampleId' | 'status'>
+  )> }
+);
+
+export type GetSamplesByStorageContainerUidQueryVariables = Types.Exact<{
+  uid: Types.Scalars['String']['input'];
+}>;
+
+
+export type GetSamplesByStorageContainerUidQuery = (
+  { __typename?: 'Query' }
+  & { samplesByStorageContainerUid: Array<(
+    { __typename?: 'SampleType' }
+    & Pick<
+      Types.SampleType,
+      | 'uid'
+      | 'sampleId'
+      | 'storageSlot'
+      | 'storageSlotIndex'
+      | 'storageContainerUid'
+      | 'status'
+    >
+    & { analysisRequest?: Types.Maybe<(
+      { __typename?: 'AnalysisRequestType' }
+      & Pick<Types.AnalysisRequestType, 'clientRequestId'>
+    )> }
+  )> }
+);
+
+export type GetAllQcLevelsQueryVariables = Types.Exact<{ [key: string]: never; }>;
+
+
+export type GetAllQcLevelsQuery = (
+  { __typename?: 'Query' }
+  & { qcLevelAll: Array<(
+    { __typename?: 'QCLevelType' }
+    & Pick<Types.QcLevelType, 'uid' | 'level'>
+  )> }
+);
+
+export type GetAllQcTemplatesQueryVariables = Types.Exact<{ [key: string]: never; }>;
+
+
+export type GetAllQcTemplatesQuery = (
+  { __typename?: 'Query' }
+  & { qcTemplateAll: Array<(
+    { __typename?: 'QCTemplateType' }
+    & Pick<Types.QcTemplateType, 'uid' | 'name' | 'description'>
+    & {
+      qcLevels: Array<(
+        { __typename?: 'QCLevelType' }
+        & Pick<Types.QcLevelType, 'uid' | 'level'>
+      )>,
+      departments: Array<(
+        { __typename?: 'DepartmentType' }
+        & Pick<Types.DepartmentType, 'uid' | 'name'>
+      )>,
+    }
+  )> }
+);
+
+export type GetQcSeTsQueryVariables = Types.Exact<{
+  first: Types.Scalars['Int']['input'];
+  after?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  status: Types.Scalars['String']['input'];
+  sortBy?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
+}>;
+
+
+export type GetQcSeTsQuery = (
+  { __typename?: 'Query' }
+  & { qcSetAll: (
+    { __typename?: 'QCSetCursorPage' }
+    & Pick<Types.QcSetCursorPage, 'totalCount'>
+    & {
+      pageInfo: (
+        { __typename?: 'PageInfo' }
+        & Pick<
+          Types.PageInfo,
+          | 'hasNextPage'
+          | 'hasPreviousPage'
+          | 'endCursor'
+          | 'startCursor'
+        >
+      ),
+      items?: Types.Maybe<Array<(
+        { __typename?: 'QCSetWithSamples' }
+        & Pick<
+          Types.QcSetWithSamples,
+          | 'uid'
+          | 'name'
+          | 'note'
+          | 'status'
+          | 'createdAt'
+        >
+        & { samples?: Types.Maybe<Array<(
+          { __typename?: 'SamplesWithResults' }
+          & Pick<
+            Types.SamplesWithResults,
+            | 'uid'
+            | 'sampleId'
+            | 'status'
+            | 'createdByUid'
+            | 'createdAt'
+            | 'updatedAt'
+            | 'assigned'
+          >
+          & {
+            createdBy?: Types.Maybe<(
+              { __typename?: 'UserType' }
+              & Pick<Types.UserType, 'firstName' | 'lastName' | 'userName'>
+            )>,
+            qcLevel?: Types.Maybe<(
+              { __typename?: 'QCLevelType' }
+              & Pick<Types.QcLevelType, 'uid' | 'level'>
+            )>,
+            analysisResults?: Types.Maybe<Array<(
+              { __typename?: 'AnalysisResultType' }
+              & Pick<
+                Types.AnalysisResultType,
+                | 'uid'
+                | 'status'
+                | 'sampleUid'
+                | 'result'
+                | 'analysisUid'
+                | 'retest'
+                | 'reportable'
+              >
+              & {
+                analysis?: Types.Maybe<(
+                  { __typename?: 'AnalysisType' }
+                  & Pick<Types.AnalysisType, 'uid' | 'name' | 'sortKey'>
+                  & { resultOptions?: Types.Maybe<Array<(
+                    { __typename?: 'ResultOptionType' }
+                    & Pick<Types.ResultOptionType, 'uid' | 'optionKey' | 'value'>
+                    & { sampleTypes?: Types.Maybe<Array<(
+                      { __typename?: 'SampleTypeTyp' }
+                      & Pick<Types.SampleTypeTyp, 'uid' | 'name'>
+                    )>> }
+                  )>> }
+                )>,
+                method?: Types.Maybe<(
+                  { __typename?: 'MethodType' }
+                  & Pick<Types.MethodType, 'uid' | 'name'>
+                )>,
+                laboratoryInstrument?: Types.Maybe<(
+                  { __typename?: 'LaboratoryInstrumentType' }
+                  & Pick<Types.LaboratoryInstrumentType, 'uid' | 'labName'>
+                  & { instrument?: Types.Maybe<(
+                    { __typename?: 'InstrumentType' }
+                    & Pick<Types.InstrumentType, 'uid' | 'name'>
+                  )> }
+                )>,
+              }
+            )>>,
+            analyses?: Types.Maybe<Array<(
+              { __typename?: 'AnalysisType' }
+              & Pick<Types.AnalysisType, 'uid' | 'name' | 'unitUid'>
+              & {
+                unit?: Types.Maybe<(
+                  { __typename?: 'UnitType' }
+                  & Pick<Types.UnitType, 'uid' | 'name'>
+                )>,
+                resultOptions?: Types.Maybe<Array<(
+                  { __typename?: 'ResultOptionType' }
+                  & Pick<Types.ResultOptionType, 'uid' | 'optionKey' | 'value'>
+                  & { sampleTypes?: Types.Maybe<Array<(
+                    { __typename?: 'SampleTypeTyp' }
+                    & Pick<Types.SampleTypeTyp, 'uid' | 'name'>
+                  )>> }
+                )>>,
+              }
+            )>>,
+            profiles: Array<(
+              { __typename?: 'ProfileType' }
+              & Pick<Types.ProfileType, 'uid' | 'name'>
+            )>,
+          }
+        )>> }
+      )>>,
+    }
+  ) }
+);
+
+export type GetQcSetByUidQueryVariables = Types.Exact<{
+  uid: Types.Scalars['String']['input'];
+}>;
+
+
+export type GetQcSetByUidQuery = (
+  { __typename?: 'Query' }
+  & { qcSetByUid: (
+    { __typename?: 'QCSetWithSamples' }
+    & Pick<
+      Types.QcSetWithSamples,
+      | 'uid'
+      | 'name'
+      | 'note'
+      | 'createdAt'
+    >
+    & { samples?: Types.Maybe<Array<(
+      { __typename?: 'SamplesWithResults' }
+      & Pick<
+        Types.SamplesWithResults,
+        | 'uid'
+        | 'sampleId'
+        | 'status'
+        | 'createdAt'
+        | 'updatedAt'
+        | 'assigned'
+      >
+      & {
+        qcLevel?: Types.Maybe<(
+          { __typename?: 'QCLevelType' }
+          & Pick<Types.QcLevelType, 'uid' | 'level'>
+        )>,
+        analysisResults?: Types.Maybe<Array<(
+          { __typename?: 'AnalysisResultType' }
+          & Pick<
             Types.AnalysisResultType,
             | 'uid'
             | 'status'
@@ -641,2172 +1466,1640 @@ export type GetAnalysesResultsBySampleUidQuery = { __typename?: 'Query' } & {
             | 'retest'
             | 'reportable'
             | 'dateSubmitted'
-            | 'dueDate'
             | 'dateVerified'
-            | 'createdAt'
-            | 'createdByUid'
-            | 'updatedAt'
-            | 'updatedByUid'
-            | 'worksheetUid'
-            | 'worksheetId'
-        > & {
-                method?: Types.Maybe<{ __typename?: 'MethodType' } & Pick<Types.MethodType, 'uid' | 'name'>>;
-                laboratoryInstrument?: Types.Maybe<
-                    { __typename?: 'LaboratoryInstrumentType' } & Pick<Types.LaboratoryInstrumentType, 'uid' | 'labName'> & {
-                            instrument?: Types.Maybe<{ __typename?: 'InstrumentType' } & Pick<Types.InstrumentType, 'uid' | 'name'>>;
-                        }
-                >;
-                sample: { __typename?: 'SampleType' } & Pick<Types.SampleType, 'uid' | 'sampleId' | 'status'> & {
-                        rejectionReasons?: Types.Maybe<
-                            Array<{ __typename?: 'RejectionReasonType' } & Pick<Types.RejectionReasonType, 'uid' | 'reason'>>
-                        >;
-                    };
-                analysis?: Types.Maybe<
-                    { __typename?: 'AnalysisType' } & Pick<Types.AnalysisType, 'uid' | 'name' | 'unitUid' | 'sortKey'> & {
-                            unit?: Types.Maybe<{ __typename?: 'UnitType' } & Pick<Types.UnitType, 'uid' | 'name'>>;
-                            interims?: Types.Maybe<
-                                Array<
-                                    { __typename?: 'AnalysisInterimType' } & Pick<
-                                        Types.AnalysisInterimType,
-                                        'uid' | 'key' | 'value' | 'analysisUid' | 'instrumentUid'
-                                    >
-                                >
-                            >;
-                            resultOptions?: Types.Maybe<
-                                Array<
-                                    { __typename?: 'ResultOptionType' } & Pick<Types.ResultOptionType, 'uid' | 'optionKey' | 'value'> & {
-                                            sampleTypes?: Types.Maybe<
-                                                Array<{ __typename?: 'SampleTypeTyp' } & Pick<Types.SampleTypeTyp, 'uid' | 'name'>>
-                                            >;
-                                        }
-                                >
-                            >;
-                            instruments?: Types.Maybe<
-                                Array<
-                                    { __typename?: 'InstrumentType' } & Pick<Types.InstrumentType, 'uid' | 'name'> & {
-                                            laboratoryInstruments?: Types.Maybe<
-                                                Array<
-                                                    { __typename?: 'LaboratoryInstrumentType' } & Pick<
-                                                        Types.LaboratoryInstrumentType,
-                                                        'uid' | 'labName' | 'serialNumber'
-                                                    >
-                                                >
-                                            >;
-                                        }
-                                >
-                            >;
-                            methods?: Types.Maybe<Array<{ __typename?: 'MethodType' } & Pick<Types.MethodType, 'uid' | 'name'>>>;
-                        }
-                >;
-                submittedBy?: Types.Maybe<
-                    { __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName' | 'userName'>
-                >;
-                verifiedBy?: Types.Maybe<
-                    Array<{ __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName' | 'userName'>>
-                >;
-            }
-    >;
-};
-
-export type GetAnalysesResultsForWsAssignQueryVariables = Types.Exact<{
-    first: Types.Scalars['Int']['input'];
-    after?: Types.InputMaybe<Types.Scalars['String']['input']>;
-    text: Types.Scalars['String']['input'];
-    sortBy?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
-    analysisUid: Types.Scalars['String']['input'];
-    sampleTypeUid: Types.Scalars['String']['input'];
-}>;
-
-export type GetAnalysesResultsForWsAssignQuery = { __typename?: 'Query' } & {
-    analysisResultsForWsAssign: { __typename?: 'AnalysisResultCursorPage' } & Pick<Types.AnalysisResultCursorPage, 'totalCount'> & {
-            pageInfo: { __typename?: 'PageInfo' } & Pick<Types.PageInfo, 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | 'endCursor'>;
-            items?: Types.Maybe<
-                Array<
-                    { __typename?: 'AnalysisResultType' } & Pick<
-                        Types.AnalysisResultType,
-                        'uid' | 'assigned' | 'sampleUid' | 'status' | 'analysisUid'
-                    > & {
-                            sample: { __typename?: 'SampleType' } & Pick<
-                                Types.SampleType,
-                                'sampleId' | 'priority' | 'status' | 'dateReceived' | 'createdAt'
-                            > & { sampleType?: Types.Maybe<{ __typename?: 'SampleTypeTyp' } & Pick<Types.SampleTypeTyp, 'name'>> };
-                            analysis?: Types.Maybe<{ __typename?: 'AnalysisType' } & Pick<Types.AnalysisType, 'name'>>;
-                        }
-                >
-            >;
-        };
-};
-
-export type GetAnalysisResultMutationQueryVariables = Types.Exact<{
-    resultUid: Types.Scalars['String']['input'];
-}>;
-
-export type GetAnalysisResultMutationQuery = { __typename?: 'Query' } & {
-    resultMutationByResultUid?: Types.Maybe<
-        { __typename?: 'ResultMutationType' } & Pick<
-            Types.ResultMutationType,
-            'uid' | 'resultUid' | 'before' | 'after' | 'mutation' | 'date' | 'createdByUid'
-        > & { createdBy?: Types.Maybe<{ __typename?: 'UserType' } & Pick<Types.UserType, 'uid' | 'firstName' | 'lastName' | 'userName'>> }
-    >;
-};
-
-export type GetSampleByUidQueryVariables = Types.Exact<{
-    uid: Types.Scalars['String']['input'];
-}>;
-
-export type GetSampleByUidQuery = { __typename?: 'Query' } & {
-    sampleByUid: { __typename?: 'SampleType' } & Pick<
-        Types.SampleType,
-        | 'uid'
-        | 'createdByUid'
-        | 'createdAt'
-        | 'dateReceived'
-        | 'receivedByUid'
-        | 'dateCollected'
-        | 'dateSubmitted'
-        | 'submittedByUid'
-        | 'dateVerified'
-        | 'verifiedByUid'
-        | 'datePublished'
-        | 'datePrinted'
-        | 'printedByUid'
-        | 'dateInvalidated'
-        | 'invalidatedByUid'
-        | 'dateCancelled'
-        | 'cancelledByUid'
-        | 'dueDate'
-        | 'sampleId'
-        | 'priority'
-        | 'status'
-        | 'relationshipType'
-        | 'dateStored'
-        | 'storageSlot'
-        | 'storageContainerUid'
-    > & {
-            createdBy?: Types.Maybe<{ __typename?: 'UserType' } & Pick<Types.UserType, 'firstName' | 'lastName' | 'userName'>>;
-            analysisRequest?: Types.Maybe<
-                { __typename?: 'AnalysisRequestType' } & Pick<Types.AnalysisRequestType, 'uid' | 'clientRequestId'> & {
-                        patient: { __typename?: 'PatientType' } & Pick<
-                            Types.PatientType,
-                            | 'uid'
-                            | 'firstName'
-                            | 'lastName'
-                            | 'clientPatientId'
-                            | 'gender'
-                            | 'dateOfBirth'
-                            | 'age'
-                            | 'ageDobEstimated'
-                            | 'consentSms'
-                        >;
-                        client?: Types.Maybe<{ __typename?: 'ClientType' } & Pick<Types.ClientType, 'uid' | 'name'>>;
-                    }
-            >;
-            sampleType?: Types.Maybe<{ __typename?: 'SampleTypeTyp' } & Pick<Types.SampleTypeTyp, 'uid' | 'name'>>;
-            storageContainer?: Types.Maybe<
-                { __typename?: 'StorageContainerType' } & Pick<Types.StorageContainerType, 'uid' | 'name'> & {
-                        storageSection?: Types.Maybe<
-                            { __typename?: 'StorageSectionType' } & Pick<Types.StorageSectionType, 'uid' | 'name'> & {
-                                    storageLocation?: Types.Maybe<
-                                        { __typename?: 'StorageLocationType' } & Pick<Types.StorageLocationType, 'uid' | 'name'> & {
-                                                storeRoom?: Types.Maybe<
-                                                    { __typename?: 'StoreRoomType' } & Pick<Types.StoreRoomType, 'uid' | 'name'>
-                                                >;
-                                            }
-                                    >;
-                                }
-                        >;
-                    }
-            >;
-            analyses?: Types.Maybe<Array<{ __typename?: 'AnalysisType' } & Pick<Types.AnalysisType, 'uid' | 'name'>>>;
-            profiles: Array<{ __typename?: 'ProfileType' } & Pick<Types.ProfileType, 'uid' | 'name'>>;
-            rejectionReasons?: Types.Maybe<
-                Array<{ __typename?: 'RejectionReasonType' } & Pick<Types.RejectionReasonType, 'uid' | 'reason'>>
-            >;
-        };
-};
-
-export type GetSampleParentIdQueryVariables = Types.Exact<{
-    parentId: Types.Scalars['String']['input'];
-    text?: Types.InputMaybe<Types.Scalars['String']['input']>;
-}>;
-
-export type GetSampleParentIdQuery = { __typename?: 'Query' } & {
-    sampleByParentId: Array<{ __typename?: 'SampleType' } & Pick<Types.SampleType, 'uid' | 'sampleId' | 'status'>>;
-};
-
-export type GetSamplesByStorageContainerUidQueryVariables = Types.Exact<{
-    uid: Types.Scalars['String']['input'];
-}>;
-
-export type GetSamplesByStorageContainerUidQuery = { __typename?: 'Query' } & {
-    samplesByStorageContainerUid: Array<
-        { __typename?: 'SampleType' } & Pick<
-            Types.SampleType,
-            'uid' | 'sampleId' | 'storageSlot' | 'storageSlotIndex' | 'storageContainerUid' | 'status'
-        > & { analysisRequest?: Types.Maybe<{ __typename?: 'AnalysisRequestType' } & Pick<Types.AnalysisRequestType, 'clientRequestId'>> }
-    >;
-};
-
-export type GetAllQcLevelsQueryVariables = Types.Exact<{ [key: string]: never }>;
-
-export type GetAllQcLevelsQuery = { __typename?: 'Query' } & {
-    qcLevelAll: Array<{ __typename?: 'QCLevelType' } & Pick<Types.QcLevelType, 'uid' | 'level'>>;
-};
-
-export type GetAllQcTemplatesQueryVariables = Types.Exact<{ [key: string]: never }>;
-
-export type GetAllQcTemplatesQuery = { __typename?: 'Query' } & {
-    qcTemplateAll: Array<
-        { __typename?: 'QCTemplateType' } & Pick<Types.QcTemplateType, 'uid' | 'name' | 'description'> & {
-                qcLevels: Array<{ __typename?: 'QCLevelType' } & Pick<Types.QcLevelType, 'uid' | 'level'>>;
-                departments: Array<{ __typename?: 'DepartmentType' } & Pick<Types.DepartmentType, 'uid' | 'name'>>;
-            }
-    >;
-};
-
-export type GetQcSeTsQueryVariables = Types.Exact<{
-    first: Types.Scalars['Int']['input'];
-    after?: Types.InputMaybe<Types.Scalars['String']['input']>;
-    status: Types.Scalars['String']['input'];
-    sortBy?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
-}>;
-
-export type GetQcSeTsQuery = { __typename?: 'Query' } & {
-    qcSetAll: { __typename?: 'QCSetCursorPage' } & Pick<Types.QcSetCursorPage, 'totalCount'> & {
-            pageInfo: { __typename?: 'PageInfo' } & Pick<Types.PageInfo, 'hasNextPage' | 'hasPreviousPage' | 'endCursor' | 'startCursor'>;
-            items?: Types.Maybe<
-                Array<
-                    { __typename?: 'QCSetWithSamples' } & Pick<Types.QcSetWithSamples, 'uid' | 'name' | 'note' | 'status' | 'createdAt'> & {
-                            samples?: Types.Maybe<
-                                Array<
-                                    { __typename?: 'SamplesWithResults' } & Pick<
-                                        Types.SamplesWithResults,
-                                        'uid' | 'sampleId' | 'status' | 'createdByUid' | 'createdAt' | 'updatedAt' | 'assigned'
-                                    > & {
-                                            createdBy?: Types.Maybe<
-                                                { __typename?: 'UserType' } & Pick<Types.UserType, 'firstName' | 'lastName' | 'userName'>
-                                            >;
-                                            qcLevel?: Types.Maybe<
-                                                { __typename?: 'QCLevelType' } & Pick<Types.QcLevelType, 'uid' | 'level'>
-                                            >;
-                                            analysisResults?: Types.Maybe<
-                                                Array<
-                                                    { __typename?: 'AnalysisResultType' } & Pick<
-                                                        Types.AnalysisResultType,
-                                                        'uid' | 'status' | 'sampleUid' | 'result' | 'analysisUid' | 'retest' | 'reportable'
-                                                    > & {
-                                                            analysis?: Types.Maybe<
-                                                                { __typename?: 'AnalysisType' } & Pick<
-                                                                    Types.AnalysisType,
-                                                                    'uid' | 'name' | 'sortKey'
-                                                                > & {
-                                                                        resultOptions?: Types.Maybe<
-                                                                            Array<
-                                                                                { __typename?: 'ResultOptionType' } & Pick<
-                                                                                    Types.ResultOptionType,
-                                                                                    'uid' | 'optionKey' | 'value'
-                                                                                > & {
-                                                                                        sampleTypes?: Types.Maybe<
-                                                                                            Array<
-                                                                                                { __typename?: 'SampleTypeTyp' } & Pick<
-                                                                                                    Types.SampleTypeTyp,
-                                                                                                    'uid' | 'name'
-                                                                                                >
-                                                                                            >
-                                                                                        >;
-                                                                                    }
-                                                                            >
-                                                                        >;
-                                                                    }
-                                                            >;
-                                                            method?: Types.Maybe<
-                                                                { __typename?: 'MethodType' } & Pick<Types.MethodType, 'uid' | 'name'>
-                                                            >;
-                                                            laboratoryInstrument?: Types.Maybe<
-                                                                { __typename?: 'LaboratoryInstrumentType' } & Pick<
-                                                                    Types.LaboratoryInstrumentType,
-                                                                    'uid' | 'labName'
-                                                                > & {
-                                                                        instrument?: Types.Maybe<
-                                                                            { __typename?: 'InstrumentType' } & Pick<
-                                                                                Types.InstrumentType,
-                                                                                'uid' | 'name'
-                                                                            >
-                                                                        >;
-                                                                    }
-                                                            >;
-                                                        }
-                                                >
-                                            >;
-                                            analyses?: Types.Maybe<
-                                                Array<
-                                                    { __typename?: 'AnalysisType' } & Pick<
-                                                        Types.AnalysisType,
-                                                        'uid' | 'name' | 'unitUid'
-                                                    > & {
-                                                            unit?: Types.Maybe<
-                                                                { __typename?: 'UnitType' } & Pick<Types.UnitType, 'uid' | 'name'>
-                                                            >;
-                                                            resultOptions?: Types.Maybe<
-                                                                Array<
-                                                                    { __typename?: 'ResultOptionType' } & Pick<
-                                                                        Types.ResultOptionType,
-                                                                        'uid' | 'optionKey' | 'value'
-                                                                    > & {
-                                                                            sampleTypes?: Types.Maybe<
-                                                                                Array<
-                                                                                    { __typename?: 'SampleTypeTyp' } & Pick<
-                                                                                        Types.SampleTypeTyp,
-                                                                                        'uid' | 'name'
-                                                                                    >
-                                                                                >
-                                                                            >;
-                                                                        }
-                                                                >
-                                                            >;
-                                                        }
-                                                >
-                                            >;
-                                            profiles: Array<{ __typename?: 'ProfileType' } & Pick<Types.ProfileType, 'uid' | 'name'>>;
-                                        }
-                                >
-                            >;
-                        }
-                >
-            >;
-        };
-};
-
-export type GetQcSetByUidQueryVariables = Types.Exact<{
-    uid: Types.Scalars['String']['input'];
-}>;
-
-export type GetQcSetByUidQuery = { __typename?: 'Query' } & {
-    qcSetByUid: { __typename?: 'QCSetWithSamples' } & Pick<Types.QcSetWithSamples, 'uid' | 'name' | 'note' | 'createdAt'> & {
-            samples?: Types.Maybe<
-                Array<
-                    { __typename?: 'SamplesWithResults' } & Pick<
-                        Types.SamplesWithResults,
-                        'uid' | 'sampleId' | 'status' | 'createdAt' | 'updatedAt' | 'assigned'
-                    > & {
-                            qcLevel?: Types.Maybe<{ __typename?: 'QCLevelType' } & Pick<Types.QcLevelType, 'uid' | 'level'>>;
-                            analysisResults?: Types.Maybe<
-                                Array<
-                                    { __typename?: 'AnalysisResultType' } & Pick<
-                                        Types.AnalysisResultType,
-                                        | 'uid'
-                                        | 'status'
-                                        | 'sampleUid'
-                                        | 'result'
-                                        | 'analysisUid'
-                                        | 'retest'
-                                        | 'reportable'
-                                        | 'dateSubmitted'
-                                        | 'dateVerified'
-                                    > & {
-                                            analysis?: Types.Maybe<
-                                                { __typename?: 'AnalysisType' } & Pick<Types.AnalysisType, 'uid' | 'name' | 'sortKey'> & {
-                                                        interims?: Types.Maybe<
-                                                            Array<
-                                                                { __typename?: 'AnalysisInterimType' } & Pick<
-                                                                    Types.AnalysisInterimType,
-                                                                    'uid' | 'key' | 'value'
-                                                                >
-                                                            >
-                                                        >;
-                                                        resultOptions?: Types.Maybe<
-                                                            Array<
-                                                                { __typename?: 'ResultOptionType' } & Pick<
-                                                                    Types.ResultOptionType,
-                                                                    'uid' | 'optionKey' | 'value'
-                                                                > & {
-                                                                        sampleTypes?: Types.Maybe<
-                                                                            Array<
-                                                                                { __typename?: 'SampleTypeTyp' } & Pick<
-                                                                                    Types.SampleTypeTyp,
-                                                                                    'uid' | 'name'
-                                                                                >
-                                                                            >
-                                                                        >;
-                                                                    }
-                                                            >
-                                                        >;
-                                                        instruments?: Types.Maybe<
-                                                            Array<
-                                                                { __typename?: 'InstrumentType' } & Pick<
-                                                                    Types.InstrumentType,
-                                                                    'uid' | 'name'
-                                                                > & {
-                                                                        laboratoryInstruments?: Types.Maybe<
-                                                                            Array<
-                                                                                { __typename?: 'LaboratoryInstrumentType' } & Pick<
-                                                                                    Types.LaboratoryInstrumentType,
-                                                                                    'uid' | 'labName' | 'serialNumber'
-                                                                                >
-                                                                            >
-                                                                        >;
-                                                                    }
-                                                            >
-                                                        >;
-                                                        methods?: Types.Maybe<
-                                                            Array<{ __typename?: 'MethodType' } & Pick<Types.MethodType, 'uid' | 'name'>>
-                                                        >;
-                                                    }
-                                            >;
-                                            laboratoryInstrument?: Types.Maybe<
-                                                { __typename?: 'LaboratoryInstrumentType' } & Pick<
-                                                    Types.LaboratoryInstrumentType,
-                                                    'uid' | 'labName'
-                                                > & {
-                                                        instrument?: Types.Maybe<
-                                                            { __typename?: 'InstrumentType' } & Pick<Types.InstrumentType, 'uid' | 'name'>
-                                                        >;
-                                                    }
-                                            >;
-                                            method?: Types.Maybe<{ __typename?: 'MethodType' } & Pick<Types.MethodType, 'uid' | 'name'>>;
-                                            submittedBy?: Types.Maybe<
-                                                { __typename?: 'UserType' } & Pick<
-                                                    Types.UserType,
-                                                    'uid' | 'userName' | 'firstName' | 'lastName'
-                                                >
-                                            >;
-                                            verifiedBy?: Types.Maybe<
-                                                Array<
-                                                    { __typename?: 'UserType' } & Pick<
-                                                        Types.UserType,
-                                                        'uid' | 'userName' | 'firstName' | 'lastName'
-                                                    >
-                                                >
-                                            >;
-                                        }
-                                >
-                            >;
-                        }
-                >
-            >;
-        };
-};
+          >
+          & {
+            analysis?: Types.Maybe<(
+              { __typename?: 'AnalysisType' }
+              & Pick<Types.AnalysisType, 'uid' | 'name' | 'sortKey'>
+              & {
+                interims?: Types.Maybe<Array<(
+                  { __typename?: 'AnalysisInterimType' }
+                  & Pick<Types.AnalysisInterimType, 'uid' | 'key' | 'value'>
+                )>>,
+                resultOptions?: Types.Maybe<Array<(
+                  { __typename?: 'ResultOptionType' }
+                  & Pick<Types.ResultOptionType, 'uid' | 'optionKey' | 'value'>
+                  & { sampleTypes?: Types.Maybe<Array<(
+                    { __typename?: 'SampleTypeTyp' }
+                    & Pick<Types.SampleTypeTyp, 'uid' | 'name'>
+                  )>> }
+                )>>,
+                instruments?: Types.Maybe<Array<(
+                  { __typename?: 'InstrumentType' }
+                  & Pick<Types.InstrumentType, 'uid' | 'name'>
+                  & { laboratoryInstruments?: Types.Maybe<Array<(
+                    { __typename?: 'LaboratoryInstrumentType' }
+                    & Pick<Types.LaboratoryInstrumentType, 'uid' | 'labName' | 'serialNumber'>
+                  )>> }
+                )>>,
+                methods?: Types.Maybe<Array<(
+                  { __typename?: 'MethodType' }
+                  & Pick<Types.MethodType, 'uid' | 'name'>
+                )>>,
+              }
+            )>,
+            laboratoryInstrument?: Types.Maybe<(
+              { __typename?: 'LaboratoryInstrumentType' }
+              & Pick<Types.LaboratoryInstrumentType, 'uid' | 'labName'>
+              & { instrument?: Types.Maybe<(
+                { __typename?: 'InstrumentType' }
+                & Pick<Types.InstrumentType, 'uid' | 'name'>
+              )> }
+            )>,
+            method?: Types.Maybe<(
+              { __typename?: 'MethodType' }
+              & Pick<Types.MethodType, 'uid' | 'name'>
+            )>,
+            submittedBy?: Types.Maybe<(
+              { __typename?: 'UserType' }
+              & Pick<
+                Types.UserType,
+                | 'uid'
+                | 'userName'
+                | 'firstName'
+                | 'lastName'
+              >
+            )>,
+            verifiedBy?: Types.Maybe<Array<(
+              { __typename?: 'UserType' }
+              & Pick<
+                Types.UserType,
+                | 'uid'
+                | 'userName'
+                | 'firstName'
+                | 'lastName'
+              >
+            )>>,
+          }
+        )>>,
+      }
+    )>> }
+  ) }
+);
 
 export type GetReferenceRunsQueryVariables = Types.Exact<{
-    analyses: Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input'];
-    month: Types.Scalars['Int']['input'];
-    year: Types.Scalars['Int']['input'];
+  analyses: Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input'];
+  month: Types.Scalars['Int']['input'];
+  year: Types.Scalars['Int']['input'];
 }>;
 
-export type GetReferenceRunsQuery = { __typename?: 'Query' } & {
-    qcChartData: Array<
-        { __typename?: 'AnalysisResultType' } & Pick<Types.AnalysisResultType, 'result' | 'dateVerified'> & {
-                analysis?: Types.Maybe<{ __typename?: 'AnalysisType' } & Pick<Types.AnalysisType, 'uid' | 'name'>>;
-                sample: { __typename?: 'SampleType' } & {
-                    qcLevel?: Types.Maybe<{ __typename?: 'QCLevelType' } & Pick<Types.QcLevelType, 'level'>>;
-                };
-            }
-    >;
-};
+
+export type GetReferenceRunsQuery = (
+  { __typename?: 'Query' }
+  & { qcChartData: Array<(
+    { __typename?: 'AnalysisResultType' }
+    & Pick<Types.AnalysisResultType, 'result' | 'dateVerified'>
+    & {
+      analysis?: Types.Maybe<(
+        { __typename?: 'AnalysisType' }
+        & Pick<Types.AnalysisType, 'uid' | 'name'>
+      )>,
+      sample: (
+        { __typename?: 'SampleType' }
+        & { qcLevel?: Types.Maybe<(
+          { __typename?: 'QCLevelType' }
+          & Pick<Types.QcLevelType, 'level'>
+        )> }
+      ),
+    }
+  )> }
+);
 
 export type ResultOptionsByAnalysisUidQueryVariables = Types.Exact<{
-    uid: Types.Scalars['String']['input'];
+  uid: Types.Scalars['String']['input'];
 }>;
 
-export type ResultOptionsByAnalysisUidQuery = { __typename?: 'Query' } & {
-    resultOptionsByAnalysisUid: Array<
-        { __typename?: 'ResultOptionType' } & Pick<Types.ResultOptionType, 'uid' | 'optionKey' | 'value' | 'analysisUid'> & {
-                sampleTypes?: Types.Maybe<Array<{ __typename?: 'SampleTypeTyp' } & Pick<Types.SampleTypeTyp, 'uid' | 'name'>>>;
-            }
-    >;
-};
 
-export type GetAllRejectionReasonsQueryVariables = Types.Exact<{ [key: string]: never }>;
+export type ResultOptionsByAnalysisUidQuery = (
+  { __typename?: 'Query' }
+  & { resultOptionsByAnalysisUid: Array<(
+    { __typename?: 'ResultOptionType' }
+    & Pick<
+      Types.ResultOptionType,
+      | 'uid'
+      | 'optionKey'
+      | 'value'
+      | 'analysisUid'
+    >
+    & { sampleTypes?: Types.Maybe<Array<(
+      { __typename?: 'SampleTypeTyp' }
+      & Pick<Types.SampleTypeTyp, 'uid' | 'name'>
+    )>> }
+  )> }
+);
 
-export type GetAllRejectionReasonsQuery = { __typename?: 'Query' } & {
-    rejectionReasonsAll: Array<{ __typename?: 'RejectionReasonType' } & Pick<Types.RejectionReasonType, 'uid' | 'reason'>>;
-};
+export type GetAllRejectionReasonsQueryVariables = Types.Exact<{ [key: string]: never; }>;
+
+
+export type GetAllRejectionReasonsQuery = (
+  { __typename?: 'Query' }
+  & { rejectionReasonsAll: Array<(
+    { __typename?: 'RejectionReasonType' }
+    & Pick<Types.RejectionReasonType, 'uid' | 'reason'>
+  )> }
+);
 
 export type ImpressSamplesMetaQueryVariables = Types.Exact<{
-    uids: Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input'];
+  uids: Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input'];
 }>;
 
-export type ImpressSamplesMetaQuery = { __typename?: 'Query' } & {
-    impressReportsMeta: Array<
-        { __typename?: 'ReportImpressType' } & Pick<
-            Types.ReportImpressType,
-            | 'uid'
-            | 'state'
-            | 'sampleUid'
-            | 'jsonContent'
-            | 'emailRequired'
-            | 'emailSent'
-            | 'smsRequired'
-            | 'smsSent'
-            | 'generatedByUid'
-            | 'createdAt'
-        > & {
-                sample?: Types.Maybe<{ __typename?: 'SampleType' } & Pick<Types.SampleType, 'sampleId'>>;
-                generatedBy?: Types.Maybe<{ __typename?: 'UserType' } & Pick<Types.UserType, 'firstName' | 'lastName'>>;
-            }
-    >;
-};
+
+export type ImpressSamplesMetaQuery = (
+  { __typename?: 'Query' }
+  & { impressReportsMeta: Array<(
+    { __typename?: 'ReportImpressType' }
+    & Pick<
+      Types.ReportImpressType,
+      | 'uid'
+      | 'state'
+      | 'sampleUid'
+      | 'jsonContent'
+      | 'emailRequired'
+      | 'emailSent'
+      | 'smsRequired'
+      | 'smsSent'
+      | 'generatedByUid'
+      | 'createdAt'
+    >
+    & {
+      sample?: Types.Maybe<(
+        { __typename?: 'SampleType' }
+        & Pick<Types.SampleType, 'sampleId'>
+      )>,
+      generatedBy?: Types.Maybe<(
+        { __typename?: 'UserType' }
+        & Pick<Types.UserType, 'firstName' | 'lastName'>
+      )>,
+    }
+  )> }
+);
 
 export type ImpressSampleReportsQueryVariables = Types.Exact<{
-    sampleIds: Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input'];
+  sampleIds: Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input'];
 }>;
 
-export type ImpressSampleReportsQuery = { __typename?: 'Query' } & Pick<Types.Query, 'impressReportsDownload'>;
+
+export type ImpressSampleReportsQuery = (
+  { __typename?: 'Query' }
+  & Pick<Types.Query, 'impressReportsDownload'>
+);
 
 export type ImpressSampleReportQueryVariables = Types.Exact<{
-    impressUid: Types.Scalars['String']['input'];
+  impressUid: Types.Scalars['String']['input'];
 }>;
 
-export type ImpressSampleReportQuery = { __typename?: 'Query' } & Pick<Types.Query, 'impressReportDownload'>;
+
+export type ImpressSampleReportQuery = (
+  { __typename?: 'Query' }
+  & Pick<Types.Query, 'impressReportDownload'>
+);
 
 export type BarcodeSamplesQueryVariables = Types.Exact<{
-    sampleUids: Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input'];
+  sampleUids: Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input'];
 }>;
 
-export type BarcodeSamplesQuery = { __typename?: 'Query' } & Pick<Types.Query, 'barcodeSamples'>;
 
-export type SampleGenealogyNodeFieldsFragment = { __typename?: 'SampleGenealogyNode' } & Pick<
-    Types.SampleGenealogyNode,
-    'sampleUid' | 'sampleId' | 'relationshipType'
->;
+export type BarcodeSamplesQuery = (
+  { __typename?: 'Query' }
+  & Pick<Types.Query, 'barcodeSamples'>
+);
+
+export type SampleGenealogyNodeFieldsFragment = (
+  { __typename?: 'SampleGenealogyNode' }
+  & Pick<Types.SampleGenealogyNode, 'sampleUid' | 'sampleId' | 'relationshipType'>
+);
 
 export type GetSampleGenealogyQueryVariables = Types.Exact<{
-    sampleUid: Types.Scalars['String']['input'];
-    depth?: Types.InputMaybe<Types.Scalars['Int']['input']>;
-    includeTests?: Types.InputMaybe<Types.Scalars['Boolean']['input']>;
-    includeExtraRelationships?: Types.InputMaybe<Types.Scalars['Boolean']['input']>;
+  sampleUid: Types.Scalars['String']['input'];
+  depth?: Types.InputMaybe<Types.Scalars['Int']['input']>;
+  includeTests?: Types.InputMaybe<Types.Scalars['Boolean']['input']>;
+  includeExtraRelationships?: Types.InputMaybe<Types.Scalars['Boolean']['input']>;
 }>;
 
-export type GetSampleGenealogyQuery = { __typename?: 'Query' } & {
-    sampleGenealogy?: Types.Maybe<
-        { __typename?: 'SampleGenealogyNode' } & Pick<Types.SampleGenealogyNode, 'sampleUid' | 'sampleId' | 'relationshipType'> & {
-                children: Array<
-                    { __typename?: 'SampleGenealogyNode' } & Pick<
-                        Types.SampleGenealogyNode,
-                        'sampleUid' | 'sampleId' | 'relationshipType'
-                    > & {
-                            children: Array<
-                                { __typename?: 'SampleGenealogyNode' } & Pick<
-                                    Types.SampleGenealogyNode,
-                                    'sampleUid' | 'sampleId' | 'relationshipType'
-                                > & {
-                                        children: Array<
-                                            { __typename?: 'SampleGenealogyNode' } & Pick<
-                                                Types.SampleGenealogyNode,
-                                                'sampleUid' | 'sampleId' | 'relationshipType'
-                                            >
-                                        >;
-                                    }
-                            >;
-                        }
-                >;
-            }
-    >;
-};
+
+export type GetSampleGenealogyQuery = (
+  { __typename?: 'Query' }
+  & { sampleGenealogy?: Types.Maybe<(
+    { __typename?: 'SampleGenealogyNode' }
+    & Pick<Types.SampleGenealogyNode, 'sampleUid' | 'sampleId' | 'relationshipType'>
+    & { children: Array<(
+      { __typename?: 'SampleGenealogyNode' }
+      & Pick<Types.SampleGenealogyNode, 'sampleUid' | 'sampleId' | 'relationshipType'>
+      & { children: Array<(
+        { __typename?: 'SampleGenealogyNode' }
+        & Pick<Types.SampleGenealogyNode, 'sampleUid' | 'sampleId' | 'relationshipType'>
+        & { children: Array<(
+          { __typename?: 'SampleGenealogyNode' }
+          & Pick<Types.SampleGenealogyNode, 'sampleUid' | 'sampleId' | 'relationshipType'>
+        )> }
+      )> }
+    )> }
+  )> }
+);
 
 export const SampleGenealogyNodeFieldsFragmentDoc = gql`
     fragment SampleGenealogyNodeFields on SampleGenealogyNode {
-        sampleUid
-        sampleId
-        relationshipType
-    }
-`;
+  sampleUid
+  sampleId
+  relationshipType
+}
+    `;
 export const GetAllCodingStandardsDocument = gql`
     query getAllCodingStandards {
-        codingStandardAll {
-            uid
-            name
-            description
-        }
-    }
-`;
-
-export function useGetAllCodingStandardsQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GetAllCodingStandardsQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GetAllCodingStandardsQuery, GetAllCodingStandardsQueryVariables | undefined>({
-        query: GetAllCodingStandardsDocument,
-        variables: undefined,
-        ...options,
-    });
+  codingStandardAll {
+    uid
+    name
+    description
+  }
 }
+    `;
+
+export function useGetAllCodingStandardsQuery(options?: Omit<Urql.UseQueryArgs<never, GetAllCodingStandardsQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetAllCodingStandardsQuery, GetAllCodingStandardsQueryVariables | undefined>({ query: GetAllCodingStandardsDocument, variables: undefined, ...options });
+};
 export const GetAllSampleTypesDocument = gql`
     query getAllSampleTypes {
-        sampleTypeAll {
-            uid
-            name
-            abbr
-            description
-            active
-        }
-    }
-`;
+  sampleTypeAll {
+    uid
+    name
+    abbr
+    description
+    active
+  }
+}
+    `;
 
 export function useGetAllSampleTypesQuery(options?: Omit<Urql.UseQueryArgs<never, GetAllSampleTypesQueryVariables | undefined>, 'query'>) {
-    return Urql.useQuery<GetAllSampleTypesQuery, GetAllSampleTypesQueryVariables | undefined>({
-        query: GetAllSampleTypesDocument,
-        variables: undefined,
-        ...options,
-    });
-}
+  return Urql.useQuery<GetAllSampleTypesQuery, GetAllSampleTypesQueryVariables | undefined>({ query: GetAllSampleTypesDocument, variables: undefined, ...options });
+};
 export const GeSampleTypeMappingsBySampleTypeUidDocument = gql`
     query geSampleTypeMappingsBySampleTypeUid($uid: String!) {
-        sampleTypeMappingsBySampleType(sampleTypeUid: $uid) {
-            uid
-            sampleTypeUid
-            codingStandardUid
-            codingStandard {
-                name
-            }
-            name
-            code
-            description
-        }
+  sampleTypeMappingsBySampleType(sampleTypeUid: $uid) {
+    uid
+    sampleTypeUid
+    codingStandardUid
+    codingStandard {
+      name
     }
-`;
-
-export function useGeSampleTypeMappingsBySampleTypeUidQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GeSampleTypeMappingsBySampleTypeUidQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GeSampleTypeMappingsBySampleTypeUidQuery, GeSampleTypeMappingsBySampleTypeUidQueryVariables | undefined>({
-        query: GeSampleTypeMappingsBySampleTypeUidDocument,
-        variables: undefined,
-        ...options,
-    });
+    name
+    code
+    description
+  }
 }
+    `;
+
+export function useGeSampleTypeMappingsBySampleTypeUidQuery(options?: Omit<Urql.UseQueryArgs<never, GeSampleTypeMappingsBySampleTypeUidQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GeSampleTypeMappingsBySampleTypeUidQuery, GeSampleTypeMappingsBySampleTypeUidQueryVariables | undefined>({ query: GeSampleTypeMappingsBySampleTypeUidDocument, variables: undefined, ...options });
+};
 export const GetAllAnalysesServicesDocument = gql`
     query getAllAnalysesServices($first: Int, $after: String, $text: String, $sortBy: [String!] = ["name"]) {
-        analysisAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {
-            items {
-                uid
-                name
-                keyword
-                active
-                sortKey
-                tatLengthMinutes
-                precision
-                requiredVerifications
-                selfVerification
-                description
-                categoryUid
-                departmentUid
-                unitUid
-                unit {
-                    uid
-                    name
-                }
-                sampleTypes {
-                    uid
-                    name
-                }
-                specifications {
-                    uid
-                    analysisUid
-                    unitUid
-                    unit {
-                        uid
-                        name
-                        description
-                    }
-                    min
-                    max
-                    minWarn
-                    maxWarn
-                    minReport
-                    maxReport
-                    warnValues
-                    warnReport
-                    gender
-                    ageMin
-                    ageMax
-                    methodUid
-                }
-                uncertainties {
-                    uid
-                    min
-                    max
-                    value
-                    analysisUid
-                    instrumentUid
-                    methodUid
-                }
-                detectionLimits {
-                    uid
-                    lowerLimit
-                    upperLimit
-                    analysisUid
-                    instrumentUid
-                    methodUid
-                }
-                correctionFactors {
-                    uid
-                    factor
-                    analysisUid
-                    instrumentUid
-                    methodUid
-                }
-                correctionFactors {
-                    uid
-                    factor
-                    analysisUid
-                    instrumentUid
-                    methodUid
-                }
-                interims {
-                    uid
-                    key
-                    value
-                    analysisUid
-                    instrumentUid
-                }
-                instruments {
-                    uid
-                    name
-                    keyword
-                }
-                methods {
-                    uid
-                    name
-                    keyword
-                    description
-                    instruments {
-                        uid
-                        name
-                        keyword
-                        description
-                    }
-                }
-                resultOptions {
-                    uid
-                    optionKey
-                    value
-                    sampleTypes {
-                        uid
-                        name
-                    }
-                }
-                category {
-                    uid
-                    name
-                }
-                profiles {
-                    uid
-                    name
-                }
-            }
+  analysisAll(pageSize: $first, afterCursor: $after, text: $text, sortBy: $sortBy) {
+    items {
+      uid
+      name
+      keyword
+      active
+      sortKey
+      tatLengthMinutes
+      precision
+      requiredVerifications
+      selfVerification
+      description
+      categoryUid
+      departmentUid
+      unitUid
+      unit {
+        uid
+        name
+      }
+      sampleTypes {
+        uid
+        name
+      }
+      specifications {
+        uid
+        analysisUid
+        unitUid
+        unit {
+          uid
+          name
+          description
         }
+        min
+        max
+        minWarn
+        maxWarn
+        minReport
+        maxReport
+        warnValues
+        warnReport
+        gender
+        ageMin
+        ageMax
+        methodUid
+      }
+      uncertainties {
+        uid
+        min
+        max
+        value
+        analysisUid
+        instrumentUid
+        methodUid
+      }
+      detectionLimits {
+        uid
+        lowerLimit
+        upperLimit
+        analysisUid
+        instrumentUid
+        methodUid
+      }
+      correctionFactors {
+        uid
+        factor
+        analysisUid
+        instrumentUid
+        methodUid
+      }
+      correctionFactors {
+        uid
+        factor
+        analysisUid
+        instrumentUid
+        methodUid
+      }
+      interims {
+        uid
+        key
+        value
+        analysisUid
+        instrumentUid
+      }
+      instruments {
+        uid
+        name
+        keyword
+      }
+      methods {
+        uid
+        name
+        keyword
+        description
+        instruments {
+          uid
+          name
+          keyword
+          description
+        }
+      }
+      resultOptions {
+        uid
+        optionKey
+        value
+        sampleTypes {
+          uid
+          name
+        }
+      }
+      category {
+        uid
+        name
+      }
+      profiles {
+        uid
+        name
+      }
     }
-`;
-
-export function useGetAllAnalysesServicesQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GetAllAnalysesServicesQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GetAllAnalysesServicesQuery, GetAllAnalysesServicesQueryVariables | undefined>({
-        query: GetAllAnalysesServicesDocument,
-        variables: undefined,
-        ...options,
-    });
+  }
 }
+    `;
+
+export function useGetAllAnalysesServicesQuery(options?: Omit<Urql.UseQueryArgs<never, GetAllAnalysesServicesQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetAllAnalysesServicesQuery, GetAllAnalysesServicesQueryVariables | undefined>({ query: GetAllAnalysesServicesDocument, variables: undefined, ...options });
+};
 export const GetAnalysesServicesByUidDocument = gql`
     query getAnalysesServicesByUid($uid: String!) {
-        analysisByUid(uid: $uid) {
-            uid
-            name
-            keyword
-            description
-            unit {
-                uid
-                name
-            }
-            category {
-                uid
-                name
-            }
-        }
+  analysisByUid(uid: $uid) {
+    uid
+    name
+    keyword
+    description
+    unit {
+      uid
+      name
     }
-`;
-
-export function useGetAnalysesServicesByUidQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GetAnalysesServicesByUidQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GetAnalysesServicesByUidQuery, GetAnalysesServicesByUidQueryVariables | undefined>({
-        query: GetAnalysesServicesByUidDocument,
-        variables: undefined,
-        ...options,
-    });
+    category {
+      uid
+      name
+    }
+  }
 }
+    `;
+
+export function useGetAnalysesServicesByUidQuery(options?: Omit<Urql.UseQueryArgs<never, GetAnalysesServicesByUidQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetAnalysesServicesByUidQuery, GetAnalysesServicesByUidQueryVariables | undefined>({ query: GetAnalysesServicesByUidDocument, variables: undefined, ...options });
+};
 export const GetAllAnalysesProfilesDocument = gql`
     query getAllAnalysesProfiles {
-        profileAll {
-            uid
-            name
-            description
-            keyword
-            active
-            departmentUid
-            sampleTypes {
-                uid
-                name
-            }
-            analyses {
-                name
-                keyword
-                active
-                sortKey
-            }
-        }
+  profileAll {
+    uid
+    name
+    description
+    keyword
+    active
+    departmentUid
+    sampleTypes {
+      uid
+      name
     }
-`;
-
-export function useGetAllAnalysesProfilesQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GetAllAnalysesProfilesQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GetAllAnalysesProfilesQuery, GetAllAnalysesProfilesQueryVariables | undefined>({
-        query: GetAllAnalysesProfilesDocument,
-        variables: undefined,
-        ...options,
-    });
+    analyses {
+      name
+      keyword
+      active
+      sortKey
+    }
+  }
 }
+    `;
+
+export function useGetAllAnalysesProfilesQuery(options?: Omit<Urql.UseQueryArgs<never, GetAllAnalysesProfilesQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetAllAnalysesProfilesQuery, GetAllAnalysesProfilesQueryVariables | undefined>({ query: GetAllAnalysesProfilesDocument, variables: undefined, ...options });
+};
 export const GetAllAnalysesTemplatesDocument = gql`
     query getAllAnalysesTemplates {
-        analysisTemplateAll {
-            uid
-            name
-            description
-            departmentUid
-            analyses {
-                uid
-            }
-        }
+  analysisTemplateAll {
+    uid
+    name
+    description
+    departmentUid
+    analyses {
+      uid
     }
-`;
-
-export function useGetAllAnalysesTemplatesQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GetAllAnalysesTemplatesQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GetAllAnalysesTemplatesQuery, GetAllAnalysesTemplatesQueryVariables | undefined>({
-        query: GetAllAnalysesTemplatesDocument,
-        variables: undefined,
-        ...options,
-    });
+  }
 }
+    `;
+
+export function useGetAllAnalysesTemplatesQuery(options?: Omit<Urql.UseQueryArgs<never, GetAllAnalysesTemplatesQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetAllAnalysesTemplatesQuery, GetAllAnalysesTemplatesQueryVariables | undefined>({ query: GetAllAnalysesTemplatesDocument, variables: undefined, ...options });
+};
 export const GetAnalysisMappingsByAnalysisUidDocument = gql`
     query getAnalysisMappingsByAnalysisUid($uid: String!) {
-        analysisMappingsByAnalysis(analysisUid: $uid) {
-            uid
-            analysisUid
-            codingStandardUid
-            codingStandard {
-                name
-            }
-            name
-            code
-            description
-        }
+  analysisMappingsByAnalysis(analysisUid: $uid) {
+    uid
+    analysisUid
+    codingStandardUid
+    codingStandard {
+      name
     }
-`;
-
-export function useGetAnalysisMappingsByAnalysisUidQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GetAnalysisMappingsByAnalysisUidQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GetAnalysisMappingsByAnalysisUidQuery, GetAnalysisMappingsByAnalysisUidQueryVariables | undefined>({
-        query: GetAnalysisMappingsByAnalysisUidDocument,
-        variables: undefined,
-        ...options,
-    });
+    name
+    code
+    description
+  }
 }
+    `;
+
+export function useGetAnalysisMappingsByAnalysisUidQuery(options?: Omit<Urql.UseQueryArgs<never, GetAnalysisMappingsByAnalysisUidQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetAnalysisMappingsByAnalysisUidQuery, GetAnalysisMappingsByAnalysisUidQueryVariables | undefined>({ query: GetAnalysisMappingsByAnalysisUidDocument, variables: undefined, ...options });
+};
 export const GetAllProfilesAndServicesDocument = gql`
     query getAllProfilesANDServices {
-        profileAll {
-            uid
-            name
-            description
-            keyword
-            active
-            departmentUid
-            sampleTypes {
-                uid
-                name
-            }
-            analyses {
-                uid
-                name
-                keyword
-                sortKey
-                active
-            }
-        }
-        analysisAll {
-            items {
-                uid
-                name
-                keyword
-                active
-                description
-                sortKey
-                tatLengthMinutes
-                precision
-                requiredVerifications
-                selfVerification
-                categoryUid
-                departmentUid
-                unitUid
-                unit {
-                    uid
-                    name
-                }
-                sampleTypes {
-                    uid
-                    name
-                }
-                specifications {
-                    uid
-                    analysisUid
-                    unitUid
-                    unit {
-                        uid
-                        name
-                        description
-                    }
-                    min
-                    max
-                    minWarn
-                    maxWarn
-                    minReport
-                    maxReport
-                    warnValues
-                    warnReport
-                    gender
-                    ageMin
-                    ageMax
-                    methodUid
-                }
-                uncertainties {
-                    uid
-                    min
-                    max
-                    value
-                    analysisUid
-                    instrumentUid
-                    methodUid
-                }
-                detectionLimits {
-                    uid
-                    lowerLimit
-                    upperLimit
-                    analysisUid
-                    instrumentUid
-                    methodUid
-                }
-                correctionFactors {
-                    uid
-                    factor
-                    analysisUid
-                    instrumentUid
-                    methodUid
-                }
-                correctionFactors {
-                    uid
-                    factor
-                    analysisUid
-                    instrumentUid
-                    methodUid
-                }
-                interims {
-                    uid
-                    key
-                    value
-                    analysisUid
-                    instrumentUid
-                }
-                instruments {
-                    uid
-                    name
-                    keyword
-                    description
-                }
-                methods {
-                    uid
-                    name
-                    keyword
-                    description
-                }
-                resultOptions {
-                    uid
-                    optionKey
-                    value
-                    sampleTypes {
-                        uid
-                        name
-                    }
-                }
-                category {
-                    uid
-                    name
-                }
-                profiles {
-                    uid
-                    name
-                }
-            }
-        }
+  profileAll {
+    uid
+    name
+    description
+    keyword
+    active
+    departmentUid
+    sampleTypes {
+      uid
+      name
     }
-`;
-
-export function useGetAllProfilesAndServicesQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GetAllProfilesAndServicesQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GetAllProfilesAndServicesQuery, GetAllProfilesAndServicesQueryVariables | undefined>({
-        query: GetAllProfilesAndServicesDocument,
-        variables: undefined,
-        ...options,
-    });
+    analyses {
+      uid
+      name
+      keyword
+      sortKey
+      active
+    }
+  }
+  analysisAll {
+    items {
+      uid
+      name
+      keyword
+      active
+      description
+      sortKey
+      tatLengthMinutes
+      precision
+      requiredVerifications
+      selfVerification
+      categoryUid
+      departmentUid
+      unitUid
+      unit {
+        uid
+        name
+      }
+      sampleTypes {
+        uid
+        name
+      }
+      specifications {
+        uid
+        analysisUid
+        unitUid
+        unit {
+          uid
+          name
+          description
+        }
+        min
+        max
+        minWarn
+        maxWarn
+        minReport
+        maxReport
+        warnValues
+        warnReport
+        gender
+        ageMin
+        ageMax
+        methodUid
+      }
+      uncertainties {
+        uid
+        min
+        max
+        value
+        analysisUid
+        instrumentUid
+        methodUid
+      }
+      detectionLimits {
+        uid
+        lowerLimit
+        upperLimit
+        analysisUid
+        instrumentUid
+        methodUid
+      }
+      correctionFactors {
+        uid
+        factor
+        analysisUid
+        instrumentUid
+        methodUid
+      }
+      correctionFactors {
+        uid
+        factor
+        analysisUid
+        instrumentUid
+        methodUid
+      }
+      interims {
+        uid
+        key
+        value
+        analysisUid
+        instrumentUid
+      }
+      instruments {
+        uid
+        name
+        keyword
+        description
+      }
+      methods {
+        uid
+        name
+        keyword
+        description
+      }
+      resultOptions {
+        uid
+        optionKey
+        value
+        sampleTypes {
+          uid
+          name
+        }
+      }
+      category {
+        uid
+        name
+      }
+      profiles {
+        uid
+        name
+      }
+    }
+  }
 }
+    `;
+
+export function useGetAllProfilesAndServicesQuery(options?: Omit<Urql.UseQueryArgs<never, GetAllProfilesAndServicesQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetAllProfilesAndServicesQuery, GetAllProfilesAndServicesQueryVariables | undefined>({ query: GetAllProfilesAndServicesDocument, variables: undefined, ...options });
+};
 export const GetProfileMappingsByProfileUidDocument = gql`
     query getProfileMappingsByProfileUid($uid: String!) {
-        profileMappingsByProfile(profileUid: $uid) {
-            uid
-            profileUid
-            codingStandardUid
-            codingStandard {
-                name
-            }
-            name
-            code
-            description
-        }
+  profileMappingsByProfile(profileUid: $uid) {
+    uid
+    profileUid
+    codingStandardUid
+    codingStandard {
+      name
     }
-`;
-
-export function useGetProfileMappingsByProfileUidQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GetProfileMappingsByProfileUidQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GetProfileMappingsByProfileUidQuery, GetProfileMappingsByProfileUidQueryVariables | undefined>({
-        query: GetProfileMappingsByProfileUidDocument,
-        variables: undefined,
-        ...options,
-    });
+    name
+    code
+    description
+  }
 }
+    `;
+
+export function useGetProfileMappingsByProfileUidQuery(options?: Omit<Urql.UseQueryArgs<never, GetProfileMappingsByProfileUidQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetProfileMappingsByProfileUidQuery, GetProfileMappingsByProfileUidQueryVariables | undefined>({ query: GetProfileMappingsByProfileUidDocument, variables: undefined, ...options });
+};
 export const GetAllAnalysesCategoriesDocument = gql`
     query getAllAnalysesCategories {
-        analysisCategoryAll {
+  analysisCategoryAll {
+    uid
+    name
+    description
+    active
+    departmentUid
+    department {
+      uid
+      name
+    }
+  }
+}
+    `;
+
+export function useGetAllAnalysesCategoriesQuery(options?: Omit<Urql.UseQueryArgs<never, GetAllAnalysesCategoriesQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetAllAnalysesCategoriesQuery, GetAllAnalysesCategoriesQueryVariables | undefined>({ query: GetAllAnalysesCategoriesDocument, variables: undefined, ...options });
+};
+export const GetAllSamplesDocument = gql`
+    query getAllSamples($first: Int!, $after: String, $before: String, $status: String!, $text: String!, $clientUid: String!, $sortBy: [String!]) {
+  sampleAll(
+    pageSize: $first
+    afterCursor: $after
+    beforeCursor: $before
+    status: $status
+    text: $text
+    clientUid: $clientUid
+    sortBy: $sortBy
+  ) {
+    totalCount
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      endCursor
+      startCursor
+    }
+    items {
+      uid
+      createdByUid
+      createdBy {
+        firstName
+        lastName
+        userName
+      }
+      createdAt
+      dateCollected
+      dateReceived
+      dateSubmitted
+      dateVerified
+      datePublished
+      datePrinted
+      dateStored
+      printed
+      dueDate
+      analysisRequest {
+        uid
+        clientRequestId
+        patient {
+          uid
+          firstName
+          lastName
+          clientPatientId
+          gender
+          dateOfBirth
+          age
+          ageDobEstimated
+          consentSms
+        }
+        client {
+          uid
+          name
+          code
+          district {
+            name
+            province {
+              name
+            }
+          }
+        }
+      }
+      sampleType {
+        uid
+        name
+      }
+      sampleId
+      relationshipType
+      priority
+      status
+      storageSlot
+      storageContainerUid
+      storageContainer {
+        uid
+        name
+        storageSection {
+          uid
+          name
+          storageLocation {
             uid
             name
-            description
-            active
-            departmentUid
-            department {
-                uid
-                name
+            storeRoom {
+              uid
+              name
             }
+          }
         }
+      }
+      analyses {
+        uid
+        name
+        sortKey
+      }
+      profiles {
+        uid
+        name
+      }
+      rejectionReasons {
+        uid
+        reason
+      }
     }
-`;
-
-export function useGetAllAnalysesCategoriesQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GetAllAnalysesCategoriesQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GetAllAnalysesCategoriesQuery, GetAllAnalysesCategoriesQueryVariables | undefined>({
-        query: GetAllAnalysesCategoriesDocument,
-        variables: undefined,
-        ...options,
-    });
+  }
 }
-export const GetAllSamplesDocument = gql`
-    query getAllSamples(
-        $first: Int!
-        $after: String
-        $before: String
-        $status: String!
-        $text: String!
-        $clientUid: String!
-        $sortBy: [String!]
-    ) {
-        sampleAll(
-            pageSize: $first
-            afterCursor: $after
-            beforeCursor: $before
-            status: $status
-            text: $text
-            clientUid: $clientUid
-            sortBy: $sortBy
-        ) {
-            totalCount
-            pageInfo {
-                hasNextPage
-                hasPreviousPage
-                endCursor
-                startCursor
-            }
-            items {
-                uid
-                createdByUid
-                createdBy {
-                    firstName
-                    lastName
-                    userName
-                }
-                createdAt
-                dateCollected
-                dateReceived
-                dateSubmitted
-                dateVerified
-                datePublished
-                datePrinted
-                dateStored
-                printed
-                dueDate
-                analysisRequest {
-                    uid
-                    clientRequestId
-                    patient {
-                        uid
-                        firstName
-                        lastName
-                        clientPatientId
-                        gender
-                        dateOfBirth
-                        age
-                        ageDobEstimated
-                        consentSms
-                    }
-                    client {
-                        uid
-                        name
-                        code
-                        district {
-                            name
-                            province {
-                                name
-                            }
-                        }
-                    }
-                }
-                sampleType {
-                    uid
-                    name
-                }
-                sampleId
-                relationshipType
-                priority
-                status
-                storageSlot
-                storageContainerUid
-                storageContainer {
-                    uid
-                    name
-                    storageSection {
-                        uid
-                        name
-                        storageLocation {
-                            uid
-                            name
-                            storeRoom {
-                                uid
-                                name
-                            }
-                        }
-                    }
-                }
-                analyses {
-                    uid
-                    name
-                    sortKey
-                }
-                profiles {
-                    uid
-                    name
-                }
-                rejectionReasons {
-                    uid
-                    reason
-                }
-            }
-        }
-    }
-`;
+    `;
 
 export function useGetAllSamplesQuery(options?: Omit<Urql.UseQueryArgs<never, GetAllSamplesQueryVariables | undefined>, 'query'>) {
-    return Urql.useQuery<GetAllSamplesQuery, GetAllSamplesQueryVariables | undefined>({
-        query: GetAllSamplesDocument,
-        variables: undefined,
-        ...options,
-    });
-}
+  return Urql.useQuery<GetAllSamplesQuery, GetAllSamplesQueryVariables | undefined>({ query: GetAllSamplesDocument, variables: undefined, ...options });
+};
 export const GetSamplesForShipmentAssignDocument = gql`
-    query getSamplesForShipmentAssign(
-        $first: Int!
-        $after: String
-        $text: String!
-        $sortBy: [String!]
-        $analysisUid: String
-        $sampleTypeUid: String!
-    ) {
-        samplesForShipmentAssign(
-            pageSize: $first
-            afterCursor: $after
-            text: $text
-            sortBy: $sortBy
-            analysisUid: $analysisUid
-            sampleTypeUid: $sampleTypeUid
-        ) {
-            totalCount
-            pageInfo {
-                hasNextPage
-                hasPreviousPage
-                startCursor
-                endCursor
-            }
-            items {
-                uid
-                sampleId
-                status
-                createdAt
-                dateReceived
-                sampleType {
-                    name
-                }
-                analysisRequest {
-                    clientRequestId
-                }
-                analysisResults {
-                    uid
-                    assigned
-                    status
-                    analysis {
-                        name
-                    }
-                }
-            }
-        }
+    query getSamplesForShipmentAssign($first: Int!, $after: String, $text: String!, $sortBy: [String!], $analysisUid: String, $sampleTypeUid: String!) {
+  samplesForShipmentAssign(
+    pageSize: $first
+    afterCursor: $after
+    text: $text
+    sortBy: $sortBy
+    analysisUid: $analysisUid
+    sampleTypeUid: $sampleTypeUid
+  ) {
+    totalCount
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
     }
-`;
-
-export function useGetSamplesForShipmentAssignQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GetSamplesForShipmentAssignQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GetSamplesForShipmentAssignQuery, GetSamplesForShipmentAssignQueryVariables | undefined>({
-        query: GetSamplesForShipmentAssignDocument,
-        variables: undefined,
-        ...options,
-    });
+    items {
+      uid
+      sampleId
+      status
+      createdAt
+      dateReceived
+      sampleType {
+        name
+      }
+      analysisRequest {
+        clientRequestId
+      }
+      analysisResults {
+        uid
+        assigned
+        status
+        analysis {
+          name
+        }
+      }
+    }
+  }
 }
+    `;
+
+export function useGetSamplesForShipmentAssignQuery(options?: Omit<Urql.UseQueryArgs<never, GetSamplesForShipmentAssignQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetSamplesForShipmentAssignQuery, GetSamplesForShipmentAssignQueryVariables | undefined>({ query: GetSamplesForShipmentAssignDocument, variables: undefined, ...options });
+};
 export const GetAnalysesRequestsByPatientUidDocument = gql`
     query getAnalysesRequestsByPatientUid($uid: String!) {
-        analysisRequestsByPatientUid(uid: $uid) {
-            uid
-            clientRequestId
-            requestId
-            createdAt
-            patient {
-                uid
-                firstName
-                lastName
-                clientPatientId
-                gender
-                dateOfBirth
-                age
-                ageDobEstimated
-                consentSms
-            }
-            client {
-                uid
-                name
-            }
-            samples {
-                uid
-                createdByUid
-                createdBy {
-                    firstName
-                    lastName
-                    userName
-                }
-                createdAt
-                sampleType {
-                    uid
-                    name
-                }
-                sampleId
-                priority
-                status
-                storageSlot
-                storageContainerUid
-                storageSlot
-                storageContainerUid
-                storageContainer {
-                    uid
-                    name
-                    storageSection {
-                        uid
-                        name
-                        storageLocation {
-                            uid
-                            name
-                            storeRoom {
-                                uid
-                                name
-                            }
-                        }
-                    }
-                }
-                analyses {
-                    uid
-                    name
-                    sortKey
-                }
-                rejectionReasons {
-                    uid
-                    reason
-                }
-                profiles {
-                    uid
-                    name
-                }
-            }
-        }
+  analysisRequestsByPatientUid(uid: $uid) {
+    uid
+    clientRequestId
+    requestId
+    createdAt
+    patient {
+      uid
+      firstName
+      lastName
+      clientPatientId
+      gender
+      dateOfBirth
+      age
+      ageDobEstimated
+      consentSms
     }
-`;
-
-export function useGetAnalysesRequestsByPatientUidQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GetAnalysesRequestsByPatientUidQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GetAnalysesRequestsByPatientUidQuery, GetAnalysesRequestsByPatientUidQueryVariables | undefined>({
-        query: GetAnalysesRequestsByPatientUidDocument,
-        variables: undefined,
-        ...options,
-    });
+    client {
+      uid
+      name
+    }
+    samples {
+      uid
+      createdByUid
+      createdBy {
+        firstName
+        lastName
+        userName
+      }
+      createdAt
+      sampleType {
+        uid
+        name
+      }
+      sampleId
+      priority
+      status
+      storageSlot
+      storageContainerUid
+      storageSlot
+      storageContainerUid
+      storageContainer {
+        uid
+        name
+        storageSection {
+          uid
+          name
+          storageLocation {
+            uid
+            name
+            storeRoom {
+              uid
+              name
+            }
+          }
+        }
+      }
+      analyses {
+        uid
+        name
+        sortKey
+      }
+      rejectionReasons {
+        uid
+        reason
+      }
+      profiles {
+        uid
+        name
+      }
+    }
+  }
 }
+    `;
+
+export function useGetAnalysesRequestsByPatientUidQuery(options?: Omit<Urql.UseQueryArgs<never, GetAnalysesRequestsByPatientUidQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetAnalysesRequestsByPatientUidQuery, GetAnalysesRequestsByPatientUidQueryVariables | undefined>({ query: GetAnalysesRequestsByPatientUidDocument, variables: undefined, ...options });
+};
 export const GetAnalysesRequestsByClientUidDocument = gql`
     query getAnalysesRequestsByClientUid($uid: String!) {
-        analysisRequestsByClientUid(uid: $uid) {
-            uid
-            clientRequestId
-            createdAt
-            patient {
-                uid
-                firstName
-                lastName
-                clientPatientId
-                gender
-                dateOfBirth
-                age
-                ageDobEstimated
-                consentSms
-            }
-            client {
-                uid
-                name
-            }
-            samples {
-                uid
-                createdByUid
-                createdBy {
-                    firstName
-                    lastName
-                    userName
-                }
-                createdAt
-                sampleType {
-                    uid
-                    name
-                }
-                sampleId
-                priority
-                status
-                storageSlot
-                storageContainerUid
-                storageSlot
-                storageContainerUid
-                storageContainer {
-                    uid
-                    name
-                    storageSection {
-                        uid
-                        name
-                        storageLocation {
-                            uid
-                            name
-                            storeRoom {
-                                uid
-                                name
-                            }
-                        }
-                    }
-                }
-                rejectionReasons {
-                    uid
-                    reason
-                }
-                analyses {
-                    uid
-                    name
-                    sortKey
-                }
-                profiles {
-                    uid
-                    name
-                }
-            }
-        }
+  analysisRequestsByClientUid(uid: $uid) {
+    uid
+    clientRequestId
+    createdAt
+    patient {
+      uid
+      firstName
+      lastName
+      clientPatientId
+      gender
+      dateOfBirth
+      age
+      ageDobEstimated
+      consentSms
     }
-`;
-
-export function useGetAnalysesRequestsByClientUidQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GetAnalysesRequestsByClientUidQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GetAnalysesRequestsByClientUidQuery, GetAnalysesRequestsByClientUidQueryVariables | undefined>({
-        query: GetAnalysesRequestsByClientUidDocument,
-        variables: undefined,
-        ...options,
-    });
+    client {
+      uid
+      name
+    }
+    samples {
+      uid
+      createdByUid
+      createdBy {
+        firstName
+        lastName
+        userName
+      }
+      createdAt
+      sampleType {
+        uid
+        name
+      }
+      sampleId
+      priority
+      status
+      storageSlot
+      storageContainerUid
+      storageSlot
+      storageContainerUid
+      storageContainer {
+        uid
+        name
+        storageSection {
+          uid
+          name
+          storageLocation {
+            uid
+            name
+            storeRoom {
+              uid
+              name
+            }
+          }
+        }
+      }
+      rejectionReasons {
+        uid
+        reason
+      }
+      analyses {
+        uid
+        name
+        sortKey
+      }
+      profiles {
+        uid
+        name
+      }
+    }
+  }
 }
+    `;
+
+export function useGetAnalysesRequestsByClientUidQuery(options?: Omit<Urql.UseQueryArgs<never, GetAnalysesRequestsByClientUidQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetAnalysesRequestsByClientUidQuery, GetAnalysesRequestsByClientUidQueryVariables | undefined>({ query: GetAnalysesRequestsByClientUidDocument, variables: undefined, ...options });
+};
 export const GetAnalysesResultsBySampleUidDocument = gql`
     query getAnalysesResultsBySampleUid($uid: String!) {
-        analysisResultBySampleUid(uid: $uid) {
-            uid
-            status
-            sampleUid
-            result
-            method {
-                uid
-                name
-            }
-            laboratoryInstrument {
-                uid
-                labName
-                instrument {
-                    uid
-                    name
-                }
-            }
-            sample {
-                uid
-                sampleId
-                status
-                rejectionReasons {
-                    uid
-                    reason
-                }
-            }
-            analysisUid
-            analysis {
-                uid
-                name
-                unitUid
-                unit {
-                    uid
-                    name
-                }
-                sortKey
-                interims {
-                    uid
-                    key
-                    value
-                    analysisUid
-                    instrumentUid
-                }
-                resultOptions {
-                    uid
-                    optionKey
-                    value
-                    sampleTypes {
-                        uid
-                        name
-                    }
-                }
-                instruments {
-                    uid
-                    name
-                    laboratoryInstruments {
-                        uid
-                        labName
-                        serialNumber
-                    }
-                }
-                methods {
-                    uid
-                    name
-                }
-            }
-            retest
-            reportable
-            submittedBy {
-                uid
-                firstName
-                lastName
-                userName
-            }
-            dateSubmitted
-            dueDate
-            verifiedBy {
-                uid
-                firstName
-                lastName
-                userName
-            }
-            dateVerified
-            createdAt
-            createdByUid
-            updatedAt
-            updatedByUid
-            worksheetUid
-            worksheetId
-        }
+  analysisResultBySampleUid(uid: $uid) {
+    uid
+    status
+    sampleUid
+    result
+    method {
+      uid
+      name
     }
-`;
-
-export function useGetAnalysesResultsBySampleUidQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GetAnalysesResultsBySampleUidQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GetAnalysesResultsBySampleUidQuery, GetAnalysesResultsBySampleUidQueryVariables | undefined>({
-        query: GetAnalysesResultsBySampleUidDocument,
-        variables: undefined,
-        ...options,
-    });
+    laboratoryInstrument {
+      uid
+      labName
+      instrument {
+        uid
+        name
+      }
+    }
+    sample {
+      uid
+      sampleId
+      status
+      rejectionReasons {
+        uid
+        reason
+      }
+    }
+    analysisUid
+    analysis {
+      uid
+      name
+      unitUid
+      unit {
+        uid
+        name
+      }
+      sortKey
+      interims {
+        uid
+        key
+        value
+        analysisUid
+        instrumentUid
+      }
+      resultOptions {
+        uid
+        optionKey
+        value
+        sampleTypes {
+          uid
+          name
+        }
+      }
+      instruments {
+        uid
+        name
+        laboratoryInstruments {
+          uid
+          labName
+          serialNumber
+        }
+      }
+      methods {
+        uid
+        name
+      }
+    }
+    retest
+    reportable
+    submittedBy {
+      uid
+      firstName
+      lastName
+      userName
+    }
+    dateSubmitted
+    dueDate
+    verifiedBy {
+      uid
+      firstName
+      lastName
+      userName
+    }
+    dateVerified
+    createdAt
+    createdByUid
+    updatedAt
+    updatedByUid
+    worksheetUid
+    worksheetId
+  }
 }
+    `;
+
+export function useGetAnalysesResultsBySampleUidQuery(options?: Omit<Urql.UseQueryArgs<never, GetAnalysesResultsBySampleUidQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetAnalysesResultsBySampleUidQuery, GetAnalysesResultsBySampleUidQueryVariables | undefined>({ query: GetAnalysesResultsBySampleUidDocument, variables: undefined, ...options });
+};
 export const GetAnalysesResultsForWsAssignDocument = gql`
-    query getAnalysesResultsForWsAssign(
-        $first: Int!
-        $after: String
-        $text: String!
-        $sortBy: [String!]
-        $analysisUid: String!
-        $sampleTypeUid: String!
-    ) {
-        analysisResultsForWsAssign(
-            pageSize: $first
-            afterCursor: $after
-            text: $text
-            sortBy: $sortBy
-            analysisUid: $analysisUid
-            sampleTypeUid: $sampleTypeUid
-        ) {
-            totalCount
-            pageInfo {
-                hasNextPage
-                hasPreviousPage
-                startCursor
-                endCursor
-            }
-            items {
-                uid
-                assigned
-                sampleUid
-                sample {
-                    sampleId
-                    priority
-                    status
-                    dateReceived
-                    createdAt
-                    sampleType {
-                        name
-                    }
-                }
-                status
-                analysisUid
-                analysis {
-                    name
-                }
-            }
-        }
+    query getAnalysesResultsForWsAssign($first: Int!, $after: String, $text: String!, $sortBy: [String!], $analysisUid: String!, $sampleTypeUid: String!) {
+  analysisResultsForWsAssign(
+    pageSize: $first
+    afterCursor: $after
+    text: $text
+    sortBy: $sortBy
+    analysisUid: $analysisUid
+    sampleTypeUid: $sampleTypeUid
+  ) {
+    totalCount
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
     }
-`;
-
-export function useGetAnalysesResultsForWsAssignQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GetAnalysesResultsForWsAssignQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GetAnalysesResultsForWsAssignQuery, GetAnalysesResultsForWsAssignQueryVariables | undefined>({
-        query: GetAnalysesResultsForWsAssignDocument,
-        variables: undefined,
-        ...options,
-    });
+    items {
+      uid
+      assigned
+      sampleUid
+      sample {
+        sampleId
+        priority
+        status
+        dateReceived
+        createdAt
+        sampleType {
+          name
+        }
+      }
+      status
+      analysisUid
+      analysis {
+        name
+      }
+    }
+  }
 }
+    `;
+
+export function useGetAnalysesResultsForWsAssignQuery(options?: Omit<Urql.UseQueryArgs<never, GetAnalysesResultsForWsAssignQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetAnalysesResultsForWsAssignQuery, GetAnalysesResultsForWsAssignQueryVariables | undefined>({ query: GetAnalysesResultsForWsAssignDocument, variables: undefined, ...options });
+};
 export const GetAnalysisResultMutationDocument = gql`
     query getAnalysisResultMutation($resultUid: String!) {
-        resultMutationByResultUid(resultUid: $resultUid) {
-            uid
-            resultUid
-            before
-            after
-            mutation
-            date
-            createdBy {
-                uid
-                firstName
-                lastName
-                userName
-            }
-            createdByUid
-        }
+  resultMutationByResultUid(resultUid: $resultUid) {
+    uid
+    resultUid
+    before
+    after
+    mutation
+    date
+    createdBy {
+      uid
+      firstName
+      lastName
+      userName
     }
-`;
-
-export function useGetAnalysisResultMutationQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GetAnalysisResultMutationQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GetAnalysisResultMutationQuery, GetAnalysisResultMutationQueryVariables | undefined>({
-        query: GetAnalysisResultMutationDocument,
-        variables: undefined,
-        ...options,
-    });
+    createdByUid
+  }
 }
+    `;
+
+export function useGetAnalysisResultMutationQuery(options?: Omit<Urql.UseQueryArgs<never, GetAnalysisResultMutationQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetAnalysisResultMutationQuery, GetAnalysisResultMutationQueryVariables | undefined>({ query: GetAnalysisResultMutationDocument, variables: undefined, ...options });
+};
 export const GetSampleByUidDocument = gql`
     query getSampleByUid($uid: String!) {
-        sampleByUid(uid: $uid) {
-            uid
-            createdByUid
-            createdBy {
-                firstName
-                lastName
-                userName
-            }
-            createdAt
-            dateReceived
-            receivedByUid
-            dateCollected
-            dateSubmitted
-            submittedByUid
-            dateVerified
-            verifiedByUid
-            datePublished
-            datePrinted
-            printedByUid
-            dateInvalidated
-            invalidatedByUid
-            dateCancelled
-            cancelledByUid
-            dueDate
-            sampleId
-            priority
-            status
-            analysisRequest {
-                uid
-                clientRequestId
-                patient {
-                    uid
-                    firstName
-                    lastName
-                    clientPatientId
-                    gender
-                    dateOfBirth
-                    age
-                    ageDobEstimated
-                    consentSms
-                }
-                client {
-                    uid
-                    name
-                }
-            }
-            sampleType {
-                uid
-                name
-            }
-            relationshipType
-            dateStored
-            storageSlot
-            storageContainerUid
-            storageSlot
-            storageContainerUid
-            storageContainer {
-                uid
-                name
-                storageSection {
-                    uid
-                    name
-                    storageLocation {
-                        uid
-                        name
-                        storeRoom {
-                            uid
-                            name
-                        }
-                    }
-                }
-            }
-            analyses {
-                uid
-                name
-            }
-            profiles {
-                uid
-                name
-            }
-            rejectionReasons {
-                uid
-                reason
-            }
-        }
+  sampleByUid(uid: $uid) {
+    uid
+    createdByUid
+    createdBy {
+      firstName
+      lastName
+      userName
     }
-`;
+    createdAt
+    dateReceived
+    receivedByUid
+    dateCollected
+    dateSubmitted
+    submittedByUid
+    dateVerified
+    verifiedByUid
+    datePublished
+    datePrinted
+    printedByUid
+    dateInvalidated
+    invalidatedByUid
+    dateCancelled
+    cancelledByUid
+    dueDate
+    sampleId
+    priority
+    status
+    analysisRequest {
+      uid
+      clientRequestId
+      patient {
+        uid
+        firstName
+        lastName
+        clientPatientId
+        gender
+        dateOfBirth
+        age
+        ageDobEstimated
+        consentSms
+      }
+      client {
+        uid
+        name
+      }
+    }
+    sampleType {
+      uid
+      name
+    }
+    relationshipType
+    dateStored
+    storageSlot
+    storageContainerUid
+    storageSlot
+    storageContainerUid
+    storageContainer {
+      uid
+      name
+      storageSection {
+        uid
+        name
+        storageLocation {
+          uid
+          name
+          storeRoom {
+            uid
+            name
+          }
+        }
+      }
+    }
+    analyses {
+      uid
+      name
+    }
+    profiles {
+      uid
+      name
+    }
+    rejectionReasons {
+      uid
+      reason
+    }
+  }
+}
+    `;
 
 export function useGetSampleByUidQuery(options?: Omit<Urql.UseQueryArgs<never, GetSampleByUidQueryVariables | undefined>, 'query'>) {
-    return Urql.useQuery<GetSampleByUidQuery, GetSampleByUidQueryVariables | undefined>({
-        query: GetSampleByUidDocument,
-        variables: undefined,
-        ...options,
-    });
-}
+  return Urql.useQuery<GetSampleByUidQuery, GetSampleByUidQueryVariables | undefined>({ query: GetSampleByUidDocument, variables: undefined, ...options });
+};
 export const GetSampleParentIdDocument = gql`
     query getSampleParentId($parentId: String!, $text: String) {
-        sampleByParentId(parentId: $parentId, text: $text) {
-            uid
-            sampleId
-            status
-        }
-    }
-`;
+  sampleByParentId(parentId: $parentId, text: $text) {
+    uid
+    sampleId
+    status
+  }
+}
+    `;
 
 export function useGetSampleParentIdQuery(options?: Omit<Urql.UseQueryArgs<never, GetSampleParentIdQueryVariables | undefined>, 'query'>) {
-    return Urql.useQuery<GetSampleParentIdQuery, GetSampleParentIdQueryVariables | undefined>({
-        query: GetSampleParentIdDocument,
-        variables: undefined,
-        ...options,
-    });
-}
+  return Urql.useQuery<GetSampleParentIdQuery, GetSampleParentIdQueryVariables | undefined>({ query: GetSampleParentIdDocument, variables: undefined, ...options });
+};
 export const GetSamplesByStorageContainerUidDocument = gql`
     query getSamplesByStorageContainerUid($uid: String!) {
-        samplesByStorageContainerUid(uid: $uid) {
-            uid
-            sampleId
-            storageSlot
-            storageSlotIndex
-            storageContainerUid
-            status
-            analysisRequest {
-                clientRequestId
-            }
-        }
+  samplesByStorageContainerUid(uid: $uid) {
+    uid
+    sampleId
+    storageSlot
+    storageSlotIndex
+    storageContainerUid
+    status
+    analysisRequest {
+      clientRequestId
     }
-`;
-
-export function useGetSamplesByStorageContainerUidQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GetSamplesByStorageContainerUidQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GetSamplesByStorageContainerUidQuery, GetSamplesByStorageContainerUidQueryVariables | undefined>({
-        query: GetSamplesByStorageContainerUidDocument,
-        variables: undefined,
-        ...options,
-    });
+  }
 }
+    `;
+
+export function useGetSamplesByStorageContainerUidQuery(options?: Omit<Urql.UseQueryArgs<never, GetSamplesByStorageContainerUidQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetSamplesByStorageContainerUidQuery, GetSamplesByStorageContainerUidQueryVariables | undefined>({ query: GetSamplesByStorageContainerUidDocument, variables: undefined, ...options });
+};
 export const GetAllQcLevelsDocument = gql`
     query getAllQCLevels {
-        qcLevelAll {
-            uid
-            level
-        }
-    }
-`;
+  qcLevelAll {
+    uid
+    level
+  }
+}
+    `;
 
 export function useGetAllQcLevelsQuery(options?: Omit<Urql.UseQueryArgs<never, GetAllQcLevelsQueryVariables | undefined>, 'query'>) {
-    return Urql.useQuery<GetAllQcLevelsQuery, GetAllQcLevelsQueryVariables | undefined>({
-        query: GetAllQcLevelsDocument,
-        variables: undefined,
-        ...options,
-    });
-}
+  return Urql.useQuery<GetAllQcLevelsQuery, GetAllQcLevelsQueryVariables | undefined>({ query: GetAllQcLevelsDocument, variables: undefined, ...options });
+};
 export const GetAllQcTemplatesDocument = gql`
     query getAllQCTemplates {
-        qcTemplateAll {
-            uid
-            name
-            description
-            qcLevels {
-                uid
-                level
-            }
-            departments {
-                uid
-                name
-            }
-        }
+  qcTemplateAll {
+    uid
+    name
+    description
+    qcLevels {
+      uid
+      level
     }
-`;
+    departments {
+      uid
+      name
+    }
+  }
+}
+    `;
 
 export function useGetAllQcTemplatesQuery(options?: Omit<Urql.UseQueryArgs<never, GetAllQcTemplatesQueryVariables | undefined>, 'query'>) {
-    return Urql.useQuery<GetAllQcTemplatesQuery, GetAllQcTemplatesQueryVariables | undefined>({
-        query: GetAllQcTemplatesDocument,
-        variables: undefined,
-        ...options,
-    });
-}
+  return Urql.useQuery<GetAllQcTemplatesQuery, GetAllQcTemplatesQueryVariables | undefined>({ query: GetAllQcTemplatesDocument, variables: undefined, ...options });
+};
 export const GetQcSeTsDocument = gql`
     query getQCSeTs($first: Int!, $after: String, $status: String!, $sortBy: [String!] = ["uid"]) {
-        qcSetAll(pageSize: $first, afterCursor: $after, status: $status, sortBy: $sortBy) {
-            totalCount
-            pageInfo {
-                hasNextPage
-                hasPreviousPage
-                endCursor
-                startCursor
-            }
-            items {
-                uid
-                name
-                note
-                status
-                createdAt
-                samples {
-                    uid
-                    sampleId
-                    status
-                    createdByUid
-                    createdBy {
-                        firstName
-                        lastName
-                        userName
-                    }
-                    createdAt
-                    updatedAt
-                    assigned
-                    qcLevel {
-                        uid
-                        level
-                    }
-                    analysisResults {
-                        uid
-                        status
-                        sampleUid
-                        result
-                        analysisUid
-                        retest
-                        reportable
-                        analysis {
-                            uid
-                            name
-                            sortKey
-                            resultOptions {
-                                uid
-                                optionKey
-                                value
-                                sampleTypes {
-                                    uid
-                                    name
-                                }
-                            }
-                        }
-                        method {
-                            uid
-                            name
-                        }
-                        laboratoryInstrument {
-                            uid
-                            labName
-                            instrument {
-                                uid
-                                name
-                            }
-                        }
-                    }
-                    analyses {
-                        uid
-                        name
-                        unitUid
-                        unit {
-                            uid
-                            name
-                        }
-                        resultOptions {
-                            uid
-                            optionKey
-                            value
-                            sampleTypes {
-                                uid
-                                name
-                            }
-                        }
-                    }
-                    profiles {
-                        uid
-                        name
-                    }
-                }
-            }
-        }
+  qcSetAll(
+    pageSize: $first
+    afterCursor: $after
+    status: $status
+    sortBy: $sortBy
+  ) {
+    totalCount
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      endCursor
+      startCursor
     }
-`;
-
-export function useGetQcSeTsQuery(options?: Omit<Urql.UseQueryArgs<never, GetQcSeTsQueryVariables | undefined>, 'query'>) {
-    return Urql.useQuery<GetQcSeTsQuery, GetQcSeTsQueryVariables | undefined>({
-        query: GetQcSeTsDocument,
-        variables: undefined,
-        ...options,
-    });
-}
-export const GetQcSetByUidDocument = gql`
-    query getQCSetByUid($uid: String!) {
-        qcSetByUid(uid: $uid) {
+    items {
+      uid
+      name
+      note
+      status
+      createdAt
+      samples {
+        uid
+        sampleId
+        status
+        createdByUid
+        createdBy {
+          firstName
+          lastName
+          userName
+        }
+        createdAt
+        updatedAt
+        assigned
+        qcLevel {
+          uid
+          level
+        }
+        analysisResults {
+          uid
+          status
+          sampleUid
+          result
+          analysisUid
+          retest
+          reportable
+          analysis {
             uid
             name
-            note
-            createdAt
-            samples {
-                uid
-                sampleId
-                status
-                createdAt
-                updatedAt
-                assigned
-                qcLevel {
-                    uid
-                    level
-                }
-                analysisResults {
-                    uid
-                    status
-                    sampleUid
-                    result
-                    analysisUid
-                    retest
-                    reportable
-                    analysis {
-                        uid
-                        name
-                        sortKey
-                        interims {
-                            uid
-                            key
-                            value
-                        }
-                        resultOptions {
-                            uid
-                            optionKey
-                            value
-                            sampleTypes {
-                                uid
-                                name
-                            }
-                        }
-                        instruments {
-                            uid
-                            name
-                            laboratoryInstruments {
-                                uid
-                                labName
-                                serialNumber
-                            }
-                        }
-                        methods {
-                            uid
-                            name
-                        }
-                    }
-                    laboratoryInstrument {
-                        uid
-                        labName
-                        instrument {
-                            uid
-                            name
-                        }
-                    }
-                    method {
-                        uid
-                        name
-                    }
-                    submittedBy {
-                        uid
-                        userName
-                        firstName
-                        lastName
-                    }
-                    dateSubmitted
-                    verifiedBy {
-                        uid
-                        userName
-                        firstName
-                        lastName
-                    }
-                    dateVerified
-                }
-            }
-        }
-    }
-`;
-
-export function useGetQcSetByUidQuery(options?: Omit<Urql.UseQueryArgs<never, GetQcSetByUidQueryVariables | undefined>, 'query'>) {
-    return Urql.useQuery<GetQcSetByUidQuery, GetQcSetByUidQueryVariables | undefined>({
-        query: GetQcSetByUidDocument,
-        variables: undefined,
-        ...options,
-    });
-}
-export const GetReferenceRunsDocument = gql`
-    query GetReferenceRuns($analyses: [String!]!, $month: Int!, $year: Int!) {
-        qcChartData(analyses: $analyses, month: $month, year: $year) {
-            result
-            dateVerified
-            analysis {
+            sortKey
+            resultOptions {
+              uid
+              optionKey
+              value
+              sampleTypes {
                 uid
                 name
+              }
             }
-            sample {
-                qcLevel {
-                    level
-                }
+          }
+          method {
+            uid
+            name
+          }
+          laboratoryInstrument {
+            uid
+            labName
+            instrument {
+              uid
+              name
             }
+          }
         }
-    }
-`;
-
-export function useGetReferenceRunsQuery(options?: Omit<Urql.UseQueryArgs<never, GetReferenceRunsQueryVariables | undefined>, 'query'>) {
-    return Urql.useQuery<GetReferenceRunsQuery, GetReferenceRunsQueryVariables | undefined>({
-        query: GetReferenceRunsDocument,
-        variables: undefined,
-        ...options,
-    });
-}
-export const ResultOptionsByAnalysisUidDocument = gql`
-    query resultOptionsByAnalysisUid($uid: String!) {
-        resultOptionsByAnalysisUid(uid: $uid) {
+        analyses {
+          uid
+          name
+          unitUid
+          unit {
+            uid
+            name
+          }
+          resultOptions {
             uid
             optionKey
             value
-            analysisUid
             sampleTypes {
-                uid
-                name
+              uid
+              name
             }
+          }
         }
+        profiles {
+          uid
+          name
+        }
+      }
     }
-`;
-
-export function useResultOptionsByAnalysisUidQuery(
-    options?: Omit<Urql.UseQueryArgs<never, ResultOptionsByAnalysisUidQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<ResultOptionsByAnalysisUidQuery, ResultOptionsByAnalysisUidQueryVariables | undefined>({
-        query: ResultOptionsByAnalysisUidDocument,
-        variables: undefined,
-        ...options,
-    });
+  }
 }
+    `;
+
+export function useGetQcSeTsQuery(options?: Omit<Urql.UseQueryArgs<never, GetQcSeTsQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetQcSeTsQuery, GetQcSeTsQueryVariables | undefined>({ query: GetQcSeTsDocument, variables: undefined, ...options });
+};
+export const GetQcSetByUidDocument = gql`
+    query getQCSetByUid($uid: String!) {
+  qcSetByUid(uid: $uid) {
+    uid
+    name
+    note
+    createdAt
+    samples {
+      uid
+      sampleId
+      status
+      createdAt
+      updatedAt
+      assigned
+      qcLevel {
+        uid
+        level
+      }
+      analysisResults {
+        uid
+        status
+        sampleUid
+        result
+        analysisUid
+        retest
+        reportable
+        analysis {
+          uid
+          name
+          sortKey
+          interims {
+            uid
+            key
+            value
+          }
+          resultOptions {
+            uid
+            optionKey
+            value
+            sampleTypes {
+              uid
+              name
+            }
+          }
+          instruments {
+            uid
+            name
+            laboratoryInstruments {
+              uid
+              labName
+              serialNumber
+            }
+          }
+          methods {
+            uid
+            name
+          }
+        }
+        laboratoryInstrument {
+          uid
+          labName
+          instrument {
+            uid
+            name
+          }
+        }
+        method {
+          uid
+          name
+        }
+        submittedBy {
+          uid
+          userName
+          firstName
+          lastName
+        }
+        dateSubmitted
+        verifiedBy {
+          uid
+          userName
+          firstName
+          lastName
+        }
+        dateVerified
+      }
+    }
+  }
+}
+    `;
+
+export function useGetQcSetByUidQuery(options?: Omit<Urql.UseQueryArgs<never, GetQcSetByUidQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetQcSetByUidQuery, GetQcSetByUidQueryVariables | undefined>({ query: GetQcSetByUidDocument, variables: undefined, ...options });
+};
+export const GetReferenceRunsDocument = gql`
+    query GetReferenceRuns($analyses: [String!]!, $month: Int!, $year: Int!) {
+  qcChartData(analyses: $analyses, month: $month, year: $year) {
+    result
+    dateVerified
+    analysis {
+      uid
+      name
+    }
+    sample {
+      qcLevel {
+        level
+      }
+    }
+  }
+}
+    `;
+
+export function useGetReferenceRunsQuery(options?: Omit<Urql.UseQueryArgs<never, GetReferenceRunsQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetReferenceRunsQuery, GetReferenceRunsQueryVariables | undefined>({ query: GetReferenceRunsDocument, variables: undefined, ...options });
+};
+export const ResultOptionsByAnalysisUidDocument = gql`
+    query resultOptionsByAnalysisUid($uid: String!) {
+  resultOptionsByAnalysisUid(uid: $uid) {
+    uid
+    optionKey
+    value
+    analysisUid
+    sampleTypes {
+      uid
+      name
+    }
+  }
+}
+    `;
+
+export function useResultOptionsByAnalysisUidQuery(options?: Omit<Urql.UseQueryArgs<never, ResultOptionsByAnalysisUidQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<ResultOptionsByAnalysisUidQuery, ResultOptionsByAnalysisUidQueryVariables | undefined>({ query: ResultOptionsByAnalysisUidDocument, variables: undefined, ...options });
+};
 export const GetAllRejectionReasonsDocument = gql`
     query getAllRejectionReasons {
-        rejectionReasonsAll {
-            uid
-            reason
-        }
-    }
-`;
-
-export function useGetAllRejectionReasonsQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GetAllRejectionReasonsQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GetAllRejectionReasonsQuery, GetAllRejectionReasonsQueryVariables | undefined>({
-        query: GetAllRejectionReasonsDocument,
-        variables: undefined,
-        ...options,
-    });
+  rejectionReasonsAll {
+    uid
+    reason
+  }
 }
+    `;
+
+export function useGetAllRejectionReasonsQuery(options?: Omit<Urql.UseQueryArgs<never, GetAllRejectionReasonsQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetAllRejectionReasonsQuery, GetAllRejectionReasonsQueryVariables | undefined>({ query: GetAllRejectionReasonsDocument, variables: undefined, ...options });
+};
 export const ImpressSamplesMetaDocument = gql`
     query ImpressSamplesMeta($uids: [String!]!) {
-        impressReportsMeta(uids: $uids) {
-            uid
-            state
-            sampleUid
-            sample {
-                sampleId
-            }
-            jsonContent
-            emailRequired
-            emailSent
-            smsRequired
-            smsSent
-            generatedByUid
-            generatedBy {
-                firstName
-                lastName
-            }
-            createdAt
-        }
+  impressReportsMeta(uids: $uids) {
+    uid
+    state
+    sampleUid
+    sample {
+      sampleId
     }
-`;
-
-export function useImpressSamplesMetaQuery(
-    options?: Omit<Urql.UseQueryArgs<never, ImpressSamplesMetaQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<ImpressSamplesMetaQuery, ImpressSamplesMetaQueryVariables | undefined>({
-        query: ImpressSamplesMetaDocument,
-        variables: undefined,
-        ...options,
-    });
+    jsonContent
+    emailRequired
+    emailSent
+    smsRequired
+    smsSent
+    generatedByUid
+    generatedBy {
+      firstName
+      lastName
+    }
+    createdAt
+  }
 }
+    `;
+
+export function useImpressSamplesMetaQuery(options?: Omit<Urql.UseQueryArgs<never, ImpressSamplesMetaQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<ImpressSamplesMetaQuery, ImpressSamplesMetaQueryVariables | undefined>({ query: ImpressSamplesMetaDocument, variables: undefined, ...options });
+};
 export const ImpressSampleReportsDocument = gql`
     query impressSampleReports($sampleIds: [String!]!) {
-        impressReportsDownload(sampleIds: $sampleIds)
-    }
-`;
-
-export function useImpressSampleReportsQuery(
-    options?: Omit<Urql.UseQueryArgs<never, ImpressSampleReportsQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<ImpressSampleReportsQuery, ImpressSampleReportsQueryVariables | undefined>({
-        query: ImpressSampleReportsDocument,
-        variables: undefined,
-        ...options,
-    });
+  impressReportsDownload(sampleIds: $sampleIds)
 }
+    `;
+
+export function useImpressSampleReportsQuery(options?: Omit<Urql.UseQueryArgs<never, ImpressSampleReportsQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<ImpressSampleReportsQuery, ImpressSampleReportsQueryVariables | undefined>({ query: ImpressSampleReportsDocument, variables: undefined, ...options });
+};
 export const ImpressSampleReportDocument = gql`
     query impressSampleReport($impressUid: String!) {
-        impressReportDownload(uid: $impressUid)
-    }
-`;
-
-export function useImpressSampleReportQuery(
-    options?: Omit<Urql.UseQueryArgs<never, ImpressSampleReportQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<ImpressSampleReportQuery, ImpressSampleReportQueryVariables | undefined>({
-        query: ImpressSampleReportDocument,
-        variables: undefined,
-        ...options,
-    });
+  impressReportDownload(uid: $impressUid)
 }
+    `;
+
+export function useImpressSampleReportQuery(options?: Omit<Urql.UseQueryArgs<never, ImpressSampleReportQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<ImpressSampleReportQuery, ImpressSampleReportQueryVariables | undefined>({ query: ImpressSampleReportDocument, variables: undefined, ...options });
+};
 export const BarcodeSamplesDocument = gql`
     query barcodeSamples($sampleUids: [String!]!) {
-        barcodeSamples(sampleUids: $sampleUids)
-    }
-`;
+  barcodeSamples(sampleUids: $sampleUids)
+}
+    `;
 
 export function useBarcodeSamplesQuery(options?: Omit<Urql.UseQueryArgs<never, BarcodeSamplesQueryVariables | undefined>, 'query'>) {
-    return Urql.useQuery<BarcodeSamplesQuery, BarcodeSamplesQueryVariables | undefined>({
-        query: BarcodeSamplesDocument,
-        variables: undefined,
-        ...options,
-    });
-}
+  return Urql.useQuery<BarcodeSamplesQuery, BarcodeSamplesQueryVariables | undefined>({ query: BarcodeSamplesDocument, variables: undefined, ...options });
+};
 export const GetSampleGenealogyDocument = gql`
-    query getSampleGenealogy(
-        $sampleUid: String!
-        $depth: Int = 6
-        $includeTests: Boolean = false
-        $includeExtraRelationships: Boolean = false
-    ) {
-        sampleGenealogy(
-            sampleUid: $sampleUid
-            depth: $depth
-            includeTests: $includeTests
-            includeExtraRelationships: $includeExtraRelationships
-        ) {
-            ...SampleGenealogyNodeFields
-            children {
-                ...SampleGenealogyNodeFields
-                children {
-                    ...SampleGenealogyNodeFields
-                    children {
-                        ...SampleGenealogyNodeFields
-                    }
-                }
-            }
+    query getSampleGenealogy($sampleUid: String!, $depth: Int = 6, $includeTests: Boolean = false, $includeExtraRelationships: Boolean = false) {
+  sampleGenealogy(
+    sampleUid: $sampleUid
+    depth: $depth
+    includeTests: $includeTests
+    includeExtraRelationships: $includeExtraRelationships
+  ) {
+    ...SampleGenealogyNodeFields
+    children {
+      ...SampleGenealogyNodeFields
+      children {
+        ...SampleGenealogyNodeFields
+        children {
+          ...SampleGenealogyNodeFields
         }
+      }
     }
-    ${SampleGenealogyNodeFieldsFragmentDoc}
-`;
-
-export function useGetSampleGenealogyQuery(
-    options?: Omit<Urql.UseQueryArgs<never, GetSampleGenealogyQueryVariables | undefined>, 'query'>,
-) {
-    return Urql.useQuery<GetSampleGenealogyQuery, GetSampleGenealogyQueryVariables | undefined>({
-        query: GetSampleGenealogyDocument,
-        variables: undefined,
-        ...options,
-    });
+  }
 }
+    ${SampleGenealogyNodeFieldsFragmentDoc}`;
+
+export function useGetSampleGenealogyQuery(options?: Omit<Urql.UseQueryArgs<never, GetSampleGenealogyQueryVariables | undefined>, 'query'>) {
+  return Urql.useQuery<GetSampleGenealogyQuery, GetSampleGenealogyQueryVariables | undefined>({ query: GetSampleGenealogyDocument, variables: undefined, ...options });
+};

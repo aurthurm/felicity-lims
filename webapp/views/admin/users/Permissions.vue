@@ -44,56 +44,44 @@ function handlePermissionToggle(group: GroupType, perm: PermissionType, value: b
 <template>
   <div class="space-y-6">
     <div class="bg-background rounded-lg shadow-sm overflow-hidden">
-      <div class="relative">
-        <!-- Fixed Header -->
-        <Table class="w-full">
+      <div class="overflow-y-auto max-h-[700px] scrollbar-thin scrollbar-thumb-border scrollbar-track-muted">
+        <Table class="w-full table-fixed">
           <TableHeader>
             <TableRow>
               <TableHead
-                class="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-3 border-b border-border text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
+                class="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-3 border-b border-border text-left text-xs font-medium text-muted-foreground uppercase tracking-wider w-[200px] min-w-[200px]"
               >
                 Permissions
               </TableHead>
-              <TableHead 
-                v-for="group in groups" 
+              <TableHead
+                v-for="group in groups"
                 :key="group.uid"
                 class="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-3 border-b border-border text-right text-xs font-medium text-muted-foreground uppercase tracking-wider"
               >
-                {{ group.name }}
+                <span class="block truncate" :title="group.name">{{ group.name }}</span>
               </TableHead>
-              <TableHead class="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-3 border-b border-border"></TableHead>
             </TableRow>
           </TableHeader>
+          <TableBody class="divide-y divide-border">
+            <template v-for="category in permissions" :key="category[0]">
+              <TableRow class="bg-muted/50">
+                <TableCell class="px-4 py-3 font-medium text-sm text-foreground w-[200px] min-w-[200px]">{{ category[0] }}</TableCell>
+                <TableCell class="px-4 py-3 text-muted-foreground" v-for="group in groups" :key="group.uid" />
+              </TableRow>
+              <TableRow v-for="perm in category[1]" :key="perm.uid">
+                <TableCell class="px-4 py-2 text-sm text-muted-foreground w-[200px] min-w-[200px]">
+                  {{ perm.action }}
+                </TableCell>
+                <TableCell v-for="group in groups" :key="group.uid" class="px-4 py-2 text-right align-middle">
+                  <Switch
+                    :model-value="hasPermission(group, perm)"
+                    @update:model-value="(value) => handlePermissionToggle(group, perm, value)"
+                  />
+                </TableCell>
+              </TableRow>
+            </template>
+          </TableBody>
         </Table>
-        
-        <!-- Scrollable Body -->
-        <div class="overflow-y-auto max-h-[700px] scrollbar-thin scrollbar-thumb-border scrollbar-track-muted">
-          <Table class="w-full">
-            <TableBody class="divide-y divide-border">
-              <template v-for="category in permissions" :key="category[0]">
-                <TableRow class="bg-muted/50">
-                  <TableCell class="px-4 py-3 font-medium text-sm text-foreground">{{ category[0] }}</TableCell>
-                  <TableCell class="px-4 py-3 font-medium text-sm text-muted-foreground" v-for="group in groups" :key="group.uid">
-                    <!-- {{ group.name }} -->
-                  </TableCell>
-                </TableRow>
-                <TableRow v-for="perm in category[1]" :key="perm.uid">
-                  <TableCell class="px-4 py-2 text-sm text-muted-foreground">
-                    {{ perm.action }}
-                  </TableCell>
-                  <TableCell v-for="group in groups" :key="group.uid" class="px-4 py-2">
-                    <div class="flex justify-end">
-                      <Switch
-                        :checked="hasPermission(group, perm)"
-                        @update:checked="(value) => handlePermissionToggle(group, perm, value)"
-                      />
-                    </div>
-                  </TableCell>
-                </TableRow>
-              </template>
-            </TableBody>
-          </Table>
-        </div>
       </div>
     </div>
   </div>

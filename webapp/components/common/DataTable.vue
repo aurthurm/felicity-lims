@@ -208,7 +208,7 @@ const toCapitalize = (str) => {
           <Button
             v-if="searchable || filterable"
             variant="secondary"
-            @click.prevent="searchEntries()"
+            @click="searchEntries()"
           >
             Search
           </Button>
@@ -322,7 +322,7 @@ const toCapitalize = (str) => {
             <Button
               v-show="pageMeta?.hasNextPage"
               variant="outline"
-              @click.prevent="paginate"
+              @click="paginate"
               :disabled="loading"
             >
               Show More

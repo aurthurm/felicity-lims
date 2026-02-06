@@ -149,7 +149,7 @@ const sampleManager = (action: string) => {
 
           <div>
             <Button 
-              @click.prevent="applyChanges()" 
+              @click="applyChanges()" 
               :color="'sky-800'" 
               class="h-10 px-4"
             >
@@ -162,7 +162,7 @@ const sampleManager = (action: string) => {
 
       <div>
         <button
-          @click.prevent="refresh()"
+          @click="refresh()"
           class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background border border-input hover:bg-accent hover:text-accent-foreground h-9 px-4"
         >
           Refresh
@@ -271,14 +271,14 @@ const sampleManager = (action: string) => {
     <section class="flex gap-2">
       <button
         v-show="can_recover"
-        @click.prevent="sampleManager('recover')"
+        @click="sampleManager('recover')"
         class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background border border-input hover:bg-accent hover:text-accent-foreground h-9 px-4"
       >
         Remove
       </button>
       <button
         v-show="can_recall"
-        @click.prevent="sampleManager('recall')"
+        @click="sampleManager('recall')"
         class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background border border-input hover:bg-accent hover:text-accent-foreground h-9 px-4"
       >
         Pair

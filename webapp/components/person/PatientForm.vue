@@ -338,22 +338,22 @@ function removeIdentifier(index: number) {
         </FormItem>
       </FormField>
 
-      <FormField name="consentSms" v-slot="{ value, handleChange }">
+      <FormField name="consentSms" type="checkbox" :checked-value="true" :unchecked-value="false" v-slot="{ componentField }">
         <FormItem class="flex items-center space-x-2">
           <FormControl>
-            <Checkbox :checked="!!value" @update:checked="handleChange" />
+            <Checkbox v-bind="componentField" />
           </FormControl>
           <FormLabel>Consent to SMS</FormLabel>
           <FormMessage />
         </FormItem>
       </FormField>
 
-      <FormField name="ageDobEstimated" v-slot="{ value, handleChange }">
+      <FormField name="ageDobEstimated" type="checkbox" :checked-value="true" :unchecked-value="false" v-slot="{ componentField }">
         <FormItem class="col-span-2">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-2">
               <FormControl>
-                <Checkbox :checked="!!value" @update:checked="handleChange" />
+                <Checkbox v-bind="componentField" />
               </FormControl>
               <FormLabel>Age/DOB Estimated?</FormLabel>
             </div>

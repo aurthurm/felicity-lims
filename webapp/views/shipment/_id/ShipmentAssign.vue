@@ -115,7 +115,7 @@ function areAllChecked(): boolean {
         <div>
           <Button
             v-show="true"
-            @click.prevent="filterSamples()"
+            @click="filterSamples()"
             :color="'sky-800'"
             class="h-10 px-4"
           >
@@ -219,7 +219,7 @@ function areAllChecked(): boolean {
     <section class="flex justify-end">
       <Button 
         v-show="true" 
-        @click.prevent="assignToShipment" 
+        @click="assignToShipment" 
         :color="'orange-600'"
         class="h-10 px-4"
       >

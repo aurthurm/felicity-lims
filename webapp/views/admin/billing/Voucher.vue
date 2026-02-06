@@ -251,19 +251,19 @@ const updateVoucher = (vocher: VoucherType) => {
             </FormField>
           </div>
           <div class="grid grid-cols-2 gap-4">
-            <FormField name="oncePerCustomer" v-slot="{ value, handleChange }">
+            <FormField name="oncePerCustomer" type="checkbox" :checked-value="true" :unchecked-value="false" v-slot="{ componentField }">
               <FormItem class="flex items-center space-x-2">
                 <FormControl>
-                  <Checkbox :checked="value" @update:checked="handleChange" />
+                  <Checkbox v-bind="componentField" />
                 </FormControl>
                 <FormLabel>Once Per Customer</FormLabel>
                 <FormMessage />
               </FormItem>
             </FormField>
-            <FormField name="oncePerOrder" v-slot="{ value, handleChange }">
+            <FormField name="oncePerOrder" type="checkbox" :checked-value="true" :unchecked-value="false" v-slot="{ componentField }">
               <FormItem class="flex items-center space-x-2">
                 <FormControl>
-                  <Checkbox :checked="value" @update:checked="handleChange" />
+                  <Checkbox v-bind="componentField" />
                 </FormControl>
                 <FormLabel>Once Per Order</FormLabel>
                 <FormMessage />

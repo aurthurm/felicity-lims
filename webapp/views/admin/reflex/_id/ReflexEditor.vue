@@ -1247,12 +1247,14 @@ onBeforeUnmount(() => {
 <style scoped>
 @import "tailwindcss";
 .reflex-editor {
-  @apply w-full h-screen overflow-hidden bg-muted;
+  @apply w-full h-screen overflow-hidden;
+  background-color: var(--muted);
 }
 
 /* Loading Overlay */
 .loading-overlay {
-  @apply fixed inset-0 flex items-center justify-center bg-muted z-50;
+  @apply fixed inset-0 flex items-center justify-center z-50;
+  background-color: var(--muted);
 }
 
 .loading-spinner {
@@ -1266,8 +1268,9 @@ onBeforeUnmount(() => {
 
 /* Toolbar */
 .editor-toolbar {
-  @apply flex items-center justify-between px-6 py-3 bg-card border-b border-border;
-  @apply shadow-sm z-10;
+  @apply flex items-center justify-between px-6 py-3 shadow-sm z-10;
+  background-color: var(--card);
+  border-bottom: 1px solid var(--border);
 }
 
 .toolbar-left {
@@ -1286,8 +1289,11 @@ onBeforeUnmount(() => {
 .publish-toggle {
   @apply relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full;
   @apply border-2 border-transparent transition-colors duration-200 ease-in-out;
-  @apply focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
-  @apply bg-muted;
+  @apply focus:outline-none;
+  background-color: var(--muted);
+}
+.publish-toggle:focus-visible {
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring);
 }
 
 .publish-toggle:disabled {
@@ -1295,13 +1301,13 @@ onBeforeUnmount(() => {
 }
 
 .publish-toggle-active {
-  @apply bg-primary;
+  background-color: var(--primary);
 }
 
 .publish-toggle-slider {
-  @apply pointer-events-none inline-block h-5 w-5 transform rounded-full;
-  @apply bg-background shadow ring-0 transition duration-200 ease-in-out;
-  @apply translate-x-0;
+  @apply pointer-events-none inline-block h-5 w-5 transform rounded-full shadow transition duration-200 ease-in-out;
+  background-color: var(--background);
+  transform: translateX(0);
 }
 
 .publish-toggle-slider-active {
@@ -1309,14 +1315,19 @@ onBeforeUnmount(() => {
 }
 
 .btn-save {
-  @apply flex items-center space-x-2 px-4 py-2;
-  @apply bg-success text-success-foreground rounded-lg font-medium;
-  @apply hover:bg-success/90 transition-colors;
-  @apply text-sm;
+  @apply flex items-center space-x-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors;
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+.btn-save:hover {
+  filter: brightness(0.9);
 }
 
 .btn-save-disabled {
-  @apply opacity-50 cursor-not-allowed hover:bg-success/80;
+  @apply opacity-50 cursor-not-allowed;
+}
+.btn-save-disabled:hover {
+  filter: brightness(0.8);
 }
 
 /* Main Editor Area */

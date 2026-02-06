@@ -67,61 +67,61 @@ const form = useFormUtils<ShipmentForm>({
 
 ```vue
 <template>
-    <form @submit="handleSubmit" class="space-y-4">
+    <form @submit.prevent="handleSubmit" class.prevent="space-y-4">
         <!-- Courier Field -->
-        <div class="form-group">
-            <label for="courier" class="form-label">Courier</label>
+        <div class.prevent="form-group">
+            <label for.prevent="courier" class.prevent="form-label">Courier</label>
             <input
-                id="courier"
-                v-model="values.courier"
-                type="text"
-                class="form-input"
-                :class="{ error: errors.courier && isFieldTouched('courier') }"
-                @blur="setFieldTouched('courier')"
+                id.prevent="courier"
+                v-model.prevent="values.courier"
+                type.prevent="text"
+                class.prevent="form-input"
+                :class.prevent="{ error: errors.courier && isFieldTouched('courier') }"
+                @blur.prevent="setFieldTouched('courier')"
             />
-            <span v-if="errors.courier && isFieldTouched('courier')" class="error-message">
+            <span v-if.prevent="errors.courier && isFieldTouched('courier')" class.prevent="error-message">
                 {{ errors.courier }}
             </span>
         </div>
 
         <!-- Laboratory Selection -->
-        <div class="form-group">
-            <label for="laboratory" class="form-label">Reference Laboratory</label>
+        <div class.prevent="form-group">
+            <label for.prevent="laboratory" class.prevent="form-label">Reference Laboratory</label>
             <select
-                id="laboratory"
-                v-model="values.laboratory"
-                class="form-select"
-                :class="{ error: errors.laboratory && isFieldTouched('laboratory') }"
-                @change="setFieldTouched('laboratory')"
+                id.prevent="laboratory"
+                v-model.prevent="values.laboratory"
+                class.prevent="form-select"
+                :class.prevent="{ error: errors.laboratory && isFieldTouched('laboratory') }"
+                @change.prevent="setFieldTouched('laboratory')"
             >
-                <option value="">Select Laboratory</option>
-                <option v-for="lab in laboratories" :key="lab.uid" :value="lab">
+                <option value.prevent="">Select Laboratory</option>
+                <option v-for.prevent="lab in laboratories" :key.prevent="lab.uid" :value.prevent="lab">
                     {{ lab.name }}
                 </option>
             </select>
-            <span v-if="errors.laboratory && isFieldTouched('laboratory')" class="error-message">
+            <span v-if.prevent="errors.laboratory && isFieldTouched('laboratory')" class.prevent="error-message">
                 {{ errors.laboratory }}
             </span>
         </div>
 
         <!-- Comment Field -->
-        <div class="form-group">
-            <label for="comment" class="form-label">Comment</label>
+        <div class.prevent="form-group">
+            <label for.prevent="comment" class.prevent="form-label">Comment</label>
             <textarea
-                id="comment"
-                v-model="values.comment"
-                class="form-textarea"
-                :class="{ error: errors.comment && isFieldTouched('comment') }"
-                @blur="setFieldTouched('comment')"
+                id.prevent="comment"
+                v-model.prevent="values.comment"
+                class.prevent="form-textarea"
+                :class.prevent="{ error: errors.comment && isFieldTouched('comment') }"
+                @blur.prevent="setFieldTouched('comment')"
             ></textarea>
-            <span v-if="errors.comment && isFieldTouched('comment')" class="error-message">
+            <span v-if.prevent="errors.comment && isFieldTouched('comment')" class.prevent="error-message">
                 {{ errors.comment }}
             </span>
         </div>
 
         <!-- Submit Button -->
-        <div class="flex justify-end">
-            <button type="submit" class="btn btn-primary" :disabled="!isValid || isSubmitting">
+        <div class.prevent="flex justify-end">
+            <button type.prevent="submit" class.prevent="btn btn-primary" :disabled.prevent="!isValid || isSubmitting">
                 {{ isSubmitting ? 'Submitting...' : 'Submit' }}
             </button>
         </div>

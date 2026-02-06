@@ -112,11 +112,14 @@ const historyStatus = computed(() => {
 }
 
 .history-btn {
-  @apply flex items-center space-x-2 px-3 py-2;
-  @apply bg-card border border-input rounded-lg;
-  @apply hover:bg-muted hover:border-input;
-  @apply transition-all duration-200;
-  @apply text-foreground text-sm font-medium;
+  @apply flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 text-sm font-medium;
+  background-color: var(--card);
+  border: 1px solid var(--input);
+  color: var(--foreground);
+}
+.history-btn:hover {
+  background-color: var(--muted);
+  border-color: var(--input);
 }
 
 .history-btn:active:not(:disabled) {
@@ -125,7 +128,10 @@ const historyStatus = computed(() => {
 
 .btn-disabled {
   @apply opacity-40 cursor-not-allowed;
-  @apply hover:bg-card hover:border-input;
+}
+.btn-disabled:hover {
+  background-color: var(--card);
+  border-color: var(--input);
 }
 
 .btn-label {
@@ -133,12 +139,15 @@ const historyStatus = computed(() => {
 }
 
 .btn-kbd {
-  @apply hidden lg:inline;
-  @apply px-1.5 py-0.5 bg-muted border border-input rounded text-xs font-mono;
+  @apply hidden lg:inline px-1.5 py-0.5 rounded text-xs font-mono;
+  background-color: var(--muted);
+  border: 1px solid var(--input);
 }
 
 .history-status {
-  @apply px-3 py-2 bg-muted border border-border rounded-lg;
-  @apply hidden xl:flex items-center;
+  @apply hidden xl:flex items-center px-3 py-2;
+  background-color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
 }
 </style>

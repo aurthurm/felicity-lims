@@ -169,10 +169,10 @@ const updateVoucherCode = (vocher: VoucherCodeType) => {
             </FormField>
           </div>
           
-          <FormField name="isActive" v-slot="{ value, handleChange }">
+          <FormField name="isActive" type="checkbox" :checked-value="true" :unchecked-value="false" v-slot="{ componentField }">
             <FormItem class="flex items-center space-x-2">
               <FormControl>
-                <Checkbox :checked="value" @update:checked="handleChange" />
+                <Checkbox v-bind="componentField" />
               </FormControl>
               <FormLabel>Is Active</FormLabel>
               <FormMessage />

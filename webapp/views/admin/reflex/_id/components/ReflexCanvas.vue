@@ -472,7 +472,7 @@ defineExpose({
 @import "tailwindcss";
 .reflex-canvas-container {
   @apply relative w-full h-full;
-  @apply bg-muted;
+  background-color: var(--muted);
 }
 
 .reflex-canvas {
@@ -486,8 +486,8 @@ defineExpose({
 }
 
 .empty-state-content {
-  @apply text-center p-8 bg-card/80 rounded-lg shadow-sm;
-  @apply backdrop-blur-sm;
+  @apply text-center p-8 rounded-lg shadow-sm backdrop-blur-sm;
+  background-color: color-mix(in oklch, var(--card), transparent 20%);
 }
 
 /* Readonly overlay */
@@ -497,9 +497,10 @@ defineExpose({
 }
 
 .readonly-badge {
-  @apply flex items-center space-x-2 px-3 py-2 bg-warning/15 text-warning-foreground;
-  @apply rounded-lg shadow-sm border border-warning/30;
-  @apply text-sm font-medium;
+  @apply flex items-center space-x-2 px-3 py-2 rounded-lg shadow-sm text-sm font-medium;
+  background-color: color-mix(in oklch, var(--chart-4), transparent 85%);
+  color: var(--foreground);
+  border: 1px solid color-mix(in oklch, var(--chart-4), transparent 70%);
 }
 
 /* Keyboard shortcuts */
@@ -525,12 +526,12 @@ kbd {
 }
 
 .vue-flow__edge.selected .vue-flow__edge-path {
-  @apply stroke-primary;
+  stroke: var(--primary);
   stroke-width: 3;
 }
 
 .vue-flow__connection-path {
-  @apply stroke-primary/70;
+  stroke: color-mix(in oklch, var(--primary), transparent 30%);
   stroke-width: 2;
   stroke-dasharray: 5, 5;
   animation: dash 1s linear infinite;
@@ -544,16 +545,22 @@ kbd {
 
 /* Controls styling */
 .vue-flow__controls {
-  @apply bg-card shadow-lg rounded-lg border border-border;
+  @apply shadow-lg rounded-lg;
+  background-color: var(--card);
+  border: 1px solid var(--border);
 }
 
 .vue-flow__controls-button {
-  @apply border-border;
-  @apply hover:bg-muted;
+  border-color: var(--border);
+}
+.vue-flow__controls-button:hover {
+  background-color: var(--muted);
 }
 
 /* MiniMap styling */
 .vue-flow__minimap {
-  @apply bg-card shadow-lg rounded-lg border border-border;
+  @apply shadow-lg rounded-lg;
+  background-color: var(--card);
+  border: 1px solid var(--border);
 }
 </style>

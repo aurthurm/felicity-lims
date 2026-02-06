@@ -169,9 +169,8 @@ const isNumericValue = computed(() => {
 <style scoped>
 @import "tailwindcss";
 .rule-node {
-  @apply bg-card border-2 border-amber-400 rounded-lg shadow-md;
-  @apply px-4 py-3 min-w-[220px] max-w-[320px];
-  @apply transition-all duration-200;
+  @apply border-2 border-amber-400 rounded-lg shadow-md px-4 py-3 min-w-[220px] max-w-[320px] transition-all duration-200;
+  background-color: var(--card);
 }
 
 .rule-node:hover {
@@ -180,15 +179,18 @@ const isNumericValue = computed(() => {
 
 /* Validation states */
 .rule-node.node-error {
-  @apply border-destructive/60 bg-destructive/10;
+  border-color: color-mix(in oklch, var(--destructive), transparent 40%);
+  background-color: color-mix(in oklch, var(--destructive), transparent 90%);
 }
 
 .rule-node.node-warning {
-  @apply border-warning/50 bg-warning/10;
+  border-color: color-mix(in oklch, var(--chart-4), transparent 50%);
+  background-color: color-mix(in oklch, var(--chart-4), transparent 90%);
 }
 
 .rule-node.node-valid {
-  @apply border-amber-400 bg-card;
+  @apply border-amber-400;
+  background-color: var(--card);
 }
 
 /* Selected state */

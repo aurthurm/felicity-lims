@@ -554,10 +554,10 @@ const saveMappingForm = handleMappingSubmit((values) => {
             </FormItem>
           </FormField>
 
-          <FormField name="active" v-slot="{ value, handleChange }">
+          <FormField name="active" type="checkbox" :checked-value="true" :unchecked-value="false" v-slot="{ componentField }">
             <FormItem class="flex items-center space-x-2">
               <FormControl>
-                <Checkbox :checked="value" @update:checked="handleChange" />
+                <Checkbox v-bind="componentField" />
               </FormControl>
               <FormLabel>Active</FormLabel>
               <FormMessage />

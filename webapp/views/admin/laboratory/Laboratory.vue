@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Form,
   FormControl,
   FormField,
   FormItem,
@@ -36,6 +35,7 @@ const TabsAside = defineAsyncComponent(
 const { toastSuccess } = useNotifyToast();
 const userStore = useUserStore();
 const setupStore = useSetupStore();
+const EMPTY_SELECT_VALUE = "__none__";
 
 setupStore.fetchLaboratory();
 const laboratory = computed(() => setupStore.getLaboratory);
@@ -56,24 +56,18 @@ const labSchema = object({
   qualityStatement: string().nullable(),
 });
 
-const {
-  handleSubmit: handleLabSubmit,
-  setValues: setLabValues,
-} = useForm({
-  validationSchema: labSchema,
-  initialValues: {
-    name: "",
-    tagLine: "",
-    labManagerUid: null,
-    email: "",
-    emailCc: "",
-    mobilePhone: "",
-    businessPhone: "",
-    address: "",
-    banking: "",
-    qualityStatement: "",
-  },
-});
+const defaultLabValues = {
+  name: "",
+  tagLine: "",
+  labManagerUid: null as string | null,
+  email: "",
+  emailCc: "",
+  mobilePhone: "",
+  businessPhone: "",
+  address: "",
+  banking: "",
+  qualityStatement: "",
+};
 
 
 const settingSchema = object({
@@ -96,76 +90,78 @@ const settingSchema = object({
   paymentTermsDays: number().min(0, "Must be 0 or greater").nullable(),
 });
 
-const {
-  handleSubmit: handleSettingsSubmit,
-  setValues: setSettingValues,
-} = useForm({
-  validationSchema: settingSchema,
-  initialValues: {
-    defaultRoute: "",
-    defaultTheme: "",
-    passwordLifetime: null,
-    inactivityLogOut: null,
-    stickerCopies: null,
-    allowSelfVerification: false,
-    allowPatientRegistration: false,
-    allowSampleRegistration: false,
-    allowWorksheetCreation: false,
-    autoReceiveSamples: false,
-    allowBilling: false,
-    allowAutoBilling: false,
-    processBilledOnly: false,
-    minPaymentStatus: "",
-    minPartialPerentage: null,
-    currency: "",
-    paymentTermsDays: null,
-  },
+const defaultSettingValues = {
+  defaultRoute: "",
+  defaultTheme: "",
+  passwordLifetime: null as number | null,
+  inactivityLogOut: null as number | null,
+  stickerCopies: null as number | null,
+  allowSelfVerification: false,
+  allowPatientRegistration: false,
+  allowSampleRegistration: false,
+  allowWorksheetCreation: false,
+  autoReceiveSamples: false,
+  allowBilling: false,
+  allowAutoBilling: false,
+  processBilledOnly: false,
+  minPaymentStatus: "",
+  minPartialPerentage: null as number | null,
+  currency: "",
+  paymentTermsDays: null as number | null,
+};
+
+const formSchema = labSchema.concat(settingSchema);
+const { setValues, values } = useForm({
+  validationSchema: formSchema,
+  initialValues: { ...defaultLabValues, ...defaultSettingValues },
 });
 
 
 watch(
-  () => laboratory.value?.uid,
-  (anal, prev) => {
+  () => [laboratory.value?.uid, laboratory.value?.settings] as const,
+  () => {
     const currentLab = laboratory.value as LaboratoryType | undefined;
     labUid.value = currentLab?.uid ?? null;
     settingUid.value = currentLab?.settings?.uid ?? null;
-    setLabValues({
-      name: currentLab?.name ?? "",
-      tagLine: currentLab?.tagLine ?? "",
-      labManagerUid: currentLab?.labManagerUid ?? null,
-      email: currentLab?.email ?? "",
-      emailCc: currentLab?.emailCc ?? "",
-      mobilePhone: currentLab?.mobilePhone ?? "",
-      businessPhone: currentLab?.businessPhone ?? "",
-      address: currentLab?.address ?? "",
-      banking: currentLab?.banking ?? "",
-      qualityStatement: currentLab?.qualityStatement ?? "",
-    });
-    setSettingValues({
-      defaultRoute: currentLab?.settings?.defaultRoute ?? "",
-      defaultTheme: currentLab?.settings?.defaultTheme ?? "",
-      passwordLifetime: currentLab?.settings?.passwordLifetime ?? null,
-      inactivityLogOut: currentLab?.settings?.inactivityLogOut ?? null,
-      stickerCopies: currentLab?.settings?.stickerCopies ?? null,
-      allowSelfVerification: currentLab?.settings?.allowSelfVerification ?? false,
-      allowPatientRegistration: currentLab?.settings?.allowPatientRegistration ?? false,
-      allowSampleRegistration: currentLab?.settings?.allowSampleRegistration ?? false,
-      allowWorksheetCreation: currentLab?.settings?.allowWorksheetCreation ?? false,
-      autoReceiveSamples: currentLab?.settings?.autoReceiveSamples ?? false,
-      allowBilling: currentLab?.settings?.allowBilling ?? false,
-      allowAutoBilling: currentLab?.settings?.allowAutoBilling ?? false,
-      processBilledOnly: currentLab?.settings?.processBilledOnly ?? false,
-      minPaymentStatus: currentLab?.settings?.minPaymentStatus ?? "",
-      minPartialPerentage: currentLab?.settings?.minPartialPerentage ?? null,
-      currency: currentLab?.settings?.currency ?? "",
-      paymentTermsDays: currentLab?.settings?.paymentTermsDays ?? null,
-    });
-  }
+    setValues(
+      {
+        name: currentLab?.name ?? "",
+        tagLine: currentLab?.tagLine ?? "",
+        labManagerUid: currentLab?.labManagerUid ?? null,
+        email: currentLab?.email ?? "",
+        emailCc: currentLab?.emailCc ?? "",
+        mobilePhone: currentLab?.mobilePhone ?? "",
+        businessPhone: currentLab?.businessPhone ?? "",
+        address: currentLab?.address ?? "",
+        banking: currentLab?.banking ?? "",
+        qualityStatement: currentLab?.qualityStatement ?? "",
+        defaultRoute: currentLab?.settings?.defaultRoute ?? "",
+        defaultTheme: currentLab?.settings?.defaultTheme ?? "",
+        passwordLifetime: currentLab?.settings?.passwordLifetime ?? null,
+        inactivityLogOut: currentLab?.settings?.inactivityLogOut ?? null,
+        stickerCopies: currentLab?.settings?.stickerCopies ?? null,
+        allowSelfVerification: currentLab?.settings?.allowSelfVerification ?? false,
+        allowPatientRegistration: currentLab?.settings?.allowPatientRegistration ?? false,
+        allowSampleRegistration: currentLab?.settings?.allowSampleRegistration ?? false,
+        allowWorksheetCreation: currentLab?.settings?.allowWorksheetCreation ?? false,
+        autoReceiveSamples: currentLab?.settings?.autoReceiveSamples ?? false,
+        allowBilling: currentLab?.settings?.allowBilling ?? false,
+        allowAutoBilling: currentLab?.settings?.allowAutoBilling ?? false,
+        processBilledOnly: currentLab?.settings?.processBilledOnly ?? false,
+        minPaymentStatus: currentLab?.settings?.minPaymentStatus ?? "",
+        minPartialPerentage: currentLab?.settings?.minPartialPerentage ?? null,
+        currency: currentLab?.settings?.currency ?? "",
+        paymentTermsDays: currentLab?.settings?.paymentTermsDays ?? null,
+      },
+      false,
+    );
+  },
+  { immediate: true },
 );
 
 const { withClientMutation } = useApiUtil();
 let processing = ref(false);
-const saveLaboratoryForm = handleLabSubmit((values) => {
+async function onLabSubmit(values: Record<string, unknown>) {
   processing.value = true;
   if (!labUid.value) {
     processing.value = false;
@@ -173,31 +169,53 @@ const saveLaboratoryForm = handleLabSubmit((values) => {
   }
   const payload = {
     ...values,
+    labManagerUid: values.labManagerUid === EMPTY_SELECT_VALUE ? null : values.labManagerUid,
   } as LaboratoryType;
   withClientMutation<EditLaboratoryMutation, EditLaboratoryMutationVariables>(EditLaboratoryDocument, { uid: labUid.value, payload }, "updateLaboratory").then((result) => {
     setupStore.updateLaboratory(result);
     processing.value = false;
     toastSuccess("Laboratory information updated");
   });
-});
+}
 
+const BOOL_KEYS = [
+  "allowSelfVerification",
+  "allowPatientRegistration",
+  "allowSampleRegistration",
+  "allowWorksheetCreation",
+  "autoReceiveSamples",
+  "allowBilling",
+  "allowAutoBilling",
+  "processBilledOnly",
+] as const;
 
+function normalizeBooleanInput(value: unknown): boolean {
+  return value === true || value === "true" || value === 1 || value === "1";
+}
 
-const saveSettingForm = handleSettingsSubmit((values) => {
+async function onSettingSubmit(values: Record<string, unknown>) {
   processing.value = true;
-  if (!settingUid.value) {
+  if (!settingUid.value || !labUid.value) {
     processing.value = false;
     return;
   }
   const payload = {
     ...values,
-  } as LaboratorySettingType;
+    laboratoryUid: labUid.value,
+    minPaymentStatus: values.minPaymentStatus === EMPTY_SELECT_VALUE ? null : values.minPaymentStatus,
+  } as Record<string, unknown>;
+  for (const key of BOOL_KEYS) {
+    payload[key] = normalizeBooleanInput(payload[key]);
+  }
   withClientMutation<EditLaboratorySettingMutation, EditLaboratorySettingMutationVariables>(EditLaboratorySettingDocument, { uid: settingUid.value, payload }, "updateLaboratorySetting").then((result) => {
     setupStore.updateLaboratorySetting(result);
     processing.value = false;
     toastSuccess("Laboratory settings updated");
   });
-});
+}
+
+const saveLaboratoryForm = () => onLabSubmit(values as Record<string, unknown>);
+const saveSettingForm = () => onSettingSubmit(values as Record<string, unknown>);
 
 userStore.fetchUsers({});
 const users = computed(() => userStore.getUsers);
@@ -226,7 +244,7 @@ const items = [
     <section v-if="currentTab === 'general-info'" class="space-y-6">
       <h2 class="text-2xl font-semibold text-foreground">Laboratory Information</h2>
       <hr class="border-border">
-      <Form class="space-y-6" @submit="saveLaboratoryForm">
+      <form class="space-y-6" @submit.prevent="saveLaboratoryForm">
         <div class="grid grid-cols-2 gap-6">
           <FormField name="name" v-slot="{ componentField }">
             <FormItem>
@@ -257,7 +275,7 @@ const items = [
                     <SelectValue placeholder="Select lab manager..." />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Select lab manager...</SelectItem>
+                    <SelectItem :value="EMPTY_SELECT_VALUE">No lab manager</SelectItem>
                     <SelectItem v-for="user in users" :key="user?.uid" :value="user.uid">
                       {{ user?.firstName }} {{ user?.lastName }}
                     </SelectItem>
@@ -340,13 +358,13 @@ const items = [
         </div>
         <hr class="border-border" />
         <Button type="submit" :disabled="processing">Update</Button>
-      </Form>
+      </form>
     </section>
 
     <section v-if="currentTab === 'other-settings'" class="space-y-6">
       <h2 class="text-2xl font-semibold text-foreground">Other Settings</h2>
       <hr class="border-border">
-      <Form class="space-y-6" @submit="saveSettingForm">
+      <form class="space-y-6" @submit.prevent="saveSettingForm">
         <div class="grid grid-cols-2 gap-6">
           <FormField name="defaultRoute" v-slot="{ componentField }">
             <FormItem>
@@ -400,50 +418,50 @@ const items = [
 
           <div class="col-span-1"></div>
 
-          <FormField name="allowSelfVerification" v-slot="{ value, handleChange }">
+          <FormField name="allowSelfVerification" type="checkbox" :checked-value="true" :unchecked-value="false" v-slot="{ componentField }">
             <FormItem class="flex items-center space-x-2">
               <FormControl>
-                <Checkbox :checked="value" @update:checked="handleChange" :disabled="processing" />
+                <Checkbox v-bind="componentField" :disabled="processing" />
               </FormControl>
               <FormLabel>Allow self verification</FormLabel>
               <FormMessage />
             </FormItem>
           </FormField>
 
-          <FormField name="allowPatientRegistration" v-slot="{ value, handleChange }">
+          <FormField name="allowPatientRegistration" type="checkbox" :checked-value="true" :unchecked-value="false" v-slot="{ componentField }">
             <FormItem class="flex items-center space-x-2">
               <FormControl>
-                <Checkbox :checked="value" @update:checked="handleChange" :disabled="processing" />
+                <Checkbox v-bind="componentField" :disabled="processing" />
               </FormControl>
               <FormLabel>Allow patient registration</FormLabel>
               <FormMessage />
             </FormItem>
           </FormField>
 
-          <FormField name="allowSampleRegistration" v-slot="{ value, handleChange }">
+          <FormField name="allowSampleRegistration" type="checkbox" :checked-value="true" :unchecked-value="false" v-slot="{ componentField }">
             <FormItem class="flex items-center space-x-2">
               <FormControl>
-                <Checkbox :checked="value" @update:checked="handleChange" :disabled="processing" />
+                <Checkbox v-bind="componentField" :disabled="processing" />
               </FormControl>
               <FormLabel>Allow sample registration</FormLabel>
               <FormMessage />
             </FormItem>
           </FormField>
 
-          <FormField name="allowWorksheetCreation" v-slot="{ value, handleChange }">
+          <FormField name="allowWorksheetCreation" type="checkbox" :checked-value="true" :unchecked-value="false" v-slot="{ componentField }">
             <FormItem class="flex items-center space-x-2">
               <FormControl>
-                <Checkbox :checked="value" @update:checked="handleChange" :disabled="processing" />
+                <Checkbox v-bind="componentField" :disabled="processing" />
               </FormControl>
               <FormLabel>Allow worksheet creation</FormLabel>
               <FormMessage />
             </FormItem>
           </FormField>
 
-          <FormField name="autoReceiveSamples" v-slot="{ value, handleChange }">
+          <FormField name="autoReceiveSamples" type="checkbox" :checked-value="true" :unchecked-value="false" v-slot="{ componentField }">
             <FormItem class="flex items-center space-x-2">
               <FormControl>
-                <Checkbox :checked="value" @update:checked="handleChange" :disabled="processing" />
+                <Checkbox v-bind="componentField" :disabled="processing" />
               </FormControl>
               <FormLabel>Auto receive samples</FormLabel>
               <FormMessage />
@@ -454,30 +472,30 @@ const items = [
         </div>
         <hr class="border-border" />
         <div class="grid grid-cols-2 gap-6">
-          <FormField name="allowBilling" v-slot="{ value, handleChange }">
+          <FormField name="allowBilling" type="checkbox" :checked-value="true" :unchecked-value="false" v-slot="{ componentField }">
             <FormItem class="flex items-center space-x-2">
               <FormControl>
-                <Checkbox :checked="value" @update:checked="handleChange" :disabled="processing" />
+                <Checkbox v-bind="componentField" :disabled="processing" />
               </FormControl>
               <FormLabel>Enable Sample Billing</FormLabel>
               <FormMessage />
             </FormItem>
           </FormField>
 
-          <FormField name="allowAutoBilling" v-slot="{ value, handleChange }">
+          <FormField name="allowAutoBilling" type="checkbox" :checked-value="true" :unchecked-value="false" v-slot="{ componentField }">
             <FormItem class="flex items-center space-x-2">
               <FormControl>
-                <Checkbox :checked="value" @update:checked="handleChange" :disabled="processing" />
+                <Checkbox v-bind="componentField" :disabled="processing" />
               </FormControl>
               <FormLabel>Allow automatic billing on sample registration</FormLabel>
               <FormMessage />
             </FormItem>
           </FormField>
 
-          <FormField name="processBilledOnly" v-slot="{ value, handleChange }">
+          <FormField name="processBilledOnly" type="checkbox" :checked-value="true" :unchecked-value="false" v-slot="{ componentField }">
             <FormItem class="flex items-center space-x-2">
               <FormControl>
-                <Checkbox :checked="value" @update:checked="handleChange" :disabled="processing" />
+                <Checkbox v-bind="componentField" :disabled="processing" />
               </FormControl>
               <FormLabel>Only process billed analysis requests</FormLabel>
               <FormMessage />
@@ -493,7 +511,7 @@ const items = [
                     <SelectValue placeholder="Select Payment Status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Select Payment Status</SelectItem>
+                    <SelectItem :value="EMPTY_SELECT_VALUE">No minimum payment status</SelectItem>
                     <SelectItem v-for="pstatus in [PaymentStatus.Unpaid, PaymentStatus.Partial, PaymentStatus.Paid]" :key="pstatus" :value="pstatus">
                       {{ pstatus }}
                     </SelectItem>
@@ -536,7 +554,7 @@ const items = [
         </div>
         <hr class="border-border" />
         <Button type="submit" :disabled="processing">Update</Button>
-      </Form>
+      </form>
     </section>
   </TabsAside>
 </template>
