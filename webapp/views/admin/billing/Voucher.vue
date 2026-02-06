@@ -13,9 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import {
-  Form,
-  FormControl,
+import {FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -209,7 +207,7 @@ const updateVoucher = (vocher: VoucherType) => {
         <h3 class="text-lg font-semibold text-foreground">Voucher Form</h3>
       </template>
       <template v-slot:body>
-        <Form class="space-y-6" @submit="submitVoucherForm">
+        <form class="space-y-6" @submit.prevent="submitVoucherForm">
           <div class="grid grid-cols-4 gap-4">
             <FormField name="name" v-slot="{ componentField }">
               <FormItem class="col-span-2">
@@ -274,7 +272,7 @@ const updateVoucher = (vocher: VoucherType) => {
           <div class="flex justify-end">
             <Button type="submit">Save Voucher</Button>
           </div>
-        </Form>
+        </form>
       </template>
     </Modal>
   </div>

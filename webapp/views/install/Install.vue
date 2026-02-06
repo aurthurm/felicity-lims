@@ -8,9 +8,7 @@ import { object, string } from "yup";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import {
-  Form,
-  FormControl,
+import {FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -85,7 +83,7 @@ const initInstall = handleSubmit((values) => {
         <span class="text-foreground font-semibold text-2xl">Install Felicity LIMS</span>
       </div>
 
-      <Form class="mt-6 space-y-4" @submit="initInstall">
+      <form class="mt-6 space-y-4" @submit.prevent="initInstall">
         <FormField name="organisation_name" v-slot="{ componentField }">
           <FormItem>
             <FormLabel>Organisation Name</FormLabel>
@@ -117,7 +115,7 @@ const initInstall = handleSubmit((values) => {
             </span>
           </div>
         </div>
-      </Form>
+      </form>
     </div>
   </div>
 </template>

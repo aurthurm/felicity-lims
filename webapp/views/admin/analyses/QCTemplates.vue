@@ -10,9 +10,7 @@
   import { Button } from "@/components/ui/button";
   import { Input } from "@/components/ui/input";
   import { Textarea } from "@/components/ui/textarea";
-  import {
-    Form,
-    FormControl,
+  import {FormControl,
     FormField,
     FormItem,
     FormLabel,
@@ -163,7 +161,7 @@ import PageHeading from "@/components/common/PageHeading.vue"
         </template>
 
         <template v-slot:body>
-          <Form @submit="saveForm" class="p-6 space-y-6">
+          <form @submit.prevent="saveForm" class="p-6 space-y-6">
             <div class="space-y-4">
               <FormField name="name" v-slot="{ componentField }">
                 <FormItem>
@@ -215,7 +213,7 @@ import PageHeading from "@/components/common/PageHeading.vue"
                 Save Changes
               </Button>
             </div>
-          </Form>
+          </form>
         </template>
     </Modal>
 </template>

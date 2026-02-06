@@ -9,9 +9,7 @@ import { storgeSlotMapper } from "@/utils";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { ExtStorageContainerType } from "@/types/storage";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
+import {FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -204,7 +202,7 @@ const submitForm = handleSubmit(async (values) => {
           </Button>
         </div>
 
-        <Form class="bg-background rounded-lg shadow-sm p-6 space-y-6" @submit="submitForm">
+        <form class="bg-background rounded-lg shadow-sm p-6 space-y-6" @submit.prevent="submitForm">
           <div class="grid grid-cols-12 gap-4 text-sm font-medium text-foreground">
             <div class="col-span-1">Position</div>
             <div class="col-span-1">Label</div>
@@ -259,7 +257,7 @@ const submitForm = handleSubmit(async (values) => {
               Store Samples
             </Button>
           </div>
-        </Form>
+        </form>
       </div>
       
       <div class="col-span-3"></div>

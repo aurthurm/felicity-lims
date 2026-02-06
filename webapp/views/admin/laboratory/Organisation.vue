@@ -13,9 +13,7 @@ import { boolean, number, object, string } from "yup";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Form,
-  FormControl,
+import {FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -270,7 +268,7 @@ const uploadLogo = async () => {
     <section v-if="currentTab === 'general-info'" class="space-y-6">
       <h2 class="text-2xl font-semibold text-foreground">Organization Information</h2>
       <hr class="border-border">
-      <Form class="space-y-6" @submit="saveOrganizationForm">
+      <form class="space-y-6" @submit.prevent="saveOrganizationForm">
         <div class="grid grid-cols-2 gap-6">
           <FormField name="name" v-slot="{ componentField }">
             <FormItem>
@@ -364,7 +362,7 @@ const uploadLogo = async () => {
         </div>
         <hr class="border-border" />
         <Button type="submit" :disabled="processing">Update</Button>
-      </Form>
+      </form>
     </section>
 
     <section v-if="currentTab === 'logo-upload'" class="space-y-6">
@@ -420,7 +418,7 @@ const uploadLogo = async () => {
     <section v-if="currentTab === 'other-settings'" class="space-y-6">
       <h2 class="text-2xl font-semibold text-foreground">Other Settings</h2>
       <hr class="border-border">
-      <Form class="space-y-6" @submit="saveSettingForm">
+      <form class="space-y-6" @submit.prevent="saveSettingForm">
         <div class="grid grid-cols-2 gap-6">
           <FormField name="passwordLifetime" v-slot="{ componentField }">
             <FormItem>
@@ -522,7 +520,7 @@ const uploadLogo = async () => {
         </div>
         <hr class="border-border" />
         <Button type="submit" :disabled="processing">Update</Button>
-      </Form>
+      </form>
     </section>
   </TabsAside>
 </template>

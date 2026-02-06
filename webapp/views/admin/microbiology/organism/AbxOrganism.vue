@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
-import {computed, defineAsyncComponent, onMounted, ref, h} from 'vue';
+import {computed, defineAsyncComponent, onMounted, reactive, ref, h} from 'vue';
 import { useForm, useField } from 'vee-validate';
 import * as yup from 'yup';
 import { addListsUnique } from '@/utils';

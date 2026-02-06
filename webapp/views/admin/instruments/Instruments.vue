@@ -10,9 +10,7 @@
   import { Button } from "@/components/ui/button";
   import { Input } from "@/components/ui/input";
   import { Textarea } from "@/components/ui/textarea";
-  import {
-    Form,
-    FormControl,
+  import {FormControl,
     FormField,
     FormItem,
     FormLabel,
@@ -185,7 +183,7 @@ defineOptions({ name: 'InstrumentsView' })
   <!-- Instrument Form Modal -->
   <Modal v-if="showModal" @close="showModal = false" :title="formTitle">
     <template v-slot:body>
-      <Form @submit="saveForm" class="space-y-6">
+      <form @submit.prevent="saveForm" class="space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField name="name" v-slot="{ componentField }">
             <FormItem class="md:col-span-2">
@@ -278,7 +276,7 @@ defineOptions({ name: 'InstrumentsView' })
             {{ formAction ? 'Create' : 'Update' }} Instrument
           </Button>
         </div>
-      </Form>
+      </form>
     </template>
   </Modal>
 </template>

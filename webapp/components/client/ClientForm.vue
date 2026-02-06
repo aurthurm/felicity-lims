@@ -4,9 +4,7 @@ import * as yup from 'yup';
 import { watch, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { ClientType } from '@/types/gql';
-import {
-  Form,
-  FormControl,
+import {FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -140,7 +138,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Form class="space-y-6" autocomplete="off" @submit="onSubmit">
+  <form class="space-y-6" autocomplete="off" @submit.prevent="onSubmit">
     <div class="grid grid-cols-2 gap-4">
       <FormField name="name" v-slot="{ componentField }">
         <FormItem>
@@ -255,5 +253,5 @@ onMounted(() => {
       </Button>
       <Button type="submit">Save Form</Button>
     </div>
-  </Form>
+  </form>
 </template>

@@ -11,9 +11,7 @@
   import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
-  import {
-    Form,
-    FormControl,
+  import {FormControl,
     FormField,
     FormItem,
     FormLabel,
@@ -183,7 +181,7 @@ import PageHeading from "@/components/common/PageHeading.vue"
     </template>
 
     <template v-slot:body>
-      <Form @submit="saveForm" class="p-4 space-y-6">
+      <form @submit.prevent="saveForm" class="p-4 space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField name="name" v-slot="{ componentField }">
             <FormItem>
@@ -260,7 +258,7 @@ import PageHeading from "@/components/common/PageHeading.vue"
         <Button type="submit" class="w-full">
           Save Laboratory
         </Button>
-      </Form>
+      </form>
     </template>
   </modal>
 </template>

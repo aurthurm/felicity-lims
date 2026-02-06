@@ -9,9 +9,7 @@ import { AddIdentificationDocument, AddIdentificationMutation, AddIdentification
   EditIdentificationDocument, EditIdentificationMutation, EditIdentificationMutationVariables } from '@/graphql/operations/patient.mutations';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
+import {FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -116,7 +114,7 @@ const identifications = computed(() => patientStore.getIdentifications)
     </template>
 
     <template v-slot:body>
-      <Form @submit="saveForm" class="space-y-6 p-4">
+      <form @submit.prevent="saveForm" class="space-y-6 p-4">
         <div class="grid grid-cols-1 gap-4">
           <FormField name="name" v-slot="{ componentField }">
             <FormItem>
@@ -134,7 +132,7 @@ const identifications = computed(() => patientStore.getIdentifications)
         <Button type="submit" class="w-full">
           Save Identification
         </Button>
-      </Form>
+      </form>
     </template>
   </Modal>
 </template>

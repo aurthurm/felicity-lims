@@ -10,9 +10,7 @@ import { AddAbxQcRangeMutation, AddAbxQcRangeMutationVariables, AddAbxQcRangeDoc
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Form,
-  FormControl,
+import {FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -376,7 +374,7 @@ const saveForm = handleSubmit((formValues) => {
     </template>
 
     <template v-slot:body>
-      <Form @submit="saveForm" class="space-y-6 p-4">
+      <form @submit.prevent="saveForm" class="space-y-6 p-4">
         <!-- Basic Information -->
         <div class="space-y-4">
           <h4 class="text-lg font-semibold text-foreground">Basic Information</h4>
@@ -530,7 +528,7 @@ const saveForm = handleSubmit((formValues) => {
         <hr class="border-border"/>
         
         <Button type="submit" class="w-full">Save QcRange</Button>
-      </Form>
+      </form>
     </template>
   </Modal>
 

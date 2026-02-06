@@ -3,9 +3,7 @@ import { ref, computed, onMounted } from "vue";
 import { useField, useForm } from "vee-validate";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
+import {FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -314,7 +312,7 @@ onMounted(() => {
 
     <hr class="border-border" />
 
-    <Form @submit="saveUser" class="space-y-8">
+    <form @submit.prevent="saveUser" class="space-y-8">
       <!-- Basic Information -->
       <div class="space-y-4">
         <h3 class="text-lg font-medium text-foreground">Basic Information</h3>
@@ -529,6 +527,6 @@ onMounted(() => {
           {{ processing ? "Creating..." : "Create User" }}
         </Button>
       </div>
-    </Form>
+    </form>
   </div>
 </template>

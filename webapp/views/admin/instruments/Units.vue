@@ -9,9 +9,7 @@
   import  useApiUtil  from '@/composables/api_util';
   import { Button } from "@/components/ui/button";
   import { Input } from "@/components/ui/input";
-  import {
-    Form,
-    FormControl,
+  import {FormControl,
     FormField,
     FormItem,
     FormLabel,
@@ -138,7 +136,7 @@ defineOptions({ name: 'UnitsView' })
     </template>
 
     <template v-slot:body>
-      <Form @submit="saveForm" class="space-y-4">
+      <form @submit.prevent="saveForm" class="space-y-4">
         <div class="space-y-4">
           <FormField name="name" v-slot="{ componentField }">
             <FormItem>
@@ -162,7 +160,7 @@ defineOptions({ name: 'UnitsView' })
         <div class="flex justify-end">
           <Button type="submit">Save Changes</Button>
         </div>
-      </Form>
+      </form>
     </template>
   </Modal>
 </template>

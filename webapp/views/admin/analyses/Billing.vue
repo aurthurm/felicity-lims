@@ -13,9 +13,7 @@
   import { AnalysisDiscountType, ProfileDiscountType } from '@/types/gql';
   import { Button } from "@/components/ui/button";
   import { Input } from "@/components/ui/input";
-  import {
-    Form,
-    FormControl,
+  import {FormControl,
     FormField,
     FormItem,
     FormLabel,
@@ -216,7 +214,7 @@ defineOptions({ name: 'BillingView' })
             <h3 class="text-lg font-semibold text-foreground">Pricing Information</h3>
           </div>
           <div class="rounded-lg border border-border bg-card p-6">
-            <Form class="space-y-6" @submit="updatePricing">
+            <form class="space-y-6" @submit.prevent="updatePricing">
               <div class="space-y-4">
                 <FormField name="amount" v-slot="{ componentField }">
                   <FormItem>
@@ -234,7 +232,7 @@ defineOptions({ name: 'BillingView' })
               <Button type="submit" class="w-full">
                 Update Pricing
               </Button>
-            </Form>
+            </form>
           </div>
         </div>
       </section>
@@ -245,7 +243,7 @@ defineOptions({ name: 'BillingView' })
             <h3 class="text-lg font-semibold text-foreground">Discounts Information</h3>
           </div>
           <div class="rounded-lg border border-border bg-card p-6">
-            <Form class="space-y-6" @submit="updateDiscounting">
+            <form class="space-y-6" @submit.prevent="updateDiscounting">
               <div class="grid grid-cols-2 gap-4">
                 <FormField name="discountType" v-slot="{ componentField }">
                   <FormItem>
@@ -363,7 +361,7 @@ defineOptions({ name: 'BillingView' })
               <Button type="submit" class="w-full">
                 Update Discount
               </Button>
-            </Form>
+            </form>
           </div>
         </div>
       </section>

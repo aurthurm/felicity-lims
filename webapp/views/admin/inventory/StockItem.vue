@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, reactive, ref } from 'vue';
+import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import Modal from '@/components/ui/Modal.vue';
 import Drawer from '@/components/ui/Drawer.vue';
@@ -17,7 +18,7 @@ import { useInventoryStore } from '@/stores/inventory';
 import useApiUtil from '@/composables/api_util';
 import { StockItemInputType, StockItemType } from '@/types/gql';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import {
@@ -57,7 +58,10 @@ const defaultValues = {
   minimumLevel: '' as number | '',
   maximumLevel: '' as number | '',
 };
-const modalFormInitialValues = ref<Record<string, unknown>>({ ...defaultValues });
+const { handleSubmit, setValues } = useForm({
+  validationSchema: stockItemSchema,
+  initialValues: { ...defaultValues },
+});
 
 const itemParams = reactive({
   first: 50,
@@ -94,22 +98,22 @@ function FormManager(create: boolean, obj: StockItemType | null): void {
   formTitle.value = (create ? 'CREATE' : 'EDIT') + ' STOCK ITEM';
   if (create) {
     currentUid.value = null;
-    modalFormInitialValues.value = { ...defaultValues };
+    setValues({ ...defaultValues });
   } else {
     currentUid.value = obj?.uid ?? null;
-    modalFormInitialValues.value = {
+    setValues({
       name: obj?.name ?? '',
       description: obj?.description ?? '',
       hazardUid: obj?.hazardUid ?? '',
       categoryUid: obj?.categoryUid ?? '',
       minimumLevel: obj?.minimumLevel ?? '',
       maximumLevel: obj?.maximumLevel ?? '',
-    };
+    });
   }
   showModal.value = true;
 }
 
-function onModalFormSubmit(values: Record<string, unknown>): void {
+const onModalFormSubmit = handleSubmit((values): void => {
   const payload = {
     name: values.name as string,
     description: (values.description as string) ?? null,
@@ -121,7 +125,7 @@ function onModalFormSubmit(values: Record<string, unknown>): void {
   if (formAction.value === true) addStockItem(payload);
   if (formAction.value === false) editStockItem(payload);
   showModal.value = false;
-}
+});
 
 const openDrawer = ref(false);
 const stockItem = ref<StockItemType | undefined>();
@@ -199,10 +203,8 @@ function viewStockItem(item: StockItemType) {
         <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
       </template>
       <template #body>
-        <Form
-          :initial-values="modalFormInitialValues"
-          :validation-schema="stockItemSchema"
-          @submit="onModalFormSubmit"
+        <form
+          @submit.prevent="onModalFormSubmit"
           class="space-y-6"
         >
           <FormField name="name" v-slot="{ componentField }">
@@ -284,7 +286,7 @@ function viewStockItem(item: StockItemType) {
             </FormField>
           </div>
           <Button type="submit" class="w-full">Save Changes</Button>
-        </Form>
+        </form>
       </template>
     </Modal>
   </div>

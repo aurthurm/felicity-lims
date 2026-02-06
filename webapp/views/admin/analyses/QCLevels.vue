@@ -10,9 +10,7 @@
   import  useApiUtil  from '@/composables/api_util';
   import { Button } from "@/components/ui/button";
   import { Input } from "@/components/ui/input";
-  import {
-    Form,
-    FormControl,
+  import {FormControl,
     FormField,
     FormItem,
     FormLabel,
@@ -116,7 +114,7 @@ import PageHeading from "@/components/common/PageHeading.vue"
         </template>
 
         <template v-slot:body>
-            <Form @submit="saveForm" class="space-y-4 p-4">
+            <form @submit.prevent="saveForm" class="space-y-4 p-4">
                 <FormField name="level" v-slot="{ componentField }">
                     <FormItem>
                         <FormLabel>QC Level</FormLabel>
@@ -130,7 +128,7 @@ import PageHeading from "@/components/common/PageHeading.vue"
                 <Button type="submit" class="w-full">
                     Save Changes
                 </Button>
-            </Form>
+            </form>
         </template>
     </Modal>
 </template>

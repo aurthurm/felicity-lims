@@ -4,9 +4,7 @@ import { useForm } from "vee-validate";
 import { object, string } from "yup";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
+import {FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -292,7 +290,7 @@ const saveForm = handleSubmit((values): void => {
     </template>
 
     <template v-slot:body>
-      <Form class="space-y-6" @submit="saveForm">
+      <form class="space-y-6" @submit.prevent="saveForm">
         <div class="grid grid-cols-2 gap-6">
           <FormField name="name" v-slot="{ componentField }">
             <FormItem>
@@ -317,7 +315,7 @@ const saveForm = handleSubmit((values): void => {
         <Button type="submit" class="w-full">
           Save Form
         </Button>
-      </Form>
+      </form>
     </template>
   </Modal>
 </template>

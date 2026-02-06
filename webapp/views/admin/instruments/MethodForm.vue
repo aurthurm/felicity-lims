@@ -11,9 +11,7 @@
   import { Button } from "@/components/ui/button";
   import { Input } from "@/components/ui/input";
   import { Textarea } from "@/components/ui/textarea";
-  import {
-    Form,
-    FormControl,
+  import {FormControl,
     FormField,
     FormItem,
     FormLabel,
@@ -140,7 +138,7 @@
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
 
 <template>
-  <Form @submit="saveForm" class="space-y-4">
+  <form @submit.prevent="saveForm" class="space-y-4">
     <div class="space-y-4">
       <div class="grid grid-cols-3 gap-4">
         <FormField name="name" v-slot="{ componentField }">
@@ -210,5 +208,5 @@
     <div class="flex justify-end">
       <Button type="submit">Save Changes</Button>
     </div>
-  </Form>
+  </form>
 </template>

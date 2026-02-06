@@ -12,9 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Form,
-  FormControl,
+import {FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -269,7 +267,7 @@ const countNone = computed(
     </template>
 
     <template v-slot:body>
-      <Form class="space-y-6" @submit="saveForm">
+      <form class="space-y-6" @submit.prevent="saveForm">
         <div class="grid grid-cols-3 gap-6">
           <FormField name="laboratoryUid" v-slot="{ componentField }">
             <FormItem>
@@ -324,7 +322,7 @@ const countNone = computed(
         <div class="border-t border-border pt-4">
           <Button type="submit" class="w-full">Create Shipment</Button>
         </div>
-      </Form>
+      </form>
     </template>
   </Modal>
 </template>

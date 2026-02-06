@@ -63,7 +63,7 @@ const login = handleSubmit((values) => {
         </div>
 
         <!-- Login Form -->
-        <form v-if="!auth.isAuthenticated" class="space-y-5" @submit="login">
+        <form v-if="!auth.isAuthenticated" class="space-y-5" @submit.prevent="login">
             <FormField name="username" v-slot="{ componentField }">
               <FormItem>
                 <FormLabel>Username</FormLabel>

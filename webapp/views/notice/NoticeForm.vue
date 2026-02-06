@@ -15,9 +15,7 @@ import { object, string, array, number, date } from "yup";
 import { formatDate } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
+import {FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -223,7 +221,7 @@ function updateNotice(payload: NoticeType) {
 </script>
 
 <template>
-  <Form class="space-y-4 p-4" @submit="submitNoticeForm">
+  <form class="space-y-4 p-4" @submit.prevent="submitNoticeForm">
     <div class="space-y-4">
       <FormField name="title" v-slot="{ componentField }">
         <FormItem>
@@ -282,5 +280,5 @@ function updateNotice(payload: NoticeType) {
     <Button type="submit" class="w-full">
       Save Notice
     </Button>
-  </Form>
+  </form>
 </template>

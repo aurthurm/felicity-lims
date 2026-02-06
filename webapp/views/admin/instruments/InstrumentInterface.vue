@@ -11,9 +11,7 @@ import { AddInstrumentInterfaceMutation, AddInstrumentInterfaceMutationVariables
   import { Button } from "@/components/ui/button";
   import { Checkbox } from "@/components/ui/checkbox";
   import { Input } from "@/components/ui/input";
-  import {
-    Form,
-    FormControl,
+  import {FormControl,
     FormField,
     FormItem,
     FormLabel,
@@ -265,7 +263,7 @@ import PageHeading from "@/components/common/PageHeading.vue"
     </template>
 
     <template v-slot:body>
-      <Form @submit="saveForm" class="space-y-6">
+      <form @submit.prevent="saveForm" class="space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField name="laboratoryInstrumentUid" v-slot="{ componentField }">
             <FormItem class="col-span-1 md:col-span-2">
@@ -367,7 +365,7 @@ import PageHeading from "@/components/common/PageHeading.vue"
         <div class="flex justify-end">
           <Button type="submit">Save Changes</Button>
         </div>
-      </Form>
+      </form>
     </template>
   </Modal>
 

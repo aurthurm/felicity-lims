@@ -18,9 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Form,
-  FormControl,
+import {FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -480,7 +478,7 @@ const saveMappingForm = handleMappingSubmit((values) => {
     </template>
 
     <template v-slot:body>
-      <Form @submit="saveForm" class="p-6 space-y-6">
+      <form @submit.prevent="saveForm" class="p-6 space-y-6">
         <div class="space-y-4">
           <FormField name="name" v-slot="{ componentField }">
             <FormItem>
@@ -570,7 +568,7 @@ const saveMappingForm = handleMappingSubmit((values) => {
             Save Changes
           </Button>
         </div>
-      </Form>
+      </form>
     </template>
   </Modal>
 
@@ -581,7 +579,7 @@ const saveMappingForm = handleMappingSubmit((values) => {
     </template>
 
     <template v-slot:body>
-      <Form @submit="saveMappingForm" class="p-6 space-y-6">
+      <form @submit.prevent="saveMappingForm" class="p-6 space-y-6">
         <div class="space-y-4">
           <FormField name="codingStandardUid" v-slot="{ componentField }">
             <FormItem>
@@ -639,7 +637,7 @@ const saveMappingForm = handleMappingSubmit((values) => {
             Save Changes
           </Button>
         </div>
-      </Form>
+      </form>
     </template>
   </Modal>
 

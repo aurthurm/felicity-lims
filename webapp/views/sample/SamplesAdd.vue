@@ -35,9 +35,7 @@ import CostSummary from "@/components/billing/CostSummary.vue";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Form,
-  FormControl,
+import {FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -374,7 +372,7 @@ const contactLabel = (contact: ClientContactType) => {
 <template>
   <div class="space-y-6">
     <h5 class="text-xl font-semibold text-foreground mb-4">Add Analysis Request</h5>
-    <Form class="relative p-6 bg-background rounded-lg shadow-sm space-y-6" @submit="submitARForm">
+    <form class="relative p-6 bg-background rounded-lg shadow-sm space-y-6" @submit.prevent="submitARForm">
       <!-- Loading overlay -->
       <div
         v-if="arSaving"
@@ -911,7 +909,7 @@ const contactLabel = (contact: ClientContactType) => {
           Save Sample(s)
         </Button>
       </div>
-    </Form>
+    </form>
   </div>
 </template>
 

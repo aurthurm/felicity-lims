@@ -7,6 +7,7 @@ import { ReflexRuleType } from "@/types/reflex";
 import useApiUtil  from "@/composables/api_util";
 import { useReflexStore } from "@/stores/reflex";
 import { AddReflexRuleDocument, AddReflexRuleMutation, AddReflexRuleMutationVariables, EditReflexRuleDocument, EditReflexRuleMutation, EditReflexRuleMutationVariables } from "@/graphql/operations/reflex.mutations";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 import PageHeading from "@/components/common/PageHeading.vue"
 const { withClientMutation } = useApiUtil();
 const reflexStore = useReflexStore();

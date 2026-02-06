@@ -3,9 +3,7 @@ import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import { watch } from 'vue';
 import { ClientContactType } from '@/types/gql';
-import {
-  Form,
-  FormControl,
+import {FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -84,7 +82,7 @@ watch(
 </script>
 
 <template>
-  <Form class="space-y-6" autocomplete="off" @submit="onSubmit">
+  <form class="space-y-6" autocomplete="off" @submit.prevent="onSubmit">
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <FormField name="firstName" v-slot="{ componentField }">
         <FormItem>
@@ -136,5 +134,5 @@ watch(
       </Button>
       <Button type="submit">Save Form</Button>
     </div>
-  </Form>
+  </form>
 </template>

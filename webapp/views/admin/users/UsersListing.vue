@@ -67,7 +67,7 @@
 
   <Modal v-if="showUserModal" @close="showUserModal = false" :title="userUid ? 'Edit User' : 'Add User'">
     <template v-slot:body>
-      <Form @submit="saveUserForm" class="space-y-6">
+      <form @submit.prevent="saveUserForm" class="space-y-6">
         <div class="grid grid-cols-2 gap-6">
           <FormField name="firstName" v-slot="{ componentField }">
             <FormItem>
@@ -223,7 +223,7 @@
             {{ userUid ? 'Update' : 'Create' }} User
           </Button>
         </div>
-      </Form>
+      </form>
     </template>
   </Modal>
 </template>
@@ -246,9 +246,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
-import {
-  Form,
-  FormControl,
+import {FormControl,
   FormField,
   FormItem,
   FormLabel,

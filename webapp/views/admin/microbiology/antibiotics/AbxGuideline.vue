@@ -22,9 +22,7 @@ import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Form,
-  FormControl,
+import {FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -190,7 +188,7 @@ const saveForm = handleSubmit((values) => {
       </template>
 
       <template v-slot:body>
-        <Form @submit="saveForm" class="space-y-4">
+        <form @submit.prevent="saveForm" class="space-y-4">
           <FormField name="name" v-slot="{ componentField }">
             <FormItem>
               <FormLabel>Name</FormLabel>
@@ -227,7 +225,7 @@ const saveForm = handleSubmit((values) => {
             </Button>
             <Button type="submit">Save</Button>
           </div>
-        </Form>
+        </form>
       </template>
     </Modal>
   </div>

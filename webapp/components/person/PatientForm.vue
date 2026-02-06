@@ -21,9 +21,7 @@ import { useForm } from "vee-validate";
 import { PatientType, ClientType } from "@/types/gql";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
+import {FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -261,12 +259,12 @@ function removeIdentifier(index: number) {
 </script>
 
 <template>
-  <Form
+  <form
     class="space-y-6"
     autocomplete="off"
     role="form"
     aria-label="Patient Information Form"
-    @submit="submitPatientForm"
+    @submit.prevent="submitPatientForm"
   >
     <div class="grid grid-cols-2 gap-6">
       <FormField name="clientPatientId" v-slot="{ componentField }">
@@ -563,7 +561,7 @@ function removeIdentifier(index: number) {
     <div class="flex justify-end">
       <Button type="submit">Save Patient</Button>
     </div>
-  </Form>
+  </form>
 </template>
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>

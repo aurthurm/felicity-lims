@@ -17,9 +17,7 @@ import { GetAbxMediumAllQuery, GetAbxMediumAllQueryVariables, GetAbxMediumAllDoc
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
+import {FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -163,7 +161,7 @@ const saveForm = handleSubmit((formValues) => {
     </template>
 
     <template v-slot:body>
-      <Form @submit="saveForm" class="space-y-6 p-4">
+      <form @submit.prevent="saveForm" class="space-y-6 p-4">
         <div class="grid grid-cols-2 gap-4">
           <FormField name="name" v-slot="{ componentField }">
             <FormItem>
@@ -188,7 +186,7 @@ const saveForm = handleSubmit((formValues) => {
         <Button type="submit" class="w-full">
           Save Abx Medium
         </Button>
-      </Form>
+      </form>
     </template>
   </Modal>
 

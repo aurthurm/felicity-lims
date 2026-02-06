@@ -11,9 +11,7 @@
   import  useApiUtil  from '@/composables/api_util';
   import { Button } from "@/components/ui/button";
   import { Input } from "@/components/ui/input";
-  import {
-    Form,
-    FormControl,
+  import {FormControl,
     FormField,
     FormItem,
     FormLabel,
@@ -198,7 +196,7 @@ defineOptions({ name: 'UncertaintyView' })
     </template>
 
     <template v-slot:body>
-      <Form @submit="saveForm" class="p-6 space-y-6">
+      <form @submit.prevent="saveForm" class="p-6 space-y-6">
         <div class="space-y-4">
           <div class="grid grid-cols-5 gap-4">
             <FormField name="instrumentUid" v-slot="{ componentField }">
@@ -272,7 +270,7 @@ defineOptions({ name: 'UncertaintyView' })
         <div class="pt-4">
           <Button type="submit" class="w-full">Save Form</Button>
         </div>
-      </Form>
+      </form>
     </template>
   </Modal>
 

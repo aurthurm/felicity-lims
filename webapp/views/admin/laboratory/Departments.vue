@@ -4,9 +4,7 @@
   import { object, string } from "yup";
   import { Button } from "@/components/ui/button";
   import { Input } from "@/components/ui/input";
-  import {
-    Form,
-    FormControl,
+  import {FormControl,
     FormField,
     FormItem,
     FormLabel,
@@ -110,7 +108,7 @@ defineOptions({ name: 'DepartmentsView' })
         </template>
 
         <template v-slot:body>
-            <Form class="space-y-6" @submit="saveForm">
+            <form class="space-y-6" @submit.prevent="saveForm">
                 <FormField name="name" v-slot="{ componentField }">
                     <FormItem>
                         <FormLabel>Department Name</FormLabel>
@@ -122,7 +120,7 @@ defineOptions({ name: 'DepartmentsView' })
                 </FormField>
                 <hr class="border-border" />
                 <Button type="submit" class="w-full">Save Form</Button>
-            </Form>
+            </form>
         </template>
     </Modal>
 </template>

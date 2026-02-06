@@ -13,9 +13,7 @@ import { object, number, string } from "yup";
 import * as shield from "@/guards";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
+import {FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -259,7 +257,7 @@ const countNone = computed(
       </template>
 
       <template v-slot:body>
-        <Form class="space-y-6 p-4" @submit="saveForm">
+        <form class="space-y-6 p-4" @submit.prevent="saveForm">
           <div class="grid grid-cols-3 gap-4">
             <FormField name="analystUid" v-slot="{ componentField }">
               <FormItem>
@@ -313,7 +311,7 @@ const countNone = computed(
           <div class="border-t border-border pt-4">
             <Button type="submit" class="w-full">Save Form</Button>
           </div>
-        </Form>
+        </form>
       </template>
     </Modal>
   </div>

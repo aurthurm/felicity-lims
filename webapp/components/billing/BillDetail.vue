@@ -16,9 +16,7 @@ import { useForm } from "vee-validate";
 import { object, string, number } from "yup";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
+import {FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -363,7 +361,7 @@ const invoice = async (bill: TestBillType) => await downloadInvoice(bill.uid);
     </template>
 
     <template v-slot:body>
-      <Form class="space-y-6 p-6" @submit="submitTransactionForm">
+      <form class="space-y-6 p-6" @submit.prevent="submitTransactionForm">
         <div class="grid grid-cols-2 gap-6">
           <FormField name="kind" v-slot="{ componentField }">
             <FormItem>
@@ -408,7 +406,7 @@ const invoice = async (bill: TestBillType) => await downloadInvoice(bill.uid);
             Save Transaction
           </Button>
         </div>
-      </Form>
+      </form>
     </template>
   </Modal>
 
@@ -419,7 +417,7 @@ const invoice = async (bill: TestBillType) => await downloadInvoice(bill.uid);
     </template>
 
     <template v-slot:body>
-      <Form class="space-y-6 p-6" @submit="submitConfirmTransaction">
+      <form class="space-y-6 p-6" @submit.prevent="submitConfirmTransaction">
         <h4 class="text-lg font-medium text-foreground">{{ values.kind }} Transaction</h4>
         <FormField name="notes" v-slot="{ componentField }">
           <FormItem>
@@ -436,7 +434,7 @@ const invoice = async (bill: TestBillType) => await downloadInvoice(bill.uid);
             Confirm Transaction
           </Button>
         </div>
-      </Form>
+      </form>
     </template>
   </Modal>
 
@@ -447,7 +445,7 @@ const invoice = async (bill: TestBillType) => await downloadInvoice(bill.uid);
     </template>
 
     <template v-slot:body>
-      <Form class="space-y-6 p-6">
+      <form class="space-y-6 p-6">
         <FormItem>
           <FormLabel>Voucher Code</FormLabel>
           <FormControl>
@@ -464,7 +462,7 @@ const invoice = async (bill: TestBillType) => await downloadInvoice(bill.uid);
             Apply Voucher
           </Button>
         </div>
-      </Form>
+      </form>
     </template>
   </Modal>
 </template>
