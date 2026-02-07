@@ -36,9 +36,8 @@ All data tables in the webapp share a consistent visual design: card-style conta
               </EmptyHeader>
             </EmptyContent>
           </TableEmpty>
-        </TableBody>
-      </Table>
-    </div>
+      </TableBody>
+    </Table>
   </div>
 </div>
 ```
@@ -51,10 +50,10 @@ All data tables in the webapp share a consistent visual design: card-style conta
 | **Inner scroll container** | `relative w-full overflow-auto` | Use `overflow-y-auto max-h-[Npx]` for fixed-height scrollable tables (e.g. permissions matrix). |
 | **Table** | `w-full caption-bottom text-sm` | Add `table-fixed` for fixed column widths (e.g. permission matrix). |
 | **TableHeader** | `[&_tr]:border-b` | |
-| **Header row** | `border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted` | |
+| **Header row** | `border-b border-border/50 transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted` | Row dividers use `border-border/50` for a subtle, guideline-compliant look. |
 | **TableHead** | `h-12 px-4 align-middle font-medium text-muted-foreground` | Add `text-left` or `text-right`; right-align the Actions column. |
 | **TableBody** | `[&_tr:last-child]:border-0` | |
-| **Body row** | `border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted` | Use `bg-muted/50` for category/section header rows. |
+| **Body row** | `border-b border-border/50 transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted` | Row dividers use `border-border/50` for subtle dividers. Use `bg-muted/50` for category/section header rows. |
 | **TableCell** | `px-4 py-3 align-middle text-sm` | Use `py-2` for denser tables. Add `whitespace-nowrap` for cells that must not wrap. Use `text-right` for action cells. |
 
 ## Variations
@@ -99,6 +98,29 @@ Always provide a meaningful empty state via `TableEmpty`:
   </Empty>
 </TableEmpty>
 ```
+
+## Migration status
+
+All tables have been migrated to this design:
+
+- Users, Groups, Permissions (admin/users)
+- ReflexListing, SampleTypes, PersonIdentification
+- Inventory: StockCategory, StockItem, StockUnit, Hazard, StockItemDetail, ProductDetail, Inventory (basket)
+- Suppliers, Manufacturers
+- ReferralLaboratory
+- Microbiology: AbxMedium, AbxBreakpointType, AbxSiteOfInfection, AbxTestMethod, AbxHost, organism tables, AbxGuideline, AbxLabAntibiotic, AstPanel
+- Instruments (admin/instruments-conf): InstrumentTypes, LaboratoryInstruments, Instruments, Methods, Units, InstrumentInterface
+- LaboratoryListing, CodingStandard
+- DataTable (reusable component), CaseTable, DocumentListing
+- Notices, dashboard/Inventory
+- ShipmentSamples, ShipmentAssign
+- WorkSheetResults, ManageAnalyses
+- PublicationAdmin (card wrapper)
+- Analyses services: ResultOptions, SmsTemplate, DetectionLimit, InterimFields, CorrectionFactor, Uncertainty, Specifications, ServicesAdmin (Concept Mappings)
+- RejectionReasons, AnalysesCategories
+- ContactTable, WorkSheetAssign, QCSet (grid and list views)
+- QCLevels, QCTemplates (analyses admin)
+- AnalysesProfiles (Concept Mappings table)
 
 ## Avoid
 

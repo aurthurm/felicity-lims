@@ -79,21 +79,21 @@ const saveForm = handleSubmit((formValues) => {
       <Button @click="FormManager(true)">Add Reflex Rule</Button>
     </PageHeading>
 
-    <div class="rounded-md border border-border bg-card p-6">
-      <div class="overflow-x-auto">
-        <Table class="min-w-full divide-y divide-border">
-          <TableHeader>
-            <TableRow>
-              <TableHead class="px-4 py-2 text-left text-sm font-semibold text-foreground">Title</TableHead>
-              <TableHead class="px-4 py-2 text-left text-sm font-semibold text-foreground">Description</TableHead>
-              <TableHead class="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                <span class="sr-only">Actions</span>
+    <div class="border border-border bg-card rounded-lg shadow-md">
+      <div class="relative w-full overflow-auto">
+        <Table class="w-full caption-bottom text-sm">
+          <TableHeader class="[&_tr]:border-b">
+            <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Title</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Description</TableHead>
+              <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">
+                Actions
               </TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody class="divide-y divide-border bg-background">
-            <TableRow v-for="rule in reflexStore.reflexRules" :key="rule?.uid" class="hover:bg-muted/50">
-              <TableCell class="whitespace-nowrap px-4 py-2 text-sm text-foreground">
+          <TableBody class="[&_tr:last-child]:border-0">
+            <TableRow v-for="rule in reflexStore.reflexRules" :key="rule?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">
                 <router-link
                   :to="{ name: 'reflex-detail', params: { uid: rule?.uid } }"
                   class="text-primary hover:text-primary/80"
@@ -101,13 +101,11 @@ const saveForm = handleSubmit((formValues) => {
                   {{ rule?.name }}
                 </router-link>
               </TableCell>
-              <TableCell class="whitespace-nowrap px-4 py-2 text-sm text-foreground">{{ rule?.description }}</TableCell>
-              <TableCell class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                <button 
-                  @click="FormManager(false, rule)"
-                  class="text-primary hover:text-primary/80">
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ rule?.description }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-right text-sm">
+                <Button variant="outline" size="sm" @click="FormManager(false, rule)">
                   Edit
-                </button>
+                </Button>
               </TableCell>
             </TableRow>
             <TableEmpty v-if="!reflexStore.reflexRules || reflexStore.reflexRules.length === 0" :colspan="3">

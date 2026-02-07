@@ -22,11 +22,12 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="overflow-x-auto mt-4" role="region" aria-label="Cases table">
-    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card border border-border rounded-lg">
-      <Table class="min-w-full divide-y divide-border">
-        <TableHeader class="bg-muted/50">
-          <TableRow>
+  <div class="mt-4" role="region" aria-label="Cases table">
+    <div class="border border-border bg-card rounded-lg shadow-md">
+      <div class="relative w-full overflow-auto">
+        <Table class="w-full caption-bottom text-sm">
+          <TableHeader class="[&_tr]:border-b">
+          <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
             <TableHead scope="col" class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">ID</TableHead>
             <TableHead scope="col" class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Case Type</TableHead>
             <TableHead scope="col" class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Created</TableHead>
@@ -34,8 +35,8 @@ const emit = defineEmits<{
             <TableHead scope="col" class="px-4 py-3 text-right text-sm font-medium text-muted-foreground">Actions</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody class="bg-card divide-y divide-border">
-          <TableRow v-for="case_ in cases" :key="case_.id" class="hover:bg-muted/50">
+        <TableBody class="[&_tr:last-child]:border-0">
+          <TableRow v-for="case_ in cases" :key="case_.id" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
             <TableCell class="px-4 py-3 whitespace-nowrap">
               <div class="text-sm text-card-foreground">{{ case_.id }}</div>
             </TableCell>
@@ -77,6 +78,7 @@ const emit = defineEmits<{
           </TableEmpty>
         </TableBody>
       </Table>
+      </div>
     </div>
   </div>
 </template>

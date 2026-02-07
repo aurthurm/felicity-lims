@@ -171,11 +171,11 @@ const sampleManager = (action: string) => {
     </div>
 
     <!-- Sample Table View -->
-    <div class="rounded-md border border-border">
-      <div class="overflow-x-auto">
-        <Table class="w-full">
-          <TableHeader>
-            <TableRow class="border-b border-border bg-muted/50">
+    <div class="border border-border bg-card rounded-lg shadow-md">
+      <div class="relative w-full overflow-auto">
+        <Table class="w-full caption-bottom text-sm">
+          <TableHeader class="[&_tr]:border-b">
+            <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
               <TableHead
                 class="h-10 px-4 text-left align-middle font-medium text-muted-foreground"
                 v-show="shipment?.state === 'preperation'"
@@ -199,12 +199,12 @@ const sampleManager = (action: string) => {
               <TableHead class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Status</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody class="divide-y divide-border">
+          <TableBody class="[&_tr:last-child]:border-0">
             <TableRow
               v-for="shipped in shipment?.shippedSamples"
               :key="shipped.sampleUid"
               v-motion-slide-right
-              class="hover:bg-muted/50"
+              class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
             >
               <TableCell class="p-4 align-middle" v-show="shipment?.state === 'preperation'">
                 <Checkbox

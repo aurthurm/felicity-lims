@@ -89,25 +89,21 @@ import PageHeading from "@/components/common/PageHeading.vue"
       <Button @click="FormManager(true)">Add Coding Standard</Button>
     </PageHeading>
 
-    <div class="rounded-lg border border-border bg-card p-6">
-      <div class="overflow-x-auto">
-        <Table class="w-full">
-          <TableHeader>
-            <TableRow class="border-b border-border">
-              <TableHead class="px-4 py-3 text-left text-sm font-medium text-foreground">Standard</TableHead>
-              <TableHead class="px-4 py-3 text-left text-sm font-medium text-foreground">Description</TableHead>
-              <TableHead class="px-4 py-3 text-right text-sm font-medium text-foreground">Actions</TableHead>
+    <div class="border border-border bg-card rounded-lg shadow-md">
+      <div class="relative w-full overflow-auto">
+        <Table class="w-full caption-bottom text-sm">
+          <TableHeader class="[&_tr]:border-b">
+            <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Standard</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Description</TableHead>
+              <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody class="divide-y divide-border">
-            <TableRow v-for="standard in codindStandards" :key="standard?.uid" class="hover:bg-accent/50">
-              <TableCell class="px-4 py-3">
-                <div class="text-sm text-foreground">{{ standard?.name }}</div>
-              </TableCell>
-              <TableCell class="px-4 py-3">
-                <div class="text-sm text-muted-foreground">{{ standard?.description }}</div>
-              </TableCell>
-              <TableCell class="px-4 py-3 text-right">
+          <TableBody class="[&_tr:last-child]:border-0">
+            <TableRow v-for="standard in codindStandards" :key="standard?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableCell class="px-4 py-3 align-middle text-sm text-foreground">{{ standard?.name }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-muted-foreground">{{ standard?.description }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-right">
                 <Button variant="outline" size="sm" @click="FormManager(false, standard)">
                   Edit
                 </Button>

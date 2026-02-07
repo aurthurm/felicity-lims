@@ -173,28 +173,29 @@ onMounted(() => {
       {{ error }}
     </div>
 
-    <div v-else class="overflow-x-auto border border-border rounded-lg">
-      <Table class="min-w-full divide-y divide-border">
-        <TableHeader class="bg-muted">
-          <TableRow>
-            <TableHead class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">Product</TableHead>
-            <TableHead class="px-4 py-3 text-right text-xs font-semibold text-muted-foreground">Current</TableHead>
-            <TableHead class="px-4 py-3 text-right text-xs font-semibold text-muted-foreground">Min</TableHead>
-            <TableHead class="px-4 py-3 text-right text-xs font-semibold text-muted-foreground">Max</TableHead>
-            <TableHead class="px-4 py-3 text-right text-xs font-semibold text-muted-foreground">Reorder Point</TableHead>
-            <TableHead class="px-4 py-3 text-right text-xs font-semibold text-muted-foreground">ROQ</TableHead>
-            <TableHead class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">Status</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody class="divide-y divide-border">
-          <TableRow v-for="item in filteredKpis" :key="item.productUid">
-            <TableCell class="px-4 py-3 text-sm text-foreground">{{ item.productName }}</TableCell>
-            <TableCell class="px-4 py-3 text-sm text-right text-foreground">{{ item.currentStock }}</TableCell>
-            <TableCell class="px-4 py-3 text-sm text-right text-foreground">{{ item.minimumLevel }}</TableCell>
-            <TableCell class="px-4 py-3 text-sm text-right text-foreground">{{ item.maximumLevel }}</TableCell>
-            <TableCell class="px-4 py-3 text-sm text-right text-foreground">{{ item.reorderPoint }}</TableCell>
-            <TableCell class="px-4 py-3 text-sm text-right text-foreground">{{ item.reorderQuantity }}</TableCell>
-            <TableCell class="px-4 py-3 text-sm">
+    <div v-else class="border border-border bg-card rounded-lg shadow-md">
+      <div class="relative w-full overflow-auto">
+        <Table class="w-full caption-bottom text-sm">
+          <TableHeader class="[&_tr]:border-b">
+            <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Product</TableHead>
+              <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Current</TableHead>
+              <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Min</TableHead>
+              <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Max</TableHead>
+              <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Reorder Point</TableHead>
+              <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">ROQ</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody class="[&_tr:last-child]:border-0">
+            <TableRow v-for="item in filteredKpis" :key="item.productUid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+            <TableCell class="px-4 py-3 align-middle text-sm text-foreground">{{ item.productName }}</TableCell>
+            <TableCell class="px-4 py-3 align-middle text-sm text-right text-foreground">{{ item.currentStock }}</TableCell>
+            <TableCell class="px-4 py-3 align-middle text-sm text-right text-foreground">{{ item.minimumLevel }}</TableCell>
+            <TableCell class="px-4 py-3 align-middle text-sm text-right text-foreground">{{ item.maximumLevel }}</TableCell>
+            <TableCell class="px-4 py-3 align-middle text-sm text-right text-foreground">{{ item.reorderPoint }}</TableCell>
+            <TableCell class="px-4 py-3 align-middle text-sm text-right text-foreground">{{ item.reorderQuantity }}</TableCell>
+            <TableCell class="px-4 py-3 align-middle text-sm">
               <span
                 v-if="item.reorderNow"
                 class="inline-flex items-center rounded-full bg-destructive/10 text-destructive px-2 py-0.5 text-xs font-semibold"
@@ -227,6 +228,7 @@ onMounted(() => {
           </TableEmpty>
         </TableBody>
       </Table>
+      </div>
     </div>
   </div>
 </template>

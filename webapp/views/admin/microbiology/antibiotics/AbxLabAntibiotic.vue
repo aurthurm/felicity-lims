@@ -36,33 +36,33 @@ function discardAntibiotic(antibiotic) {
   <div class="space-y-6">
     <PageHeading title="Laboratory Antibiotics"></PageHeading>
 
-    <div class="border shadow-sm rounded-lg bg-card p-6">
-      <div class="overflow-x-auto">
-        <Table class="min-w-full divide-y divide-border">
-          <TableHeader>
-            <TableRow>
-              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</TableHead>
-              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Guidelines</TableHead>
-              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Potency</TableHead>
-              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">LOINC MIC</TableHead>
-              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">LOINC DISK</TableHead>
-              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">LOINC ETEST</TableHead>
-              <TableHead class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+    <div class="border border-border bg-card rounded-lg shadow-md">
+      <div class="relative w-full overflow-auto">
+        <Table class="w-full caption-bottom text-sm">
+          <TableHeader class="[&_tr]:border-b">
+            <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Name</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Guidelines</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Potency</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">LOINC MIC</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">LOINC DISK</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">LOINC ETEST</TableHead>
+              <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">
                 <span class="sr-only">Actions</span>
               </TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody class="divide-y divide-border bg-background">
-            <TableRow v-for="abx in abxlabAntibiotics" :key="abx?.uid" class="hover:bg-muted/50">
-              <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ abx?.name }}</TableCell>
-              <TableCell class="whitespace-nowrap px-3 py-4 text-sm">
+          <TableBody class="[&_tr:last-child]:border-0">
+            <TableRow v-for="abx in abxlabAntibiotics" :key="abx?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ abx?.name }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm">
                 <span class="px-2 py-1 mr-2 text-sm bg-muted rounded-md font-medium" v-for="gl in abx?.guidelines" :key="gl.name">{{ gl.name }}</span>
               </TableCell>
-              <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ abx?.potency }}</TableCell>
-              <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ abx?.loincmic }}</TableCell>
-              <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ abx?.loincdisk }}</TableCell>
-              <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ abx?.loincetest }}</TableCell>
-              <TableCell class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ abx?.potency }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ abx?.loincmic }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ abx?.loincdisk }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ abx?.loincetest }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-right">
                 <button 
                   @click="discardAntibiotic(abx)"
                   class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-destructive bg-background text-destructive hover:bg-destructive hover:text-destructive-foreground h-9 px-4 py-2">

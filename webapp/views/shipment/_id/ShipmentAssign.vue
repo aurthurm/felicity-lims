@@ -125,17 +125,17 @@ function areAllChecked(): boolean {
       </div>
     </form>
 
-    <div class="rounded-md border border-border">
-      <div class="overflow-x-auto">
+    <div class="border border-border bg-card rounded-lg shadow-md">
+      <div class="relative w-full overflow-auto">
         <div v-if="shipmentStore.fetchingSamples" class="p-4 text-center">
           <span class="inline-flex items-center gap-2">
             <Spinner class="size-4" />
             <span class="text-sm">Fetching samples ...</span>
           </span>
         </div>
-        <Table class="w-full" v-else>
-          <TableHeader>
-            <TableRow class="border-b border-border bg-muted/50">
+        <Table class="w-full caption-bottom text-sm" v-else>
+          <TableHeader class="[&_tr]:border-b">
+            <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
               <TableHead class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">
                 <Checkbox
                   :checked="allChecked"
@@ -152,8 +152,8 @@ function areAllChecked(): boolean {
               <TableHead class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">Status</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody class="divide-y divide-border" v-motion-slide-right>
-            <TableRow v-for="sample in shipmentStore.samples" :key="sample?.uid" class="hover:bg-muted/50">
+          <TableBody class="[&_tr:last-child]:border-0" v-motion-slide-right>
+            <TableRow v-for="sample in shipmentStore.samples" :key="sample?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
               <TableCell class="p-4 align-middle">
                 <Checkbox
                   :checked="sample.checked"

@@ -2213,7 +2213,7 @@ export type AddStockItemMutationVariables = Exact<{
 
 export type AddStockItemMutation = { __typename?: 'Mutation', createStockItem:
     | { __typename: 'OperationError', error: string, suggestion?: string | null }
-    | { __typename: 'StockItemType', uid: string, name: string, description?: string | null }
+    | { __typename: 'StockItemType', uid: string, name: string, description?: string | null, minimumLevel?: number | null, maximumLevel?: number | null }
    };
 
 export type EditStockItemMutationVariables = Exact<{
@@ -2224,7 +2224,7 @@ export type EditStockItemMutationVariables = Exact<{
 
 export type EditStockItemMutation = { __typename?: 'Mutation', updateStockItem:
     | { __typename: 'OperationError', error: string, suggestion?: string | null }
-    | { __typename: 'StockItemType', uid: string, name: string, description?: string | null }
+    | { __typename: 'StockItemType', uid: string, name: string, description?: string | null, minimumLevel?: number | null, maximumLevel?: number | null }
    };
 
 export type AddStockItemVariantMutationVariables = Exact<{
@@ -2351,7 +2351,7 @@ export type GetAllStockItemsQueryVariables = Exact<{
 }>;
 
 
-export type GetAllStockItemsQuery = { __typename?: 'Query', stockItemAll: { __typename?: 'StockItemCursorPage', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null }, items?: Array<{ __typename?: 'StockItemType', uid: string, name: string, description?: string | null, categoryUid?: string | null, hazardUid?: string | null, category?: { __typename?: 'StockCategoryType', uid: string, name: string } | null, hazard?: { __typename?: 'HazardType', uid: string, name: string } | null }> | null } };
+export type GetAllStockItemsQuery = { __typename?: 'Query', stockItemAll: { __typename?: 'StockItemCursorPage', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null }, items?: Array<{ __typename?: 'StockItemType', uid: string, name: string, description?: string | null, categoryUid?: string | null, hazardUid?: string | null, minimumLevel?: number | null, maximumLevel?: number | null, category?: { __typename?: 'StockCategoryType', uid: string, name: string } | null, hazard?: { __typename?: 'HazardType', uid: string, name: string } | null }> | null } };
 
 export type GetAllStockItemVariantsQueryVariables = Exact<{
   stockItemUid: Scalars['String']['input'];

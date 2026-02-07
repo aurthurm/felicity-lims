@@ -49,21 +49,22 @@ function toggleView() {
       />
     </div>
 
-    <div v-else class="overflow-x-auto rounded-lg border border-border bg-card">
-      <Table class="min-w-full divide-y divide-border">
-        <TableHeader class="bg-muted/50">
-          <TableRow>
+    <div v-else class="border border-border bg-card rounded-lg shadow-md">
+      <div class="relative w-full overflow-auto">
+        <Table class="w-full caption-bottom text-sm">
+          <TableHeader class="[&_tr]:border-b">
+            <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
             <TableHead scope="col" class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Name</TableHead>
             <TableHead scope="col" class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Created At</TableHead>
             <TableHead scope="col" class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Updated At</TableHead>
             <TableHead scope="col" class="py-3 px-4 text-left text-sm font-medium text-muted-foreground">Actions</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody class="divide-y divide-border bg-card">
+        <TableBody class="[&_tr:last-child]:border-0">
           <TableRow 
             v-for="doc in documents" 
             :key="doc.uid" 
-            class="hover:bg-accent/50 transition-colors"
+            class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
           >
             <TableCell 
               class="px-4 py-3 text-sm font-medium text-card-foreground cursor-pointer hover:text-accent-foreground" 
@@ -97,6 +98,7 @@ function toggleView() {
           </TableEmpty>
         </TableBody>
       </Table>
+      </div>
     </div>
   </div>
 </template>

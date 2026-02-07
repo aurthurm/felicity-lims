@@ -42,10 +42,10 @@ const nodeDefinitions = [
     label: 'Decision',
     description: 'Decision logic container',
     example: 'IF conditions THEN actions',
-    bgColor: 'bg-accent/10',
-    borderColor: 'border-accent/40',
-    textColor: 'text-accent',
-    hoverBg: 'hover:bg-accent/15',
+    bgColor: 'bg-violet-50',
+    borderColor: 'border-violet-300',
+    textColor: 'text-violet-700',
+    hoverBg: 'hover:bg-violet-100',
   },
   {
     type: 'rule',
@@ -159,7 +159,7 @@ const toggleCollapse = () => {
           <!-- Card Header -->
           <div class="flex items-center justify-between mb-2">
             <div class="flex items-center space-x-2">
-              <span class="text-xl">{{ node.icon }}</span>
+              <span class="text-xl" :class="node.textColor" aria-hidden="true">{{ node.icon }}</span>
               <span class="text-sm font-semibold" :class="node.textColor">
                 {{ node.label }}
               </span>
@@ -197,20 +197,24 @@ const toggleCollapse = () => {
           <div class="flex items-center space-x-1">
             <span class="text-primary">⚡</span>
             <span>→</span>
-            <span class="text-accent">◆</span>
-            <span class="text-xs text-muted-foreground">(entry point)</span>
+            <span class="text-violet-600">◆</span>
+            <span class="text-xs text-muted-foreground">(decision)</span>
           </div>
           <div class="flex items-center space-x-1">
-            <span class="text-accent">◆</span>
+            <span class="text-violet-600">◆</span>
             <span class="text-amber-600">[rules]</span>
             <span>→</span>
             <span class="text-amber-600">⚖️</span>
           </div>
           <div class="flex items-center space-x-1">
-            <span class="text-accent">◆</span>
+            <span class="text-violet-600">◆</span>
             <span class="text-success">[actions]</span>
             <span>→</span>
             <span class="text-success">➕</span>
+            <span class="text-muted-foreground">Add</span>
+            <span class="text-muted-foreground">/</span>
+            <span class="text-accent-foreground">✓</span>
+            <span class="text-muted-foreground">Finalize</span>
           </div>
           <div class="flex items-center space-x-1">
             <span class="text-amber-600">⚖️</span>

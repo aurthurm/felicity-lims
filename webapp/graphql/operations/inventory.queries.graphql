@@ -45,6 +45,8 @@ query getAllStockItems($first: Int!, $after: String, $text: String!, $sortBy: [S
                 uid
                 name
             }
+            minimumLevel
+            maximumLevel
         }
     }
 }

@@ -164,16 +164,16 @@ const applyChanges = async () => {
 
         <div class="border-t border-border" />
 
-        <div class="max-h-[540px] overflow-y-auto rounded-md border border-border">
+        <div class="max-h-[540px] overflow-y-auto border border-border bg-card rounded-lg shadow-md">
           <div class="w-full">
             <Accordion v-for="(category, idx) in analysesServices" :key="idx" type="single" collapsible>
               <AccordionItem :value="String(category[0])">
                 <AccordionTrigger>{{ category[0] }}</AccordionTrigger>
                 <AccordionContent>
-                <div class="overflow-x-auto">
-                  <Table class="w-full">
-                    <TableHeader>
-                      <TableRow class="border-b border-border bg-muted/50">
+                <div class="relative w-full overflow-auto">
+                  <Table class="w-full caption-bottom text-sm">
+                    <TableHeader class="[&_tr]:border-b">
+                      <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                         <TableHead class="px-4 py-2 text-left">
                           <Checkbox 
                             :checked="isSelectedCategory(category[1])"
@@ -185,12 +185,12 @@ const applyChanges = async () => {
                         <TableHead class="px-4 py-2 text-left text-sm font-medium text-foreground">Description</TableHead>
                       </TableRow>
                     </TableHeader>
-                    <TableBody>
+                    <TableBody class="[&_tr:last-child]:border-0">
                       <TableRow 
                         v-for="service in category[1]" 
                         :key="service?.uid" 
                         v-motion-slide-right
-                        class="border-b border-border hover:bg-muted/50 transition-colors duration-200"
+                        class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
                       >
                         <TableCell class="px-4 py-2">
                           <Checkbox 

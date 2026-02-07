@@ -247,11 +247,12 @@ const toCapitalize = (str) => {
 
       <hr class="mb-4" />
 
-      <div class="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead v-if="selectable">
+      <div class="border border-border bg-card rounded-lg shadow-md">
+        <div class="relative w-full overflow-auto">
+          <Table class="w-full caption-bottom text-sm">
+            <TableHeader class="[&_tr]:border-b">
+              <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableHead v-if="selectable" class="h-12 px-4 align-middle font-medium text-muted-foreground">
                 <Checkbox
                   :checked="!!allChecked"
                   @update:checked="checkAll"
@@ -261,6 +262,7 @@ const toCapitalize = (str) => {
               <TableHead
                 v-for="(column, columnIdx) in defaultColumns.filter((c) => !c.hidden)"
                 :key="columnIdx"
+                class="h-12 px-4 align-middle font-medium text-muted-foreground"
               >
                 <div
                   class="flex items-center gap-1"
@@ -286,9 +288,9 @@ const toCapitalize = (str) => {
               </TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
-            <TableRow v-for="(entry, entryIdx) in entries || []" :key="entryIdx">
-              <TableCell v-if="selectable">
+          <TableBody class="[&_tr:last-child]:border-0">
+            <TableRow v-for="(entry, entryIdx) in entries || []" :key="entryIdx" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableCell v-if="selectable" class="px-4 py-3 align-middle">
                 <Checkbox
                   :checked="!!entry.checked"
                   @update:checked="(value) => check(entry, value)"
@@ -298,6 +300,7 @@ const toCapitalize = (str) => {
               <TableCell
                 v-for="(column, columnIdx) in defaultColumns.filter((c) => !c.hidden)"
                 :key="`${entryIdx}_${columnIdx}`"
+                class="px-4 py-3 align-middle text-sm"
               >
                 <span v-if="column.customRender && column">
                   <component :is="getValue(entry, column)" />
@@ -313,6 +316,7 @@ const toCapitalize = (str) => {
             </TableEmpty>
           </TableBody>
         </Table>
+        </div>
       </div>
 
       <section class="flex flex-wrap justify-between items-center my-4 gap-4">

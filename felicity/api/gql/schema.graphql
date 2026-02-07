@@ -1752,6 +1752,10 @@ type CountryType {
   name: String
   code: String
   active: String
+  email: String
+  emailCc: String
+  mobilePhone: String
+  businessPhone: String
   createdByUid: String
   createdBy: UserType
   createdAt: String
@@ -3835,7 +3839,7 @@ type MethodType {
 
 type Mutation {
   createUser(firstName: String!, lastName: String!, email: String!, userName: String!, password: String!, passwordc: String!, activeLaboratoryUid: String = null, laboratoryUids: [String!] = null, groupUid: String = null, openReg: Boolean = false): UserResponse!
-  updateUser(userUid: String!, firstName: String, lastName: String, userName: String, mobilePhone: String, email: String, groupUid: String, isActive: Boolean, isBlocked: Boolean, activeLaboratoryUid: String = null, laboratoryUids: [String!] = null, password: String = null, passwordc: String = null): UserResponse!
+  updateUser(userUid: String!, firstName: String = null, lastName: String = null, userName: String = null, mobilePhone: String = null, email: String = null, groupUid: String = null, isActive: Boolean = null, isBlocked: Boolean = null, activeLaboratoryUid: String = null, laboratoryUids: [String!] = null, password: String = null, passwordc: String = null): UserResponse!
   updateUserPreferences(preferencesIn: UserPreferenceInput!): UserPreferenceResponse!
   authenticateUser(username: String!, password: String!): AuthenticatedDataResponse!
   refresh(refreshToken: String!): AuthenticatedDataResponse!
@@ -3960,6 +3964,7 @@ type Mutation {
   updateReflexTrigger(uid: String!, payload: ReflexTriggerInput!): ReflexTriggerResponse!
   deleteReflexTrigger(uid: String!): DeleteResponse!
   deleteReflexDecision(uid: String!): DeleteResponse!
+  saveReflexRuleGraph(uid: String!, graph: ReflexRuleGraphInput!): ReflexRuleResponse!
   createStoreRoom(payload: StoreRoomInputType!): StoreRoomResponse! @isAuthenticated @hasPermission
   updateStoreRoom(uid: String!, payload: StoreRoomInputType!): StoreRoomResponse! @isAuthenticated @hasPermission
   createStorageLocation(payload: StorageLocationInputType!): StorageLocationResponse! @isAuthenticated @hasPermission
@@ -5104,6 +5109,8 @@ type ReferralLaboratoryType {
 input ReflexAddAnalysisInput {
   analysisUid: String!
   count: Int! = 1
+  posX: Float = null
+  posY: Float = null
 }
 
 type ReflexAddAnalysisType {
@@ -5113,6 +5120,8 @@ type ReflexAddAnalysisType {
   analysisUid: String!
   analysis: AnalysisType
   count: Int!
+  posX: Float
+  posY: Float
   laboratoryUid: String
   laboratory: LaboratoryType
   createdByUid: String
@@ -5130,6 +5139,8 @@ input ReflexDecisionInput {
   ruleGroups: [ReflexRuleGroupInput!] = null
   addAnalyses: [ReflexAddAnalysisInput!] = null
   finalizeAnalyses: [ReflexFinalizeAnalysisInput!] = null
+  posX: Float = null
+  posY: Float = null
 }
 
 """Response for reflex decision mutations"""
@@ -5144,6 +5155,8 @@ type ReflexDecisionType {
   ruleGroups: [ReflexRuleGroupType!]
   addAnalyses: [ReflexAddAnalysisType!]
   finalizeAnalyses: [ReflexFinalizeAnalysisType!]
+  posX: Float
+  posY: Float
   laboratoryUid: String
   laboratory: LaboratoryType
   createdByUid: String
@@ -5157,6 +5170,8 @@ type ReflexDecisionType {
 input ReflexFinalizeAnalysisInput {
   analysisUid: String!
   value: String!
+  posX: Float = null
+  posY: Float = null
 }
 
 type ReflexFinalizeAnalysisType {
@@ -5166,6 +5181,8 @@ type ReflexFinalizeAnalysisType {
   analysisUid: String!
   analysis: AnalysisType
   value: String!
+  posX: Float
+  posY: Float
   laboratoryUid: String
   laboratory: LaboratoryType
   createdByUid: String
@@ -5214,10 +5231,32 @@ type ReflexRuleEdge {
   node: ReflexRuleType!
 }
 
+input ReflexRuleGraphEdge {
+  source: String!
+  target: String!
+  sourceHandle: String = null
+  targetHandle: String = null
+}
+
+input ReflexRuleGraphInput {
+  nodes: [ReflexRuleGraphNode!]!
+  edges: [ReflexRuleGraphEdge!]!
+}
+
+input ReflexRuleGraphNode {
+  id: String!
+  type: String!
+  positionX: Float!
+  positionY: Float!
+  data: JSON!
+}
+
 input ReflexRuleGroupInput {
   description: String = null
   priority: Int! = 0
   rules: [ReflexRuleCriteriaInput!] = null
+  posX: Float = null
+  posY: Float = null
 }
 
 type ReflexRuleGroupType {
@@ -5227,6 +5266,8 @@ type ReflexRuleGroupType {
   description: String
   priority: Int!
   rules: [ReflexRuleCriteriaType!]
+  posX: Float
+  posY: Float
   laboratoryUid: String
   laboratory: LaboratoryType
   createdByUid: String
@@ -5240,6 +5281,7 @@ type ReflexRuleGroupType {
 input ReflexRuleInput {
   name: String!
   description: String = ""
+  isActive: Boolean = null
 }
 
 """"""
@@ -5268,6 +5310,8 @@ input ReflexTriggerInput {
   description: String!
   sampleTypeUid: String = null
   analyses: [String!] = null
+  posX: Float = null
+  posY: Float = null
 }
 
 """Response for reflex trigger mutations"""
@@ -5283,6 +5327,8 @@ type ReflexTriggerType {
   sampleType: SampleTypeTyp
   analyses: [AnalysisType!]
   decisions: [ReflexDecisionType!]
+  posX: Float
+  posY: Float
   laboratoryUid: String
   laboratory: LaboratoryType
   createdByUid: String

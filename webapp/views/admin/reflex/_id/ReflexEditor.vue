@@ -183,11 +183,11 @@ const availableAnalyses = computed(() => {
     return []; // No trigger, no analyses available
   }
 
-  // Collect all analysis UIDs from all triggers
+  // Collect all analysis UIDs from all triggers (analyses may be UIDs or { uid, name }[])
   const selectedAnalysisUids = new Set<string>();
   triggerNodes.forEach((trigger) => {
     const triggerAnalyses = trigger.data?.analyses || [];
-    triggerAnalyses.forEach((uid: string) => selectedAnalysisUids.add(uid));
+    triggerAnalyses.forEach((a: string | { uid: string }) => selectedAnalysisUids.add(typeof a === 'string' ? a : a.uid));
   });
 
   // Filter analyses to only those selected in triggers
@@ -384,14 +384,31 @@ const handleEdgeClick = (edge: Edge) => {
 };
 
 /**
+ * Enrich rule/action node data with analysis { uid, name } from analyses list
+ * when analysis_uid is set but analysis is missing (e.g. from inspector).
+ */
+const enrichNodeWithAnalysis = (node: Node): Node => {
+  if (node.type !== 'rule' && node.type !== 'action') return node;
+  const uid = node.data?.analysis_uid;
+  if (!uid || node.data?.analysis?.name) return node;
+  const analysis = analyses.value.find((a) => a.uid === uid);
+  if (!analysis) return node;
+  return {
+    ...node,
+    data: { ...node.data, analysis: { uid: analysis.uid, name: analysis.name } },
+  };
+};
+
+/**
  * Handle node update from inspector
  */
 const handleNodeUpdate = (updatedNode: Node) => {
   if (Array.isArray(nodes.value)) {
+    const enriched = enrichNodeWithAnalysis(updatedNode);
     nodes.value = nodes.value.map((n) =>
-      n.id === updatedNode.id ? updatedNode : n
+      n.id === enriched.id ? enriched : n
     );
-    selectedNode.value = updatedNode;
+    selectedNode.value = enriched;
 
     // Explicitly sync to canvas since watcher only watches array length
     canvasRef.value?.syncFromParent(nodes.value, edges.value);
@@ -732,7 +749,7 @@ const convertBackendToGraph = (ruleData: any): { nodes: Node[]; edges: Edge[] } 
         level: trigger.level,
         description: trigger.description,
         sample_type_uid: trigger.sampleTypeUid,
-        analyses: trigger.analyses?.map((a: any) => a.uid) || [],
+        analyses: trigger.analyses?.map((a: any) => ({ uid: a.uid, name: a.name })) || [],
       },
     };
     nodes.push(triggerNode);
@@ -778,6 +795,7 @@ const convertBackendToGraph = (ruleData: any): { nodes: Node[]; edges: Edge[] } 
             data: {
               uid: rule.uid,
               analysis_uid: rule.analysisUid,
+              analysis: rule.analysis ? { uid: rule.analysis.uid, name: rule.analysis.name } : undefined,
               operator: rule.operator,
               value: rule.value,
               priority: rule.priority,
@@ -820,6 +838,7 @@ const convertBackendToGraph = (ruleData: any): { nodes: Node[]; edges: Edge[] } 
             uid: addAction.uid,
             actionType: 'add',
             analysis_uid: addAction.analysisUid,
+            analysis: addAction.analysis ? { uid: addAction.analysis.uid, name: addAction.analysis.name } : undefined,
             count: addAction.count,
           },
         };
@@ -847,6 +866,7 @@ const convertBackendToGraph = (ruleData: any): { nodes: Node[]; edges: Edge[] } 
             uid: finalizeAction.uid,
             actionType: 'finalize',
             analysis_uid: finalizeAction.analysisUid,
+            analysis: finalizeAction.analysis ? { uid: finalizeAction.analysis.uid, name: finalizeAction.analysis.name } : undefined,
             value: finalizeAction.value,
           },
         };
@@ -963,24 +983,26 @@ const loadRule = async () => {
     if (ruleData && ruleData.reflexTriggers && ruleData.reflexTriggers.length > 0) {
       // Convert backend format to Vue Flow graph
       const { nodes: convertedNodes, edges: convertedEdges } = convertBackendToGraph(ruleData);
+      // Enrich rule/action nodes with analysis name from analyses list (in case backend omitted it)
+      const enrichedNodes = convertedNodes.map((n) => enrichNodeWithAnalysis(n));
 
-      nodes.value = convertedNodes;
+      nodes.value = enrichedNodes;
       edges.value = convertedEdges;
 
       // Explicitly sync to canvas after loading
       // Use nextTick to ensure canvas is ready
       nextTick(() => {
-        canvasRef.value?.syncFromParent(convertedNodes, convertedEdges);
+        canvasRef.value?.syncFromParent(enrichedNodes, convertedEdges);
       });
 
       // Set as last saved state (no changes yet)
       lastSavedState.value = {
-        nodes: JSON.parse(JSON.stringify(convertedNodes)),
+        nodes: JSON.parse(JSON.stringify(enrichedNodes)),
         edges: JSON.parse(JSON.stringify(convertedEdges)),
       };
 
       initializeHistory({
-        nodes: convertedNodes,
+        nodes: enrichedNodes,
         edges: convertedEdges,
         timestamp: Date.now(),
       });
@@ -1332,11 +1354,11 @@ onBeforeUnmount(() => {
 
 /* Main Editor Area */
 .editor-main {
-  @apply flex-1 flex overflow-hidden;
+  @apply flex-1 flex overflow-hidden min-h-0;
 }
 
 .editor-canvas {
-  @apply flex-1 relative;
+  @apply flex-1 relative min-h-0 min-w-0;
 }
 
 /* Animations */

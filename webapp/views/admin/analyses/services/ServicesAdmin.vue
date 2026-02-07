@@ -13,11 +13,11 @@ import { Button } from "@/components/ui/button";
   import  useApiUtil  from '@/composables/api_util';
 import { mutateForm, resetForm } from '@/utils';
   import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-  } from "@/components/ui/accordion";
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+  } from "@/components/ui/collapsible";
+  import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PageHeading from "@/components/common/PageHeading.vue"
   const VueMultiselect = defineAsyncComponent(
     () => import('vue-multiselect')
@@ -53,8 +53,19 @@ import PageHeading from "@/components/common/PageHeading.vue"
   const sampleStore = useSampleStore()
   const  setupStore = useSetupStore()
   const { withClientMutation } = useApiUtil()
-  let currentTab = ref('general');
-  const tabs = ['general', 'uncertainities', 'result-options','interims','correction-factor', 'detection-limits', 'specifications', 'mappings', 'billing', 'sms-templates'];
+  let currentTab = ref('summary');
+  const tabList = [
+    { id: 'summary', label: 'Summary' },
+    { id: 'uncertainities', label: 'Uncertainties' },
+    { id: 'result-options', label: 'Result options' },
+    { id: 'interims', label: 'Interims' },
+    { id: 'correction-factor', label: 'Correction factor' },
+    { id: 'detection-limits', label: 'Detection limits' },
+    { id: 'specifications', label: 'Specifications' },
+    { id: 'mappings', label: 'Mappings' },
+    { id: 'billing', label: 'Billing' },
+    { id: 'sms-templates', label: 'SMS templates' },
+  ];
   
   let showModal = ref(false);
   let formTitle = ref('');
@@ -213,38 +224,57 @@ function saveMappingForm(): void {
     </PageHeading>
 
     <div class="grid grid-cols-12 gap-4 mt-2">
-      <section class="col-span-2 overflow-y-scroll overscroll-contain max-h-[540px] bg-card text-card-foreground rounded-lg border border-border p-4">
-        <div class="w-full">
-            <Accordion v-for="category in analysesServices" :key="category[0]" type="single" collapsible>
-              <AccordionItem :value="String(category[0])">
-                <AccordionTrigger>{{ category[0] }}</AccordionTrigger>
-                <AccordionContent>
-                  <div>
-                    <ul>
-                      <li 
-                      v-for="service in category[1]" 
-                      :key="service?.uid" 
-                      class="cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors duration-200"
-                      @click="selectAnalysisService(service)"
-                      :class="[ {'bg-accent text-accent-foreground': service.uid === analysisService.uid },
-                      ]"
+      <section class="col-span-2">
+        <div class="rounded-lg border border-border bg-card">
+          <div class="p-6">
+            <div class="space-y-4">
+              <h3 class="text-sm font-medium text-foreground">Analyses</h3>
+              <div class="max-h-[540px] overflow-y-auto space-y-1 pr-1">
+                <Collapsible
+                  v-for="category in analysesServices"
+                  :key="String(category[0])"
+                  class="rounded-md border border-border"
+                >
+                  <CollapsibleTrigger
+                    class="flex w-full items-center justify-between px-3 py-2 text-left text-sm font-medium hover:bg-accent/50 rounded-md transition-colors [&[data-state=open]>svg]:rotate-180"
+                  >
+                    {{ category[0] }}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="shrink-0 transition-transform"
+                    >
+                      <path d="m6 9 6 6 6-6" />
+                    </svg>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <ul class="px-3 pb-2 pt-0 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-1.5">
+                      <li
+                        v-for="service in category[1]"
+                        :key="service?.uid"
+                        @click="selectAnalysisService(service)"
+                        :class="[
+                          'flex items-center gap-2 rounded-sm py-1.5 pr-2 pl-2 text-sm outline-none cursor-pointer select-none min-w-0 transition-colors',
+                          service?.uid === analysisService?.uid
+                            ? 'bg-accent text-accent-foreground'
+                            : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                        ]"
                       >
-                        <div class="grow p-2">
-                          <div 
-                            :class="['font-medium text-muted-foreground hover:text-foreground flex justify-between',
-                              { 'text-foreground font-medium': service.uid === analysisService.uid },
-                            ]"
-                          >
-                            <span>{{ service?.name }}</span>
-                            <span class="text-sm text-muted-foreground"></span>
-                          </div>
-                        </div>
+                        <span class="flex-1 truncate">{{ service?.name }}</span>
                       </li>
                     </ul>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+                  </CollapsibleContent>
+                </Collapsible>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -329,83 +359,164 @@ function saveMappingForm(): void {
           </div>
         </div>
 
-        <!-- Sample and Case Data -->
-        <nav class="bg-card text-card-foreground shadow-sm rounded-lg mt-2">
-          <div class="-mb-px flex justify-start">
-            <a
-              v-for="tab in tabs"
-              :key="tab"
-              :class="['no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-2 px-4 rounded-lg transition-colors duration-200',
-                { 'bg-primary text-primary-foreground': currentTab === tab },
-                { 'hover:bg-accent hover:text-accent-foreground': currentTab !== tab }
-              ]"
-              @click="currentTab = tab"
+        <!-- Service tabs -->
+        <Tabs v-model="currentTab" class="flex flex-col mt-2">
+          <TabsList class="w-full justify-start rounded-lg flex-wrap h-auto gap-1">
+            <TabsTrigger
+              v-for="tab in tabList"
+              :key="tab.id"
+              :value="tab.id"
             >
-              {{ tab }}
-            </a>
-          </div>
-        </nav>
+              {{ tab.label }}
+            </TabsTrigger>
+          </TabsList>
 
-      <section class="mt-2 p-4 bg-card text-card-foreground rounded-lg border border-border">
-        <div v-if="currentTab === 'general'">
-          <h3 class="text-lg font-bold text-foreground">General</h3>
-          <hr class="border-border my-2"> 
-          <input type="text" class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring">
-        </div>
-        <div v-else-if="currentTab === 'uncertainities'">
-          <analysis-uncertainty :analysis="analysisService" :analysisUid="analysisService?.uid"/>
-        </div>
-        <div v-else-if="currentTab === 'correction-factor'">
-          <correction-factor :analysis="analysisService" :analysisUid="analysisService?.uid"/>
-        </div>
-        <div v-else-if="currentTab === 'result-options'">
-          <result-options :analysis="analysisService" :analysisUid="analysisService?.uid"/>
-        </div>
-        <div v-else-if="currentTab === 'interims'">
-          <interim-fields :analysis="analysisService" :analysisUid="analysisService?.uid"/>
-        </div>
-        <div v-else-if="currentTab === 'detection-limits'">
-          <detection-limits :analysis="analysisService" :analysisUid="analysisService?.uid"/>
-        </div>
-        <div v-else-if="currentTab === 'specifications'">
-          <analysis-specifications :analysis="analysisService" :analysisUid="analysisService?.uid"/>
-        </div>
-        <div v-else-if="currentTab == 'mappings'">
+          <TabsContent value="summary" class="flex-1 outline-none mt-4 p-4">
+          <h3 class="text-lg font-bold text-foreground">Summary</h3>
+          <p class="text-sm text-muted-foreground mt-1">Overview of configuration across all tabs. Use the tabs above to view or edit each section.</p>
+          <hr class="border-border my-4" />
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Uncertainties -->
+            <div class="p-4 rounded-lg border border-border bg-muted/30">
+              <div class="flex items-center justify-between">
+                <h4 class="font-semibold text-foreground">Uncertainty</h4>
+                <span class="text-sm text-muted-foreground">{{ analysisService?.uncertainties?.length ?? 0 }} configured</span>
+              </div>
+              <p class="text-sm text-muted-foreground mt-1">Instrument/method variance (min–max ± value).</p>
+              <Button variant="outline" size="sm" class="mt-2" @click="currentTab = 'uncertainities'">View tab</Button>
+            </div>
+
+            <!-- Correction factors -->
+            <div class="p-4 rounded-lg border border-border bg-muted/30">
+              <div class="flex items-center justify-between">
+                <h4 class="font-semibold text-foreground">Correction factor</h4>
+                <span class="text-sm text-muted-foreground">{{ analysisService?.correctionFactors?.length ?? 0 }} configured</span>
+              </div>
+              <p class="text-sm text-muted-foreground mt-1">Instrument/method correction factors.</p>
+              <Button variant="outline" size="sm" class="mt-2" @click="currentTab = 'correction-factor'">View tab</Button>
+            </div>
+
+            <!-- Result options -->
+            <div class="p-4 rounded-lg border border-border bg-muted/30">
+              <div class="flex items-center justify-between">
+                <h4 class="font-semibold text-foreground">Result options</h4>
+                <span class="text-sm text-muted-foreground">{{ analysisService?.resultOptions?.length ?? 0 }} options</span>
+              </div>
+              <p class="text-sm text-muted-foreground mt-1">Allowed result values (e.g. Positive, Negative).</p>
+              <Button variant="outline" size="sm" class="mt-2" @click="currentTab = 'result-options'">View tab</Button>
+            </div>
+
+            <!-- Interim fields -->
+            <div class="p-4 rounded-lg border border-border bg-muted/30">
+              <div class="flex items-center justify-between">
+                <h4 class="font-semibold text-foreground">Interim fields</h4>
+                <span class="text-sm text-muted-foreground">{{ analysisService?.interims?.length ?? 0 }} fields</span>
+              </div>
+              <p class="text-sm text-muted-foreground mt-1">Interim key → result value by instrument.</p>
+              <Button variant="outline" size="sm" class="mt-2" @click="currentTab = 'interims'">View tab</Button>
+            </div>
+
+            <!-- Detection limits -->
+            <div class="p-4 rounded-lg border border-border bg-muted/30">
+              <div class="flex items-center justify-between">
+                <h4 class="font-semibold text-foreground">Detection limits</h4>
+                <span class="text-sm text-muted-foreground">{{ analysisService?.detectionLimits?.length ?? 0 }} limits</span>
+              </div>
+              <p class="text-sm text-muted-foreground mt-1">Instrument/method lower and upper limits.</p>
+              <Button variant="outline" size="sm" class="mt-2" @click="currentTab = 'detection-limits'">View tab</Button>
+            </div>
+
+            <!-- Specifications -->
+            <div class="p-4 rounded-lg border border-border bg-muted/30">
+              <div class="flex items-center justify-between">
+                <h4 class="font-semibold text-foreground">Specifications</h4>
+                <span class="text-sm text-muted-foreground">{{ analysisService?.specifications?.length ?? 0 }} specs</span>
+              </div>
+              <p class="text-sm text-muted-foreground mt-1">Method-specific min/max specifications.</p>
+              <Button variant="outline" size="sm" class="mt-2" @click="currentTab = 'specifications'">View tab</Button>
+            </div>
+
+            <!-- Mappings -->
+            <div class="p-4 rounded-lg border border-border bg-muted/30">
+              <div class="flex items-center justify-between">
+                <h4 class="font-semibold text-foreground">Concept mappings</h4>
+                <span class="text-sm text-muted-foreground">{{ mappings?.length ?? 0 }} mappings</span>
+              </div>
+              <p class="text-sm text-muted-foreground mt-1">Coding standard name, code, description.</p>
+              <Button variant="outline" size="sm" class="mt-2" @click="currentTab = 'mappings'">View tab</Button>
+            </div>
+
+            <!-- Billing -->
+            <div class="p-4 rounded-lg border border-border bg-muted/30">
+              <h4 class="font-semibold text-foreground">Billing</h4>
+              <p class="text-sm text-muted-foreground mt-1">Vouchers and pricing for this analysis.</p>
+              <Button variant="outline" size="sm" class="mt-2" @click="currentTab = 'billing'">View tab</Button>
+            </div>
+
+            <!-- SMS templates -->
+            <div class="p-4 rounded-lg border border-border bg-muted/30">
+              <h4 class="font-semibold text-foreground">SMS templates</h4>
+              <p class="text-sm text-muted-foreground mt-1">Templates for result notifications.</p>
+              <Button variant="outline" size="sm" class="mt-2" @click="currentTab = 'sms-templates'">View tab</Button>
+            </div>
+          </div>
+          </TabsContent>
+
+          <TabsContent value="uncertainities" class="flex-1 outline-none mt-4">
+            <analysis-uncertainty :analysis="analysisService" :analysisUid="analysisService?.uid"/>
+          </TabsContent>
+          <TabsContent value="correction-factor" class="flex-1 outline-none mt-4">
+            <correction-factor :analysis="analysisService" :analysisUid="analysisService?.uid"/>
+          </TabsContent>
+          <TabsContent value="result-options" class="flex-1 outline-none mt-4">
+            <result-options :analysis="analysisService" :analysisUid="analysisService?.uid"/>
+          </TabsContent>
+          <TabsContent value="interims" class="flex-1 outline-none mt-4">
+            <interim-fields :analysis="analysisService" :analysisUid="analysisService?.uid"/>
+          </TabsContent>
+          <TabsContent value="detection-limits" class="flex-1 outline-none mt-4">
+            <detection-limits :analysis="analysisService" :analysisUid="analysisService?.uid"/>
+          </TabsContent>
+          <TabsContent value="specifications" class="flex-1 outline-none mt-4">
+            <analysis-specifications :analysis="analysisService" :analysisUid="analysisService?.uid"/>
+          </TabsContent>
+          <TabsContent value="mappings" class="flex-1 outline-none mt-4">
             <div class="flex justify-between items-center mb-2">
               <h3 class="text-lg font-bold text-foreground">Concept Mappings</h3>
               <button @click="MappingFormManager(true)"
                 class="bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring">Add Mapping</button>
             </div>
             <hr class="border-border my-2" />
-            <div class="overflow-x-auto mt-4">
-              <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card text-card-foreground rounded-lg border border-border">
-                <Table class="min-w-full">
-                    <TableHeader>
-                    <TableRow>
-                        <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Coding Standard</TableHead>
-                        <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Name</TableHead>
-                        <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Code</TableHead>
-                        <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Description</TableHead>
-                        <TableHead class="px-4 py-2 border-b border-border"></TableHead>
+            <div class="mt-4 border border-border bg-card rounded-lg shadow-md">
+              <div class="relative w-full overflow-auto">
+                <Table class="w-full caption-bottom text-sm">
+                    <TableHeader class="[&_tr]:border-b">
+                    <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                        <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Coding Standard</TableHead>
+                        <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Name</TableHead>
+                        <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Code</TableHead>
+                        <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Description</TableHead>
+                        <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
                     </TableRow>
                     </TableHeader>
-                    <TableBody class="bg-card">
-                    <TableRow v-for="mapp in mappings" :key="mapp" class="hover:bg-accent/50">
-                        <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                    <TableBody class="[&_tr:last-child]:border-0">
+                    <TableRow v-for="mapp in mappings" :key="mapp" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                        <TableCell class="px-4 py-3 align-middle text-sm">
                           <div class="flex items-center">
                             <div class="text-sm text-foreground">{{ mapp.codingStandard?.name }}</div>
                           </div>
                         </TableCell>
-                        <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                        <TableCell class="px-4 py-3 align-middle text-sm">
                           <div class="text-sm text-foreground">{{ mapp.name }}</div>
                         </TableCell>
-                        <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                        <TableCell class="px-4 py-3 align-middle text-sm">
                           <div class="text-sm text-foreground">{{ mapp.code }}</div>
                         </TableCell>
-                        <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                        <TableCell class="px-4 py-3 align-middle text-sm">
                           <div class="text-sm text-foreground">{{ mapp.description }}</div>
                         </TableCell>
-                        <TableCell class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
+                        <TableCell class="px-4 py-3 align-middle text-right">
                             <button @click="MappingFormManager(false, mapp)" class="px-2 py-1 mr-2 border border-border bg-background text-foreground transition-colors duration-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-ring hover:bg-accent hover:text-accent-foreground">Edit</button>
                         </TableCell>
                     </TableRow>
@@ -413,14 +524,14 @@ function saveMappingForm(): void {
                 </Table>
               </div>
             </div>
-        </div>
-        <div v-else-if="currentTab == 'billing'">
-          <Billing target="analysis" :targetUid="analysisService.uid" />
-        </div>
-        <div v-else-if="currentTab == 'sms-templates'">
-          <sms-templates targetType="analysis" :targetUid="analysisService.uid" />
-        </div>
-      </section>
+          </TabsContent>
+          <TabsContent value="billing" class="flex-1 outline-none mt-4">
+            <Billing target="analysis" :targetUid="analysisService.uid" />
+          </TabsContent>
+          <TabsContent value="sms-templates" class="flex-1 outline-none mt-4">
+            <sms-templates targetType="analysis" :targetUid="analysisService.uid" />
+          </TabsContent>
+        </Tabs>
 
       </section>
     </div>

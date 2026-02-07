@@ -79,28 +79,27 @@ const notices = computed<NoticeType[]>(() => noticeStore.getMyNotices(user.value
     </PageHeading>
 
     <!-- Notice Table View -->
-    <div class="overflow-hidden shadow ring-1 ring-border ring-opacity/5 rounded-lg">
-      <Table class="min-w-full divide-y divide-border">
-        <TableHeader class="bg-muted">
-          <TableRow>
-            <TableHead class="px-3 py-3.5 text-left text-sm font-medium text-foreground">Notice Title</TableHead>
-            <TableHead class="px-3 py-3.5 text-left text-sm font-medium text-foreground">Expiration</TableHead>
-            <TableHead class="px-3 py-3.5 text-right text-sm font-medium text-foreground">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody class="divide-y divide-border bg-background">
-          <TableRow v-for="notice in notices" :key="notice.uid" class="hover:bg-muted/50 transition-colors duration-150">
-            <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-foreground">
+    <div class="border border-border bg-card rounded-lg shadow-md">
+      <div class="relative w-full overflow-auto">
+        <Table class="w-full caption-bottom text-sm">
+          <TableHeader class="[&_tr]:border-b">
+            <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Notice Title</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Expiration</TableHead>
+              <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody class="[&_tr:last-child]:border-0">
+            <TableRow v-for="notice in notices" :key="notice.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">
               <div class="flex items-center">
                 <div class="cursor-pointer" @click="FormManager(false, notice)">
                   {{ notice.title }}
                 </div>
               </div>
             </TableCell>
-            <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-foreground">
-              {{ notice.status }}
-            </TableCell>
-            <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-right">
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ notice.status }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-right">
               <button
                 class="px-3 py-1.5 mr-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200"
                 @click="FormManager(false, notice)">
@@ -115,6 +114,7 @@ const notices = computed<NoticeType[]>(() => noticeStore.getMyNotices(user.value
           </TableRow>
         </TableBody>
       </Table>
+      </div>
       <div v-if="fetchingNotices" class="py-4 text-center">
         <span class="inline-flex items-center gap-2">
           <Spinner class="size-4" />

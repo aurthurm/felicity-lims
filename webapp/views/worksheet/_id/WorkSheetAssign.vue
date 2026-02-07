@@ -242,87 +242,71 @@ function areAllChecked(): boolean {
     </form>
   </div>
 
-  <div class="overflow-x-auto mt-4">
-    <div
-      class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg"
-    >
+  <div class="mt-4 border border-border bg-card rounded-lg shadow-md">
+    <div class="relative w-full overflow-auto">
       <div v-if="worksheetStore.fetchingAnalysisResults" class="py-4 text-center">
         <span class="inline-flex items-center gap-2">
           <Spinner class="size-4" />
           <span class="text-sm">Fetching analytes ...</span>
         </span>
       </div>
-      <Table class="min-w-full" v-else>
-        <TableHeader>
-          <TableRow>
-            <TableHead
-              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
-            >
+      <Table class="w-full caption-bottom text-sm" v-else>
+        <TableHeader class="[&_tr]:border-b">
+          <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+            <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
               <Checkbox
                 :checked="allChecked"
                 @update:checked="(value) => { allChecked = value; toggleCheckAll(); }"
               />
             </TableHead>
-            <TableHead
-              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
-            ></TableHead>
-            <TableHead
-              class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider"
-            >
+            <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground"></TableHead>
+            <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
               Sample ID
             </TableHead>
-            <TableHead
-              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
-            >
+            <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
               Analysis
             </TableHead>
-            <TableHead
-              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
-            >
+            <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
               Date Created
             </TableHead>
-            <TableHead
-              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
-            >
+            <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
               Date Received
             </TableHead>
-            <TableHead
-              class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider"
-            >
+            <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
               Status
             </TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody class="bg-background" v-motion-slide-right>
-          <TableRow v-for="analysisResult in analysisResults" :key="analysisResult?.uid">
-            <TableCell>
+        <TableBody class="[&_tr:last-child]:border-0" v-motion-slide-right>
+          <TableRow v-for="analysisResult in analysisResults" :key="analysisResult?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+            <TableCell class="px-4 py-3 align-middle">
               <Checkbox
                 :checked="analysisResult.checked"
                 @update:checked="(value) => { analysisResult.checked = value; checkCheck(analysisResult); }"
               />
             </TableCell>
-            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border"></TableCell>
-            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <TableCell class="px-4 py-3 align-middle"></TableCell>
+            <TableCell class="px-4 py-3 align-middle text-sm">
               <div class="text-sm leading-5 text-primary font-semibold">
                 {{ analysisResult?.sample?.sampleId }}
               </div>
             </TableCell>
-            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <TableCell class="px-4 py-3 align-middle text-sm">
               <div class="text-sm leading-5 text-primary">
                 {{ analysisResult?.analysis?.name }}
               </div>
             </TableCell>
-            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <TableCell class="px-4 py-3 align-middle text-sm">
               <div class="text-sm leading-5 text-primary">
                 {{ analysisResult?.sample?.createdAt }}
               </div>
             </TableCell>
-            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <TableCell class="px-4 py-3 align-middle text-sm">
               <div class="text-sm leading-5 text-primary">
                 {{ analysisResult?.sample?.dateReceived }}
               </div>
             </TableCell>
-            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <TableCell class="px-4 py-3 align-middle text-sm">
               <div class="text-sm leading-5 text-primary">
                 {{ analysisResult?.sample?.status }}
               </div>

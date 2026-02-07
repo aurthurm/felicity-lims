@@ -81,22 +81,17 @@ watch(
     </nav>
 
     <div class="pt-4">
-      <div v-if="currentTab === 'stock-lots'" class="overflow-hidden rounded-lg bg-background shadow-md">
-        <Table class="min-w-full divide-y divide-border">
-          <TableHeader class="bg-muted">
-            <TableRow>
-              <TableHead class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-foreground">
-                Lot Number
-              </TableHead>
-              <TableHead class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-foreground">
-                Quantity
-              </TableHead>
-              <TableHead class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-foreground">
-                Expiry Date
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody class="divide-y divide-border bg-background">
+      <div v-if="currentTab === 'stock-lots'" class="border border-border bg-card rounded-lg shadow-md">
+        <div class="relative w-full overflow-auto">
+          <Table class="w-full caption-bottom text-sm">
+            <TableHeader class="[&_tr]:border-b">
+              <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Lot Number</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Quantity</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Expiry Date</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody class="[&_tr:last-child]:border-0">
             <template v-if="stockLots.length === 0">
               <TableEmpty :colspan="3">
                 <Empty class="border-0 bg-transparent p-0">
@@ -113,38 +108,30 @@ watch(
               v-for="lot in stockLots"
               v-else
               :key="lot.uid"
-              class="transition-colors duration-150 hover:bg-muted"
+              class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
             >
-              <TableCell class="px-4 py-3 text-sm text-foreground">{{ lot.lotNumber }}</TableCell>
-              <TableCell class="px-4 py-3 text-sm text-foreground">{{ lot.quantity }}</TableCell>
-              <TableCell class="px-4 py-3 text-sm text-foreground">{{ parseDate(lot.expiryDate, false) }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-foreground">{{ lot.lotNumber }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-foreground">{{ lot.quantity }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-foreground">{{ parseDate(lot.expiryDate, false) }}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
+        </div>
       </div>
 
-      <div v-if="currentTab === 'ledger'" class="overflow-hidden rounded-lg bg-background shadow-md">
-        <Table class="min-w-full divide-y divide-border">
-          <TableHeader class="bg-muted">
-            <TableRow>
-              <TableHead class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-foreground">
-                Date
-              </TableHead>
-              <TableHead class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-foreground">
-                Lot
-              </TableHead>
-              <TableHead class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-foreground">
-                Transaction Type
-              </TableHead>
-              <TableHead class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-foreground">
-                Quantity
-              </TableHead>
-              <TableHead class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-foreground">
-                By
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody class="divide-y divide-border bg-background">
+      <div v-if="currentTab === 'ledger'" class="border border-border bg-card rounded-lg shadow-md">
+        <div class="relative w-full overflow-auto">
+          <Table class="w-full caption-bottom text-sm">
+            <TableHeader class="[&_tr]:border-b">
+              <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Date</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Lot</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Transaction Type</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Quantity</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">By</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody class="[&_tr:last-child]:border-0">
             <template v-if="stockAdjustments.length === 0">
               <TableEmpty :colspan="5">
                 <Empty class="border-0 bg-transparent p-0">
@@ -161,16 +148,17 @@ watch(
               v-for="adjustment in stockAdjustments"
               v-else
               :key="adjustment.uid"
-              class="transition-colors duration-150 hover:bg-muted"
+              class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
             >
-              <TableCell class="px-4 py-3 text-sm text-foreground">{{ parseDate(adjustment?.adjustmentDate) }}</TableCell>
-              <TableCell class="px-4 py-3 text-sm text-foreground">{{ adjustment?.stockLot?.lotNumber }}</TableCell>
-              <TableCell class="px-4 py-3 text-sm text-foreground">{{ adjustment?.adjustmentType }}</TableCell>
-              <TableCell class="px-4 py-3 text-sm text-foreground">{{ adjustment?.adjust }}</TableCell>
-              <TableCell class="px-4 py-3 text-sm text-foreground">{{ adjustment?.adjustmentBy?.firstName }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-foreground">{{ parseDate(adjustment?.adjustmentDate) }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-foreground">{{ adjustment?.stockLot?.lotNumber }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-foreground">{{ adjustment?.adjustmentType }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-foreground">{{ adjustment?.adjust }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-foreground">{{ adjustment?.adjustmentBy?.firstName }}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
+        </div>
       </div>
     </div>
   </div>

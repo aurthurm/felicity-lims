@@ -87,16 +87,17 @@ function createOrder() {
             </button>
           </div>
 
-          <div class="overflow-hidden rounded-lg shadow ring-1 ring-border ring-opacity/5">
-            <Table class="min-w-full divide-y divide-border">
-              <TableHeader class="bg-muted">
-                <TableRow>
-                  <TableHead class="px-3 py-3.5 text-left text-sm font-medium text-foreground">Product</TableHead>
-                  <TableHead class="px-3 py-3.5 text-right text-sm font-medium text-foreground">Quantity</TableHead>
-                  <TableHead class="px-3 py-3.5 text-right text-sm font-medium text-foreground">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody class="divide-y divide-border bg-background">
+          <div class="border border-border bg-card rounded-lg shadow-md">
+            <div class="relative w-full overflow-auto">
+              <Table class="w-full caption-bottom text-sm">
+                <TableHeader class="[&_tr]:border-b">
+                  <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                    <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Product</TableHead>
+                    <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Quantity</TableHead>
+                    <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody class="[&_tr:last-child]:border-0">
                 <template v-if="basket.length === 0">
                   <TableEmpty :colspan="3">
                     <Empty class="border-0 bg-transparent p-0">
@@ -109,10 +110,10 @@ function createOrder() {
                     </Empty>
                   </TableEmpty>
                 </template>
-                <TableRow v-for="item in basket" :key="item.product.uid">
-                  <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ item.product.name }}</TableCell>
-                  <TableCell class="whitespace-nowrap px-3 py-4 text-right text-sm text-foreground">{{ item.quantity }}</TableCell>
-                  <TableCell class="whitespace-nowrap px-3 py-4 text-right text-sm">
+                <TableRow v-for="item in basket" :key="item.product.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                  <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ item.product.name }}</TableCell>
+                  <TableCell class="px-4 py-3 align-middle text-right text-sm text-foreground">{{ item.quantity }}</TableCell>
+                  <TableCell class="px-4 py-3 align-middle text-right">
                     <button
                       type="button"
                       class="text-destructive transition-colors duration-200 hover:text-destructive/80"
@@ -124,6 +125,7 @@ function createOrder() {
                 </TableRow>
               </TableBody>
             </Table>
+            </div>
           </div>
         </div>
       </template>

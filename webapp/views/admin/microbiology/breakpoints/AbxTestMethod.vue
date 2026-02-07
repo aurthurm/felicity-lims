@@ -113,21 +113,21 @@ const saveForm = handleSubmit((formValues) => {
   <div class="space-y-6">
     <PageHeading title="Antibiotic Test Method"></PageHeading>
 
-    <div class="overflow-x-auto">
-      <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card shadow-dashboard rounded-lg p-6">
-        <Table class="min-w-full divide-y divide-border">
-          <TableHeader>
-            <TableRow>
-              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</TableHead>
-              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Description</TableHead>
-              <TableHead class="px-3 py-3.5"></TableHead>
+    <div class="border border-border bg-card rounded-lg shadow-md">
+      <div class="relative w-full overflow-auto">
+        <Table class="w-full caption-bottom text-sm">
+          <TableHeader class="[&_tr]:border-b">
+            <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Name</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Description</TableHead>
+              <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody class="bg-background divide-y divide-border">
-            <TableRow v-for="testmeth in abxTestMethods" :key="testmeth?.uid">
-              <TableCell class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">{{ testmeth?.name }}</TableCell>
-              <TableCell class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">{{ testmeth?.description }}</TableCell>
-              <TableCell class="px-3 py-3.5 whitespace-nowrap text-right text-sm">
+          <TableBody class="[&_tr:last-child]:border-0">
+            <TableRow v-for="testmeth in abxTestMethods" :key="testmeth?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ testmeth?.name }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ testmeth?.description }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-right text-sm">
                 <!-- <button @click="FormManager(false, testmeth)"
                         class="px-3 py-1.5 bg-primary text-primary-foreground rounded-sm transition duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
                   Edit

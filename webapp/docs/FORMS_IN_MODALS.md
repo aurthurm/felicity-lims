@@ -36,6 +36,21 @@ For boolean checkboxes in modal forms:
 
 This prevents `"on"` string values and keeps booleans typed correctly.
 
+## Number fields
+
+For numeric inputs (min/max level, days, percentage, etc.) to bind and update correctly:
+
+1. **Use `null` in form state**, not empty string:
+   - In `initialValues` / `defaultValues`: `fieldName: null as number | null`
+   - When calling `setValues` for edit: `fieldName: obj?.fieldName ?? null`
+2. **Template:** Use `componentField` with `Input` like text fields:
+   - `FormField name="fieldName" v-slot="{ componentField }"`
+   - `<Input v-bind="componentField" type="number" min="0" placeholder="0" />`
+3. **Submit:** Normalize empty/null to `null`, numbers to `Number(...)`:
+   - `fieldName: values.fieldName == null || values.fieldName === '' ? null : Number(values.fieldName)`
+
+Reference: `webapp/views/admin/laboratory/Organisation.vue` (e.g. `passwordLifetime`, `inactivityLogOut`, `paymentTermsDays`).
+
 ## Minimal example
 
 ```vue

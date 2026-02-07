@@ -139,26 +139,26 @@ const deleteClientContact = (contact: ClientContactType) => {
       Add Contact
     </button>
 
-    <div
-      class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
-      <Table class="min-w-full">
-        <TableHeader>
-          <TableRow>
-            <TableHead class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
+    <div class="border border-border bg-card rounded-lg shadow-md">
+      <div class="relative w-full overflow-auto">
+      <Table class="w-full caption-bottom text-sm">
+        <TableHeader class="[&_tr]:border-b">
+          <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+            <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
               Full Name
             </TableHead>
-            <TableHead class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
+            <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
               Email
             </TableHead>
-            <TableHead class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
+            <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
               Phone
             </TableHead>
-            <TableHead class="px-1 py-1 border-b-2 border-border"></TableHead>
+            <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody class="bg-background">
-          <TableRow v-for="cont in clientContacts" :key="cont.uid">
-            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
+        <TableBody class="[&_tr:last-child]:border-0">
+          <TableRow v-for="cont in clientContacts" :key="cont.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+            <TableCell class="px-4 py-3 align-middle text-sm">
               <div class="flex items-center">
                 <div>
                   <div class="text-sm leading-5 text-foreground">
@@ -167,13 +167,13 @@ const deleteClientContact = (contact: ClientContactType) => {
                 </div>
               </div>
             </TableCell>
-            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <TableCell class="px-4 py-3 align-middle text-sm">
               <div class="text-sm leading-5 text-primary">{{ cont.email }}</div>
             </TableCell>
-            <TableCell class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <TableCell class="px-4 py-3 align-middle text-sm">
               <div class="text-sm leading-5 text-primary">{{ cont.mobilePhone }}</div>
             </TableCell>
-            <TableCell class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
+            <TableCell class="px-4 py-3 align-middle text-right">
               <button v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.CLIENT)"
                 @click="FormManager(false, cont)"
                 class="px-2 py-1 mr-2 border-border border text-orange-500rounded-smtransition duration-300 hover:bg-muted hover:text-primary-foreground focus:outline-none">
@@ -197,6 +197,7 @@ const deleteClientContact = (contact: ClientContactType) => {
           </TableEmpty>
         </TableBody>
       </Table>
+      </div>
       <div v-if="fetchingClientContacts" class="py-4 text-center">
         <span class="inline-flex items-center gap-2">
           <Spinner class="size-4" />

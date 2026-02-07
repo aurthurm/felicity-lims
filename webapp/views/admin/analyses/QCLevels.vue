@@ -10,6 +10,7 @@
   import  useApiUtil  from '@/composables/api_util';
   import { Button } from "@/components/ui/button";
   import { Input } from "@/components/ui/input";
+  import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
   import {FormControl,
     FormField,
     FormItem,
@@ -78,29 +79,37 @@ import PageHeading from "@/components/common/PageHeading.vue"
         <Button @click="FormManager(true)">Add QC Level</Button>
       </PageHeading>
 
-        <div class="rounded-md border bg-card p-6 shadow-sm">
-            <div class="w-full">
+        <div class="border border-border bg-card rounded-lg shadow-md">
+            <div class="relative w-full overflow-auto">
                 <Table class="w-full caption-bottom text-sm">
-                    <TableHeader>
+                    <TableHeader class="[&_tr]:border-b">
                         <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                             <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Level</TableHead>
                             <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
-                    <TableBody>
-                        <TableRow v-for="level in qcLevels" 
+                    <TableBody class="[&_tr:last-child]:border-0">
+                        <TableRow v-for="level in qcLevels"
                             :key="level?.uid"
-                            class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+                            class="border-b border-border/50 transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
                         >
-                            <TableCell class="p-4 align-middle">
-                                <span class="text-sm font-medium leading-none">{{ level?.level }}</span>
-                            </TableCell>
-                            <TableCell class="p-4 align-middle text-right">
+                            <TableCell class="px-4 py-3 align-middle text-sm">{{ level?.level }}</TableCell>
+                            <TableCell class="px-4 py-3 align-middle text-right">
                                 <Button variant="outline" size="sm" @click="FormManager(false, level)">
                                     Edit
                                 </Button>
                             </TableCell>
                         </TableRow>
+                        <TableEmpty v-if="!qcLevels?.length" :colspan="2">
+                            <Empty class="border-0 bg-transparent p-0">
+                                <EmptyContent>
+                                    <EmptyHeader>
+                                        <EmptyTitle>No QC levels found</EmptyTitle>
+                                        <EmptyDescription>Add a QC level to get started.</EmptyDescription>
+                                    </EmptyHeader>
+                                </EmptyContent>
+                            </Empty>
+                        </TableEmpty>
                     </TableBody>
                 </Table>
             </div>

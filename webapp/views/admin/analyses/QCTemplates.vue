@@ -10,6 +10,7 @@
   import { Button } from "@/components/ui/button";
   import { Input } from "@/components/ui/input";
   import { Textarea } from "@/components/ui/textarea";
+  import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
   import {FormControl,
     FormField,
     FormItem,
@@ -119,35 +120,41 @@ import PageHeading from "@/components/common/PageHeading.vue"
         <Button @click="FormManager(true)">Add QC Template</Button>
       </PageHeading>
 
-        <div class="rounded-md border bg-card p-6 shadow-sm">
-            <div class="overflow-x-auto">
-                <Table class="w-full">
-                    <TableHeader>
-                    <TableRow class="border-b border-border bg-muted/50">
-                        <TableHead class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">QC Template Name</TableHead>
-                        <TableHead class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">Quality Control level(s)</TableHead>
-                        <TableHead class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">Department(s)</TableHead>
-                        <TableHead class="px-6 py-3 text-right text-sm font-medium text-muted-foreground">Actions</TableHead>
-                    </TableRow>
+        <div class="border border-border bg-card rounded-lg shadow-md">
+            <div class="relative w-full overflow-auto">
+                <Table class="w-full caption-bottom text-sm">
+                    <TableHeader class="[&_tr]:border-b">
+                        <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                            <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">QC Template Name</TableHead>
+                            <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Quality Control level(s)</TableHead>
+                            <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Department(s)</TableHead>
+                            <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
+                        </TableRow>
                     </TableHeader>
-                    <TableBody>
-                    <TableRow v-for="templt in qcTemplates" :key="templt?.uid" class="hover:bg-accent/50 transition-colors duration-200">
-                        <TableCell class="px-6 py-4 whitespace-nowrap border-b border-border">
-                          <div class="font-medium text-foreground">{{ templt?.name }}</div>
-                          <div class="text-sm text-muted-foreground" v-if="templt?.description">{{ templt?.description }}</div>
-                        </TableCell>
-                        <TableCell class="px-6 py-4 whitespace-nowrap border-b border-border">
-                          <div class="text-sm text-foreground">{{ levelsNames(templt?.qcLevels ?? []) }}</div>
-                        </TableCell>
-                        <TableCell class="px-6 py-4 whitespace-nowrap border-b border-border">
-                          <div class="text-sm text-foreground">{{ templt?.category }}</div>
-                        </TableCell>
-                        <TableCell class="px-6 py-4 whitespace-nowrap text-right border-b border-border">
-                            <Button variant="outline" size="sm" @click="FormManager(false, templt)">
-                              Edit
-                            </Button>
-                        </TableCell>
-                    </TableRow>
+                    <TableBody class="[&_tr:last-child]:border-0">
+                        <TableRow v-for="templt in qcTemplates" :key="templt?.uid" class="border-b border-border/50 transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                            <TableCell class="px-4 py-3 align-middle text-sm">
+                                <div class="font-medium text-foreground">{{ templt?.name }}</div>
+                                <div class="text-sm text-muted-foreground" v-if="templt?.description">{{ templt?.description }}</div>
+                            </TableCell>
+                            <TableCell class="px-4 py-3 align-middle text-sm text-foreground">{{ levelsNames(templt?.qcLevels ?? []) }}</TableCell>
+                            <TableCell class="px-4 py-3 align-middle text-sm text-foreground">{{ templt?.category }}</TableCell>
+                            <TableCell class="px-4 py-3 align-middle text-right">
+                                <Button variant="outline" size="sm" @click="FormManager(false, templt)">
+                                    Edit
+                                </Button>
+                            </TableCell>
+                        </TableRow>
+                        <TableEmpty v-if="!qcTemplates?.length" :colspan="4">
+                            <Empty class="border-0 bg-transparent p-0">
+                                <EmptyContent>
+                                    <EmptyHeader>
+                                        <EmptyTitle>No QC templates found</EmptyTitle>
+                                        <EmptyDescription>Add a QC template to get started.</EmptyDescription>
+                                    </EmptyHeader>
+                                </EmptyContent>
+                            </Empty>
+                        </TableEmpty>
                     </TableBody>
                 </Table>
             </div>

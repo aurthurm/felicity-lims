@@ -69,6 +69,8 @@ export type GetAllStockItemsQuery = (
           | 'description'
           | 'categoryUid'
           | 'hazardUid'
+          | 'minimumLevel'
+          | 'maximumLevel'
         >
         & {
           category?: Types.Maybe<(
@@ -405,6 +407,8 @@ export const GetAllStockItemsDocument = gql`
         uid
         name
       }
+      minimumLevel
+      maximumLevel
     }
   }
 }

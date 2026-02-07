@@ -89,7 +89,7 @@ import PageHeading from "@/components/common/PageHeading.vue"
       <Button @click="FormManager(true)"> Add Supplier</Button>
     </PageHeading>
 
-    <div class="border border-border bg-background rounded-lg shadow-sm p-6">
+    <div class="border border-border bg-card rounded-lg shadow-md">
       <div class="relative w-full overflow-auto">
         <Table class="w-full caption-bottom text-sm">
           <TableHeader class="[&_tr]:border-b">
@@ -101,9 +101,9 @@ import PageHeading from "@/components/common/PageHeading.vue"
           </TableHeader>
           <TableBody class="[&_tr:last-child]:border-0">
             <TableRow v-for="supplier in suppliers" :key="supplier?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-              <TableCell class="p-4 align-middle">{{ supplier?.name }}</TableCell>
-              <TableCell class="p-4 align-middle text-primary">{{ supplier?.description }}</TableCell>
-              <TableCell class="p-4 align-middle text-right">
+              <TableCell class="px-4 py-3 align-middle text-sm">{{ supplier?.name }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-primary">{{ supplier?.description }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-right">
                 <Button variant="outline" size="sm" @click="FormManager(false, supplier)">
                   Edit
                 </Button>

@@ -121,7 +121,7 @@ function FormManager(create: boolean, obj: any):void {
           <Button @click="FormManager(true, null)">Add Laboratory</Button>
       </PageHeading>
 
-      <div class="rounded-md border bg-card">
+      <div class="border border-border bg-card rounded-lg shadow-md">
           <div class="relative w-full overflow-auto">
               <Table class="w-full caption-bottom text-sm">
                   <TableHeader class="[&_tr]:border-b">

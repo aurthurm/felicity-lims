@@ -29,6 +29,14 @@ const props = defineProps<Props>();
 const analysisCount = computed(() => props.data.analyses?.length || 0);
 
 /**
+ * Monitored test names for display (analyses may be UIDs or { uid, name }[])
+ */
+const analysisNames = computed(() => {
+  const list = props.data.analyses || [];
+  return list.map((a: string | { uid: string; name: string }) => (typeof a === 'string' ? a : a.name));
+});
+
+/**
  * Computed short description (truncate if too long)
  */
 const shortDescription = computed(() => {
@@ -84,39 +92,51 @@ const levelBadgeColor = computed(() => {
       </p>
     </div>
 
-    <!-- Metadata -->
-    <div class="flex items-center justify-between text-xs text-muted-foreground">
-      <div class="flex items-center space-x-1">
-        <svg
-          class="w-3 h-3"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-          />
-        </svg>
-        <span>{{ analysisCount }} {{ analysisCount === 1 ? 'test' : 'tests' }}</span>
+    <!-- Metadata: Monitored test names -->
+    <div class="flex flex-col gap-1 text-xs text-muted-foreground">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-1">
+          <svg
+            class="w-3 h-3 shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+            />
+          </svg>
+          <span>{{ analysisCount }} {{ analysisCount === 1 ? 'test' : 'tests' }}</span>
+        </div>
+        <div v-if="data.sample_type" class="text-xs text-muted-foreground">
+          {{ data.sample_type.name }}
+        </div>
       </div>
-      <div v-if="data.sample_type" class="text-xs text-muted-foreground">
-        {{ data.sample_type.name }}
+      <div v-if="analysisNames.length > 0" class="mt-1 space-y-0.5">
+        <div
+          v-for="(name, i) in analysisNames"
+          :key="i"
+          class="truncate px-1.5 py-0.5 bg-primary/10 rounded text-foreground/90"
+          :title="name"
+        >
+          {{ name || 'Unknown test' }}
+        </div>
       </div>
     </div>
 
     <!-- Full Analysis List (when selected) -->
-    <div v-if="selected && data.analyses && data.analyses.length > 0" class="mt-2 pt-2 border-t border-border">
+    <div v-if="selected && analysisNames.length > 0" class="mt-2 pt-2 border-t border-border">
       <div class="text-xs font-semibold text-foreground mb-1">Monitored Tests:</div>
       <div class="space-y-1">
         <div
-          v-for="analysis in data.analyses"
-          :key="analysis.uid"
+          v-for="(name, i) in analysisNames"
+          :key="i"
           class="text-xs text-muted-foreground px-2 py-1 bg-primary/10 rounded"
         >
-          {{ analysis.name }}
+          {{ name || 'Unknown test' }}
         </div>
       </div>
     </div>

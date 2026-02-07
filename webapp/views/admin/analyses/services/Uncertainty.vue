@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { computed, ref, toRefs, watch, defineAsyncComponent } from 'vue';
+  import { computed, ref, toRefs, watch } from 'vue';
   import { useForm } from 'vee-validate';
   import * as yup from 'yup';
   import { AddAnalysisUncertaintyDocument, AddAnalysisUncertaintyMutation, AddAnalysisUncertaintyMutationVariables,
@@ -24,8 +24,12 @@
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select";
- 
-import PageHeading from "@/components/common/PageHeading.vue"
+  import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+  import Modal from '@/components/ui/Modal.vue';
+  import PageHeading from "@/components/common/PageHeading.vue";
+
+  const SELECT_NONE = '__none__';
+
 defineOptions({ name: 'UncertaintyView' })
   const analysisStore = useAnalysisStore()
   const  setupStore = useSetupStore()
@@ -58,7 +62,7 @@ defineOptions({ name: 'UncertaintyView' })
     value: yup.number().typeError('Variance must be a number').required('Variance is required'),
   });
 
-  const { handleSubmit, resetForm, setValues } = useForm({
+  const { handleSubmit, resetForm, setValues, setFieldValue } = useForm({
     validationSchema: uncertaintySchema,
     initialValues: {
       instrumentUid: '',
@@ -77,7 +81,14 @@ defineOptions({ name: 'UncertaintyView' })
   const instruments = computed<InstrumentType[]>(() => setupStore.getInstruments)
 
   setupStore.fetchMethods();
-  const methods = computed<MethodType[]>(() => setupStore.getMethods)
+  const methods = computed<MethodType[]>(() => setupStore.getMethods);
+
+  function onInstrumentChange(v: string) {
+    setFieldValue('instrumentUid', v === SELECT_NONE ? '' : v);
+  }
+  function onMethodChange(v: string) {
+    setFieldValue('methodUid', v === SELECT_NONE ? '' : v);
+  }
 
   function addAnalysisUncertainty(payload: { instrumentUid: string; methodUid: string; min: number; max: number; value: number; analysisUid: string }): void {
       withClientMutation<AddAnalysisUncertaintyMutation, AddAnalysisUncertaintyMutationVariables>(AddAnalysisUncertaintyDocument, { payload }, "createAnalysisUncertainty")
@@ -150,37 +161,27 @@ defineOptions({ name: 'UncertaintyView' })
       <Button @click="FormManager(true)">Add Uncertainty</Button>
     </PageHeading>
     
-    <div class="overflow-x-auto mt-4">
-        <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card text-card-foreground rounded-lg border border-border">
-        <Table class="min-w-full">
-            <TableHeader>
-            <TableRow>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Instrument</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Method</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Min</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Max</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Variance (+/-)</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border"></TableHead>
+    <div class="mt-4 border border-border bg-card rounded-lg shadow-md">
+        <div class="relative w-full overflow-auto">
+        <Table class="w-full caption-bottom text-sm">
+            <TableHeader class="[&_tr]:border-b">
+            <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Instrument</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Method</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Min</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Max</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Variance (+/-)</TableHead>
+                <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
             </TableRow>
             </TableHeader>
-            <TableBody class="bg-card">
-            <TableRow v-for="variance in analysis?.uncertainties" :key="variance?.uid" class="hover:bg-accent/50">
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
-                  <div class="text-sm text-foreground">{{ instrumentName(variance?.instrumentUid) }}</div>
-                </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
-                  <div class="text-sm text-foreground">{{ methodName(variance?.methodUid) }}</div>
-                </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
-                  <div class="text-sm text-foreground">{{ variance.min }}</div>
-                </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
-                  <div class="text-sm text-foreground">{{ variance.max }}</div>
-                </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
-                  <div class="text-sm text-foreground">{{ variance.value }}</div>
-                </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
+            <TableBody class="[&_tr:last-child]:border-0">
+            <TableRow v-for="variance in analysis?.uncertainties" :key="variance?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ instrumentName(variance?.instrumentUid) }}</TableCell>
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ methodName(variance?.methodUid) }}</TableCell>
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ variance.min }}</TableCell>
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ variance.max }}</TableCell>
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ variance.value }}</TableCell>
+                <TableCell class="px-4 py-3 align-middle text-right">
                     <Button variant="outline" size="sm" @click="FormManager(false, variance)">Edit</Button>
                 </TableCell>
             </TableRow>
@@ -203,12 +204,15 @@ defineOptions({ name: 'UncertaintyView' })
               <FormItem>
                 <FormLabel>Instrument</FormLabel>
                 <FormControl>
-                  <Select v-bind="componentField">
+                  <Select
+                    :model-value="componentField.modelValue || SELECT_NONE"
+                    @update:model-value="onInstrumentChange"
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select Instrument" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Select Instrument</SelectItem>
+                      <SelectItem :value="SELECT_NONE">Select Instrument</SelectItem>
                       <SelectItem v-for="instrument in instruments" :key="instrument?.uid" :value="instrument.uid">
                         {{ instrument?.name }}
                       </SelectItem>
@@ -222,12 +226,15 @@ defineOptions({ name: 'UncertaintyView' })
               <FormItem>
                 <FormLabel>Method</FormLabel>
                 <FormControl>
-                  <Select v-bind="componentField">
+                  <Select
+                    :model-value="componentField.modelValue || SELECT_NONE"
+                    @update:model-value="onMethodChange"
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select Method" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Select Method</SelectItem>
+                      <SelectItem :value="SELECT_NONE">Select Method</SelectItem>
                       <SelectItem v-for="method in methods" :key="method?.uid" :value="method.uid">
                         {{ method?.name }}
                       </SelectItem>

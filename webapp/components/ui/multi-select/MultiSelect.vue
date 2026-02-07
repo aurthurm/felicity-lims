@@ -10,13 +10,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Search } from 'lucide-vue-next';
 
 const props = withDefaults(
   defineProps<{
-    modelValue?: string[];
+    modelValue?: string[] | string;
+    value?: string[] | string;
     options: string[];
     placeholder?: string;
     searchable?: boolean;
@@ -36,14 +35,21 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: string[]): void;
+  (e: 'change', value: string[]): void;
 }>();
 
 const open = ref(false);
 const searchQuery = ref('');
 
+const propValue = computed(() => {
+  const val = props.modelValue ?? props.value ?? [];
+  if (Array.isArray(val)) return val;
+  if (typeof val === 'string') return val ? val.split(',').map((s) => s.trim()).filter(Boolean) : [];
+  return [];
+});
+
 const selectedValues = computed(() => {
-  const val = props.modelValue;
-  return Array.isArray(val) ? new Set(val) : new Set<string>();
+  return new Set(propValue.value);
 });
 
 const filteredOptions = computed(() => {
@@ -59,14 +65,18 @@ function toggleValue(value: string) {
   } else {
     next.add(value);
   }
-  emit('update:modelValue', [...next]);
+  const arr = [...next];
+  emit('update:modelValue', arr);
+  emit('change', arr);
 }
 
 function removeValue(value: string, ev: Event) {
   ev.stopPropagation();
   const next = new Set(selectedValues.value);
   next.delete(value);
-  emit('update:modelValue', [...next]);
+  const arr = [...next];
+  emit('update:modelValue', arr);
+  emit('change', arr);
 }
 
 function isSelected(value: string) {
@@ -89,7 +99,7 @@ watch(open, (isOpen) => {
         :aria-expanded="open"
         :disabled="disabled"
         :class="cn(
-          'flex h-auto min-h-9 w-full items-center justify-between gap-2 overflow-hidden rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[placeholder]:text-muted-foreground',
+          'flex h-auto min-h-9 w-full items-center justify-between gap-2 overflow-hidden rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-placeholder:text-muted-foreground',
           props.class,
         )"
       >
@@ -118,14 +128,14 @@ watch(open, (isOpen) => {
       </Button>
     </PopoverTrigger>
     <PopoverContent
-      class="w-[var(--reka-popover-trigger-width)] p-0"
+      class="flex min-w-[var(--reka-popover-trigger-width)] w-72 max-h-[320px] flex-col overflow-hidden p-0"
       align="start"
       :side-offset="4"
     >
-      <div class="flex flex-col">
+      <div class="flex min-h-0 flex-1 flex-col overflow-hidden">
         <div
           v-if="searchable"
-          class="flex h-9 items-center gap-2 border-b px-3"
+          class="flex h-9 shrink-0 items-center gap-2 border-b px-3"
         >
           <Search class="size-4 shrink-0 opacity-50" />
           <input
@@ -134,7 +144,9 @@ watch(open, (isOpen) => {
             class="placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
           >
         </div>
-        <ScrollArea class="max-h-[300px]">
+        <div
+          class="max-h-[260px] min-h-0 overflow-y-auto overflow-x-hidden"
+        >
           <div
             v-if="filteredOptions.length === 0"
             class="py-6 text-center text-sm text-muted-foreground"
@@ -150,7 +162,7 @@ watch(open, (isOpen) => {
               :key="option"
               type="button"
               :class="cn(
-                'relative flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+                'relative flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none hover:bg-accent hover:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50',
                 isSelected(option) && 'bg-accent/50',
               )"
               @click="toggleValue(option)"
@@ -164,7 +176,7 @@ watch(open, (isOpen) => {
               {{ option }}
             </button>
           </div>
-        </ScrollArea>
+        </div>
       </div>
     </PopoverContent>
   </PopoverRoot>

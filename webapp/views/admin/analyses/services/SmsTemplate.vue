@@ -28,8 +28,9 @@ import { GetSmsTemplatesByTargetDocument } from '@/graphql/operations/sms-templa
     SelectValue,
   } from "@/components/ui/select";
   import { Switch } from "@/components/ui/switch";
- 
-import PageHeading from "@/components/common/PageHeading.vue"
+  import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+  import Modal from '@/components/ui/Modal.vue';
+  import PageHeading from "@/components/common/PageHeading.vue"
   const { withClientMutation, withClientQuery } = useApiUtil()
   const { confirm } = useConfirmDialog();
   
@@ -258,41 +259,42 @@ import PageHeading from "@/components/common/PageHeading.vue"
       <Button @click="FormManager(true)">Add SMS Template</Button>
     </PageHeading>
     
-    <div class="overflow-x-auto mt-4">
-        <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card text-card-foreground rounded-lg border border-border">
-        <Table class="min-w-full">
-            <TableHeader>
-            <TableRow>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Name</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Specification Trigger</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Audience</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Template</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Status</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border"></TableHead>
+    <div class="mt-4">
+        <div class="border border-border bg-card rounded-lg shadow-md">
+        <div class="relative w-full overflow-auto">
+        <Table class="w-full caption-bottom text-sm">
+            <TableHeader class="[&_tr]:border-b">
+            <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Name</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Specification Trigger</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Audience</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Template</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Status</TableHead>
+                <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
             </TableRow>
             </TableHeader>
-            <TableBody class="bg-card">
-            <TableRow v-for="template in templates" :key="template?.uid" class="hover:bg-accent/50">
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
+            <TableBody class="[&_tr:last-child]:border-0">
+            <TableRow v-for="template in templates" :key="template?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm">
                   <div class="text-sm text-foreground">{{ template.name }}</div>
                   <div class="text-xs text-muted-foreground">{{ template.description }}</div>
                 </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm">
                   <div class="text-sm text-foreground">{{ triggerLabel(template.specificationTrigger || '') }}</div>
                 </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm">
                   <div class="text-sm text-foreground">{{ audienceLabel(template.audience || '') }}</div>
                 </TableCell>
-                <TableCell class="px-4 py-2 border-b border-border">
+                <TableCell class="px-4 py-3 align-middle text-sm">
                   <div class="text-sm text-foreground max-w-xs">{{ template.template }}</div>
                 </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm">
                   <span :class="template.isActive ?'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'" 
                         class="px-2 py-1 text-xs font-medium rounded-full">
                     {{ template.isActive ? 'Active' : 'Inactive' }}
                   </span>
                 </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
+                <TableCell class="px-4 py-3 align-middle text-right">
                     <Button variant="outline" size="sm" @click="FormManager(false, template)">Edit</Button>
                     <Button variant="destructive" size="sm" class="ml-2" @click="deleteSmsTemplate(template.uid)">
                       Delete
@@ -301,6 +303,7 @@ import PageHeading from "@/components/common/PageHeading.vue"
             </TableRow>
             </TableBody>
         </Table>
+        </div>
         </div>
     </div>
 

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, nextTick, watch } from 'vue'
 import { Input } from '@/components/ui/input'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { Info } from 'lucide-vue-next'
 
 interface Props {
   modelValue: string
@@ -10,6 +12,8 @@ interface Props {
   type?: string
   id?: string
   class?: string
+  /** When false (e.g. creating a new user with no username), field is editable by default. */
+  initialLocked?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -19,13 +23,14 @@ const props = withDefaults(defineProps<Props>(), {
   type: 'text',
   id: '',
   class: '',
+  initialLocked: true,
 })
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]
 }>()
 
-const isProtected = ref(true)
+const isProtected = ref(props.initialLocked)
 const inputValue = ref(props.modelValue)
 const inputRef = ref<HTMLInputElement>()
 const clickCount = ref(0)
@@ -33,6 +38,10 @@ const clickTimeout = ref<ReturnType<typeof setTimeout>>()
 
 watch(() => props.modelValue, (newValue) => {
   inputValue.value = newValue
+})
+
+watch(() => props.initialLocked, (locked) => {
+  isProtected.value = locked
 })
 
 const handleProtectedClick = (event: Event) => {
@@ -103,7 +112,7 @@ const handleBlur = () => {
 
 <template>
   <div class="grid gap-2">
-    <div v-if="isProtected">
+    <div v-if="isProtected" class="flex items-center gap-2">
       <Input
         :id="id"
         :model-value="inputValue"
@@ -111,11 +120,23 @@ const handleBlur = () => {
         :placeholder="placeholder"
         :disabled="disabled"
         readonly
+        class="flex-1 min-w-0"
         @click="handleProtectedClick"
       />
-      <p v-if="!disabled" class="text-sm text-muted-foreground">
-        Click {{ requiredClicks }} times quickly to unlock for editing.
-      </p>
+      <Tooltip v-if="!disabled">
+        <TooltipTrigger as-child>
+          <button
+            type="button"
+            class="inline-flex shrink-0 text-muted-foreground hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+            aria-label="How to unlock"
+          >
+            <Info class="size-4" />
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="top" class="max-w-[16rem]">
+          Click {{ requiredClicks }} times quickly to unlock for editing.
+        </TooltipContent>
+      </Tooltip>
     </div>
 
     <div v-else>

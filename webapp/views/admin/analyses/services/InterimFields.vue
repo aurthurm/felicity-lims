@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { computed, ref, toRefs, watch, defineAsyncComponent } from 'vue';
+  import { computed, ref, toRefs, watch } from 'vue';
   import { useForm } from 'vee-validate';
   import * as yup from 'yup';
   import { AddAnalysisInterimDocument, AddAnalysisInterimMutation, AddAnalysisInterimMutationVariables,
@@ -23,7 +23,12 @@
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select";
-import PageHeading from "@/components/common/PageHeading.vue"
+  import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+  import Modal from '@/components/ui/Modal.vue';
+  import PageHeading from "@/components/common/PageHeading.vue";
+
+  const SELECT_NONE = '__none__';
+
   const analysisStore = useAnalysisStore()
   const setupStore = useSetupStore()
   const { withClientMutation } = useApiUtil()
@@ -57,7 +62,7 @@ import PageHeading from "@/components/common/PageHeading.vue"
     value: yup.string().trim().required('Result value is required'),
   });
 
-  const { handleSubmit, resetForm, setValues } = useForm({
+  const { handleSubmit, resetForm, setValues, setFieldValue } = useForm({
     validationSchema: interimSchema,
     initialValues: {
       instrumentUid: '',
@@ -70,7 +75,11 @@ import PageHeading from "@/components/common/PageHeading.vue"
   })
 
   setupStore.fetchInstruments();
-  const instruments = computed<InstrumentType[]>(() => setupStore.getInstruments)
+  const instruments = computed<InstrumentType[]>(() => setupStore.getInstruments);
+
+  function onInstrumentChange(v: string) {
+    setFieldValue('instrumentUid', v === SELECT_NONE ? '' : v);
+  }
 
   function addAnalysisInterim(payload: { instrumentUid: string; key: number; value: string; analysisUid: string }): void {
       withClientMutation<AddAnalysisInterimMutation, AddAnalysisInterimMutationVariables>(AddAnalysisInterimDocument, { payload }, "createAnalysisInterim")
@@ -132,29 +141,23 @@ import PageHeading from "@/components/common/PageHeading.vue"
       <Button @click="FormManager(true)">Add Interim Field</Button>
     </PageHeading>
 
-    <div class="overflow-x-auto mt-4">
-        <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card text-card-foreground rounded-lg border border-border">
-        <Table class="min-w-full">
-            <TableHeader>
-            <TableRow>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Interim Key</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Result Value</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Instrument</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border"></TableHead>
+    <div class="mt-4 border border-border bg-card rounded-lg shadow-md">
+        <div class="relative w-full overflow-auto">
+        <Table class="w-full caption-bottom text-sm">
+            <TableHeader class="[&_tr]:border-b">
+            <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Interim Key</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Result Value</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Instrument</TableHead>
+                <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
             </TableRow>
             </TableHeader>
-            <TableBody class="bg-card">
-            <TableRow v-for="interim in analysis?.interims" :key="interim?.uid" class="hover:bg-accent/50">
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
-                  <div class="text-sm text-foreground">{{ interim?.key }}</div>
-                </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
-                  <div class="text-sm text-foreground">{{ interim?.value }}</div>
-                </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
-                  <div class="text-sm text-foreground">{{ instrumentName(interim?.instrumentUid) }}</div>
-                </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
+            <TableBody class="[&_tr:last-child]:border-0">
+            <TableRow v-for="interim in analysis?.interims" :key="interim?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ interim?.key }}</TableCell>
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ interim?.value }}</TableCell>
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ instrumentName(interim?.instrumentUid) }}</TableCell>
+                <TableCell class="px-4 py-3 align-middle text-right">
                     <Button variant="outline" size="sm" @click="FormManager(false, interim)">
                       Edit
                     </Button>
@@ -166,7 +169,7 @@ import PageHeading from "@/components/common/PageHeading.vue"
     </div>
 
   <!-- Result Options Form Modal -->
-  <modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/4'">
+  <Modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/4'">
     <template v-slot:header>
       <h3 class="text-lg font-bold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -179,12 +182,15 @@ import PageHeading from "@/components/common/PageHeading.vue"
               <FormItem>
                 <FormLabel>Instrument</FormLabel>
                 <FormControl>
-                  <Select v-bind="componentField">
+                  <Select
+                    :model-value="componentField.modelValue || SELECT_NONE"
+                    @update:model-value="onInstrumentChange"
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select Instrument" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Select Instrument</SelectItem>
+                      <SelectItem :value="SELECT_NONE">Select Instrument</SelectItem>
                       <SelectItem v-for="instrument in instruments" :key="instrument?.uid" :value="instrument.uid">
                         {{ instrument?.name }}
                       </SelectItem>
@@ -220,6 +226,6 @@ import PageHeading from "@/components/common/PageHeading.vue"
         </div>
       </form>
     </template>
-  </modal>
+  </Modal>
 
 </template>

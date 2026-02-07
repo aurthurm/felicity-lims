@@ -78,21 +78,21 @@ import PageHeading from "@/components/common/PageHeading.vue"
         <Button @click="FormManager(true)">Add Rejection Reason</Button>
       </PageHeading>
 
-        <div class="rounded-md bg-card p-6 shadow-sm">
-          <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card text-card-foreground rounded-lg">
-            <Table class="min-w-full">
-                <TableHeader>
-                <TableRow>
-                    <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Reason</TableHead>
-                    <TableHead class="px-4 py-2 border-b border-border"></TableHead>
+        <div class="mt-4 border border-border bg-card rounded-lg shadow-md">
+          <div class="relative w-full overflow-auto">
+            <Table class="w-full caption-bottom text-sm">
+                <TableHeader class="[&_tr]:border-b">
+                <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                    <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Reason</TableHead>
+                    <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
                 </TableRow>
                 </TableHeader>
-                <TableBody class="bg-card">
-                <TableRow v-for="rejection in rejectionReasons" :key="rejection?.uid" class="hover:bg-accent/50">
-                    <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <TableBody class="[&_tr:last-child]:border-0">
+                <TableRow v-for="rejection in rejectionReasons" :key="rejection?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                    <TableCell class="px-4 py-3 align-middle text-sm">
                       <div class="text-sm text-foreground">{{ rejection?.reason }}</div>
                     </TableCell>
-                    <TableCell class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
+                    <TableCell class="px-4 py-3 align-middle text-right">
                         <Button variant="outline" size="sm" @click="FormManager(false, rejection)">
                           Edit
                         </Button>

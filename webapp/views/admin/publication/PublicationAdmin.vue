@@ -4,7 +4,7 @@
       <h2 class="text-2xl font-semibold text-foreground">Publication Preferences</h2>
     </div>
 
-    <div class="rounded-md border border-border p-6">
+    <div class="border border-border bg-card rounded-lg shadow-md p-6">
       <div class="space-y-4">
         <div class="flex items-center space-x-4">
           <h3 class="text-lg font-medium text-foreground">Email Notifications</h3>

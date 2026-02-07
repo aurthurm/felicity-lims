@@ -72,3 +72,14 @@ Use the current pattern: `useForm` + native `<form @submit.prevent="...">` + `Fo
 For pages with multiple submit actions/sections sharing one form state, prefer separate `useForm` instances per section or submit current `values` directly for section-specific actions to avoid unrelated validation blocking submit.
 If checkboxes appear not to bind despite correct template markup, verify there are no stale references to removed form instances (for example, `setSettingValues` after consolidating to one `useForm`), and use one consistent `useForm` source for the fields being rendered.
 For laboratory settings updates, include `laboratoryUid` in the mutation payload when required by GraphQL input types.
+
+### Number fields with FormField and Input
+
+For numeric inputs (e.g. min/max level, days, percentage), use **`null`** in form state so binding and updates work correctly with `componentField`:
+
+- **Initial values:** Use `null as number | null` in `initialValues` / `defaultValues`, not empty string `''`.
+- **setValues (edit):** Use `obj?.fieldName ?? null` when populating the form for edit.
+- **Template:** Use the same pattern as text inputs: `FormField` with `v-slot="{ componentField }"` and `<Input v-bind="componentField" type="number" min="0" placeholder="0" />`.
+- **Submit:** Normalize to `null` or number, e.g. `values.fieldName == null || values.fieldName === '' ? null : Number(values.fieldName)`.
+
+Reference: `webapp/views/admin/laboratory/Organisation.vue` (e.g. `passwordLifetime`, `inactivityLogOut`, `paymentTermsDays`, `minPartialPerentage`).

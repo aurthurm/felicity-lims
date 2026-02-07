@@ -142,24 +142,25 @@ defineOptions({ name: 'InstrumentsView' })
       <Button @click="FormManager(true)"> Add Instrument</Button>
     </PageHeading>
 
-    <div class="border border-border bg-background rounded-lg shadow-sm p-6 overflow-hidden">
-      <Table class="min-w-full divide-y divide-border">
-        <TableHeader>
-          <TableRow>
-            <TableHead class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Name</TableHead>
-            <TableHead class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Type</TableHead>
-            <TableHead class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Manufacturer</TableHead>
-            <TableHead class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Supplier</TableHead>
-            <TableHead class="px-4 py-2 text-right text-sm font-medium text-muted-foreground tracking-wider">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody class="bg-background divide-y divide-border">
-          <TableRow v-for="inst in instruments" :key="inst?.uid" class="hover:bg-muted/50">
-            <TableCell class="px-4 py-2 whitespace-nowrap text-sm text-foreground">{{ inst?.name }}</TableCell>
-            <TableCell class="px-4 py-2 whitespace-nowrap text-sm text-foreground">{{ inst?.instrumentType?.name }}</TableCell>
-            <TableCell class="px-4 py-2 whitespace-nowrap text-sm text-foreground">{{ inst?.manufacturer?.name }}</TableCell>
-            <TableCell class="px-4 py-2 whitespace-nowrap text-sm text-foreground">{{ inst?.supplier?.name }}</TableCell>
-            <TableCell class="px-4 py-2 whitespace-nowrap text-sm text-right">
+    <div class="border border-border bg-card rounded-lg shadow-md">
+      <div class="relative w-full overflow-auto">
+        <Table class="w-full caption-bottom text-sm">
+          <TableHeader class="[&_tr]:border-b">
+            <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Name</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Type</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Manufacturer</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Supplier</TableHead>
+              <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody class="[&_tr:last-child]:border-0">
+            <TableRow v-for="inst in instruments" :key="inst?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ inst?.name }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ inst?.instrumentType?.name }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ inst?.manufacturer?.name }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ inst?.supplier?.name }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-right">
               <Button variant="outline" size="sm" @click="FormManager(false, inst)">
                 Edit
               </Button>
@@ -176,7 +177,8 @@ defineOptions({ name: 'InstrumentsView' })
             </Empty>
           </TableEmpty>
         </TableBody>
-      </Table>
+        </Table>
+      </div>
     </div>
   </div>
 
@@ -212,7 +214,6 @@ defineOptions({ name: 'InstrumentsView' })
                     <SelectValue placeholder="Select instrument type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Select instrument type</SelectItem>
                     <SelectItem v-for="instrumentType in instrumentTypes" :key="instrumentType?.uid" :value="instrumentType.uid">
                       {{ instrumentType?.name }}
                     </SelectItem>
@@ -231,7 +232,6 @@ defineOptions({ name: 'InstrumentsView' })
                     <SelectValue placeholder="Select manufacturer" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Select manufacturer</SelectItem>
                     <SelectItem v-for="manufacturer in manufacturers" :key="manufacturer?.uid" :value="manufacturer.uid">
                       {{ manufacturer?.name }}
                     </SelectItem>
@@ -250,7 +250,6 @@ defineOptions({ name: 'InstrumentsView' })
                     <SelectValue placeholder="Select supplier" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Select supplier</SelectItem>
                     <SelectItem v-for="supplier in suppliers" :key="supplier?.uid" :value="supplier.uid">
                       {{ supplier?.name }}
                     </SelectItem>

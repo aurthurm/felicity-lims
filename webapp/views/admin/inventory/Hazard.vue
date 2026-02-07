@@ -94,7 +94,7 @@ const onModalFormSubmit = handleSubmit((values): void => {
       <Button @click="FormManager(true, null)">Add Hazard</Button>
     </div>
 
-    <div class="rounded-md border border-border bg-card p-6">
+    <div class="border border-border bg-card rounded-lg shadow-md">
       <div class="relative w-full overflow-auto">
         <Table class="w-full caption-bottom text-sm">
           <TableHeader class="[&_tr]:border-b">
@@ -129,9 +129,9 @@ const onModalFormSubmit = handleSubmit((values): void => {
               :key="hazard?.uid"
               class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
             >
-              <TableCell class="p-4 align-middle">{{ hazard?.name }}</TableCell>
-              <TableCell class="p-4 align-middle text-primary">{{ hazard?.description }}</TableCell>
-              <TableCell class="p-4 text-right align-middle">
+              <TableCell class="px-4 py-3 align-middle text-sm">{{ hazard?.name }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-primary">{{ hazard?.description }}</TableCell>
+              <TableCell class="px-4 py-3 text-right align-middle">
                 <Button variant="outline" size="sm" @click="FormManager(false, hazard)">Edit</Button>
               </TableCell>
             </TableRow>

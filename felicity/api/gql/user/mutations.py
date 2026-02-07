@@ -279,14 +279,14 @@ class UserMutations:
             self,
             info,
             user_uid: str,
-            first_name: str | None,
-            last_name: str | None,
-            user_name: str | None,
-            mobile_phone: str | None,
-            email: str | None,
-            group_uid: str | None,
-            is_active: bool | None,
-            is_blocked: bool | None,
+            first_name: str | None = None,
+            last_name: str | None = None,
+            user_name: str | None = None,
+            mobile_phone: str | None = None,
+            email: str | None = None,
+            group_uid: str | None = None,
+            is_active: bool | None = None,
+            is_blocked: bool | None = None,
             active_laboratory_uid: str | None = None,
             laboratory_uids: list[str] | None = None,
             password: str | None = None,
@@ -313,9 +313,9 @@ class UserMutations:
             setattr(user, "email", email)
         if mobile_phone and "mobile_phone" in user_data:
             setattr(user, "mobile_phone", mobile_phone)
-        if "is_active" in user_data:
+        if "is_active" in user_data and is_active is not None:
             setattr(user, "is_active", is_active)
-        if "is_blocked" in user_data:
+        if "is_blocked" in user_data and is_blocked is not None:
             setattr(user, "is_blocked", is_blocked)
 
         user_in = user_schemas.UserUpdate(**user.to_dict())

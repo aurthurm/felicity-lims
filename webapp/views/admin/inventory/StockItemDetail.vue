@@ -52,8 +52,8 @@ const variantSchema = yup.object({
 const defaultValues = {
   name: '',
   description: '',
-  minimumLevel: '' as number | '',
-  maximumLevel: '' as number | '',
+  minimumLevel: null as number | null,
+  maximumLevel: null as number | null,
 };
 const { handleSubmit, setValues } = useForm({
   validationSchema: variantSchema,
@@ -90,8 +90,8 @@ function FormManager(create: boolean, obj: StockItemVariantType | null): void {
     setValues({
       name: obj?.name ?? '',
       description: obj?.description ?? '',
-      minimumLevel: obj?.minimumLevel ?? '',
-      maximumLevel: obj?.maximumLevel ?? '',
+      minimumLevel: obj?.minimumLevel ?? null,
+      maximumLevel: obj?.maximumLevel ?? null,
     });
   }
   showModal.value = true;
@@ -101,8 +101,8 @@ const onModalFormSubmit = handleSubmit((values): void => {
   const payload = {
     name: values.name as string,
     description: (values.description as string) ?? null,
-    minimumLevel: values.minimumLevel === '' ? null : Number(values.minimumLevel),
-    maximumLevel: values.maximumLevel === '' ? null : Number(values.maximumLevel),
+    minimumLevel: values.minimumLevel == null || values.minimumLevel === '' ? null : Number(values.minimumLevel),
+    maximumLevel: values.maximumLevel == null || values.maximumLevel === '' ? null : Number(values.maximumLevel),
   } as StockItemVariantInputType;
   if (formAction.value === true) addStockItemVariant(payload);
   if (formAction.value === false) editStockItemVariant(payload);
@@ -122,7 +122,7 @@ const onModalFormSubmit = handleSubmit((values): void => {
       <Button @click="FormManager(true, null)">Add New {{ stockItem?.name }}</Button>
     </div>
 
-    <div class="rounded-md border border-border bg-card p-6">
+    <div class="border border-border bg-card rounded-lg shadow-md">
       <div class="relative w-full overflow-auto">
         <Table class="w-full caption-bottom text-sm">
           <TableHeader class="[&_tr]:border-b">
@@ -151,9 +151,9 @@ const onModalFormSubmit = handleSubmit((values): void => {
               :key="variant?.uid"
               class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
             >
-              <TableCell class="p-4 align-middle">{{ variant?.name }}</TableCell>
-              <TableCell class="p-4 align-middle text-primary">{{ variant?.description }}</TableCell>
-              <TableCell class="p-4 text-right align-middle">
+              <TableCell class="px-4 py-3 align-middle text-sm">{{ variant?.name }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-primary">{{ variant?.description }}</TableCell>
+              <TableCell class="px-4 py-3 text-right align-middle">
                 <Button variant="outline" size="sm" @click="FormManager(false, variant)">Edit</Button>
               </TableCell>
             </TableRow>

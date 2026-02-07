@@ -115,45 +115,34 @@ import PageHeading from "@/components/common/PageHeading.vue"
       <Button @click="FormManager(true)">Add Referral Laboratory</Button>
     </PageHeading>
 
-    <div class="overflow-x-auto mt-4">
-      <div class="align-middle inline-block min-w-full rounded-lg shadow-md bg-card p-6">
-        <Table class="min-w-full">
-          <TableHeader class="bg-muted">
-            <TableRow>
-              <TableHead class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Name</TableHead>
-              <TableHead class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Code</TableHead>
-              <TableHead class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">URL</TableHead>
-              <TableHead class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Is Referral</TableHead>
-              <TableHead class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Is Reference</TableHead>
-              <TableHead class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Has Username</TableHead>
-              <TableHead class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Has Password</TableHead>
-              <TableHead class="px-3 py-3 border-b border-border"></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody class="bg-background divide-y divide-border">
-            <TableRow v-for="laboratory in referralLaboratories" :key="laboratory?.uid" class="hover:bg-muted/50 transition-colors">
-              <TableCell class="px-3 py-2 text-sm text-foreground wrap-break-word">
+    <div class="mt-4">
+      <div class="border border-border bg-card rounded-lg shadow-md">
+        <div class="relative w-full overflow-auto">
+          <Table class="w-full caption-bottom text-sm">
+            <TableHeader class="[&_tr]:border-b">
+              <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Name</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Code</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">URL</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Is Referral</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Is Reference</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Has Username</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Has Password</TableHead>
+                <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody class="[&_tr:last-child]:border-0">
+              <TableRow v-for="laboratory in referralLaboratories" :key="laboratory?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                <TableCell class="px-4 py-3 align-middle text-sm text-foreground wrap-break-word">
                 {{ laboratory?.name }}
               </TableCell>
-              <TableCell class="px-3 py-2 text-sm text-foreground wrap-break-word">
-                {{ laboratory?.code }}
-              </TableCell>
-              <TableCell class="px-3 py-2 text-sm text-foreground wrap-break-word">
-                {{ laboratory?.url }}
-              </TableCell>
-              <TableCell class="px-3 py-2 text-sm text-foreground">
-                 {{ laboratory?.isReferral ? 'Yes' : 'No' }}
-              </TableCell>
-              <TableCell class="px-3 py-2 text-sm text-foreground">
-                 {{ laboratory?.isReference ? 'Yes' : 'No' }}
-              </TableCell>
-              <TableCell class="px-3 py-2 text-sm text-foreground">
-                 {{ !!laboratory?.username ? "Yes" : "No" }}
-              </TableCell>
-              <TableCell class="px-3 py-2 text-sm text-foreground">
-                 {{ !!laboratory?.password ? "Yes" : "No" }}
-              </TableCell>
-              <TableCell class="px-3 py-2 text-right text-sm">
+                <TableCell class="px-4 py-3 align-middle text-sm text-foreground wrap-break-word">{{ laboratory?.code }}</TableCell>
+                <TableCell class="px-4 py-3 align-middle text-sm text-foreground wrap-break-word">{{ laboratory?.url }}</TableCell>
+                <TableCell class="px-4 py-3 align-middle text-sm text-foreground">{{ laboratory?.isReferral ? 'Yes' : 'No' }}</TableCell>
+                <TableCell class="px-4 py-3 align-middle text-sm text-foreground">{{ laboratory?.isReference ? 'Yes' : 'No' }}</TableCell>
+                <TableCell class="px-4 py-3 align-middle text-sm text-foreground">{{ !!laboratory?.username ? "Yes" : "No" }}</TableCell>
+                <TableCell class="px-4 py-3 align-middle text-sm text-foreground">{{ !!laboratory?.password ? "Yes" : "No" }}</TableCell>
+                <TableCell class="px-4 py-3 align-middle text-right">
                 <Button variant="outline" size="sm" @click="FormManager(false, laboratory)">
                    Edit
                 </Button>
@@ -171,6 +160,7 @@ import PageHeading from "@/components/common/PageHeading.vue"
             </TableEmpty>
           </TableBody>
         </Table>
+        </div>
       </div>
     </div>
   </div>

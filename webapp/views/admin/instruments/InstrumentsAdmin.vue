@@ -45,7 +45,7 @@ const tabs = [
       id:"units", 
       label: 'Units', 
       component: Units
-    }, ,
+    },
     { 
       id:"instconn", 
       label: 'Instrument Interfaces',

@@ -134,6 +134,8 @@ mutation AddStockItem($payload: StockItemInputType!) {
             uid
             name
             description
+            minimumLevel
+            maximumLevel
         }
 
         ... on OperationError {
@@ -151,6 +153,8 @@ mutation editStockItem($uid: String!, $payload: StockItemInputType!) {
             uid
             name
             description
+            minimumLevel
+            maximumLevel
         }
 
         ... on OperationError {

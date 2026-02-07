@@ -28,20 +28,15 @@ import {
 } from "@/components/ui/select";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-
-
-import PageHeading from "@/components/common/PageHeading.vue"
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Switch } from "@/components/ui/switch";
+import PageHeading from "@/components/common/PageHeading.vue";
 const analysisStore = useAnalysisStore();
 const setupStore = useSetupStore();
 const { withClientMutation } = useApiUtil();
-
-let currentTab = ref("analyses-services");
-const tabs = ["analyses-services"];
 
 let showModal = ref(false);
 let formTitle = ref("");
@@ -58,24 +53,49 @@ analysisStore.fetchAnalysesTemplates()
 const analysesServices = computed(() => analysisStore.getAnalysesServices);
 const analysesTemplates = computed(() => analysisStore.getAnalysesTemplates);
 
+/** Reactive list of selected analysis UIDs for the current template (same pattern as ManageAnalyses.vue) */
+const selectedServiceUids = ref<string[]>([]);
+
+function selectService(uid: string, checked?: boolean): void {
+  const current = selectedServiceUids.value;
+  const hasUid = current.includes(uid);
+  if (checked === true && !hasUid) {
+    selectedServiceUids.value = [...current, uid];
+    return;
+  }
+  if (checked !== true && hasUid) {
+    selectedServiceUids.value = current.filter((id) => id !== uid);
+    return;
+  }
+  if (checked === undefined) {
+    selectedServiceUids.value = hasUid
+      ? current.filter((id) => id !== uid)
+      : [...current, uid];
+  }
+}
+
+function isServiceSelected(uid: string): boolean {
+  return selectedServiceUids.value.includes(uid);
+}
+
 const templateSchema = yup.object({
   name: yup.string().trim().required("Template name is required"),
   description: yup.string().trim().nullable(),
   departmentUid: yup.string().trim().nullable(),
-  active: yup.boolean().default(true),
 });
+
+const DEPARTMENT_NONE = "__none__";
 
 const { handleSubmit, resetForm, setValues } = useForm({
   validationSchema: templateSchema,
   initialValues: {
     name: "",
     description: "",
-    departmentUid: "",
-    active: true,
+    departmentUid: DEPARTMENT_NONE,
   },
 });
 
-function addAnalysisTemplate(payload: { name: string; description: string | null; departmentUid: string | null; active: boolean }): void {
+function addAnalysisTemplate(payload: { name: string; description: string | null; departmentUid: string | null; services?: string[] }): void {
   withClientMutation<AddAnalysisTemplateMutation, AddAnalysisTemplateMutationVariables>(
     AddAnalysisTemplateDocument,
     { payload },
@@ -83,70 +103,66 @@ function addAnalysisTemplate(payload: { name: string; description: string | null
   ).then((result) => analysisStore.addAnalysisTemplate(result));
 }
 
-function editAnalysisTemplate(payload: { name: string; description: string | null; departmentUid: string | null; active: boolean }): void {
+function editAnalysisTemplate(payload: { name: string; description: string | null; departmentUid: string | null; services?: string[] }): void {
   if (!currentUid.value) return;
-  const services = analysisTemplate.analyses?.map((item) => item.uid);
+  const existingServices = analysisTemplate.analyses?.map((item) => item.uid) ?? [];
+  const services = payload.services ?? (selectedServiceUids.value.length > 0 ? [...selectedServiceUids.value] : existingServices);
   withClientMutation<EditAnalysisTemplateMutation, EditAnalysisTemplateMutationVariables>(
     EditAnalysisTemplateDocument,
     { uid: currentUid.value, payload: { ...payload, services } },
     "updateAnalysisTemplate"
-  ).then((result) => analysisStore.updateAnalysesTemplate(result));
+  ).then((result) => {
+    if (result && "uid" in result && "analyses" in result) {
+      analysisStore.updateAnalysesTemplate(result);
+      if (result.uid === currentUid.value) {
+        Object.assign(analysisTemplate, result);
+        selectedServiceUids.value = result.analyses?.map((a) => a.uid) ?? [];
+      }
+    }
+  });
 }
 
 function select(template: AnalysisTemplateType): void {
   Object.assign(analysisTemplate, { ...template });
   currentUid.value = template.uid ?? null;
-  // get services that fall into this template
-  analysesServices.value?.forEach((item) => {
-    item[1].forEach((service: AnalysisType) => {
-      service.checked = false;
-      if (template.analyses?.some((a) => a.uid === service.uid) || false) {
-        service.checked = true;
-      }
-    });
-  });
+  selectedServiceUids.value = template.analyses?.map((a) => a.uid) ?? [];
 }
 
 function updateTemplate(): void {
-  const analyses: AnalysisType[] = [];
-  analysesServices.value?.forEach((item) => {
-    item[1].forEach((service: AnalysisType) => {
-      if (service.checked) {
-        analyses.push(service);
-      }
-    });
-  });
-  analysisTemplate.analyses = analyses;
+  const services = [...selectedServiceUids.value];
   editAnalysisTemplate({
     name: analysisTemplate.name ?? "",
     description: analysisTemplate.description ?? null,
     departmentUid: analysisTemplate.departmentUid ?? null,
-    active: analysisTemplate.active ?? true,
+    services,
   });
 }
 
 function FormManager(create: boolean, obj?: AnalysisTemplateType): void {
+  const previousUid = currentUid.value;
   formAction.value = create;
   showModal.value = true;
   formTitle.value = (create ? "CREATE" : "EDIT") + " " + "ANALYSES TEMPLATE";
   if (create) {
     currentUid.value = null;
+    selectedServiceUids.value = [];
     resetForm({
       values: {
         name: "",
         description: "",
-        departmentUid: "",
-        active: true,
+        departmentUid: DEPARTMENT_NONE,
       },
     });
   } else {
     const source = obj ?? analysisTemplate;
     currentUid.value = source?.uid ?? null;
+    if (!previousUid || previousUid !== source?.uid) {
+      selectedServiceUids.value = source?.analyses?.map((a) => a.uid) ?? [];
+    }
     setValues({
       name: source?.name ?? "",
       description: source?.description ?? "",
-      departmentUid: source?.departmentUid ?? "",
-      active: source?.active ?? true,
+      departmentUid: source?.departmentUid ?? DEPARTMENT_NONE,
     });
   }
 }
@@ -154,9 +170,10 @@ function FormManager(create: boolean, obj?: AnalysisTemplateType): void {
 const saveForm = handleSubmit((values) => {
   const payload = {
     name: values.name,
-    description: values.description ?? null,
-    departmentUid: values.departmentUid ? values.departmentUid : null,
-    active: values.active,
+    description: values.description ?? "",
+    departmentUid: values.departmentUid && values.departmentUid !== DEPARTMENT_NONE ? values.departmentUid : null,
+    // Modal form edits template metadata only. Service selection is updated via "Update Template".
+    services: formAction.value === false ? undefined : [],
   };
   if (formAction.value === true) addAnalysisTemplate(payload);
   if (formAction.value === false) editAnalysisTemplate(payload);
@@ -185,19 +202,36 @@ const saveForm = handleSubmit((values) => {
                 :key="template.uid"
                 @click.prevent.stop="select(template)"
                 :class="[
-                  'rounded-md p-2 cursor-pointer transition-colors duration-200',
+                  'rounded-md p-2 cursor-pointer transition-colors duration-200 group',
                   template?.uid === analysisTemplate?.uid 
                     ? 'bg-accent text-accent-foreground' 
                     : 'hover:bg-accent/50'
                 ]"
               >
-                <div class="flex items-center justify-between">
-                  <span class="text-sm font-medium">{{ template?.name }}</span>
-                  <span v-if="template?.department?.name" class="text-xs text-muted-foreground">{{ template?.department?.name }}</span>
+                <div class="flex items-center justify-between gap-2">
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm font-medium truncate">{{ template?.name }}</span>
+                      <span v-if="template?.department?.name" class="text-xs text-muted-foreground shrink-0 ml-1">{{ template?.department?.name }}</span>
+                    </div>
+                    <p v-if="template?.description" class="text-xs text-muted-foreground mt-1 line-clamp-2">
+                      {{ template?.description }}
+                    </p>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    class="h-7 w-7 shrink-0 opacity-0 group-hover:opacity-100 focus:opacity-100"
+                    @click.prevent.stop="FormManager(false, template)"
+                  >
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 20 20">
+                      <path
+                        fill="currentColor"
+                        d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+                      />
+                    </svg>
+                  </Button>
                 </div>
-                <p v-if="template?.description" class="text-xs text-muted-foreground mt-1 line-clamp-2">
-                  {{ template?.description }}
-                </p>
               </li>
             </ul>
           </div>
@@ -207,108 +241,63 @@ const saveForm = handleSubmit((values) => {
       <!-- Template Details -->
       <section class="col-span-9" v-if="analysisTemplate?.uid !== undefined">
         <div class="space-y-6">
-          <!-- Header -->
-          <div class="rounded-lg border border-border bg-card p-6">
-            <div class="flex items-center justify-between">
-              <div class="space-y-1">
-                <h2 class="text-xl font-semibold text-foreground">{{ analysisTemplate?.name }}</h2>
-                <p v-if="analysisTemplate?.description" class="text-sm text-muted-foreground">
-                  {{ analysisTemplate?.description }}
-                </p>
-              </div>
-              <div class="flex items-center space-x-2">
-                <Button variant="outline" size="icon" @click="FormManager(false, analysisTemplate)">
-                  <svg class="w-4 h-4" viewBox="0 0 20 20">
-                    <path
-                      d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                    ></path>
-                  </svg>
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Tabs -->
-          <nav class="border-b border-border">
-            <div class="flex space-x-2">
-              <button
-                v-for="tab in tabs"
-                :key="tab"
-                :class="[
-                  'px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
-                  currentTab === tab
-                    ? 'border-b-2 border-primary text-foreground'
-                    : 'text-muted-foreground hover:text-foreground'
-                ]"
-                @click="currentTab = tab"
-              >
-                {{ tab }}
-              </button>
-            </div>
-          </nav>
-
-          <!-- Content -->
           <div class="rounded-lg border border-border bg-card">
             <div class="p-6">
-              <div v-if="currentTab === 'analyses-services'">
-                <h3>Analyses</h3>
-                <hr />
-                <section
-                  class="col-span-4 overflow-y-scroll overscroll-contain analyses-scroll bg-white p-1"
-                >
-                  <div class="grid grid-cols-6 gap-2 w-full">
-                    <div
-                      class="col-span-2"
-                      v-for="category in analysesServices"
-                      :key="category[0]"
-                    >
-                      <Accordion type="single" collapsible>
-                        <AccordionItem :value="String(category[0])">
-                          <AccordionTrigger>{{ category[0] }}</AccordionTrigger>
-                          <AccordionContent>
-                          <div>
-                            <ul>
-                              <li
-                                v-for="service in category[1]"
-                                :key="service?.uid"
-                                class="cursor-pointer"
-                                :class="[
-                                  { 'border-sky-800 bg-gray-200 underline pl-3': false },
-                                ]"
-                              >
-                                <div class="grow p-1">
-                                  <div
-                                    :class="[
-                                      'font-medium text-gray-500 hover:text-gray-700',
-                                      { 'text-gray-700 font-medium': false },
-                                    ]"
-                                  >
-                                    <Checkbox
-                                      :id="`toggle-${service?.uid}`" :checked="service.checked" @update:checked="(value) => service.checked = value"
-                                    />
-                                    <label
-                                      :for="`toggle-${service?.uid}`"
-                                      class="text-gray-700 ml-4"
-                                      >{{ service?.name }}</label
-                                    >
-                                  </div>
-                                </div>
-                                <hr />
-                              </li>
-                            </ul>
-                          </div>
-                          </AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
-                    </div>
-                  </div>
-                  <button
-                    class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-                    @click="updateTemplate()"
-                  >
+              <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-sm font-medium text-foreground">Analyses</h3>
+                  <Button size="sm" @click="updateTemplate()">
                     Update Template
-                  </button>
-                </section>
+                  </Button>
+                </div>
+                <div class="max-h-[420px] overflow-y-auto space-y-1 pr-1">
+                  <Collapsible
+                    v-for="category in analysesServices"
+                    :key="String(category[0])"
+                    class="rounded-md border border-border"
+                  >
+                    <CollapsibleTrigger
+                      class="flex w-full items-center justify-between px-3 py-2 text-left text-sm font-medium hover:bg-accent/50 rounded-md transition-colors [&[data-state=open]>svg]:rotate-180"
+                    >
+                      {{ category[0] }}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="shrink-0 transition-transform"
+                      >
+                        <path d="m6 9 6 6 6-6" />
+                      </svg>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <ul class="px-3 pb-2 pt-0 grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-1.5">
+                        <li
+                          v-for="service in category[1]"
+                          :key="service?.uid"
+                          class="flex items-center gap-2 rounded-sm py-1.5 pr-2 pl-2 text-sm outline-none cursor-default select-none hover:bg-accent/50 min-w-0"
+                        >
+                          <Switch
+                            :id="`toggle-${service?.uid}`"
+                            :checked="isServiceSelected(service?.uid)"
+                            @update:checked="(value) => service?.uid != null && selectService(service.uid, value)"
+                          />
+                          <label
+                            :for="`toggle-${service?.uid}`"
+                            class="flex-1 cursor-pointer text-muted-foreground hover:text-foreground"
+                          >
+                            {{ service?.name }}
+                          </label>
+                        </li>
+                      </ul>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </div>
               </div>
             </div>
           </div>
@@ -360,7 +349,7 @@ const saveForm = handleSubmit((values) => {
                     <SelectValue placeholder="Select department" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Select department</SelectItem>
+                    <SelectItem :value="DEPARTMENT_NONE">Select department</SelectItem>
                     <SelectItem v-for="department in departments" :key="department.uid" :value="department.uid">
                       {{ department.name }}
                     </SelectItem>

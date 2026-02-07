@@ -9,6 +9,7 @@
   import * as shield from '@/guards'
   import { Button } from "@/components/ui/button";
   import { Input } from "@/components/ui/input";
+  import { MultiSelect } from "@/components/ui/multi-select";
   import {FormControl,
     FormField,
     FormItem,
@@ -98,7 +99,9 @@ defineOptions({ name: 'GroupsView' })
       currentUid.value = obj.uid ?? null;
       setValues({
         name: obj.name ?? "",
-        pages: (obj.pages as unknown as string[]) ?? [],
+        pages: typeof obj.pages === 'string'
+          ? obj.pages.split(',').filter(Boolean)
+          : (Array.isArray(obj.pages) ? obj.pages : []),
       });
     }
   }
@@ -153,7 +156,7 @@ defineOptions({ name: 'GroupsView' })
       </Button>
     </div>
 
-    <div class="border border-border bg-card rounded-lg shadow-sm">
+    <div class="border border-border bg-card rounded-lg shadow-md">
       <div class="relative w-full overflow-auto">
         <Table class="w-full caption-bottom text-sm">
           <TableHeader class="[&_tr]:border-b">
@@ -201,21 +204,13 @@ defineOptions({ name: 'GroupsView' })
             <FormItem>
               <FormLabel>Pages</FormLabel>
               <FormControl>
-                <select 
-                  multiple
-                  :size="pages.length"
-                  class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                <MultiSelect
                   v-bind="componentField"
-                >
-                  <option 
-                    v-for="page in pages"
-                    :key="page"
-                    :value="page"
-                    class="py-1"
-                  >
-                    {{ page }}
-                  </option>
-                </select>
+                  :options="pages"
+                  placeholder="Select pages..."
+                  search-placeholder="Search pages..."
+                  empty-message="No pages found."
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

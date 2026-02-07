@@ -55,8 +55,8 @@ const defaultValues = {
   description: '',
   hazardUid: '',
   categoryUid: '',
-  minimumLevel: '' as number | '',
-  maximumLevel: '' as number | '',
+  minimumLevel: null as number | null,
+  maximumLevel: null as number | null,
 };
 const { handleSubmit, setValues } = useForm({
   validationSchema: stockItemSchema,
@@ -106,8 +106,8 @@ function FormManager(create: boolean, obj: StockItemType | null): void {
       description: obj?.description ?? '',
       hazardUid: obj?.hazardUid ?? '',
       categoryUid: obj?.categoryUid ?? '',
-      minimumLevel: obj?.minimumLevel ?? '',
-      maximumLevel: obj?.maximumLevel ?? '',
+      minimumLevel: obj?.minimumLevel ?? null,
+      maximumLevel: obj?.maximumLevel ?? null,
     });
   }
   showModal.value = true;
@@ -119,8 +119,8 @@ const onModalFormSubmit = handleSubmit((values): void => {
     description: (values.description as string) ?? null,
     hazardUid: values.hazardUid ? (values.hazardUid as string) : null,
     categoryUid: values.categoryUid ? (values.categoryUid as string) : null,
-    minimumLevel: values.minimumLevel === '' ? null : Number(values.minimumLevel),
-    maximumLevel: values.maximumLevel === '' ? null : Number(values.maximumLevel),
+    minimumLevel: values.minimumLevel == null || values.minimumLevel === '' ? null : Number(values.minimumLevel),
+    maximumLevel: values.maximumLevel == null || values.maximumLevel === '' ? null : Number(values.maximumLevel),
   } as StockItemInputType;
   if (formAction.value === true) addStockItem(payload);
   if (formAction.value === false) editStockItem(payload);
@@ -142,7 +142,7 @@ function viewStockItem(item: StockItemType) {
       <Button @click="FormManager(true, null)">Add Stock Item</Button>
     </div>
 
-    <div class="rounded-md border border-border bg-card p-6">
+    <div class="border border-border bg-card rounded-lg shadow-md">
       <div class="relative w-full overflow-auto">
         <Table class="w-full caption-bottom text-sm">
           <TableHeader class="[&_tr]:border-b">
@@ -173,11 +173,11 @@ function viewStockItem(item: StockItemType) {
               :key="item?.uid"
               class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
             >
-              <TableCell class="p-4 align-middle">{{ item?.name }}</TableCell>
-              <TableCell class="p-4 align-middle text-primary">{{ item?.category?.name }}</TableCell>
-              <TableCell class="p-4 align-middle text-primary">{{ item?.hazard?.name }}</TableCell>
-              <TableCell class="p-4 align-middle text-primary">{{ item?.description }}</TableCell>
-              <TableCell class="p-4 text-right align-middle">
+              <TableCell class="px-4 py-3 align-middle text-sm">{{ item?.name }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-primary">{{ item?.category?.name }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-primary">{{ item?.hazard?.name }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-primary">{{ item?.description }}</TableCell>
+              <TableCell class="px-4 py-3 text-right align-middle">
                 <div class="flex justify-end gap-2">
                   <Button variant="outline" size="sm" @click="FormManager(false, item)">Edit</Button>
                   <Button variant="outline" size="sm" @click="viewStockItem(item)">View</Button>
@@ -255,8 +255,7 @@ function viewStockItem(item: StockItemType) {
                       <SelectValue placeholder="Select a hazard..." />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Select a hazard...</SelectItem>
-                      <SelectItem v-for="h in hazards" :key="h.uid" :value="h?.uid ?? ''">
+                      <SelectItem v-for="h in hazards.filter((x) => x?.uid)" :key="h.uid" :value="h.uid">
                         {{ h.name }}
                       </SelectItem>
                     </SelectContent>
@@ -274,8 +273,7 @@ function viewStockItem(item: StockItemType) {
                       <SelectValue placeholder="Select a category..." />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Select a category...</SelectItem>
-                      <SelectItem v-for="c in categories" :key="c.uid" :value="c?.uid ?? ''">
+                      <SelectItem v-for="c in categories.filter((x) => x?.uid)" :key="c.uid" :value="c.uid">
                         {{ c.name }}
                       </SelectItem>
                     </SelectContent>

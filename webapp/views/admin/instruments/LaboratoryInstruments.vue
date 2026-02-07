@@ -123,27 +123,27 @@ import PageHeading from "@/components/common/PageHeading.vue"
       <Button @click="FormManager(true)"> Add Laboratory Instrument</Button>
     </PageHeading>
 
-    <div class="border border-border bg-background rounded-lg shadow-sm p-6 overflow-hidden">
+    <div class="border border-border bg-card rounded-lg shadow-md">
       <div class="relative w-full overflow-auto">
         <Table class="w-full caption-bottom text-sm">
           <TableHeader class="[&_tr]:border-b">
             <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Instrument</TableHead>
-              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Lab Name/ID</TableHead>
-              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Serial Number</TableHead>
-              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Date Commissioned</TableHead>
-              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Date Decommissioned</TableHead>
-              <TableHead class="px-4 py-2 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Instrument</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Lab Name/ID</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Serial Number</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Date Commissioned</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Date Decommissioned</TableHead>
+              <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody class="[&_tr:last-child]:border-0">
             <TableRow v-for="inst in laboratoryInstruments" :key="inst?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-              <TableCell class="px-4 py-2 align-middle">{{ inst?.instrument?.name }}</TableCell>
-              <TableCell class="px-4 py-2 align-middle">{{ inst?.labName }}</TableCell>
-              <TableCell class="px-4 py-2 align-middle text-primary">{{ inst?.serialNumber }}</TableCell>
-              <TableCell class="px-4 py-2 align-middle text-primary">{{ inst?.dateCommissioned }}</TableCell>
-              <TableCell class="px-4 py-2 align-middle text-primary">{{ inst?.dateDecommissioned }}</TableCell>
-              <TableCell class="px-4 py-2 align-middle text-right">
+              <TableCell class="px-4 py-3 align-middle text-sm">{{ inst?.instrument?.name }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm">{{ inst?.labName }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-primary">{{ inst?.serialNumber }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-primary">{{ inst?.dateCommissioned }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-primary">{{ inst?.dateDecommissioned }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-right">
                 <Button variant="outline" size="sm" @click="FormManager(false, inst)">
                   Edit
                 </Button>
@@ -183,7 +183,6 @@ import PageHeading from "@/components/common/PageHeading.vue"
                     <SelectValue placeholder="Select Instrument" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Select Instrument</SelectItem>
                     <SelectItem v-for="instrument in instruments" :key="instrument?.uid" :value="instrument.uid">
                       {{ instrument?.name }}
                     </SelectItem>

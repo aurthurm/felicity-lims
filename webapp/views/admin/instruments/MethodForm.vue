@@ -17,6 +17,7 @@
     FormLabel,
     FormMessage,
   } from "@/components/ui/form";
+  import { Label } from "@/components/ui/label";
   const VueMultiselect = defineAsyncComponent(
     () => import('vue-multiselect')
   )
@@ -162,36 +163,32 @@
       </div>
 
       <div class="space-y-4">
-        <FormItem>
-          <FormLabel>Analyses</FormLabel>
-          <FormControl>
-            <VueMultiselect
-              v-model="selectedAnalyses"
-              :options="analyses"
-              :multiple="true"
-              :searchable="true"
-              label="name"
-              track-by="uid"
-              :disabled="analysis?.uid != undefined"
-              class="multiselect-blue"
-            />
-          </FormControl>
-        </FormItem>
+        <div class="grid gap-2">
+          <Label>Analyses</Label>
+          <VueMultiselect
+            v-model="selectedAnalyses"
+            :options="analyses"
+            :multiple="true"
+            :searchable="true"
+            label="name"
+            track-by="uid"
+            :disabled="analysis?.uid != undefined"
+            class="multiselect-blue"
+          />
+        </div>
 
-        <FormItem>
-          <FormLabel>Instruments</FormLabel>
-          <FormControl>
-            <VueMultiselect
-              v-model="selectedIntsruments"
-              :options="instruments"
-              :multiple="true"
-              :searchable="true"
-              label="name"
-              track-by="uid"
-              class="multiselect-blue"
-            />
-          </FormControl>
-        </FormItem>
+        <div class="grid gap-2">
+          <Label>Instruments</Label>
+          <VueMultiselect
+            v-model="selectedIntsruments"
+            :options="instruments"
+            :multiple="true"
+            :searchable="true"
+            label="name"
+            track-by="uid"
+            class="multiselect-blue"
+          />
+        </div>
 
         <FormField name="description" v-slot="{ componentField }">
           <FormItem>

@@ -76,13 +76,12 @@ const selectedAnalyses = computed({
   get: () => {
     if (!localData.value.analyses || !props.allAnalyses) return [];
 
-    // localData.analyses is array of UIDs, convert to array of objects
-    return props.allAnalyses.filter((a) =>
-      localData.value.analyses.includes(a.uid)
-    );
+    // localData.analyses may be array of UIDs or array of { uid, name }
+    const uids = localData.value.analyses.map((a: string | { uid: string }) => typeof a === 'string' ? a : a.uid);
+    return props.allAnalyses.filter((a) => uids.includes(a.uid));
   },
   set: (selected: Analysis[]) => {
-    localData.value.analyses = selected.map((a) => a.uid);
+    localData.value.analyses = selected.map((a) => ({ uid: a.uid, name: a.name }));
     handleUpdate();
   },
 });
@@ -99,6 +98,7 @@ const selectedAnalysis = computed({
   },
   set: (selected: Analysis | null) => {
     localData.value.analysis_uid = selected?.uid || null;
+    localData.value.analysis = selected ? { uid: selected.uid, name: selected.name } : undefined;
     handleUpdate();
   },
 });

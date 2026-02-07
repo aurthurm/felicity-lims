@@ -32,11 +32,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import PageHeading from "@/components/common/PageHeading.vue"
 const VueMultiselect = defineAsyncComponent(
@@ -53,7 +54,11 @@ const setupStore = useSetupStore();
 const { withClientMutation } = useApiUtil();
 
 let currentTab = ref("analyses-services");
-const tabs = ["analyses-services", "mappings", "billing"];
+const tabList = [
+  { id: "analyses-services", label: "Analyses services" },
+  { id: "mappings", label: "Mappings" },
+  { id: "billing", label: "Billing" },
+];
 
 let showModal = ref(false);
 let formTitle = ref("");
@@ -343,65 +348,86 @@ const saveMappingForm = handleMappingSubmit((values) => {
           </div>
 
           <!-- Tabs -->
-          <nav class="border-b border-border">
-            <div class="flex space-x-2">
-              <button
-                v-for="tab in tabs"
-                :key="tab"
-                :class="['px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
-                  currentTab === tab
-                    ? 'border-b-2 border-primary text-foreground'
-                    : 'text-muted-foreground hover:text-foreground'
-                ]"
-                @click="currentTab = tab"
+          <Tabs v-model="currentTab" class="flex flex-col">
+            <TabsList class="w-full justify-start rounded-lg">
+              <TabsTrigger
+                v-for="tab in tabList"
+                :key="tab.id"
+                :value="tab.id"
               >
-                {{ tab }}
-              </button>
-            </div>
-          </nav>
+                {{ tab.label }}
+              </TabsTrigger>
+            </TabsList>
 
-          <!-- Content -->
-          <div class="rounded-lg border border-border bg-card">
-            <div class="p-6">
-              <!-- Analyses Services Tab -->
-              <div v-if="currentTab === 'analyses-services'" class="space-y-6">
-                <div class="grid grid-cols-3 gap-6">
-                  <div v-for="category in analysesServices" :key="category[0]" class="space-y-4">
-                    <Accordion type="single" collapsible>
-                      <AccordionItem :value="String(category[0])">
-                        <AccordionTrigger>
-                          <span class="text-sm font-medium">{{ category[0] }}</span>
-                        </AccordionTrigger>
-                        <AccordionContent>
-                        <ul class="space-y-2 pt-2">
-                          <li v-for="service in category[1]" :key="service?.uid" class="flex items-start space-x-2">
-                            <div class="flex items-center h-5">
-                            <Checkbox
-                              :id="`toggle-${service?.uid}`"
-                              :checked="service.checked"
-                              @update:checked="(value) => service.checked = value"
-                            />
-                            </div>
-                            <label :for="`toggle-${service?.uid}`" class="text-sm text-foreground">
-                              {{ service?.name }}
-                            </label>
-                          </li>
-                        </ul>
-                        </AccordionContent>
-                      </AccordionItem>
-                    </Accordion>
+            <!-- Analyses Services Tab -->
+            <TabsContent value="analyses-services" class="flex-1 outline-none mt-4">
+              <div class="space-y-6">
+                <div class="rounded-lg border border-border bg-card">
+                  <div class="p-6">
+                    <div class="space-y-4">
+                      <div class="flex items-center justify-between">
+                        <h3 class="text-sm font-medium text-foreground">Analyses</h3>
+                        <Button size="sm" @click="updateProfile()">
+                          Update Profile
+                        </Button>
+                      </div>
+                      <div class="max-h-[420px] overflow-y-auto space-y-1 pr-1">
+                        <Collapsible
+                          v-for="category in analysesServices"
+                          :key="String(category[0])"
+                          class="rounded-md border border-border"
+                        >
+                          <CollapsibleTrigger
+                            class="flex w-full items-center justify-between px-3 py-2 text-left text-sm font-medium hover:bg-accent/50 rounded-md transition-colors [&[data-state=open]>svg]:rotate-180"
+                          >
+                            {{ category[0] }}
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              class="shrink-0 transition-transform"
+                            >
+                              <path d="m6 9 6 6 6-6" />
+                            </svg>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent>
+                            <ul class="px-3 pb-2 pt-0 grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-1.5">
+                              <li
+                                v-for="service in category[1]"
+                                :key="service?.uid"
+                                class="flex items-center gap-2 rounded-sm py-1.5 pr-2 pl-2 text-sm outline-none cursor-default select-none hover:bg-accent/50 min-w-0"
+                              >
+                                <Switch
+                                  :id="`toggle-${service?.uid}`"
+                                  :checked="service.checked"
+                                  @update:checked="(value) => service.checked = value"
+                                />
+                                <label
+                                  :for="`toggle-${service?.uid}`"
+                                  class="flex-1 cursor-pointer text-muted-foreground hover:text-foreground"
+                                >
+                                  {{ service?.name }}
+                                </label>
+                              </li>
+                            </ul>
+                          </CollapsibleContent>
+                        </Collapsible>
+                      </div>
+                    </div>
                   </div>
                 </div>
-
-                <div class="flex justify-end pt-4">
-                  <Button @click="updateProfile()">
-                    Update Profile
-                  </Button>
-                </div>
               </div>
+            </TabsContent>
 
-              <!-- Mappings Tab -->
-              <div v-if="currentTab === 'mappings'" class="space-y-6">
+            <!-- Mappings Tab -->
+            <TabsContent value="mappings" class="flex-1 outline-none mt-4">
+              <div class="space-y-6">
                 <div class="flex justify-between items-center">
                   <h3 class="text-lg font-medium text-foreground">Concept Mappings</h3>
                   <Button @click="MappingFormManager(true)">
@@ -409,48 +435,51 @@ const saveMappingForm = handleMappingSubmit((values) => {
                   </Button>
                 </div>
 
-                <div class="overflow-hidden rounded-lg border border-border">
-                  <Table class="w-full">
-                    <TableHeader>
-                      <TableRow class="border-b border-border bg-muted/50">
-                        <TableHead class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">Name</TableHead>
-                        <TableHead class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">Code</TableHead>
-                        <TableHead class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">Standard</TableHead>
-                        <TableHead class="px-6 py-3 text-right text-sm font-medium text-muted-foreground">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow v-for="mapping in mappings" :key="mapping.uid" class="hover:bg-accent/50 transition-colors duration-200">
-                        <TableCell class="px-6 py-4 whitespace-nowrap border-b border-border">
-                          <div class="font-medium text-foreground">{{ mapping?.name }}</div>
-                          <div class="text-sm text-muted-foreground" v-if="mapping?.description">{{ mapping?.description }}</div>
-                        </TableCell>
-                        <TableCell class="px-6 py-4 whitespace-nowrap border-b border-border text-sm text-foreground">
-                          {{ mapping?.code }}
-                        </TableCell>
-                        <TableCell class="px-6 py-4 whitespace-nowrap border-b border-border text-sm text-foreground">
-                          {{ mapping?.codingStandard?.name }}
-                        </TableCell>
-                        <TableCell class="px-6 py-4 whitespace-nowrap text-right border-b border-border">
-                          <button 
-                            @click="MappingFormManager(false, mapping)"
-                            class="inline-flex items-center px-3 py-1.5 border border-input bg-background text-foreground text-sm font-medium transition-colors duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring hover:bg-accent hover:text-accent-foreground"
-                          >
-                            Edit
-                          </button>
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </div>
+                <div class="relative w-full overflow-auto">
+                    <Table class="w-full caption-bottom text-sm">
+                      <TableHeader class="[&_tr]:border-b">
+                        <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                          <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Name</TableHead>
+                          <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Code</TableHead>
+                          <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Standard</TableHead>
+                          <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody class="[&_tr:last-child]:border-0">
+                        <TableRow v-for="mapping in mappings" :key="mapping.uid" class="border-b border-border/50 transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                          <TableCell class="px-4 py-3 align-middle text-sm">
+                            <div class="font-medium text-foreground">{{ mapping?.name }}</div>
+                            <div class="text-sm text-muted-foreground" v-if="mapping?.description">{{ mapping?.description }}</div>
+                          </TableCell>
+                          <TableCell class="px-4 py-3 align-middle text-sm text-foreground">{{ mapping?.code }}</TableCell>
+                          <TableCell class="px-4 py-3 align-middle text-sm text-foreground">{{ mapping?.codingStandard?.name }}</TableCell>
+                          <TableCell class="px-4 py-3 align-middle text-right">
+                            <Button variant="outline" size="sm" @click="MappingFormManager(false, mapping)">
+                              Edit
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                        <TableEmpty v-if="!mappings?.length" :colspan="4">
+                          <Empty class="border-0 bg-transparent p-0">
+                            <EmptyContent>
+                              <EmptyHeader>
+                                <EmptyTitle>No mappings found</EmptyTitle>
+                                <EmptyDescription>Add a concept mapping to get started.</EmptyDescription>
+                              </EmptyHeader>
+                            </EmptyContent>
+                          </Empty>
+                        </TableEmpty>
+                      </TableBody>
+                    </Table>
+                  </div>
               </div>
+            </TabsContent>
 
-              <!-- Billing Tab -->
-              <div v-if="currentTab === 'billing'" class="space-y-6">
-                <Billing :target="'profile'" :targetUid="analysisProfile?.uid" />
-              </div>
-            </div>
-          </div>
+            <!-- Billing Tab -->
+            <TabsContent value="billing" class="flex-1 outline-none mt-4">
+              <Billing :target="'profile'" :targetUid="analysisProfile?.uid" />
+            </TabsContent>
+          </Tabs>
         </div>
       </section>
 

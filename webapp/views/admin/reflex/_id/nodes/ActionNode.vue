@@ -44,8 +44,8 @@ const nodeColors = computed(() => {
   return {
     border: 'border-accent/50',
     bg: 'bg-card',
-    text: 'text-accent',
-    badge: 'bg-accent/15 text-accent',
+    text: 'text-accent-foreground',
+    badge: 'bg-accent/15 text-accent-foreground',
     handle: '!bg-accent',
     ring: 'ring-ring',
     hover: 'hover:ring-ring',

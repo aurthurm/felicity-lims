@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { computed, ref, toRefs, watch, defineAsyncComponent } from 'vue';
+  import { computed, ref, toRefs, watch } from 'vue';
   import { useForm } from 'vee-validate';
   import * as yup from 'yup';
   import { AddAnalysisSpecificationDocument, AddAnalysisSpecificationMutation, AddAnalysisSpecificationMutationVariables,
@@ -23,7 +23,12 @@
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select";
-import PageHeading from "@/components/common/PageHeading.vue"
+  import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+  import Modal from '@/components/ui/Modal.vue';
+  import PageHeading from "@/components/common/PageHeading.vue";
+
+  const SELECT_NONE = '__none__';
+
 defineOptions({ name: 'SpecificationsView' })
   const analysisStore = useAnalysisStore()
   const  setupStore = useSetupStore()
@@ -63,7 +68,7 @@ defineOptions({ name: 'SpecificationsView' })
     ageMax: yup.number().nullable(),
   });
 
-  const { handleSubmit, resetForm, setValues } = useForm({
+  const { handleSubmit, resetForm, setValues, setFieldValue } = useForm({
     validationSchema: specificationSchema,
     initialValues: {
       minReport: '',
@@ -86,7 +91,11 @@ defineOptions({ name: 'SpecificationsView' })
   })
 
   setupStore.fetchMethods();
-  const methods = computed<MethodType[]>(() => setupStore.getMethods)
+  const methods = computed<MethodType[]>(() => setupStore.getMethods);
+
+  function onMethodChange(v: string) {
+    setFieldValue('methodUid', v === SELECT_NONE ? '' : v);
+  }
 
   const toNumberOrNull = (value: number | string | null | undefined): number | null => {
     if (value === '' || value === null || value === undefined) return null;
@@ -182,65 +191,65 @@ defineOptions({ name: 'SpecificationsView' })
       <Button @click="FormManager(true)">Add Specification</Button>
     </PageHeading>
     
-    <div class="overflow-x-auto mt-4">
-        <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card text-card-foreground rounded-lg border border-border">
-        <Table class="min-w-full">
-            <TableHeader>
-            <TableRow>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-destructive">Min Report</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-warning">Min Warn</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Min</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Max</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-warning">Max Warn</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-destructive">Max Report</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Warn Texts</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Text Report</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Method</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Gender</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Age Min</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-foreground">Age Max</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border"></TableHead>
+    <div class="mt-4 border border-border bg-card rounded-lg shadow-md">
+        <div class="relative w-full overflow-auto">
+        <Table class="w-full caption-bottom text-sm">
+            <TableHeader class="[&_tr]:border-b">
+            <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-destructive">Min Report</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-warning">Min Warn</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Min</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Max</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-warning">Max Warn</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-destructive">Max Report</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Warn Texts</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Text Report</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Method</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Gender</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Age Min</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Age Max</TableHead>
+                <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
             </TableRow>
             </TableHeader>
-            <TableBody class="bg-card">
-            <TableRow v-for="specification in analysis?.specifications" :key="specification?.uid" class="hover:bg-accent/50">
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
+            <TableBody class="[&_tr:last-child]:border-0">
+            <TableRow v-for="specification in analysis?.specifications" :key="specification?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm">
                   <div class="text-sm text-destructive">{{ specification.minReport }}</div>
                 </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm">
                   <div class="text-sm text-warning">{{ specification.minWarn }}</div>
                 </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm">
                   <div class="text-sm text-foreground">{{ specification.min }}</div>
                 </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm">
                   <div class="text-sm text-foreground">{{ specification.max }}</div>
                 </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm">
                   <div class="text-sm text-warning">{{ specification.maxWarn }}</div>
                 </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm">
                   <div class="text-sm text-destructive">{{ specification.maxReport }}</div>
                 </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm">
                   <div class="text-sm text-foreground">{{ specification.warnValues }}</div>
                 </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm">
                   <div class="text-sm text-foreground">{{ specification.warnReport }}</div>
                 </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm">
                   <div class="text-sm text-foreground">{{ methodName(specification?.methodUid) || '' }}</div>
                 </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm">
                   <div class="text-sm text-foreground">{{ specification.gender }}</div>
                 </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm">
                   <div class="text-sm text-foreground">{{ specification.ageMin }}</div>
                 </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm">
                   <div class="text-sm text-foreground">{{ specification.ageMax }}</div>
                 </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
+                <TableCell class="px-4 py-3 align-middle text-right">
                     <Button variant="outline" size="sm" @click="FormManager(false, specification)">Edit</Button>
                 </TableCell>
             </TableRow>
@@ -250,7 +259,7 @@ defineOptions({ name: 'SpecificationsView' })
     </div>
 
   <!-- Detection Limit Form Modal -->
-  <modal v-if="showModal" @close="showModal = false" :contentWidth="'w-3/4'">
+  <Modal v-if="showModal" @close="showModal = false" :contentWidth="'w-3/4'">
     <template v-slot:header>
       <h3 class="text-lg font-bold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -351,12 +360,15 @@ defineOptions({ name: 'SpecificationsView' })
               <FormItem>
                 <FormLabel>Method</FormLabel>
                 <FormControl>
-                  <Select v-bind="componentField">
+                  <Select
+                    :model-value="componentField.modelValue || SELECT_NONE"
+                    @update:model-value="onMethodChange"
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select Method" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Select Method</SelectItem>
+                      <SelectItem :value="SELECT_NONE">Select Method</SelectItem>
                       <SelectItem v-for="method in methods" :key="method?.uid" :value="method.uid">
                         {{ method?.name }}
                       </SelectItem>
@@ -410,6 +422,6 @@ defineOptions({ name: 'SpecificationsView' })
         </div>
       </form>
     </template>
-  </modal>
+  </Modal>
 
 </template>

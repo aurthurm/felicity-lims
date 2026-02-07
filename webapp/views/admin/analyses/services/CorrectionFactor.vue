@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { computed, ref, toRefs, watch, defineAsyncComponent } from 'vue';
+  import { computed, ref, toRefs, watch } from 'vue';
   import { useForm } from 'vee-validate';
   import * as yup from 'yup';
   import { AddAnalysisCorrectionFactorDocument, AddAnalysisCorrectionFactorMutation, AddAnalysisCorrectionFactorMutationVariables,
@@ -23,7 +23,12 @@
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select";
-import PageHeading from "@/components/common/PageHeading.vue"
+  import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+  import Modal from '@/components/ui/Modal.vue';
+  import PageHeading from "@/components/common/PageHeading.vue";
+
+  const SELECT_NONE = '__none__';
+
   const analysisStore = useAnalysisStore()
   const  setupStore = useSetupStore()
   const { withClientMutation } = useApiUtil()
@@ -56,7 +61,7 @@ import PageHeading from "@/components/common/PageHeading.vue"
       .required('Factor is required'),
   });
 
-  const { handleSubmit, resetForm, setValues } = useForm({
+  const { handleSubmit, resetForm, setValues, setFieldValue } = useForm({
     validationSchema: correctionSchema,
     initialValues: {
       instrumentUid: '',
@@ -72,8 +77,15 @@ import PageHeading from "@/components/common/PageHeading.vue"
   setupStore.fetchInstruments();
   const instruments = computed<InstrumentType[]>(() => setupStore.getInstruments)
 
-  setupStore.fetchMethods()
-  const methods = computed<MethodType[]>(() => setupStore.getMethods)
+  setupStore.fetchMethods();
+  const methods = computed<MethodType[]>(() => setupStore.getMethods);
+
+  function onInstrumentChange(v: string) {
+    setFieldValue('instrumentUid', v === SELECT_NONE ? '' : v);
+  }
+  function onMethodChange(v: string) {
+    setFieldValue('methodUid', v === SELECT_NONE ? '' : v);
+  }
 
   function addAnalysisCorrectionFactor(payload: { instrumentUid: string; methodUid: string; factor: number; analysisUid: string }): void {
       withClientMutation<AddAnalysisCorrectionFactorMutation, AddAnalysisCorrectionFactorMutationVariables>(AddAnalysisCorrectionFactorDocument, { payload }, "createAnalysisCorrectionFactor")
@@ -140,29 +152,23 @@ import PageHeading from "@/components/common/PageHeading.vue"
       <Button @click="FormManager(true)">Add Correction Factor</Button>
     </PageHeading>
     
-    <div class="overflow-x-auto mt-4">
-        <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card text-card-foreground rounded-lg border border-border">
-        <Table class="min-w-full">
-            <TableHeader>
-            <TableRow>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Instrument</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Method</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Factor</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border"></TableHead>
+    <div class="mt-4 border border-border bg-card rounded-lg shadow-md">
+        <div class="relative w-full overflow-auto">
+        <Table class="w-full caption-bottom text-sm">
+            <TableHeader class="[&_tr]:border-b">
+            <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Instrument</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Method</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Factor</TableHead>
+                <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
             </TableRow>
             </TableHeader>
-            <TableBody class="bg-card">
-            <TableRow v-for="cfactor in analysis?.correctionFactors" :key="cfactor?.uid" class="hover:bg-accent/50">
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
-                  <div class="text-sm text-foreground">{{ instrumentName(cfactor?.instrumentUid) }}</div>
-                </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
-                  <div class="text-sm text-foreground">{{ methodName(cfactor?.methodUid) }}</div>
-                </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
-                  <div class="text-sm text-foreground">{{ cfactor.factor }}</div>
-                </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
+            <TableBody class="[&_tr:last-child]:border-0">
+            <TableRow v-for="cfactor in analysis?.correctionFactors" :key="cfactor?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ instrumentName(cfactor?.instrumentUid) }}</TableCell>
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ methodName(cfactor?.methodUid) }}</TableCell>
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ cfactor.factor }}</TableCell>
+                <TableCell class="px-4 py-3 align-middle text-right">
                     <Button variant="outline" size="sm" @click="FormManager(false, cfactor)">
                       Edit
                     </Button>
@@ -174,7 +180,7 @@ import PageHeading from "@/components/common/PageHeading.vue"
     </div>
 
   <!-- Correction Factor Form Modal -->
-  <modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/4'">
+  <Modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/4'">
     <template v-slot:header>
       <h3 class="text-lg font-bold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -187,12 +193,15 @@ import PageHeading from "@/components/common/PageHeading.vue"
               <FormItem>
                 <FormLabel>Instrument</FormLabel>
                 <FormControl>
-                  <Select v-bind="componentField">
+                  <Select
+                    :model-value="componentField.modelValue || SELECT_NONE"
+                    @update:model-value="onInstrumentChange"
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select Instrument" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Select Instrument</SelectItem>
+                      <SelectItem :value="SELECT_NONE">Select Instrument</SelectItem>
                       <SelectItem v-for="instrument in instruments" :key="instrument?.uid" :value="instrument.uid">
                         {{ instrument?.name }}
                       </SelectItem>
@@ -206,12 +215,15 @@ import PageHeading from "@/components/common/PageHeading.vue"
               <FormItem>
                 <FormLabel>Method</FormLabel>
                 <FormControl>
-                  <Select v-bind="componentField">
+                  <Select
+                    :model-value="componentField.modelValue || SELECT_NONE"
+                    @update:model-value="onMethodChange"
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select Method" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Select Method</SelectItem>
+                      <SelectItem :value="SELECT_NONE">Select Method</SelectItem>
                       <SelectItem v-for="method in methods" :key="method?.uid" :value="method.uid">
                         {{ method?.name }}
                       </SelectItem>
@@ -238,6 +250,6 @@ import PageHeading from "@/components/common/PageHeading.vue"
         </div>
       </form>
     </template>
-  </modal>
+  </Modal>
 
 </template>

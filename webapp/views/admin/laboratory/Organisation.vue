@@ -35,6 +35,7 @@ const TabsAside = defineAsyncComponent(
 const { toastSuccess } = useNotifyToast();
 const userStore = useUserStore();
 const setupStore = useSetupStore();
+const EMPTY_SELECT_VALUE = "__none__";
 
 setupStore.fetchOrganization();
 const laboratory = computed(() => setupStore.getOrganization);
@@ -54,25 +55,6 @@ const orgSchema = object({
   qualityStatement: string().nullable(),
 });
 
-const {
-  handleSubmit: handleOrgSubmit,
-  setValues: setOrgValues,
-} = useForm({
-  validationSchema: orgSchema,
-  initialValues: {
-    name: "",
-    tagLine: "",
-    email: "",
-    emailCc: "",
-    mobilePhone: "",
-    businessPhone: "",
-    address: "",
-    banking: "",
-    qualityStatement: "",
-  },
-});
-
-
 const settingSchema = object({
   passwordLifetime: number().min(0, "Must be 0 or greater").nullable(),
   inactivityLogOut: number().min(0, "Must be 0 or greater").nullable(),
@@ -85,32 +67,44 @@ const settingSchema = object({
   paymentTermsDays: number().min(0, "Must be 0 or greater").nullable(),
 });
 
-const {
-  handleSubmit: handleSettingsSubmit,
-  setValues: setSettingValues,
-} = useForm({
-  validationSchema: settingSchema,
-  initialValues: {
-    passwordLifetime: null,
-    inactivityLogOut: null,
-    allowBilling: false,
-    allowAutoBilling: false,
-    processBilledOnly: false,
-    minPaymentStatus: "",
-    minPartialPerentage: null,
-    currency: "",
-    paymentTermsDays: null,
-  },
+const defaultOrgValues = {
+  name: "",
+  tagLine: "",
+  email: "",
+  emailCc: "",
+  mobilePhone: "",
+  businessPhone: "",
+  address: "",
+  banking: "",
+  qualityStatement: "",
+};
+
+const defaultSettingValues = {
+  passwordLifetime: null as number | null,
+  inactivityLogOut: null as number | null,
+  allowBilling: false,
+  allowAutoBilling: false,
+  processBilledOnly: false,
+  minPaymentStatus: EMPTY_SELECT_VALUE,
+  minPartialPerentage: null as number | null,
+  currency: "",
+  paymentTermsDays: null as number | null,
+};
+
+const formSchema = orgSchema.concat(settingSchema);
+const { setValues, values } = useForm({
+  validationSchema: formSchema,
+  initialValues: { ...defaultOrgValues, ...defaultSettingValues },
 });
 
 
 watch(
-  () => laboratory.value?.uid,
-  (anal, prev) => {
+  () => [laboratory.value?.uid, laboratory.value?.settings] as const,
+  () => {
     const currentOrg = laboratory.value as OrganizationType | undefined;
     orgUid.value = currentOrg?.uid ?? null;
     settingUid.value = currentOrg?.settings?.uid ?? null;
-    setOrgValues({
+    setValues({
       name: currentOrg?.name ?? "",
       tagLine: currentOrg?.tagLine ?? "",
       email: currentOrg?.email ?? "",
@@ -120,56 +114,78 @@ watch(
       address: currentOrg?.address ?? "",
       banking: currentOrg?.banking ?? "",
       qualityStatement: currentOrg?.qualityStatement ?? "",
-    });
-    setSettingValues({
       passwordLifetime: currentOrg?.settings?.passwordLifetime ?? null,
       inactivityLogOut: currentOrg?.settings?.inactivityLogOut ?? null,
       allowBilling: currentOrg?.settings?.allowBilling ?? false,
       allowAutoBilling: currentOrg?.settings?.allowAutoBilling ?? false,
       processBilledOnly: currentOrg?.settings?.processBilledOnly ?? false,
-      minPaymentStatus: currentOrg?.settings?.minPaymentStatus ?? "",
+      minPaymentStatus: currentOrg?.settings?.minPaymentStatus ?? EMPTY_SELECT_VALUE,
       minPartialPerentage: currentOrg?.settings?.minPartialPerentage ?? null,
       currency: currentOrg?.settings?.currency ?? "",
       paymentTermsDays: currentOrg?.settings?.paymentTermsDays ?? null,
-    });
-  }
+    }, false);
+  },
+  { immediate: true },
 );
 
 const { withClientMutation } = useApiUtil();
 let processing = ref(false);
-const saveOrganizationForm = handleOrgSubmit((values) => {
+async function onOrganizationSubmit(formValues: Record<string, unknown>) {
   processing.value = true;
   if (!orgUid.value) {
     processing.value = false;
     return;
   }
-  const payload = {
-    ...values,
-  } as OrganizationType;
-  withClientMutation<EditOrganizationMutation, EditOrganizationMutationVariables>(EditOrganizationDocument, { uid: orgUid.value, payload }, "updateOrganization").then((result) => {
+  try {
+    const payload = {
+      name: formValues.name,
+      tagLine: formValues.tagLine,
+      email: formValues.email,
+      emailCc: formValues.emailCc,
+      mobilePhone: formValues.mobilePhone,
+      businessPhone: formValues.businessPhone,
+      address: formValues.address,
+      banking: formValues.banking,
+      qualityStatement: formValues.qualityStatement,
+    } as OrganizationType;
+    const result = await withClientMutation<EditOrganizationMutation, EditOrganizationMutationVariables>(EditOrganizationDocument, { uid: orgUid.value, payload }, "updateOrganization");
     setupStore.updateOrganization(result);
-    processing.value = false;
     toastSuccess("Organization information updated");
-  });
-});
+  } finally {
+    processing.value = false;
+  }
+}
 
 
 
-const saveSettingForm = handleSettingsSubmit((values) => {
+async function onSettingsSubmit(formValues: Record<string, unknown>) {
   processing.value = true;
   if (!settingUid.value) {
     processing.value = false;
     return;
   }
-  const payload = {
-    ...values,
-  } as OrganizationSettingType;
-  withClientMutation<EditOrganizationSettingMutation, EditOrganizationSettingMutationVariables>(EditOrganizationSettingDocument, { uid: settingUid.value, payload }, "updateOrganizationSetting").then((result) => {
+  try {
+    const payload = {
+      passwordLifetime: formValues.passwordLifetime,
+      inactivityLogOut: formValues.inactivityLogOut,
+      allowBilling: formValues.allowBilling,
+      allowAutoBilling: formValues.allowAutoBilling,
+      processBilledOnly: formValues.processBilledOnly,
+      minPaymentStatus: formValues.minPaymentStatus === EMPTY_SELECT_VALUE ? null : formValues.minPaymentStatus,
+      minPartialPerentage: formValues.minPartialPerentage,
+      currency: formValues.currency,
+      paymentTermsDays: formValues.paymentTermsDays,
+    } as OrganizationSettingType;
+    const result = await withClientMutation<EditOrganizationSettingMutation, EditOrganizationSettingMutationVariables>(EditOrganizationSettingDocument, { uid: settingUid.value, payload }, "updateOrganizationSetting");
     setupStore.updateOrganizationSetting(result);
-    processing.value = false;
     toastSuccess("Organization settings updated");
-  });
-});
+  } finally {
+    processing.value = false;
+  }
+}
+
+const saveOrganizationForm = () => onOrganizationSubmit(values as Record<string, unknown>);
+const saveSettingForm = () => onSettingsSubmit(values as Record<string, unknown>);
 
 userStore.fetchUsers({});
 const users = computed(() => userStore.getUsers);
@@ -479,7 +495,7 @@ const uploadLogo = async () => {
                     <SelectValue placeholder="Select Payment Status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Select Payment Status</SelectItem>
+                    <SelectItem :value="EMPTY_SELECT_VALUE">Select Payment Status</SelectItem>
                     <SelectItem v-for="pstatus in [PaymentStatus.Unpaid, PaymentStatus.Partial, PaymentStatus.Paid]" :key="pstatus" :value="pstatus">
                       {{ pstatus }}
                     </SelectItem>

@@ -43,33 +43,33 @@ function handlePermissionToggle(group: GroupType, perm: PermissionType, value: b
 
 <template>
   <div class="space-y-6">
-    <div class="bg-background rounded-lg shadow-sm overflow-hidden">
-      <div class="overflow-y-auto max-h-[700px] scrollbar-thin scrollbar-thumb-border scrollbar-track-muted">
-        <Table class="w-full table-fixed">
-          <TableHeader>
-            <TableRow>
+    <div class="border border-border bg-card rounded-lg shadow-md overflow-hidden">
+      <div class="relative w-full overflow-y-auto max-h-[700px] scrollbar-thin scrollbar-thumb-border scrollbar-track-muted">
+        <Table class="w-full table-fixed caption-bottom text-sm">
+          <TableHeader class="[&_tr]:border-b">
+            <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
               <TableHead
-                class="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-3 border-b border-border text-left text-xs font-medium text-muted-foreground uppercase tracking-wider w-[200px] min-w-[200px]"
+                class="sticky top-0 z-10 h-12 px-4 bg-card/95 backdrop-blur supports-backdrop-filter:bg-card/60 text-left align-middle font-medium text-muted-foreground w-[200px] min-w-[200px]"
               >
                 Permissions
               </TableHead>
               <TableHead
                 v-for="group in groups"
                 :key="group.uid"
-                class="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 py-3 border-b border-border text-right text-xs font-medium text-muted-foreground uppercase tracking-wider"
+                class="sticky top-0 z-10 h-12 px-4 bg-card/95 backdrop-blur supports-backdrop-filter:bg-card/60 text-right align-middle font-medium text-muted-foreground"
               >
                 <span class="block truncate" :title="group.name">{{ group.name }}</span>
               </TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody class="divide-y divide-border">
+          <TableBody class="[&_tr:last-child]:border-0">
             <template v-for="category in permissions" :key="category[0]">
-              <TableRow class="bg-muted/50">
-                <TableCell class="px-4 py-3 font-medium text-sm text-foreground w-[200px] min-w-[200px]">{{ category[0] }}</TableCell>
-                <TableCell class="px-4 py-3 text-muted-foreground" v-for="group in groups" :key="group.uid" />
+              <TableRow class="border-b transition-colors bg-muted/50">
+                <TableCell class="px-4 py-3 align-middle font-medium text-sm text-foreground w-[200px] min-w-[200px]">{{ category[0] }}</TableCell>
+                <TableCell class="px-4 py-3 align-middle text-muted-foreground" v-for="group in groups" :key="group.uid" />
               </TableRow>
-              <TableRow v-for="perm in category[1]" :key="perm.uid">
-                <TableCell class="px-4 py-2 text-sm text-muted-foreground w-[200px] min-w-[200px]">
+              <TableRow v-for="perm in category[1]" :key="perm.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                <TableCell class="px-4 py-2 align-middle text-sm text-muted-foreground w-[200px] min-w-[200px]">
                   {{ perm.action }}
                 </TableCell>
                 <TableCell v-for="group in groups" :key="group.uid" class="px-4 py-2 text-right align-middle">

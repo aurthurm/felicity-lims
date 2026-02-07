@@ -190,29 +190,29 @@ function filterOrganisms() {
     <Button @click="FormManager(true)">Add Panel</Button>      
   </PageHeading>
 
-  <div class="overflow-x-auto">
-    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard rounded-lg">
-      <Table class="min-w-full divide-y divide-border">
-        <TableHeader>
-          <TableRow>
-            <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</TableHead>
-            <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Description</TableHead>
-            <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Organisms</TableHead>
-            <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Antibiotics</TableHead>
-            <TableHead class="px-3 py-3.5"></TableHead>
+  <div class="border border-border bg-card rounded-lg shadow-md">
+    <div class="relative w-full overflow-auto">
+      <Table class="w-full caption-bottom text-sm">
+        <TableHeader class="[&_tr]:border-b">
+          <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+            <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Name</TableHead>
+            <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Description</TableHead>
+            <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Organisms</TableHead>
+            <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Antibiotics</TableHead>
+            <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody class="bg-background divide-y divide-border">
-          <TableRow v-for="panel in panels" :key="panel?.uid">
-            <TableCell class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">{{ panel?.name }}</TableCell>
-            <TableCell class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">{{ panel?.description }}</TableCell>
-            <TableCell class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">
+        <TableBody class="[&_tr:last-child]:border-0">
+          <TableRow v-for="panel in panels" :key="panel?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+            <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ panel?.name }}</TableCell>
+            <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ panel?.description }}</TableCell>
+            <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">
               {{ panel?.organisms?.map(org => org.name).join(', ') }}
             </TableCell>
-            <TableCell class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">
+            <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">
               {{ panel?.antibiotics?.map(abx => abx.name).join(', ') }}
             </TableCell>
-            <TableCell class="px-3 py-3.5 whitespace-nowrap text-right text-sm">
+            <TableCell class="px-4 py-3 align-middle text-right text-sm">
               <button @click="FormManager(false, panel)"
                       class="px-3 py-1.5 bg-primary text-primary-foreground rounded-sm transition duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
                 Edit
@@ -235,14 +235,14 @@ function filterOrganisms() {
   </div>
 
   <!-- Panel Form Modal -->
-  <Modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
+  <Modal v-if="showModal" @close="showModal = false" contentWidth="max-w-4xl w-[90vw]">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
       <form @submit.prevent="saveForm" class="space-y-6 p-4">
-        <div class="space-y-4">
+        <div class="space-y-4 max-h-[70vh] overflow-y-auto">
           <div class="grid grid-cols-1 gap-4">
             <label class="block">
               <span class="text-sm font-medium text-foreground">Panel Name</span>
@@ -265,8 +265,8 @@ function filterOrganisms() {
           </div>
 
           <!-- Organisms Selection with Selected List -->
-          <div class="flex gap-4">
-            <div class="w-2/3 space-y-2">
+          <div class="flex flex-nowrap gap-4">
+            <div class="min-w-0 flex-1 space-y-2">
               <label class="block">
                 <span class="text-sm font-medium text-foreground">Search Organisms</span>
                 <input
@@ -293,9 +293,9 @@ function filterOrganisms() {
             </div>
             
             <!-- Selected Organisms List -->
-            <div class="w-1/3">
+            <div class="w-48 shrink-0">
               <div class="text-sm font-medium text-foreground mb-1">Selected Organisms</div>
-              <div class="border border-border rounded-md p-2 h-72 overflow-y-auto bg-background">
+              <div class="border border-border rounded-md p-2 h-64 overflow-y-auto bg-muted/30">
                 <div v-for="orgUid in selectedOrganisms" 
                      :key="orgUid" 
                      class="flex items-center justify-between py-1 px-2 mb-1 bg-background rounded-md shadow-sm">
@@ -314,8 +314,8 @@ function filterOrganisms() {
           </div>
 
           <!-- Antibiotics Selection with Selected List -->
-          <div class="flex gap-4">
-            <div class="w-2/3 space-y-2">
+          <div class="flex flex-nowrap gap-4">
+            <div class="min-w-0 flex-1 space-y-2">
               <label class="block">
                 <span class="text-sm font-medium text-foreground">Search Antibiotics</span>
                 <input
@@ -342,9 +342,9 @@ function filterOrganisms() {
             </div>
             
             <!-- Selected Antibiotics List -->
-            <div class="w-1/3">
+            <div class="w-48 shrink-0">
               <div class="text-sm font-medium text-foreground mb-1">Selected Antibiotics</div>
-              <div class="border border-border rounded-md p-2 h-72 overflow-y-auto bg-background">
+              <div class="border border-border rounded-md p-2 h-64 overflow-y-auto bg-muted/30">
                 <div v-for="abxUid in selectedAntibiotics" 
                      :key="abxUid" 
                      class="flex items-center justify-between py-1 px-2 mb-1 bg-background rounded-md shadow-sm">

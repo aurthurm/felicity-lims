@@ -132,25 +132,25 @@ const saveForm = handleSubmit((values) => {
       <Button @click="FormManager(true)">Add Guideline</Button>      
     </PageHeading>
 
-    <div class="border shadow-sm rounded-lg bg-card p-6">
-      <div class="overflow-x-auto">
-        <Table class="min-w-full divide-y divide-border">
-          <TableHeader>
-            <TableRow>
-              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</TableHead>
-              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Description</TableHead>
-              <TableHead class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Code</TableHead>
-              <TableHead class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+    <div class="border border-border bg-card rounded-lg shadow-md">
+      <div class="relative w-full overflow-auto">
+        <Table class="w-full caption-bottom text-sm">
+          <TableHeader class="[&_tr]:border-b">
+            <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Name</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Description</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Code</TableHead>
+              <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">
                 <span class="sr-only">Actions</span>
               </TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody class="divide-y divide-border bg-background">
-            <TableRow v-for="guideline in abxGuidelines" :key="guideline?.uid" class="hover:bg-muted/50">
-              <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ guideline?.name }}</TableCell>
-              <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ guideline?.description }}</TableCell>
-              <TableCell class="whitespace-nowrap px-3 py-4 text-sm text-foreground">{{ guideline?.code }}</TableCell>
-              <TableCell class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+          <TableBody class="[&_tr:last-child]:border-0">
+            <TableRow v-for="guideline in abxGuidelines" :key="guideline?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ guideline?.name }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ guideline?.description }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ guideline?.code }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-right">
                 <Button 
                   variant="outline"
                   size="sm"

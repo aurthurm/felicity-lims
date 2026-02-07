@@ -102,38 +102,30 @@ import PageHeading from "@/components/common/PageHeading.vue"
       <Button @click="FormManager(true)">Add Sample Type</Button>
     </PageHeading>
 
-    <div class="overflow-x-auto">
-      <div class="inline-block min-w-full align-middle">
-        <div class="overflow-hidden shadow-md rounded-lg bg-background">
-          <Table class="min-w-full divide-y divide-border">
-            <TableHeader class="bg-muted">
-              <TableRow>
-                <TableHead scope="col" class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Sample Type</TableHead>
-                <TableHead scope="col" class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Prefix</TableHead>
-                <TableHead scope="col" class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Active</TableHead>
-                <TableHead scope="col" class="px-4 py-2 text-right text-sm font-medium text-muted-foreground tracking-wider">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody class="bg-background divide-y divide-border">
-              <TableRow v-for="s_type in sampleTypes" :key="s_type?.uid">
-                <TableCell class="px-4 py-2 whitespace-nowrap">
-                  <div class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">{{ s_type?.name }}</div>
-                </TableCell>
-                <TableCell class="px-4 py-2 whitespace-nowrap">
-                  <div class="text-sm text-primary">{{ s_type?.abbr }}</div>
-                </TableCell>
-                <TableCell class="px-4 py-2 whitespace-nowrap">
-                  <div class="text-sm text-primary">{{ s_type?.active }}</div>
-                </TableCell>
-                <TableCell class="px-4 py-2 whitespace-nowrap text-right text-sm font-medium">
+    <div class="border border-border bg-card rounded-lg shadow-md">
+      <div class="relative w-full overflow-auto">
+        <Table class="w-full caption-bottom text-sm">
+          <TableHeader class="[&_tr]:border-b">
+            <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Sample Type</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Prefix</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Active</TableHead>
+              <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody class="[&_tr:last-child]:border-0">
+            <TableRow v-for="s_type in sampleTypes" :key="s_type?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm font-medium">{{ s_type?.name }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-primary">{{ s_type?.abbr }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-primary">{{ s_type?.active }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-right">
                   <Button variant="outline" size="sm" @click="FormManager(false, s_type)">
                     Edit
                   </Button>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </div>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </div>
     </div>
   </div>

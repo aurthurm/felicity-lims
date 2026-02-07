@@ -93,21 +93,21 @@ import PageHeading from "@/components/common/PageHeading.vue"
       <Button @click="FormManager(true)"> Add Instrument Type</Button>
     </PageHeading>
 
-    <div class="border border-border bg-background rounded-lg shadow-sm p-6 overflow-hidden">
+    <div class="border border-border bg-card rounded-lg shadow-md">
       <div class="relative w-full overflow-auto">
         <Table class="w-full caption-bottom text-sm">
           <TableHeader class="[&_tr]:border-b">
             <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Name</TableHead>
-              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Description</TableHead>
-              <TableHead class="px-4 py-2 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Name</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Description</TableHead>
+              <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody class="[&_tr:last-child]:border-0">
             <TableRow v-for="instype in instrumentTypes" :key="instype?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-              <TableCell class="px-4 py-2 align-middle">{{ instype?.name }}</TableCell>
-              <TableCell class="px-4 py-2 align-middle text-primary">{{ instype?.description }}</TableCell>
-              <TableCell class="px-4 py-2 align-middle text-right">
+              <TableCell class="px-4 py-3 align-middle text-sm">{{ instype?.name }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-primary">{{ instype?.description }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-right">
                 <Button variant="outline" size="sm" @click="FormManager(false, instype)">
                   Edit
                 </Button>

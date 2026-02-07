@@ -27,6 +27,8 @@
     SelectValue,
   } from "@/components/ui/select";
 
+const VOUCHER_NONE = '__none__';
+
 defineOptions({ name: 'BillingView' })
   const  billingStore = useBillingStore()
   const { withClientMutation } = useApiUtil()
@@ -167,8 +169,8 @@ defineOptions({ name: 'BillingView' })
       setDiscountValues({
         discountType: discount.discountType ?? "",
         valueType: discount.valueType ?? "",
-        startDate: discount.startDate ?? "",
-        endDate: discount.endDate ?? "",
+        startDate: toDateOnly(discount.startDate) ?? "",
+        endDate: toDateOnly(discount.endDate) ?? "",
         voucherUid: discount.voucherUid ?? null,
         valuePercent: discount.valuePercent ?? 0.0,
         valueAmount: discount.valueAmount ?? 0.0,
@@ -202,19 +204,29 @@ defineOptions({ name: 'BillingView' })
     if(dt !== 'voucher') {
       setDiscountFieldValue("voucherUid", null);
     }
-  })
+  });
+
+  function onVoucherChange(v: string) {
+    setDiscountFieldValue("voucherUid", v === VOUCHER_NONE ? null : v);
+  }
+
+  /** Normalize ISO datetime to yyyy-MM-dd for <input type="date"> */
+  function toDateOnly(value: string | null | undefined): string {
+    if (value == null || value === '') return '';
+    const d = value.slice(0, 10);
+    return /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : value;
+  }
 
 </script>
 
 <template>
-    <div class="grid grid-cols-12 gap-8 p-6">
+    <div class="grid grid-cols-12 gap-8">
       <section class="col-span-6">
         <div class="space-y-6">
           <div class="flex items-center justify-between">
             <h3 class="text-lg font-semibold text-foreground">Pricing Information</h3>
           </div>
-          <div class="rounded-lg border border-border bg-card p-6">
-            <form class="space-y-6" @submit.prevent="updatePricing">
+          <form class="space-y-6" @submit.prevent="updatePricing">
               <div class="space-y-4">
                 <FormField name="amount" v-slot="{ componentField }">
                   <FormItem>
@@ -233,7 +245,6 @@ defineOptions({ name: 'BillingView' })
                 Update Pricing
               </Button>
             </form>
-          </div>
         </div>
       </section>
 
@@ -242,8 +253,7 @@ defineOptions({ name: 'BillingView' })
           <div class="flex items-center justify-between">
             <h3 class="text-lg font-semibold text-foreground">Discounts Information</h3>
           </div>
-          <div class="rounded-lg border border-border bg-card p-6">
-            <form class="space-y-6" @submit.prevent="updateDiscounting">
+          <form class="space-y-6" @submit.prevent="updateDiscounting">
               <div class="grid grid-cols-2 gap-4">
                 <FormField name="discountType" v-slot="{ componentField }">
                   <FormItem>
@@ -308,12 +318,15 @@ defineOptions({ name: 'BillingView' })
                 <FormItem v-show="discountValues.discountType === 'voucher'">
                   <FormLabel>Voucher</FormLabel>
                   <FormControl>
-                    <Select v-bind="componentField">
+                    <Select
+                      :model-value="componentField.modelValue ?? VOUCHER_NONE"
+                      @update:model-value="onVoucherChange"
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select voucher" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Select voucher</SelectItem>
+                        <SelectItem :value="VOUCHER_NONE">Select voucher</SelectItem>
                         <SelectItem v-for="voucher of billingStore.vouchers" :key="voucher.uid" :value="voucher.uid">
                           {{ voucher.code }}
                         </SelectItem>
@@ -362,7 +375,6 @@ defineOptions({ name: 'BillingView' })
                 Update Discount
               </Button>
             </form>
-          </div>
         </div>
       </section>
     </div>

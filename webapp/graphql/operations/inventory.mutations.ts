@@ -173,7 +173,14 @@ export type AddStockItemMutation = (
     )
     | (
       { __typename: 'StockItemType' }
-      & Pick<Types.StockItemType, 'uid' | 'name' | 'description'>
+      & Pick<
+        Types.StockItemType,
+        | 'uid'
+        | 'name'
+        | 'description'
+        | 'minimumLevel'
+        | 'maximumLevel'
+      >
     )
    }
 );
@@ -193,7 +200,14 @@ export type EditStockItemMutation = (
     )
     | (
       { __typename: 'StockItemType' }
-      & Pick<Types.StockItemType, 'uid' | 'name' | 'description'>
+      & Pick<
+        Types.StockItemType,
+        | 'uid'
+        | 'name'
+        | 'description'
+        | 'minimumLevel'
+        | 'maximumLevel'
+      >
     )
    }
 );
@@ -660,6 +674,8 @@ export const AddStockItemDocument = gql`
       uid
       name
       description
+      minimumLevel
+      maximumLevel
     }
     ... on OperationError {
       __typename
@@ -681,6 +697,8 @@ export const EditStockItemDocument = gql`
       uid
       name
       description
+      minimumLevel
+      maximumLevel
     }
     ... on OperationError {
       __typename

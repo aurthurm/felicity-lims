@@ -16,7 +16,9 @@
     FormLabel,
     FormMessage,
   } from "@/components/ui/form";
-import PageHeading from "@/components/common/PageHeading.vue"
+  import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+  import Modal from '@/components/ui/Modal.vue';
+  import PageHeading from "@/components/common/PageHeading.vue"
   const VueMultiselect = defineAsyncComponent(
     () => import('vue-multiselect')
   )
@@ -124,26 +126,24 @@ import PageHeading from "@/components/common/PageHeading.vue"
       <Button @click="FormManager(true)">Add Result Option</Button>
     </PageHeading>
 
-    <div class="overflow-x-auto mt-4">
-        <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card text-card-foreground rounded-lg border border-border">
-        <Table class="min-w-full">
-            <TableHeader>
-            <TableRow>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Result Key</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Result Value</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Sample Types</TableHead>
-                <TableHead class="px-4 py-2 border-b border-border"></TableHead>
+    <div class="mt-4 border border-border bg-card rounded-lg shadow-md">
+        <div class="relative w-full overflow-auto">
+        <Table class="w-full caption-bottom text-sm">
+            <TableHeader class="[&_tr]:border-b">
+            <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Result Key</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Result Value</TableHead>
+                <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Sample Types</TableHead>
+                <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
             </TableRow>
             </TableHeader>
-            <TableBody class="bg-card">
-            <TableRow v-for="option in analysis?.resultOptions" :key="option?.uid" class="hover:bg-accent/50">
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
+            <TableBody class="[&_tr:last-child]:border-0">
+            <TableRow v-for="option in analysis?.resultOptions" :key="option?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">
                   <div class="text-sm text-foreground">{{ option?.optionKey }}</div>
                 </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
-                  <div class="text-sm text-foreground">{{ option?.value }}</div>
-                </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm text-foreground">{{ option?.value }}</TableCell>
+                <TableCell class="px-4 py-3 align-middle text-sm">
                   <div class="flex flex-wrap gap-2">
                     <span 
                       v-for="stype of option?.sampleTypes" 
@@ -154,7 +154,7 @@ import PageHeading from "@/components/common/PageHeading.vue"
                     </span>
                   </div>
                 </TableCell>
-                <TableCell class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
+                <TableCell class="px-4 py-3 align-middle text-right">
                     <Button variant="outline" size="sm" @click="FormManager(false, option)">
                       Edit
                     </Button>
@@ -166,7 +166,7 @@ import PageHeading from "@/components/common/PageHeading.vue"
     </div>
 
   <!-- Result Options Form Modal -->
-  <modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/4'">
+  <Modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/4'">
     <template v-slot:header>
       <h3 class="text-lg font-bold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -220,7 +220,7 @@ import PageHeading from "@/components/common/PageHeading.vue"
         </div>
       </form>
     </template>
-  </modal>
+  </Modal>
 
 </template>
 

@@ -391,7 +391,7 @@ export const useReflexStore = defineStore('reflex', {
                     level: trigger.data.level,
                     description: trigger.data.description,
                     sample_type_uid: trigger.data.sample_type_uid,
-                    analyses: trigger.data.analyses?.map((a: any) => a.uid) || [],
+                    analyses: trigger.data.analyses?.map((a: any) => (typeof a === 'string' ? a : a.uid)) || [],
                     decisions,
                 };
             });

@@ -5,50 +5,58 @@
       <Button @click="FormManager(true)" aria-label="Add new user">Add User</Button>
     </div>
 
-    <div class="bg-card rounded-lg shadow-sm">
-      <Table class="min-w-full divide-y divide-border">
-        <TableHeader>
-          <TableRow>
-            <TableHead
-              v-for="header in headers"
-              :key="header"
-              class="px-6 py-3 text-left text-sm font-medium text-muted-foreground tracking-wider"
-            >
-              {{ header }}
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody class="bg-background divide-y divide-border">
-          <TableRow v-for="user in users" :key="user.uid" class="hover:bg-muted/50">
-            <TableCell class="px-6 py-4 whitespace-nowrap text-sm">{{ user.firstName }} {{ user.lastName }}</TableCell>
-            <TableCell class="px-6 py-4 whitespace-nowrap text-sm">{{ user.email }}</TableCell>
-            <TableCell class="px-6 py-4 whitespace-nowrap text-sm">
-              <span
-                :class="['inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
-                  user.isActive ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'
+    <div class="border border-border bg-card rounded-lg shadow-md">
+      <div class="relative w-full overflow-auto">
+        <Table class="w-full caption-bottom text-sm">
+          <TableHeader class="[&_tr]:border-b">
+            <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableHead
+                v-for="header in headers"
+                :key="header"
+                :class="[
+                  'h-12 px-4 align-middle font-medium text-muted-foreground',
+                  header === 'Actions' ? 'text-right' : 'text-left'
                 ]"
               >
-                {{ user.isActive ? 'Active' : 'Inactive' }}
-              </span>
-            </TableCell>
-            <TableCell class="px-6 py-4 whitespace-nowrap text-sm">{{ user.groups?.map(g => g?.name).join(', ') }}</TableCell>
-            <TableCell class="px-6 py-4 whitespace-nowrap text-sm">{{ user.userName }}</TableCell>
-            <TableCell class="px-6 py-4 whitespace-nowrap text-sm">
-              <span
-                :class="['inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
-                  user.isBlocked ? 'bg-destructive/20 text-destructive' : 'bg-success/20 text-success'
-                ]"
-              >
-                {{ user.isBlocked ? 'Blocked' : 'Active' }}
-              </span>
-            </TableCell>
-            <TableCell class="px-6 py-4 whitespace-nowrap text-sm">{{ getLaboratoryName(user.activeLaboratoryUid || "") }}</TableCell>
-            <TableCell class="px-6 py-4 whitespace-nowrap text-sm">{{ user.laboratories?.length }} Labs</TableCell>
-            <TableCell class="px-6 py-4 whitespace-nowrap text-sm text-right">
-              <Button variant="outline" size="sm" @click="FormManager(false, user)" aria-label="Edit user">
-                Edit
-              </Button>
-            </TableCell>
+                {{ header }}
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody class="[&_tr:last-child]:border-0">
+            <TableRow v-for="user in users" :key="user.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm">{{ user.firstName }} {{ user.lastName }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm">{{ user.email }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm">
+                <span
+                  :class="['inline-flex items-center justify-center',
+                    user.isActive ? 'text-success' : 'text-muted-foreground'
+                  ]"
+                  :title="user.isActive ? 'Active' : 'Inactive'"
+                >
+                  <CheckCircle v-if="user.isActive" class="size-5" aria-hidden="true" />
+                  <XCircle v-else class="size-5" aria-hidden="true" />
+                </span>
+              </TableCell>
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm">{{ user.groups?.map(g => g?.name).join(', ') }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm">{{ user.userName }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm">
+                <span
+                  :class="['inline-flex items-center justify-center',
+                    user.isBlocked ? 'text-destructive' : 'text-muted-foreground'
+                  ]"
+                  :title="user.isBlocked ? 'Blocked' : 'Not blocked'"
+                >
+                  <Ban v-if="user.isBlocked" class="size-5" aria-hidden="true" />
+                  <ShieldCheck v-else class="size-5" aria-hidden="true" />
+                </span>
+              </TableCell>
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm">{{ getLaboratoryName(user.activeLaboratoryUid || "") }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle whitespace-nowrap text-sm">{{ user.laboratories?.length }} Labs</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-right">
+                <Button variant="outline" size="sm" @click="FormManager(false, user)" aria-label="Edit user">
+                  Edit
+                </Button>
+              </TableCell>
           </TableRow>
           <TableEmpty v-if="!users || users.length === 0" :colspan="9">
             <Empty class="border-0 bg-transparent p-0">
@@ -61,7 +69,8 @@
             </Empty>
           </TableEmpty>
         </TableBody>
-      </Table>
+        </Table>
+      </div>
     </div>
   </div>
 
@@ -103,7 +112,14 @@
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <ProtectedInput v-bind="componentField" id="userName" type="text" :required-clicks="5" placeholder="Enter username" />
+                <ProtectedInput
+                  v-bind="componentField"
+                  id="userName"
+                  type="text"
+                  :required-clicks="5"
+                  :initial-locked="!!userUid"
+                  placeholder="Enter username"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -129,16 +145,19 @@
             </FormItem>
           </FormField>
 
-          <FormField name="groupUid" v-slot="{ componentField }">
+          <FormField name="groupUid" v-slot="{ value, handleChange }">
             <FormItem class="col-span-2">
               <FormLabel>Group</FormLabel>
               <FormControl>
-                <Select v-bind="componentField">
+                <Select
+                  :modelValue="value === '' || value == null ? EMPTY_SELECT_VALUE : value"
+                  @update:modelValue="(v) => handleChange(v === EMPTY_SELECT_VALUE ? '' : v)"
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select a group" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Select a group</SelectItem>
+                    <SelectItem :value="EMPTY_SELECT_VALUE">Select a group</SelectItem>
                     <SelectItem v-for="group in groups" :key="group.uid" :value="group.uid">
                       {{ group?.name }}
                     </SelectItem>
@@ -152,40 +171,33 @@
           <!-- Laboratory Assignment Section -->
           <div class="col-span-2 space-y-4 border-t border-border pt-6">
             <h4 class="text-md font-medium text-foreground">Laboratory Access (Optional)</h4>
-            
-            <!-- Laboratory Multi-Select -->
+
             <div class="space-y-2">
               <label class="block text-sm font-medium text-foreground">Assigned Laboratories</label>
-              <div class="border-2 border-input rounded-md p-3 space-y-2 max-h-32 overflow-y-auto">
-                <div v-for="lab in setupStore.getLaboratories" :key="lab.uid" class="flex items-center space-x-3">
-                  <Checkbox
-                    :id="`lab-${lab.uid}`"
-                    :checked="values.laboratoryUids.includes(lab.uid)"
-                    @update:checked="(value) => {
-                      const next = value
-                        ? (values.laboratoryUids.includes(lab.uid) ? values.laboratoryUids : [...values.laboratoryUids, lab.uid])
-                        : values.laboratoryUids.filter((uid) => uid !== lab.uid);
-                      setFieldValue('laboratoryUids', next);
-                    }"
-                  />
-                  <label :for="`lab-${lab.uid}`" class="flex-1 cursor-pointer text-sm">
-                    {{ lab.name }} ({{ lab.code }})
-                  </label>
-                </div>
-              </div>
+              <MultiSelect
+                :model-value="selectedLaboratoryDisplays"
+                :options="laboratoryOptions"
+                placeholder="Select laboratories..."
+                search-placeholder="Search laboratories..."
+                empty-message="No laboratories found."
+                @update:model-value="onLaboratorySelectionChange"
+              />
             </div>
 
             <!-- Active Laboratory Selection -->
-            <FormField v-if="values.laboratoryUids && values.laboratoryUids.length > 0" name="activeLaboratoryUid" v-slot="{ componentField }">
+            <FormField v-if="values.laboratoryUids && values.laboratoryUids.length > 0" name="activeLaboratoryUid" v-slot="{ value, handleChange }">
               <FormItem>
                 <FormLabel>Default Active Laboratory</FormLabel>
                 <FormControl>
-                  <Select v-bind="componentField">
+                  <Select
+                    :modelValue="(value === '' || value == null) ? EMPTY_SELECT_VALUE : value"
+                    @update:modelValue="(v) => handleChange(v === EMPTY_SELECT_VALUE ? '' : v)"
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select default laboratory..." />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Select default laboratory...</SelectItem>
+                      <SelectItem :value="EMPTY_SELECT_VALUE">Select default laboratory...</SelectItem>
                       <SelectItem v-for="labUid in values.laboratoryUids" :key="labUid" :value="labUid">
                         {{ getLaboratoryName(labUid) }}
                       </SelectItem>
@@ -197,20 +209,20 @@
             </FormField>
           </div>
 
-          <FormField name="isBlocked" v-slot="{ value, handleChange }">
+          <FormField name="isBlocked" type="checkbox" :checked-value="true" :unchecked-value="false" v-slot="{ componentField }">
             <FormItem class="flex items-center space-x-2">
               <FormControl>
-                <Switch :checked="value" @update:checked="handleChange" />
+                <Checkbox v-bind="componentField" />
               </FormControl>
               <FormLabel>Blocked</FormLabel>
               <FormMessage />
             </FormItem>
           </FormField>
 
-          <FormField name="isActive" v-slot="{ value, handleChange }">
+          <FormField name="isActive" type="checkbox" :checked-value="true" :unchecked-value="false" v-slot="{ componentField }">
             <FormItem class="flex items-center space-x-2">
               <FormControl>
-                <Switch :checked="value" @update:checked="handleChange" />
+                <Checkbox v-bind="componentField" />
               </FormControl>
               <FormLabel>Active</FormLabel>
               <FormMessage />
@@ -242,9 +254,9 @@ import { useSetupStore } from "@/stores/setup";
 import useApiUtil  from "@/composables/api_util";
 import ProtectedInput from "@/components/common/ProtectedInput.vue";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
+import { MultiSelect } from "@/components/ui/multi-select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 import {FormControl,
   FormField,
@@ -259,9 +271,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { CheckCircle, XCircle, Ban, ShieldCheck } from "lucide-vue-next";
 
 const userStore = useUserStore();
 const setupStore = useSetupStore();
+
+/** Sentinel for Select placeholder; reka-ui SelectItem cannot use value="" */
+const EMPTY_SELECT_VALUE = "__none__";
+
 onMounted(() => {
   userStore.fetchUsers({});
   userStore.fetchGroupsAndPermissions();
@@ -306,6 +323,7 @@ const { handleSubmit, resetForm, setValues, values, setFieldValue } = useForm({
     email: "",
     groupUid: "",
     userName: "",
+    mobilePhone: "" as string | undefined,
     password: "",
     passwordc: "",
     isActive: true,
@@ -344,6 +362,29 @@ const getLaboratoryName = (labUid: string) => {
   return lab?.name || "Unknown Laboratory";
 };
 
+/** Display string for a lab (name only) for MultiSelect options; never shows uid */
+const getLaboratoryDisplay = (lab: { name?: string | null; code?: string | null; uid: string }) =>
+  lab?.name ?? "Unknown";
+
+const laboratoryOptions = computed(() =>
+  setupStore.getLaboratories.map((lab) => getLaboratoryDisplay(lab)),
+);
+
+/** Selected lab display strings derived from form laboratoryUids; never shows uid */
+const selectedLaboratoryDisplays = computed(() =>
+  (values.laboratoryUids || []).map((uid) => {
+    const lab = setupStore.getLaboratories.find((l) => l.uid === uid);
+    return lab ? getLaboratoryDisplay(lab) : "Unknown laboratory";
+  }),
+);
+
+function onLaboratorySelectionChange(displayStrings: string[]) {
+  const uids = displayStrings
+    .map((display) => setupStore.getLaboratories.find((l) => getLaboratoryDisplay(l) === display)?.uid)
+    .filter((uid): uid is string => Boolean(uid));
+  setFieldValue("laboratoryUids", uids);
+}
+
 function FormManager(create: boolean, obj: UserType = {} as UserType): void {
   formAction.value = create;
   showUserModal.value = true;
@@ -357,6 +398,7 @@ function FormManager(create: boolean, obj: UserType = {} as UserType): void {
         email: "",
         groupUid: "",
         userName: "",
+        mobilePhone: "",
         password: "",
         passwordc: "",
         isActive: true,
@@ -371,13 +413,14 @@ function FormManager(create: boolean, obj: UserType = {} as UserType): void {
       firstName: obj?.firstName ?? "",
       lastName: obj?.lastName ?? "",
       email: obj?.email ?? "",
-      groupUid: obj?.groups && obj.groups[0] ? obj.groups[0].uid : "",
+      groupUid: obj?.groups?.[0]?.uid ?? "",
       userName: obj?.userName ?? "",
+      mobilePhone: obj?.mobilePhone ?? "",
       password: "",
       passwordc: "",
       isActive: obj?.isActive ?? true,
       isBlocked: obj?.isBlocked ?? false,
-      laboratoryUids: (obj?.laboratories as string[]) || [],
+      laboratoryUids: Array.isArray(obj?.laboratories) ? obj.laboratories : [],
       activeLaboratoryUid: obj?.activeLaboratoryUid || "",
     });
   }
@@ -388,7 +431,7 @@ const saveUserForm = handleSubmit((values) => {
     firstName: values.firstName,
     lastName: values.lastName,
     email: values.email,
-    groupUid: values.groupUid,
+    groupUid: values.groupUid || undefined,
     activeLaboratoryUid: values.activeLaboratoryUid || null,
     laboratoryUids: values.laboratoryUids || [],
     userName: values.userName,
@@ -405,6 +448,7 @@ const saveUserForm = handleSubmit((values) => {
     editUser({
       userUid: values.userUid,
       ...basePayload,
+      mobilePhone: values.mobilePhone || undefined,
       isActive: values.isActive,
       isBlocked: values.isBlocked,
       password: values.password || undefined,

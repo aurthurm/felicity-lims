@@ -205,33 +205,33 @@ import PageHeading from "@/components/common/PageHeading.vue"
       <Button @click="FormManager(true)">Add Instrument Interface</Button>
     </PageHeading>
 
-    <div class="border border-border bg-background rounded-lg shadow-sm p-6 overflow-hidden">
+    <div class="border border-border bg-card rounded-lg shadow-md">
       <div class="relative w-full overflow-auto">
         <Table class="w-full caption-bottom text-sm">
           <TableHeader class="[&_tr]:border-b">
             <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Laboratory Instrument</TableHead>
-              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">TCPIP</TableHead>
-              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Protocol</TableHead>
-              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Socket Type</TableHead>
-              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Auto Reconnect</TableHead>
-              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Sync Units</TableHead>
-              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Mapped</TableHead>
-              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Active</TableHead>
-              <TableHead class="px-4 py-2 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Laboratory Instrument</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">TCPIP</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Protocol</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Socket Type</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Auto Reconnect</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Sync Units</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Mapped</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Active</TableHead>
+              <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody class="[&_tr:last-child]:border-0">
             <TableRow v-for="instInt in instrumentInterfaces" :key="instInt?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-              <TableCell class="px-4 py-2 align-middle">{{ instInt?.laboratoryInstrument?.labName }}</TableCell>
-              <TableCell class="px-4 py-2 align-middle">{{ instInt?.host }}:{{ instInt?.port }}</TableCell>
-              <TableCell class="px-4 py-2 align-middle text-primary">{{ instInt?.protocolType }}</TableCell>
-              <TableCell class="px-4 py-2 align-middle text-primary">{{ instInt?.socketType }}</TableCell>
-              <TableCell class="px-4 py-2 align-middle text-primary">{{ instInt?.autoReconnect }}</TableCell>
-              <TableCell class="px-4 py-2 align-middle text-primary">{{ instInt?.syncUnits }}</TableCell>
-              <TableCell class="px-4 py-2 align-middle text-primary">{{ instInt?.driverMapping ? 'Yes' : 'No' }}</TableCell>
-              <TableCell class="px-4 py-2 align-middle text-primary">{{ instInt?.isActive }}</TableCell>
-              <TableCell class="px-4 py-2 align-middle text-right">
+              <TableCell class="px-4 py-3 align-middle text-sm">{{ instInt?.laboratoryInstrument?.labName }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm">{{ instInt?.host }}:{{ instInt?.port }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-primary">{{ instInt?.protocolType }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-primary">{{ instInt?.socketType }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-primary">{{ instInt?.autoReconnect }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-primary">{{ instInt?.syncUnits }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-primary">{{ instInt?.driverMapping ? 'Yes' : 'No' }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-primary">{{ instInt?.isActive }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-right text-sm">
                 <Button variant="outline" size="sm" @click="FormManager(false, instInt)">
                   Edit
                 </Button>
@@ -274,7 +274,6 @@ import PageHeading from "@/components/common/PageHeading.vue"
                     <SelectValue placeholder="Select Laboratory Instrument" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Select Laboratory Instrument</SelectItem>
                     <SelectItem v-for="instrument in laboratoryInstruments" :key="instrument?.uid" :value="instrument.uid">
                       {{ instrument?.labName }}
                     </SelectItem>

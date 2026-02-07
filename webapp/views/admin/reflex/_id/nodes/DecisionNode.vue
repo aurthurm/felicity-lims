@@ -6,7 +6,7 @@ import { Handle, Position } from '@vue-flow/core';
  * Decision Node Component
  *
  * Represents a decision logic container - contains rules (conditions) and actions
- * Color: var(--color-reflex-decision)
+ * Color: violet (visible on canvas)
  * Icon: ◆ Diamond
  */
 
@@ -60,12 +60,12 @@ const shortDescription = computed(() => {
  */
 const priorityBadgeColor = computed(() => {
   if (props.data.priority === 0 || props.data.priority === 1) {
-    return 'bg-accent/15 text-accent';
+    return 'bg-violet-100 text-violet-700';
   }
   if (props.data.priority <= 3) {
-    return 'bg-accent/20 text-accent';
+    return 'bg-violet-200 text-violet-700';
   }
-  return 'bg-accent/30 text-accent';
+  return 'bg-violet-300 text-violet-700';
 });
 
 /**
@@ -89,7 +89,7 @@ const logicSummary = computed(() => {
     <Handle
       type="target"
       :position="Position.Left"
-      class="!bg-accent/100 !w-3 !h-3 !border-2 !border-white"
+      class="!bg-violet-500 !w-3 !h-3 !border-2 !border-white"
     />
 
     <!-- Output Handles -->
@@ -112,12 +112,12 @@ const logicSummary = computed(() => {
     <div class="flex items-center justify-between mb-2">
       <div class="flex items-center space-x-2">
         <!-- Diamond Icon (rotated square) -->
-        <div class="text-accent">
+        <div class="text-violet-700">
           <svg class="w-5 h-5 transform rotate-45" fill="currentColor" viewBox="0 0 24 24">
             <rect x="6" y="6" width="12" height="12" rx="1" />
           </svg>
         </div>
-        <span class="text-xs font-semibold text-accent uppercase">Decision</span>
+        <span class="text-xs font-semibold text-violet-700 uppercase">Decision</span>
       </div>
       <!-- Priority Badge -->
       <span
@@ -137,7 +137,7 @@ const logicSummary = computed(() => {
 
     <!-- Logic Summary -->
     <div class="decision-logic-summary">
-      <div class="text-xs font-mono text-accent bg-accent/10 px-2 py-1 rounded">
+      <div class="text-xs font-mono text-violet-700 bg-violet-100 px-2 py-1 rounded">
         {{ logicSummary }}
       </div>
     </div>
@@ -151,7 +151,7 @@ const logicSummary = computed(() => {
           <div
             v-for="(group, index) in data.rule_groups"
             :key="group.uid"
-            class="text-xs text-muted-foreground px-2 py-1 bg-accent/10 rounded"
+            class="text-xs text-muted-foreground px-2 py-1 bg-violet-100 rounded"
           >
             Group {{ index + 1 }}: {{ group.rules?.length || 0 }} {{ group.rules?.length === 1 ? 'rule' : 'rules' }}
           </div>
@@ -165,7 +165,7 @@ const logicSummary = computed(() => {
           <span v-if="data.add_analyses && data.add_analyses.length > 0" class="px-2 py-1 bg-success/10 text-success rounded">
             +{{ data.add_analyses.length }} Add
           </span>
-          <span v-if="data.finalize_analyses && data.finalize_analyses.length > 0" class="px-2 py-1 bg-accent/10 text-accent rounded">
+          <span v-if="data.finalize_analyses && data.finalize_analyses.length > 0" class="px-2 py-1 bg-violet-100 text-violet-700 rounded">
             ✓{{ data.finalize_analyses.length }} Finalize
           </span>
         </div>
@@ -178,8 +178,8 @@ const logicSummary = computed(() => {
 @import "tailwindcss";
 .decision-node {
   @apply border-2 rounded-lg shadow-md px-4 py-3 min-w-[240px] max-w-[300px] transition-all duration-200;
-  background-color: var(--card);
-  border-color: color-mix(in oklch, var(--accent), transparent 50%);
+  background-color: #f5f3ff; /* violet-50 */
+  border-color: #c4b5fd; /* violet-300 */
 }
 
 .decision-node:hover {
@@ -203,8 +203,8 @@ const logicSummary = computed(() => {
 }
 
 .decision-node.node-valid {
-  background-color: var(--card);
-  border-color: color-mix(in oklch, var(--accent), transparent 50%);
+  background-color: #f5f3ff; /* violet-50 */
+  border-color: #c4b5fd; /* violet-300 */
 }
 
 /* Selected state */

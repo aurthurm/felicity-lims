@@ -91,7 +91,7 @@ defineOptions({ name: 'ManufacturersView' })
       <Button @click="FormManager(true)"> Add Manufacturer</Button>
     </PageHeading>
 
-    <div class="border border-border bg-background rounded-lg shadow-sm p-6">
+    <div class="border border-border bg-card rounded-lg shadow-md">
       <div class="relative w-full overflow-auto">
         <Table class="w-full caption-bottom text-sm">
           <TableHeader class="[&_tr]:border-b">
@@ -103,9 +103,9 @@ defineOptions({ name: 'ManufacturersView' })
           </TableHeader>
           <TableBody class="[&_tr:last-child]:border-0">
             <TableRow v-for="manufacturer in manufacturers" :key="manufacturer?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-              <TableCell class="p-4 align-middle">{{ manufacturer?.name }}</TableCell>
-              <TableCell class="p-4 align-middle text-primary">{{ manufacturer?.description }}</TableCell>
-              <TableCell class="p-4 align-middle text-right">
+              <TableCell class="px-4 py-3 align-middle text-sm">{{ manufacturer?.name }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-primary">{{ manufacturer?.description }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-right">
                 <Button variant="outline" size="sm" @click="FormManager(false, manufacturer)">
                   Edit
                 </Button>

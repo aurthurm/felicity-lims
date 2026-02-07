@@ -321,7 +321,7 @@ const printBarCodes = async () => {
     </div>
 
     <!-- Results Table -->
-    <div class="bg-background rounded-lg shadow-sm overflow-hidden">
+    <div class="border border-border bg-card rounded-lg shadow-md overflow-hidden">
       <div class="p-4 border-b border-border">
         <div class="grid grid-cols-3 gap-4">
           <label class="block space-y-2">
@@ -403,10 +403,10 @@ const printBarCodes = async () => {
         </div>
       </div>
 
-      <div class="overflow-x-auto">
-        <Table class="w-full">
-          <TableHeader class="bg-muted">
-            <TableRow>
+      <div class="relative w-full overflow-auto">
+        <Table class="w-full caption-bottom text-sm">
+          <TableHeader class="[&_tr]:border-b">
+            <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
               <TableHead class="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 <Checkbox :checked="allChecked" @update:checked="(value) => allChecked = value"
                   @click="toggleCheckAll()"
@@ -419,8 +419,8 @@ const printBarCodes = async () => {
               <TableHead class="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody class="divide-y divide-border">
-            <TableRow v-for="result in worksheet?.analysisResults" :key="result.uid" :class="getResultRowColor(result)">
+          <TableBody class="[&_tr:last-child]:border-0">
+            <TableRow v-for="result in worksheet?.analysisResults" :key="result.uid" :class="['border-b transition-colors', getResultRowColor(result)]">
               <TableCell class="px-4 py-3 whitespace-nowrap">
                 <Checkbox :checked="result.checked" @update:checked="(value) => result.checked = value"
                   @click="checkCheck()"

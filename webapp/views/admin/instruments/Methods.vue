@@ -62,23 +62,23 @@ const closeForm = () => {
       <Button @click="FormManager(true)"> Add Method</Button>
     </PageHeading>
     
-    <div class="border border-border bg-background rounded-lg shadow-sm p-6 overflow-hidden">
+    <div class="border border-border bg-card rounded-lg shadow-md">
       <div class="relative w-full overflow-auto">
         <Table class="w-full caption-bottom text-sm">
           <TableHeader class="[&_tr]:border-b">
             <TableRow class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Name</TableHead>
-              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Instruments</TableHead>
-              <TableHead class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Analyses</TableHead>
-              <TableHead class="px-4 py-2 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Name</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Instruments</TableHead>
+              <TableHead class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Analyses</TableHead>
+              <TableHead class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody class="[&_tr:last-child]:border-0">
             <TableRow v-for="meth in methods" :key="meth?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-              <TableCell class="px-4 py-2 align-middle">{{ meth?.name }}</TableCell>
-              <TableCell class="px-4 py-2 align-middle text-primary">{{ meth?.instruments?.map(inst => inst?.name)?.join(", ") }}</TableCell>
-              <TableCell class="px-4 py-2 align-middle text-primary">{{ getAnalyses(meth) }}</TableCell>
-              <TableCell class="px-4 py-2 align-middle text-right">
+              <TableCell class="px-4 py-3 align-middle text-sm">{{ meth?.name }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-primary">{{ meth?.instruments?.map(inst => inst?.name)?.join(", ") }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-sm text-primary">{{ getAnalyses(meth) }}</TableCell>
+              <TableCell class="px-4 py-3 align-middle text-right">
                 <button 
                   @click="FormManager(false, meth)"
                   class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3"
