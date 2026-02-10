@@ -59,7 +59,12 @@ function prepareResults(): ArResultInputType[] {
   let results = getResultsChecked();
   let ready: any[] = [];
   results?.forEach((result: ExtAnalysisResultType) =>
-    ready.push({ uid: result.uid, result: result.result, methodUid: result.methodUid, laboratoryInstrumentUid: result.laboratoryInstrumentUid })
+    ready.push({
+      uid: result.uid,
+      result: result.result ?? '',
+      methodUid: result.methodUid ?? (result as any).method?.uid ?? '',
+      laboratoryInstrumentUid: result.laboratoryInstrumentUid ?? (result as any).laboratoryInstrument?.uid ?? '',
+    })
   );
   return ready;
 }
@@ -181,14 +186,16 @@ function resetAnalysesPermissions(): void {
     state.can_cancel = true;
   }
 
-  // can submit
+  // can submit (use flat IDs or fallback from nested method/laboratoryInstrument)
+  const hasMethod = (r: ExtAnalysisResultType) => !isNullOrWs(r.methodUid) || !isNullOrWs((r as any).method?.uid);
+  const hasInstrument = (r: ExtAnalysisResultType) => !isNullOrWs(r.laboratoryInstrumentUid) || !isNullOrWs((r as any).laboratoryInstrument?.uid);
   if (
     checked.every(
       (result: ExtAnalysisResultType) =>
         ["pending"].includes(result.status ?? "") &&
         !isNullOrWs(result.result) &&
-        !isNullOrWs(result.methodUid) &&
-        !isNullOrWs(result.laboratoryInstrumentUid)
+        hasMethod(result) &&
+        hasInstrument(result)
     )
   ) {
     state.can_submit = true;
@@ -507,50 +514,56 @@ const retestResults = () =>
     </div>
 
     <div class="flex items-center space-x-4 pt-4">
-      <Button 
+      <Button
+        type="button"
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_cancel"
-        key="cancel" 
-        @click="cancelResults" 
+        key="cancel"
+        @click="cancelResults"
         :color="'destructive'"
       >
         Cancel
       </Button>
-      <Button 
+      <Button
+        type="button"
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_reinstate"
-        key="reinstate" 
-        @click="reInstateResults" 
+        key="reinstate"
+        @click="reInstateResults"
         :color="'warning'"
       >
         Re-Instate
       </Button>
-      <Button 
+      <Button
+        type="button"
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_submit"
-        key="submit" 
-        @click="submitResults" 
+        key="submit"
+        @click="submitResults"
         :color="'primary'"
       >
         Submit
       </Button>
-      <Button 
+      <Button
+        type="button"
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_retract"
-        key="retract" 
-        @click="retractResults" 
+        key="retract"
+        @click="retractResults"
         :color="'warning'"
       >
         Retract
       </Button>
-      <Button 
+      <Button
+        type="button"
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_approve"
-        key="verify" 
-        @click="approveResults" 
+        key="verify"
+        @click="approveResults"
         :color="'success'"
       >
         Verify
       </Button>
-      <Button 
+      <Button
+        type="button"
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_retest"
-        key="retest" 
-        @click="retestResults" 
+        key="retest"
+        @click="retestResults"
         :color="'warning'"
       >
         Retest

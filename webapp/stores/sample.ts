@@ -464,7 +464,8 @@ export const useSampleStore = defineStore('sample', {
                 );
 
                 if (result && Array.isArray(result)) {
-                    this.analysisResults = sortResults(result as AnalysisResultType[]);
+                    const normalized = normalizeAnalysisResults(result as AnalysisResultType[]);
+                    this.analysisResults = sortResults(normalized);
                 } else {
                 }
             } catch {
@@ -606,6 +607,15 @@ export const useSampleStore = defineStore('sample', {
 
 function sortAnalysisRequests(ars: AnalysisRequestType[]): AnalysisRequestType[] {
     return ars?.sort((a: AnalysisRequestType, b: AnalysisRequestType) => ((a?.createdAt || 0) < (b?.createdAt || 1) ? 1 : -1));
+}
+
+/** Ensure methodUid and laboratoryInstrumentUid are set from nested method/laboratoryInstrument so UI bindings and submit work. */
+function normalizeAnalysisResults(results: AnalysisResultType[]): AnalysisResultType[] {
+    return (results || []).map((r) => ({
+        ...r,
+        methodUid: r.methodUid ?? r.method?.uid ?? undefined,
+        laboratoryInstrumentUid: r.laboratoryInstrumentUid ?? r.laboratoryInstrument?.uid ?? undefined,
+    })) as AnalysisResultType[];
 }
 
 function sortResults(results: AnalysisResultType[]): AnalysisResultType[] {

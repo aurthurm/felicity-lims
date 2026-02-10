@@ -54,34 +54,16 @@
 
     <!-- Key Metrics -->
     <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-4">
-      <Card
+      <StatCard
         v-for="metric in keyMetrics"
         :key="metric.key"
-        :class="['border-l-4 p-4', metric.borderClass]"
+        :label="metric.label"
+        :tooltip="metric.tooltip"
+        :border-class="metric.borderClass"
+        :value-class="metric.valueClass"
       >
-        <div class="flex items-center justify-between gap-2">
-          <span class="text-sm font-medium text-muted-foreground">{{ metric.label }}</span>
-          <Tooltip>
-            <TooltipTrigger as-child>
-              <button
-                type="button"
-                class="inline-flex size-4 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                aria-label="Info"
-              >
-                <svg class="size-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                </svg>
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="top" class="max-w-[14rem]">
-              {{ metric.tooltip }}
-            </TooltipContent>
-          </Tooltip>
-        </div>
-        <p :class="['mt-1 text-2xl font-bold tabular-nums', metric.valueClass]">
-          {{ metric.formatter(metricsData) }}
-        </p>
-      </Card>
+        {{ metric.formatter(metricsData) }}
+      </StatCard>
     </div>
 
     <!-- Volume & Transactions -->
@@ -197,6 +179,7 @@ import { ref, watch, onMounted, computed } from "vue";
 import { useQuery } from "@urql/vue";
 import { GetBillingOverviewMetricsDocument } from "@/graphql/operations/billing.queries";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import StatCard from "@/components/common/StatCard.vue";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

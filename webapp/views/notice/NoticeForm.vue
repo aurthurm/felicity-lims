@@ -48,6 +48,8 @@ const editor = ref(ClassicEditor)
 
 onMounted(( )=>{
 		config.value = {
+			// Use GPL license for open-source/self-hosted use (see https://ckeditor.com/docs/ckeditor5/latest/getting-started/licensing/license-key-and-activation.html)
+			licenseKey: 'GPL',
       			toolbar: {
 				items: [
 					'undo',
@@ -59,8 +61,6 @@ onMounted(( )=>{
 					'italic',
 					'underline',
 					'|',
-					'link',
-					'insertTable',
 					'blockQuote',
 					'|',
 					'bulletedList',
@@ -237,17 +237,18 @@ function updateNotice(payload: NoticeType) {
         <FormItem>
           <FormLabel>Body</FormLabel>
           <FormControl>
-            <div class="main-container min-w-full prose prose-slate">
-              <div class="editor-container editor-container_balloon-editor" ref="editorContainerElement">
-                <div class="editor-container__editor">
-                  <div ref="editorElement">
-                    <ckeditor 
-                      v-if="isLayoutReady" 
+            <div class="main-container notice-body-editor min-w-full min-h-[220px] prose prose-slate">
+              <div class="editor-container editor-container_balloon-editor min-h-[200px]" ref="editorContainerElement">
+                <div class="editor-container__editor min-h-[200px]">
+                  <div ref="editorElement" class="min-h-[200px]">
+                    <ckeditor
+                      v-if="isLayoutReady"
                       :model-value="value"
                       @update:model-value="handleChange"
-                      :editor="editor" 
+                      :editor="editor"
                       :config="config"
                       tag-name="textarea"
+                      class="ck-editor notice-ck-editor"
                     />
                   </div>
                 </div>
@@ -282,3 +283,12 @@ function updateNotice(payload: NoticeType) {
     </Button>
   </form>
 </template>
+
+<style scoped>
+.notice-body-editor :deep(.ck-editor__editable) {
+  min-height: 180px;
+}
+.notice-body-editor :deep(.ck-editor) {
+  min-height: 200px;
+}
+</style>

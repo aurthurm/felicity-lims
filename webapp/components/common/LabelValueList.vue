@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 
 const LabelValue = defineAsyncComponent(
   () => import("@/components/common/LabelValue.vue")
@@ -26,10 +26,20 @@ const props = withDefaults(defineProps<Props>(), {
   size: 'md',
   columns: 3
 });
+
+const gridColsClass = computed(() => {
+  switch (props.columns) {
+    case 1: return 'grid-cols-1';
+    case 2: return 'grid-cols-2';
+    case 3: return 'grid-cols-3';
+    case 4: return 'grid-cols-4';
+    default: return 'grid-cols-3';
+  }
+});
 </script>
 
 <template>
-  <div class="grid gap-4" :class="`grid-cols-${columns}`">
+  <div class="grid gap-4" :class="gridColsClass">
     <LabelValue
       v-for="item in items"
       :key="item.label"

@@ -91,6 +91,7 @@ const items = computed<AnalysisItem[]>(() => {
     <LabelValueList 
       v-else-if="analysis?.uid" 
       :items="items" 
+      :columns="1"
       class="bg-card rounded-md border border-border p-4 shadow-sm"
     />
     

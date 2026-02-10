@@ -48,6 +48,7 @@ const editor = ref(ClassicEditor)
 
 function initCKEditor() {
     config.value = {
+      		licenseKey: 'GPL',
       		toolbar: {
 			    items: [
 					'undo',

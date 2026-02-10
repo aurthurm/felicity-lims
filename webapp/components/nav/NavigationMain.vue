@@ -149,8 +149,9 @@ const propsNav = withDefaults(
 const showModal = ref(false)
 const targetLaboratoryUid = ref<string | null>(null)
 const switching = ref(false)
+const LAB_SELECT_NONE = '__none__' as const
 const updateTargetLaboratoryUid = (value: string) => {
-  targetLaboratoryUid.value = value || null
+  targetLaboratoryUid.value = value === LAB_SELECT_NONE || !value ? null : value
 }
 const switchLabNow = () => {
   if (!targetLaboratoryUid.value) {
@@ -286,14 +287,14 @@ const switchLabNow = () => {
         <div class="space-y-2">
           <span class="text-sm font-medium">Laboratory Name</span>
           <Select
-            :model-value="targetLaboratoryUid ?? ''"
+            :model-value="targetLaboratoryUid ?? LAB_SELECT_NONE"
             @update:model-value="updateTargetLaboratoryUid"
           >
             <SelectTrigger class="w-full">
               <SelectValue placeholder="Select Department" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Select Department</SelectItem>
+              <SelectItem :value="LAB_SELECT_NONE">Select Department</SelectItem>
               <SelectItem v-for="lab in userLaboratories" :key="lab.uid" :value="lab?.uid">
                 {{ lab.name }}
               </SelectItem>

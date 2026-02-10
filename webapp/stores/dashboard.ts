@@ -364,6 +364,10 @@ export const useDashBoardStore = defineStore('dashboard', () => {
         dashboard.value.currentPeformance = target.value;
     };
 
+    const setCurrentPeformanceByValue = (value: string): void => {
+        dashboard.value.currentPeformance = value;
+    };
+
     const setCurrentPeformancePeriod = (event: Event): void => {
         const target = event.target as HTMLSelectElement;
         const period: number = +target.value;
@@ -439,6 +443,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
         getSampleProcessPeformance,
         getAnalysisProcessPeformance,
         setCurrentPeformance,
+        setCurrentPeformanceByValue,
         setCurrentPeformancePeriod,
     };
 });

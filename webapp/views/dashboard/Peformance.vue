@@ -5,8 +5,23 @@ import { Chart } from "@antv/g2";
 import { Bar } from "@antv/g2plot";
 import { useDashBoardStore } from "@/stores/dashboard";
 import { IProcess } from "@/stores/dashboard";
+import StatCard from "@/components/common/StatCard.vue";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 import { Spinner } from "@/components/ui/spinner";
+
+const sampleProcessTooltips: Record<string, string> = {
+  "Received to Published": "Average days from sample receipt to final result publication.",
+  "Received to Submitted": "Average days from sample receipt to submission for verification.",
+  "Submitted to Verified": "Average days from submission to verification.",
+  "Verified to Published": "Average days from verification to result publication.",
+};
 
 interface DonutData {
   item: string;
@@ -241,48 +256,52 @@ const resetSampleGraphs = () => {
       </div>
       <div v-else class="flex flex-wrap justify-start gap-4">
         <div class="flex flex-col items-center">
-          <div class="bg-background shadow rounded-sm px-6 pt-3 pb-5 border border-foreground text-center">
-            <div class="font-semibold text-muted-foreground">Received to Published</div>
-            <div class="font-bold text-foreground text-xl">
-              {{ prRTP?.counts?.processAverage ?? 0 }} days
-            </div>
-          </div>
+          <StatCard
+            label="Received to Published"
+            :tooltip="sampleProcessTooltips['Received to Published']"
+            class="w-full min-w-[200px]"
+          >
+            {{ prRTP?.counts?.processAverage ?? 0 }} days
+          </StatCard>
           <div id="rtp-graph" class="mt-3">
             <div id="process-rtp"></div>
           </div>
         </div>
 
         <div class="flex flex-col items-center">
-          <div class="bg-background shadow rounded-sm px-6 pt-3 pb-5 border border-foreground text-center">
-            <div class="font-semibold text-muted-foreground">Received to Submitted</div>
-            <div class="font-bold text-foreground text-xl">
-              {{ prRTS?.counts?.processAverage ?? 0 }} days
-            </div>
-          </div>
+          <StatCard
+            label="Received to Submitted"
+            :tooltip="sampleProcessTooltips['Received to Submitted']"
+            class="w-full min-w-[200px]"
+          >
+            {{ prRTS?.counts?.processAverage ?? 0 }} days
+          </StatCard>
           <div id="rts-graph" class="mt-3">
             <div id="process-rts"></div>
           </div>
         </div>
 
         <div class="flex flex-col items-center">
-          <div class="bg-background shadow rounded-sm px-6 pt-3 pb-5 border border-foreground text-center">
-            <div class="font-semibold text-muted-foreground">Submitted to Verified</div>
-            <div class="font-bold text-foreground text-xl">
-              {{ prSTV?.counts?.processAverage ?? 0 }} days
-            </div>
-          </div>
+          <StatCard
+            label="Submitted to Verified"
+            :tooltip="sampleProcessTooltips['Submitted to Verified']"
+            class="w-full min-w-[200px]"
+          >
+            {{ prSTV?.counts?.processAverage ?? 0 }} days
+          </StatCard>
           <div id="stv-graph" class="mt-3">
             <div id="process-stv"></div>
           </div>
         </div>
 
         <div class="flex flex-col items-center">
-          <div class="bg-background shadow rounded-sm px-6 pt-3 pb-5 border border-foreground text-center">
-            <div class="font-semibold text-muted-foreground">Verified to Published</div>
-            <div class="font-bold text-foreground text-xl">
-              {{ prVTP?.counts?.processAverage ?? 0 }} days
-            </div>
-          </div>
+          <StatCard
+            label="Verified to Published"
+            :tooltip="sampleProcessTooltips['Verified to Published']"
+            class="w-full min-w-[200px]"
+          >
+            {{ prVTP?.counts?.processAverage ?? 0 }} days
+          </StatCard>
           <div id="vtp-graph" class="mt-3">
             <div id="process-vtp"></div>
           </div>
@@ -292,16 +311,28 @@ const resetSampleGraphs = () => {
 
     <hr>
 
-    <h1 class="mt-1 text-xl text-foreground font-semibold">
-      <span>Process peformance by anayses service</span>
-      <select name="" id="" class="ml-8 p-1 bg-muted outline-none"
-        @change="dashBoardStore.setCurrentPeformance($event)">
-        <option v-for="performance in dashboard.performances" :key="performance" :value="performance"
-          :selected="performance === dashboard.currentPeformance">
-          {{ dashboard.perfs[performance] }}
-        </option>
-      </select>
-    </h1>
+    <div class="mt-1 flex flex-wrap items-center gap-2">
+      <h1 class="text-xl text-foreground font-semibold">
+        Process peformance by anayses service
+      </h1>
+      <Select
+        :model-value="dashboard.currentPeformance"
+        @update:model-value="dashBoardStore.setCurrentPeformanceByValue"
+      >
+        <SelectTrigger class="ml-2 w-[240px]">
+          <SelectValue placeholder="Select process" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem
+            v-for="performance in dashboard.performances"
+            :key="performance"
+            :value="performance"
+          >
+            {{ dashboard.perfs[performance] }}
+          </SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
     <hr class="mt-1 mb-2" />
 
     <div class=" bg-muted p-2">

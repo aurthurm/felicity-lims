@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { computed, reactive, ref, watch, defineAsyncComponent } from "vue";
+import { computed, ref, watch, defineAsyncComponent } from "vue";
 import { ProfileType, AnalysisType, SampleType } from "@/types/gql";
 import useSampleComposable from "@/composables/samples";
 import { useSampleStore } from "@/stores/sample";
@@ -8,6 +8,12 @@ import { useRoute, useRouter } from "vue-router";
 import { parseDate } from "@/utils";
 import useApiUtil from "@/composables/api_util";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   GetSampleGenealogyDocument,
   GetSampleGenealogyQuery,
@@ -36,9 +42,6 @@ const {
   recoverSamples
 } = useSampleComposable();
 
-const state = reactive({
-  dropdownOpen: false,
-});
 
 const { sample, fetchingSample, repeatSample } = storeToRefs(sampleStore);
 sampleStore.fetchSampleByUid(route.params.sampleUid as string);
@@ -237,7 +240,6 @@ const openDeriveModal = () => {
   if (!sample?.value) return;
   deriveSelection.value = [sample.value];
   showDeriveModal.value = true;
-  state.dropdownOpen = false;
 };
 
 const closeDeriveModal = () => {
@@ -280,7 +282,10 @@ const handleDerived = (derivedSamples: SampleType[]) => {
           class="px-4 py-2 bg-background border border-border text-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
           @click="openGenealogyModal"
         >
-          View genealogy
+          <span class="flex items-center gap-2">
+            <font-awesome-icon icon="sitemap" class="size-4" aria-hidden="true" />
+            Genealogy
+          </span>
         </button>
       </div>
     </div>
@@ -324,89 +329,51 @@ const handleDerived = (derivedSamples: SampleType[]) => {
               </span>
             </div>
             <span class="text-muted-foreground">{{ profileAnalysesText(sample?.profiles, sample?.analyses ?? []) }}</span>
-            <div class="relative">
-              <div 
-                @click="state.dropdownOpen = !state.dropdownOpen"
-                class="flex items-center space-x-2 cursor-pointer"
-              >
-                <button 
-                  type="button" 
-                  class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
+            <DropdownMenu>
+              <DropdownMenuTrigger as-child>
+                <div
+                  class="flex items-center space-x-2 cursor-pointer rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  role="button"
+                  tabindex="0"
                 >
-                  {{ sample?.status }}
-                </button>
-                <font-awesome-icon icon="chevron-down" class="text-muted-foreground" />
-              </div>
-              <div v-show="state.dropdownOpen" @click="state.dropdownOpen = false" class="fixed inset-0 h-full w-full z-10"></div>
-              <div 
-                v-show="state.dropdownOpen" 
-                class="absolute right-0 mt-2 py-2 bg-background rounded-lg shadow-lg border border-border z-20 min-w-[200px]"
-              >
-                <button 
-                  v-show="canReceive" 
-                  @click="receiveSample()"
-                  class="w-full px-4 py-2 text-left text-foreground hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
-                >
+                  <span
+                    class="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                  >
+                    {{ sample?.status }}
+                  </span>
+                  <font-awesome-icon icon="chevron-down" class="text-muted-foreground size-3.5" aria-hidden="true" />
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" class="min-w-[200px]">
+                <DropdownMenuItem v-if="canReceive" @select="receiveSample()">
                   Receive
-                </button>
-                <button 
-                  v-show="canVerify" 
-                  @click="verifySample()"
-                  class="w-full px-4 py-2 text-left text-foreground hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
-                >
+                </DropdownMenuItem>
+                <DropdownMenuItem v-if="canVerify" @select="verifySample()">
                   Approve
-                </button>
-                <button 
-                  v-show="canReject" 
-                  @click="rejectSample()"
-                  class="w-full px-4 py-2 text-left text-foreground hover:bg-destructive hover:text-destructive-foreground transition-colors duration-200"
-                >
+                </DropdownMenuItem>
+                <DropdownMenuItem v-if="canReject" variant="destructive" @select="rejectSample()">
                   Reject
-                </button>
-                <button 
-                  v-show="canCancel" 
-                  @click="cancelSample()"
-                  class="w-full px-4 py-2 text-left text-foreground hover:bg-destructive hover:text-destructive-foreground transition-colors duration-200"
-                >
+                </DropdownMenuItem>
+                <DropdownMenuItem v-if="canCancel" variant="destructive" @select="cancelSample()">
                   Cancel
-                </button>
-                <button 
-                  v-show="canReinstate" 
-                  @click="reInstateSample()"
-                  class="w-full px-4 py-2 text-left text-foreground hover:bg-destructive hover:text-destructive-foreground transition-colors duration-200"
-                >
+                </DropdownMenuItem>
+                <DropdownMenuItem v-if="canReinstate" variant="destructive" @select="reInstateSample()">
                   Reinstate
-                </button>
-                <button 
-                  v-show="canPublish" 
-                  @click="publishSample()"
-                  class="w-full px-4 py-2 text-left text-foreground hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
-                >
+                </DropdownMenuItem>
+                <DropdownMenuItem v-if="canPublish" @select="publishSample()">
                   {{ publishText }}
-                </button>
-                <button 
-                  v-show="canInvalidate" 
-                  @click="invalidateSample()"
-                  class="w-full px-4 py-2 text-left text-foreground hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
-                >
+                </DropdownMenuItem>
+                <DropdownMenuItem v-if="canInvalidate" @select="invalidateSample()">
                   Invalidate
-                </button>
-                <button 
-                  v-show="canRecover" 
-                  @click="recoverSample()"
-                  class="w-full px-4 py-2 text-left text-foreground hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
-                >
+                </DropdownMenuItem>
+                <DropdownMenuItem v-if="canRecover" @select="recoverSample()">
                   Recover
-                </button>
-                <button 
-                  v-show="sample?.uid"
-                  @click="openDeriveModal()"
-                  class="w-full px-4 py-2 text-left text-foreground hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
-                >
+                </DropdownMenuItem>
+                <DropdownMenuItem v-if="sample?.uid" @select="openDeriveModal()">
                   Derive
-                </button>
-              </div>
-            </div>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           <div class="grid grid-cols-3 gap-6">

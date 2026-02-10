@@ -190,20 +190,41 @@ const { handleSubmit, values, setFieldValue } = useForm({
   } as any,
 });
 
-// Set selectedClient when patient's client is loaded
+// Resolve selectedClient from store's clients list when possible, so it has contacts loaded
+function resolveClientWithContacts(client: ClientType | null | undefined): ClientType | null {
+  if (!client?.uid) return null;
+  const fromList = clients.value?.find((c) => c.uid === client.uid);
+  return (fromList ?? client) as ClientType | null;
+}
+
+// Set selectedClient when patient's client is loaded (use resolved client so contacts are available)
 if (patient?.value?.client) {
-  selectedClient.value = patient.value.client;
+  selectedClient.value = resolveClientWithContacts(patient.value.client) ?? patient.value.client;
 }
 
 watch(
   () => values.client,
   (value) => {
-    selectedClient.value = (value as ClientType | null) ?? null;
+    const resolved = resolveClientWithContacts(value as ClientType | null);
+    selectedClient.value = resolved ?? (value as ClientType | null) ?? null;
     if (values.clientContact && values.clientContact?.clientUid !== value?.uid) {
       setFieldValue("clientContact", null);
     }
   },
   { immediate: true }
+);
+
+// When clients list loads after mount, re-resolve selectedClient so default client gets contacts
+watch(
+  () => clients.value?.length ?? 0,
+  (count) => {
+    if (count > 0 && values.client?.uid && selectedClient.value?.uid === values.client.uid) {
+      const resolved = resolveClientWithContacts(values.client as ClientType);
+      if (resolved?.contacts != null) {
+        selectedClient.value = resolved;
+      }
+    }
+  }
 );
 
 type PartialSample = Pick<SampleType, "sampleType" | "profiles" | "analyses"> & {
@@ -779,7 +800,8 @@ const contactLabel = (contact: ClientContactType) => {
                   <VueMultiselect
                       class="w-full"
                       placeholder="Select sample type"
-                      v-model="sample.sampleType"
+                      :model-value="sample.sampleType"
+                      @update:model-value="(v) => setFieldValue('samples.' + index + '.sampleType', v)"
                       :options="sampleTypes"
                       :searchable="true"
                       :disabled="arSaving"
@@ -795,7 +817,8 @@ const contactLabel = (contact: ClientContactType) => {
                 <TableCell v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r">
                   <VueDatePicker
                       class="w-full"
-                      v-model="sample.dateCollected"
+                      :model-value="sample.dateCollected"
+                      @update:model-value="(v) => setFieldValue('samples.' + index + '.dateCollected', v)"
                       :max-date="maxDate"
                       :disabled="arSaving"
                       time-picker-inline
@@ -809,7 +832,8 @@ const contactLabel = (contact: ClientContactType) => {
                 <TableCell v-for="(sample, index) in samples" :key="index" class="p-4 w-80 border-r">
                   <VueDatePicker
                       class="w-full"
-                      v-model="sample.dateReceived"
+                      :model-value="sample.dateReceived"
+                      @update:model-value="(v) => setFieldValue('samples.' + index + '.dateReceived', v)"
                       :min-date="sample.dateCollected && typeof sample.dateCollected === 'object' && !(sample.dateCollected instanceof Date) && typeof sample.dateCollected.toDate === 'function' ? sample.dateCollected.toDate() : sample.dateCollected || null"
                       :max-date="maxDate"
                       :disabled="arSaving"
@@ -825,7 +849,8 @@ const contactLabel = (contact: ClientContactType) => {
                   <VueMultiselect
                       class="w-full whitespace-nowrap z-10"
                       placeholder="Select analysis profiles"
-                      v-model="sample.profiles"
+                      :model-value="sample.profiles"
+                      @update:model-value="(v) => setFieldValue('samples.' + index + '.profiles', v)"
                       :options="analysesProfiles"
                       :searchable="true"
                       :disabled="arSaving"
@@ -843,7 +868,8 @@ const contactLabel = (contact: ClientContactType) => {
                   <VueMultiselect
                       class="w-full whitespace-nowrap"
                       placeholder="Select analysis services"
-                      v-model="sample.analyses"
+                      :model-value="sample.analyses"
+                      @update:model-value="(v) => setFieldValue('samples.' + index + '.analyses', v)"
                       :options="analysesServices"
                       :searchable="true"
                       :disabled="arSaving"
