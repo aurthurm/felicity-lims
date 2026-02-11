@@ -466,7 +466,7 @@ defineExpose({
 </template>
 
 <style scoped>
-@import "tailwindcss";
+@reference "@/assets/css/style.css";
 .reflex-canvas-container {
   @apply relative w-full h-full;
   @apply bg-muted;
@@ -506,7 +506,7 @@ kbd {
 </style>
 
 <style>
-@import "tailwindcss";
+@reference "@/assets/css/style.css";
 
 /* Global Vue Flow styling */
 .vue-flow__node {

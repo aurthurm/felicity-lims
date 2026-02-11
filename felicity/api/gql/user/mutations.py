@@ -199,6 +199,7 @@ class ProfilePictureUploadInputType:
 @strawberry.input
 class UserPreferenceInput:
     expanded_menu: bool | None = False
+    mega_menu: bool | None = False
     theme: str | None = "light"
     default_route: str | None = None
     departments: list[str] | None = None
@@ -266,7 +267,7 @@ class UserMutations:
         pref = user_preference_service.get(user_uid=user.uid)
         if not pref:
             pref_in = user_schemas.UserPreferenceCreate(
-                user_uid=user.uid, expanded_menu=False, theme="LIGHT"
+                user_uid=user.uid, expanded_menu=False, mega_menu=False, theme="LIGHT"
             )
             await user_preference_service.create(pref_in)
 

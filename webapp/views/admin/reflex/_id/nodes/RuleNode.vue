@@ -167,7 +167,7 @@ const isNumericValue = computed(() => {
 </template>
 
 <style scoped>
-@import "tailwindcss";
+@reference "@/assets/css/style.css";
 .rule-node {
   @apply bg-card border-2 border-amber-400 rounded-lg shadow-md;
   @apply px-4 py-3 min-w-[220px] max-w-[320px];

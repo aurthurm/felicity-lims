@@ -1263,7 +1263,8 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-@import "tailwindcss";
+@reference "@/assets/css/style.css";
+
 .reflex-editor {
   @apply w-full h-screen overflow-hidden bg-muted;
 }

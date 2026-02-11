@@ -195,6 +195,7 @@ query getUserPreferences {
     userPreferences {
         uid
         expandedMenu
+        megaMenu
         departments {
             uid
             name

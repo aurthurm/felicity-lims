@@ -135,38 +135,33 @@ const plotLateDonut = (data: DonutData[], elem: string) => {
     width: 300,
   });
 
-  chart.data(data);
-  chart.scale("percent", {
-    formatter: (val: number) => `${(val * 100).toFixed(2)}%`,
+  chart.options({
+    type: 'interval',
+    data: data,
+    coordinate: { type: 'theta', innerRadius: 0.6, outerRadius: 0.75 },
+    encode: { y: 'percent', color: 'item' },
+    transform: [{ type: 'stackY' }],
+    scale: {
+      color: { type: 'ordinal' },
+    },
+    legend: false,
+    tooltip: {
+      title: false,
+      items: [
+        (d: any) => ({
+          name: d.item,
+          value: `${(d.percent * 100).toFixed(2)}%`,
+        }),
+      ],
+    },
+    labels: [
+      {
+        text: (d: any) => `${(d.percent * 100).toFixed(2)}%`,
+      },
+    ],
+    interaction: { elementHighlight: true },
   });
 
-  chart.coordinate("theta", {
-    radius: 0.75,
-    innerRadius: 0.6,
-  });
-
-  chart.tooltip({
-    showTitle: false,
-    showMarkers: false,
-    itemTpl:
-      '<li class="g2-tooltip-list-item"><span style="background-color:{color};" class="g2-tooltip-marker"></span>{name}: {value}</li>',
-  });
-
-  chart.annotation();
-  chart
-    .interval()
-    .adjust("stack")
-    .position("percent")
-    .color("item")
-    .label("percent", {
-      content: (data: any) => `${(data.percent * 100).toFixed(2)}%`,
-    })
-    .tooltip("item*percent", (item: string, percent: number) => ({
-      name: item,
-      value: `${(percent * 100).toFixed(2)}%`,
-    }));
-
-  chart.interaction("element-active");
   chart.render();
 };
 

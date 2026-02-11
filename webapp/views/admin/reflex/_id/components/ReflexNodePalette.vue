@@ -270,7 +270,7 @@ const toggleCollapse = () => {
 </template>
 
 <style scoped>
-@import "tailwindcss";
+@reference "@/assets/css/style.css";
 .node-palette {
   @apply w-64 bg-card border-r border-border shadow-sm;
   @apply flex flex-col h-full overflow-hidden;

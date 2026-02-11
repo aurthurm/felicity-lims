@@ -23,6 +23,7 @@ mutation AuthenticateUser($username: String!, $password: String!) {
                 preference {
                     uid
                     expandedMenu
+                    megaMenu
                     theme
                     departments {
                         uid
@@ -114,6 +115,7 @@ mutation TokenRefresh($refreshToken: String!) {
                 preference {
                     uid
                     expandedMenu
+                    megaMenu
                     theme
                     departments {
                         uid
@@ -492,6 +494,7 @@ mutation EditUserPreferences($preferencesIn: UserPreferenceInput!) {
         ... on UserPreferenceType {
             uid
             expandedMenu
+            megaMenu
             departments {
                 uid
                 name

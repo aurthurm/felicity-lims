@@ -205,7 +205,7 @@ const toggleCollapse = () => {
 </template>
 
 <style scoped>
-@import "tailwindcss";
+@reference "@/assets/css/style.css";
 .validation-panel {
   @apply fixed bottom-4 right-4 w-80 bg-card border-2 rounded-lg shadow-xl;
   @apply transition-all duration-300;

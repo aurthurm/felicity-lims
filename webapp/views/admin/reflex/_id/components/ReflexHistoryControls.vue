@@ -106,7 +106,7 @@ const historyStatus = computed(() => {
 </template>
 
 <style scoped>
-@import "tailwindcss";
+@reference "@/assets/css/style.css";
 .history-controls {
   @apply flex items-center space-x-2;
 }

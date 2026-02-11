@@ -36,7 +36,13 @@ export type AuthenticateUserMutation = (
             )>>,
             preference?: Types.Maybe<(
               { __typename?: 'UserPreferenceType' }
-              & Pick<Types.UserPreferenceType, 'uid' | 'expandedMenu' | 'theme'>
+              & Pick<
+                Types.UserPreferenceType,
+                | 'uid'
+                | 'expandedMenu'
+                | 'megaMenu'
+                | 'theme'
+              >
               & { departments?: Types.Maybe<Array<(
                 { __typename?: 'DepartmentType' }
                 & Pick<Types.DepartmentType, 'uid' | 'name'>
@@ -151,7 +157,13 @@ export type TokenRefreshMutation = (
           )>>,
           preference?: Types.Maybe<(
             { __typename?: 'UserPreferenceType' }
-            & Pick<Types.UserPreferenceType, 'uid' | 'expandedMenu' | 'theme'>
+            & Pick<
+              Types.UserPreferenceType,
+              | 'uid'
+              | 'expandedMenu'
+              | 'megaMenu'
+              | 'theme'
+            >
             & { departments?: Types.Maybe<Array<(
               { __typename?: 'DepartmentType' }
               & Pick<Types.DepartmentType, 'uid' | 'name'>
@@ -645,6 +657,7 @@ export type EditUserPreferencesMutation = (
         Types.UserPreferenceType,
         | 'uid'
         | 'expandedMenu'
+        | 'megaMenu'
         | 'theme'
         | 'defaultRoute'
       >
@@ -683,6 +696,7 @@ export const AuthenticateUserDocument = gql`
         preference {
           uid
           expandedMenu
+          megaMenu
           theme
           departments {
             uid
@@ -794,6 +808,7 @@ export const TokenRefreshDocument = gql`
         preference {
           uid
           expandedMenu
+          megaMenu
           theme
           departments {
             uid
@@ -1218,6 +1233,7 @@ export const EditUserPreferencesDocument = gql`
     ... on UserPreferenceType {
       uid
       expandedMenu
+      megaMenu
       departments {
         uid
         name

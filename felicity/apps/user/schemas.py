@@ -91,6 +91,7 @@ class UserPreferenceBase(BaseAuditModel):
     laboratory_uid: str | None = None
     user_uid: str
     expanded_menu: bool | None = False
+    mega_menu: bool | None = False
     theme: str | None = "light"
     default_route: str | None = None
 
@@ -107,6 +108,7 @@ class UserPreferenceCreate(UserPreferenceBase):
 
 class UserPreferenceUpdate(UserPreferenceBase):
     expanded_menu: bool | None = False
+    mega_menu: bool | None = False
     theme: str | None = "light"
     default_route: str | None = None
 

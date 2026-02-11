@@ -5,7 +5,7 @@ export type AuthenticateUserMutationVariables = Exact<{
 
 
 export type AuthenticateUserMutation = { __typename?: 'Mutation', authenticateUser:
-    | { __typename: 'AuthenticatedData', token: string, refresh: string, tokenType: string, user: { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null, preference?: { __typename?: 'UserPreferenceType', uid: string, expandedMenu?: boolean | null, theme?: string | null, departments?: Array<{ __typename?: 'DepartmentType', uid: string, name?: string | null }> | null } | null }, laboratories?: Array<{ __typename?: 'LaboratoryType', uid: string, name: string }> | null, activeLaboratory?: { __typename?: 'LaboratoryType', uid: string, name: string } | null }
+    | { __typename: 'AuthenticatedData', token: string, refresh: string, tokenType: string, user: { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null, preference?: { __typename?: 'UserPreferenceType', uid: string, expandedMenu?: boolean | null, megaMenu?: boolean | null, theme?: string | null, departments?: Array<{ __typename?: 'DepartmentType', uid: string, name?: string | null }> | null } | null }, laboratories?: Array<{ __typename?: 'LaboratoryType', uid: string, name: string }> | null, activeLaboratory?: { __typename?: 'LaboratoryType', uid: string, name: string } | null }
     | { __typename: 'OperationError', error: string, suggestion?: string | null }
    };
 
@@ -47,7 +47,7 @@ export type TokenRefreshMutationVariables = Exact<{
 
 
 export type TokenRefreshMutation = { __typename?: 'Mutation', refresh:
-    | { __typename: 'AuthenticatedData', token: string, refresh: string, tokenType: string, user: { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null, preference?: { __typename?: 'UserPreferenceType', uid: string, expandedMenu?: boolean | null, theme?: string | null, departments?: Array<{ __typename?: 'DepartmentType', uid: string, name?: string | null }> | null } | null } }
+    | { __typename: 'AuthenticatedData', token: string, refresh: string, tokenType: string, user: { __typename?: 'UserType', uid: string, firstName?: string | null, lastName?: string | null, groups?: Array<{ __typename?: 'GroupType', uid: string, name?: string | null, keyword?: string | null, pages?: string | null, permissions?: Array<{ __typename?: 'PermissionType', uid: string, action?: string | null, target?: string | null }> | null }> | null, preference?: { __typename?: 'UserPreferenceType', uid: string, expandedMenu?: boolean | null, megaMenu?: boolean | null, theme?: string | null, departments?: Array<{ __typename?: 'DepartmentType', uid: string, name?: string | null }> | null } | null } }
     | { __typename: 'OperationError', error: string, suggestion?: string | null }
    };
 
@@ -216,7 +216,7 @@ export type EditUserPreferencesMutationVariables = Exact<{
 
 export type EditUserPreferencesMutation = { __typename?: 'Mutation', updateUserPreferences:
     | { __typename: 'OperationError', error: string, suggestion?: string | null }
-    | { __typename?: 'UserPreferenceType', uid: string, expandedMenu?: boolean | null, theme?: string | null, defaultRoute?: string | null, departments?: Array<{ __typename?: 'DepartmentType', uid: string, name?: string | null }> | null }
+    | { __typename?: 'UserPreferenceType', uid: string, expandedMenu?: boolean | null, megaMenu?: boolean | null, theme?: string | null, defaultRoute?: string | null, departments?: Array<{ __typename?: 'DepartmentType', uid: string, name?: string | null }> | null }
    };
 
 export type GetOrganizationQueryVariables = Exact<{ [key: string]: never; }>;
@@ -270,7 +270,7 @@ export type GetAllDepartmentsQuery = { __typename?: 'Query', departmentAll: Arra
 export type GetUserPreferencesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUserPreferencesQuery = { __typename?: 'Query', userPreferences: { __typename?: 'UserPreferenceType', uid: string, expandedMenu?: boolean | null, theme?: string | null, defaultRoute?: string | null, departments?: Array<{ __typename?: 'DepartmentType', uid: string, name?: string | null }> | null } };
+export type GetUserPreferencesQuery = { __typename?: 'Query', userPreferences: { __typename?: 'UserPreferenceType', uid: string, expandedMenu?: boolean | null, megaMenu?: boolean | null, theme?: string | null, defaultRoute?: string | null, departments?: Array<{ __typename?: 'DepartmentType', uid: string, name?: string | null }> | null } };
 
 export type AddCountryMutationVariables = Exact<{
   payload: CountryInputType;

@@ -78,54 +78,54 @@ const plotUserMatrix = (data: any[], elem: string, grpName: string) => {
     autoFit: true,
     height: 250,
     width: 500,
-    localRefresh: false,
   });
 
-  chart.coordinate("theta", {
-    radius: 0.75,
-    innerRadius: 0.5,
-  });
-
-  chart.data(data);
-
-  chart.scale("percent", {
-    formatter: (val: number) => `${(val * 100).toFixed(2)}%`,
-  });
-
-  chart.tooltip({
-    showTitle: false,
-    showMarkers: false,
-  });
-
-  chart.legend(false);
-  chart
-    .interval()
-    .position("percent")
-    .color("item")
-    .label("percent", {
-      layout: [{ type: "pie-spider" }, { type: "hide-overlap" }],
-      offset: 8,
-      labelHeight: 38,
-      content: (obj: any) => `${obj.item} (${obj.count})`,
-      labelLine: {
+  chart.options({
+    type: 'view',
+    data: data,
+    coordinate: { type: 'theta', innerRadius: 0.5, outerRadius: 0.75 },
+    scale: {
+      color: { type: 'ordinal' },
+    },
+    legend: false,
+    tooltip: {
+      title: false,
+      items: [
+        (d: any) => ({
+          name: d.item,
+          value: `${(d.percent * 100).toFixed(2)}%`,
+        }),
+      ],
+    },
+    interaction: { elementHighlight: true },
+    children: [
+      {
+        type: 'interval',
+        encode: { y: 'percent', color: 'item' },
+        transform: [{ type: 'stackY' }],
+        labels: [
+          {
+            text: (d: any) => `${d.item} (${d.count})`,
+            position: 'spider',
+            connectorDistance: 8,
+            connectorLineWidth: 0.5,
+          },
+        ],
+      },
+      {
+        type: 'text',
         style: {
-          lineWidth: 0.5,
+          text: grpName,
+          x: '50%',
+          y: '50%',
+          textAlign: 'center',
+          fontSize: 14,
+          fill: 'hsl(var(--foreground))',
         },
       },
-    })
-    .adjust("stack");
-
-  const view = chart.createView();
-  view.annotation().text({
-    position: ["50%", "50%"],
-    content: grpName,
-    style: {
-      fill: "hsl(var(--foreground))",
-      textAlign: "center",
-    },
+    ],
   });
 
-  chart.interaction("element-active");
   chart.render();
 };
 

@@ -51172,6 +51172,14 @@ export default {
             "args": []
           },
           {
+            "name": "megaMenu",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Any"
+            },
+            "args": []
+          },
+          {
             "name": "theme",
             "type": {
               "kind": "SCALAR",

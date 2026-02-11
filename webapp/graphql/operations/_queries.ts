@@ -303,6 +303,7 @@ export type GetUserPreferencesQuery = (
       Types.UserPreferenceType,
       | 'uid'
       | 'expandedMenu'
+      | 'megaMenu'
       | 'theme'
       | 'defaultRoute'
     >
@@ -550,6 +551,7 @@ export const GetUserPreferencesDocument = gql`
   userPreferences {
     uid
     expandedMenu
+    megaMenu
     departments {
       uid
       name

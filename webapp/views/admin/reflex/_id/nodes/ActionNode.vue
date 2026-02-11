@@ -30,7 +30,7 @@ const props = defineProps<Props>();
 const nodeColors = computed(() => {
   if (props.data.actionType === 'add') {
     return {
-      border: 'border-success/50',
+      border: 'action-border-success',
       bg: 'bg-card',
       text: 'text-success',
       badge: 'bg-success/15 text-success',
@@ -42,7 +42,7 @@ const nodeColors = computed(() => {
     };
   }
   return {
-    border: 'border-accent/50',
+    border: 'action-border-accent',
     bg: 'bg-card',
     text: 'text-accent',
     badge: 'bg-accent/15 text-accent',
@@ -175,7 +175,7 @@ const actionDetail = computed(() => {
 </template>
 
 <style scoped>
-@import "tailwindcss";
+@reference "@/assets/css/style.css";
 .action-node {
   @apply border-2 rounded-lg shadow-md;
   @apply px-4 py-3 min-w-[220px] max-w-[280px];
@@ -195,13 +195,13 @@ const actionDetail = computed(() => {
   @apply border-warning/50 bg-warning/10;
 }
 
-/* Add action specific valid state */
-.action-node.node-valid.border-success/50 {
+/* Add action specific state */
+.action-node.action-border-success {
   @apply border-success/50 bg-card;
 }
 
-/* Finalize action specific valid state */
-.action-node.node-valid.border-accent/50 {
+/* Finalize action specific state */
+.action-node.action-border-accent {
   @apply border-accent/50 bg-card;
 }
 

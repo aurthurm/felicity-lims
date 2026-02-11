@@ -9966,6 +9966,7 @@ export type UserPreferenceInput = {
   defaultRoute?: InputMaybe<Scalars['String']['input']>;
   departments?: InputMaybe<Array<Scalars['String']['input']>>;
   expandedMenu?: InputMaybe<Scalars['Boolean']['input']>;
+  megaMenu?: InputMaybe<Scalars['Boolean']['input']>;
   theme?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -9979,6 +9980,7 @@ export type UserPreferenceType = {
   defaultRoute?: Maybe<Scalars['String']['output']>;
   departments?: Maybe<Array<DepartmentType>>;
   expandedMenu?: Maybe<Scalars['Boolean']['output']>;
+  megaMenu?: Maybe<Scalars['Boolean']['output']>;
   theme?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;

@@ -175,7 +175,7 @@ const logicSummary = computed(() => {
 </template>
 
 <style scoped>
-@import "tailwindcss";
+@reference "@/assets/css/style.css";
 .decision-node {
   @apply bg-card border-2 border-accent/50 rounded-lg shadow-md;
   @apply px-4 py-3 min-w-[240px] max-w-[300px];

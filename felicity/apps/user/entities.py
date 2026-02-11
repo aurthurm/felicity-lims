@@ -132,6 +132,7 @@ class UserPreference(MaybeLabScopedEntity):
     )
 
     expanded_menu = Column(Boolean(), default=False)
+    mega_menu = Column(Boolean(), default=False)
     departments = relationship(
         "Department", secondary=department_preference, lazy="selectin"
     )

@@ -20,6 +20,7 @@ const {
   isDepartmentSelected,
   theme,
   expandedMenu,
+  megaMenu,
   defaultRoute,
   departments,
 } = userPreferenceComposable();
@@ -76,6 +77,7 @@ async function savePreferences() {
 
   const input: UserPreferenceInput = {
     expandedMenu: expandedMenu.value,
+    megaMenu: megaMenu.value,
     theme: theme.value,
     defaultRoute: defaultRoute.value || undefined,
     departments: departments.value.length > 0 ? departments.value.map(d => d.uid) : undefined,
@@ -152,27 +154,58 @@ async function savePreferences() {
         </div>
       </div>
 
-      <!-- Expanded Menu Toggle -->
-      <div class="flex items-center justify-between">
-        <label class="text-l font-semibold text-foreground">
-          Expanded Menu
-        </label>
-        <button
-          @click="expandedMenu = !expandedMenu"
-          :class="[
-            'relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
-            expandedMenu ? 'bg-primary' : 'bg-muted'
-          ]"
-          role="switch"
-          :aria-checked="expandedMenu"
-        >
-          <span
+      <!-- Menu Preferences -->
+      <div class="space-y-4">
+        <!-- Expanded Menu Toggle -->
+        <div class="flex items-center justify-between">
+          <label class="text-l font-semibold text-foreground">
+            Expanded Menu
+          </label>
+          <button
+            @click="expandedMenu = !expandedMenu"
             :class="[
-              'inline-block h-4 w-4 transform rounded-full bg-background transition-transform',
-              expandedMenu ? 'translate-x-6' : 'translate-x-1'
+              'relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+              expandedMenu ? 'bg-primary' : 'bg-muted'
             ]"
-          />
-        </button>
+            role="switch"
+            :aria-checked="expandedMenu"
+          >
+            <span
+              :class="[
+                'inline-block h-4 w-4 transform rounded-full bg-background transition-transform',
+                expandedMenu ? 'translate-x-6' : 'translate-x-1'
+              ]"
+            />
+          </button>
+        </div>
+
+        <!-- Mega Menu Toggle -->
+        <div class="flex items-center justify-between">
+          <div>
+            <label class="text-l font-semibold text-foreground">
+              Mega Menu
+            </label>
+            <p class="text-sm text-muted-foreground">
+              Enable horizontal mega menu instead of sidebar (takes effect after page reload)
+            </p>
+          </div>
+          <button
+            @click="megaMenu = !megaMenu"
+            :class="[
+              'relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+              megaMenu ? 'bg-primary' : 'bg-muted'
+            ]"
+            role="switch"
+            :aria-checked="megaMenu"
+          >
+            <span
+              :class="[
+                'inline-block h-4 w-4 transform rounded-full bg-background transition-transform',
+                megaMenu ? 'translate-x-6' : 'translate-x-1'
+              ]"
+            />
+          </button>
+        </div>
       </div>
 
       <!-- Departments in 2 columns -->

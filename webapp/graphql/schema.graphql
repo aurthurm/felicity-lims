@@ -3960,6 +3960,7 @@ type Mutation {
   updateReflexTrigger(uid: String!, payload: ReflexTriggerInput!): ReflexTriggerResponse!
   deleteReflexTrigger(uid: String!): DeleteResponse!
   deleteReflexDecision(uid: String!): DeleteResponse!
+  saveReflexRuleGraph(uid: String!, graph: ReflexRuleGraphInput!): ReflexRuleResponse!
   createStoreRoom(payload: StoreRoomInputType!): StoreRoomResponse! @isAuthenticated @hasPermission
   updateStoreRoom(uid: String!, payload: StoreRoomInputType!): StoreRoomResponse! @isAuthenticated @hasPermission
   createStorageLocation(payload: StorageLocationInputType!): StorageLocationResponse! @isAuthenticated @hasPermission
@@ -5104,6 +5105,8 @@ type ReferralLaboratoryType {
 input ReflexAddAnalysisInput {
   analysisUid: String!
   count: Int! = 1
+  posX: Float = null
+  posY: Float = null
 }
 
 type ReflexAddAnalysisType {
@@ -5132,6 +5135,8 @@ input ReflexDecisionInput {
   ruleGroups: [ReflexRuleGroupInput!] = null
   addAnalyses: [ReflexAddAnalysisInput!] = null
   finalizeAnalyses: [ReflexFinalizeAnalysisInput!] = null
+  posX: Float = null
+  posY: Float = null
 }
 
 """Response for reflex decision mutations"""
@@ -5161,6 +5166,8 @@ type ReflexDecisionType {
 input ReflexFinalizeAnalysisInput {
   analysisUid: String!
   value: String!
+  posX: Float = null
+  posY: Float = null
 }
 
 type ReflexFinalizeAnalysisType {
@@ -5220,10 +5227,32 @@ type ReflexRuleEdge {
   node: ReflexRuleType!
 }
 
+input ReflexRuleGraphEdge {
+  source: String!
+  target: String!
+  sourceHandle: String = null
+  targetHandle: String = null
+}
+
+input ReflexRuleGraphInput {
+  nodes: [ReflexRuleGraphNode!]!
+  edges: [ReflexRuleGraphEdge!]!
+}
+
+input ReflexRuleGraphNode {
+  id: String!
+  type: String!
+  positionX: Float!
+  positionY: Float!
+  data: JSON!
+}
+
 input ReflexRuleGroupInput {
   description: String = null
   priority: Int! = 0
   rules: [ReflexRuleCriteriaInput!] = null
+  posX: Float = null
+  posY: Float = null
 }
 
 type ReflexRuleGroupType {
@@ -5248,6 +5277,7 @@ type ReflexRuleGroupType {
 input ReflexRuleInput {
   name: String!
   description: String = ""
+  isActive: Boolean = null
 }
 
 """"""
@@ -5276,6 +5306,8 @@ input ReflexTriggerInput {
   description: String!
   sampleTypeUid: String = null
   analyses: [String!] = null
+  posX: Float = null
+  posY: Float = null
 }
 
 """Response for reflex trigger mutations"""
@@ -6535,6 +6567,7 @@ type UserLaboratoryAssignmentType {
 
 input UserPreferenceInput {
   expandedMenu: Boolean = false
+  megaMenu: Boolean = false
   theme: String = "light"
   defaultRoute: String = null
   departments: [String!] = null
@@ -6547,6 +6580,7 @@ type UserPreferenceType {
   uid: String!
   userUid: String
   expandedMenu: Boolean
+  megaMenu: Boolean
   departments: [DepartmentType!]
   theme: String
   defaultRoute: String

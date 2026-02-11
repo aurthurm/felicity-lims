@@ -9965,6 +9965,7 @@ export type UserPreferenceInput = {
   defaultRoute?: InputMaybe<Scalars['String']['input']>;
   departments?: InputMaybe<Array<Scalars['String']['input']>>;
   expandedMenu?: InputMaybe<Scalars['Boolean']['input']>;
+  megaMenu?: InputMaybe<Scalars['Boolean']['input']>;
   theme?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -9978,6 +9979,7 @@ export type UserPreferenceType = {
   defaultRoute?: Maybe<Scalars['String']['output']>;
   departments?: Maybe<Array<DepartmentType>>;
   expandedMenu?: Maybe<Scalars['Boolean']['output']>;
+  megaMenu?: Maybe<Scalars['Boolean']['output']>;
   theme?: Maybe<Scalars['String']['output']>;
   uid: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
@@ -14437,6 +14439,7 @@ export type GraphCacheResolvers = {
     defaultRoute?: GraphCacheResolver<WithTypename<UserPreferenceType>, Record<string, never>, Scalars['String'] | string>,
     departments?: GraphCacheResolver<WithTypename<UserPreferenceType>, Record<string, never>, Array<WithTypename<DepartmentType> | string>>,
     expandedMenu?: GraphCacheResolver<WithTypename<UserPreferenceType>, Record<string, never>, Scalars['Boolean'] | string>,
+    megaMenu?: GraphCacheResolver<WithTypename<UserPreferenceType>, Record<string, never>, Scalars['Boolean'] | string>,
     theme?: GraphCacheResolver<WithTypename<UserPreferenceType>, Record<string, never>, Scalars['String'] | string>,
     uid?: GraphCacheResolver<WithTypename<UserPreferenceType>, Record<string, never>, Scalars['String'] | string>,
     updatedAt?: GraphCacheResolver<WithTypename<UserPreferenceType>, Record<string, never>, Scalars['String'] | string>,
@@ -19125,6 +19128,7 @@ export type GraphCacheUpdaters = {
     defaultRoute?: GraphCacheUpdateResolver<Maybe<WithTypename<UserPreferenceType>>, Record<string, never>>,
     departments?: GraphCacheUpdateResolver<Maybe<WithTypename<UserPreferenceType>>, Record<string, never>>,
     expandedMenu?: GraphCacheUpdateResolver<Maybe<WithTypename<UserPreferenceType>>, Record<string, never>>,
+    megaMenu?: GraphCacheUpdateResolver<Maybe<WithTypename<UserPreferenceType>>, Record<string, never>>,
     theme?: GraphCacheUpdateResolver<Maybe<WithTypename<UserPreferenceType>>, Record<string, never>>,
     uid?: GraphCacheUpdateResolver<Maybe<WithTypename<UserPreferenceType>>, Record<string, never>>,
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<UserPreferenceType>>, Record<string, never>>,

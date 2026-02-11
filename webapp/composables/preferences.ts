@@ -20,6 +20,7 @@ interface UserPreference {
     departments?: DepartmentType[];
     theme?: ThemeVariant;
     expandedMenu?: boolean;
+    megaMenu?: boolean;
     defaultRoute?: string;
 }
 
@@ -29,6 +30,7 @@ const state = reactive({
     departments: [] as DepartmentType[],
     theme: 'light' as ThemeVariant,
     expandedMenu: false,
+    megaMenu: false,
     defaultRoute: '',
 });
 
@@ -99,6 +101,9 @@ export default function userPreferenceComposable() {
             if (preference.expandedMenu !== undefined && preference.expandedMenu !== null) {
                 state.expandedMenu = preference.expandedMenu;
             }
+            if (preference.megaMenu !== undefined && preference.megaMenu !== null) {
+                state.megaMenu = preference.megaMenu;
+            }
             if (preference.defaultRoute) {
                 state.defaultRoute = preference.defaultRoute;
             }
@@ -152,6 +157,7 @@ export default function userPreferenceComposable() {
     const getCurrentPreferences = computed(() => ({
         theme: state.theme,
         expandedMenu: state.expandedMenu,
+        megaMenu: state.megaMenu,
         defaultRoute: state.defaultRoute,
         departments: state.departments.map(d => d.uid),
     }));

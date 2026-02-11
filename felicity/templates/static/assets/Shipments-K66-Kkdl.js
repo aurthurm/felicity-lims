@@ -1,0 +1,1 @@
+import{_ as t,r as s,c as o,o as n,a as c}from"./index-Daoe3XS9.js";const i={},r={class:"space-y-6"};function a(_,m){const e=s("router-view");return n(),o("div",r,[c(e)])}const l=t(i,[["render",a],["__file","/home/administrator/Documents/Development/beak-insights/felicity/felicity-lims/webapp/views/shipment/Shipments.vue"]]);export{l as default};

@@ -6,7 +6,6 @@ import {useRouter} from "vue-router";
 import useApiUtil from "@/composables/api_util";
 import userPreferenceComposable from "@/composables/preferences";
 import * as guards from "@/guards";
-import { VITE_USE_MEGA_MENU } from '@/conf'
 import { useFullscreen } from "@vueuse/core";
 import { LaboratoryType } from "@/types/gql";
 import { SwitchActiveLaboratoryDocument } from "@/graphql/operations/_mutations";
@@ -57,10 +56,15 @@ const showPreferences = ref(false);
 const notificationStore = useNotificationStore();
 const toggleNotifications = (value: boolean) => notificationStore.showNotifications(value);
 
-// Theme management
-const {loadPreferredTheme} = userPreferenceComposable();
+// Theme management and preferences
+const {loadPreferredTheme, megaMenu} = userPreferenceComposable();
+// Capture the initial value on mount and don't react to changes
+// Changes will take effect on next page load/login
+const useMegaMenu = ref(false);
+
 onMounted(() => {
   loadPreferredTheme();
+  useMegaMenu.value = megaMenu.value;
 });
 
 // Navigation items for more maintainable structure
@@ -212,10 +216,10 @@ const switchLabNow = () => {
           </h1>
         </router-link>
 
-       <span v-if="VITE_USE_MEGA_MENU" class="mx-8 border-l border-border my-2" aria-hidden="true"></span>
+       <span v-if="useMegaMenu" class="mx-8 border-l border-border my-2" aria-hidden="true"></span>
 
         <!-- Main menu dropdown trigger -->
-        <button v-if="VITE_USE_MEGA_MENU" 
+        <button v-if="useMegaMenu" 
             @click="menuOpen = !menuOpen"
             class="hidden md:flex md:items-center focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md p-2"
             :aria-expanded="menuOpen"

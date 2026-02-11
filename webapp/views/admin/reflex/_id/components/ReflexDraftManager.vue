@@ -184,7 +184,7 @@ const handleClearDraft = () => {
 </template>
 
 <style scoped>
-@import "tailwindcss";
+@reference "@/assets/css/style.css";
 .draft-manager {
   @apply space-y-2;
 }
