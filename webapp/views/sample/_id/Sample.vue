@@ -246,6 +246,29 @@ const handleDerived = (derivedSamples: SampleType[]) => {
   if (!derivedSamples?.length) return;
   sampleStore.addSampleClones(derivedSamples);
 };
+
+// Status badge styling
+function getStatusBadgeClass(status?: string | null): string {
+  const s = status?.toLowerCase() ?? "";
+  const map: Record<string, string> = {
+    expected: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 border border-amber-200 dark:border-amber-800",
+    received: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 border border-blue-200 dark:border-blue-800",
+    awaiting: "bg-slate-100 text-slate-800 dark:bg-slate-800/50 dark:text-slate-300 border border-slate-200 dark:border-slate-700",
+    paired: "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800",
+    approved: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800",
+    published: "bg-violet-100 text-violet-800 dark:bg-violet-900/30 dark:text-violet-400 border border-violet-200 dark:border-violet-800",
+    cancelled: "bg-gray-100 text-gray-700 dark:bg-gray-800/50 dark:text-gray-400 border border-gray-200 dark:border-gray-700",
+    rejected: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 border border-red-200 dark:border-red-800",
+    stored: "bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-400 border border-teal-200 dark:border-teal-800",
+    invalidated: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400 border border-orange-200 dark:border-orange-800",
+  };
+  return map[s] ?? "bg-muted text-muted-foreground border border-border";
+}
+
+function formatStatusLabel(status?: string | null): string {
+  if (!status) return "";
+  return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+}
 </script>
 
 <template>
@@ -319,87 +342,115 @@ const handleDerived = (derivedSamples: SampleType[]) => {
             </div>
             <span class="text-muted-foreground">{{ profileAnalysesText(sample?.profiles, sample?.analyses ?? []) }}</span>
             <div class="relative">
-              <div 
+              <button
+                type="button"
                 @click="state.dropdownOpen = !state.dropdownOpen"
-                class="flex items-center space-x-2 cursor-pointer"
+                :class="[
+                  'inline-flex items-center gap-2 px-3.5 py-2 rounded-lg border text-sm font-medium transition-all duration-200',
+                  'hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+                  getStatusBadgeClass(sample?.status)
+                ]"
               >
-                <button 
-                  type="button" 
-                  class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
-                >
-                  {{ sample?.status }}
-                </button>
-                <font-awesome-icon icon="chevron-down" class="text-muted-foreground" />
-              </div>
+                <span class="w-2 h-2 rounded-full shrink-0 bg-current opacity-60" aria-hidden="true"></span>
+                {{ formatStatusLabel(sample?.status) }}
+                <font-awesome-icon
+                  icon="chevron-down"
+                  :class="['text-xs transition-transform duration-200', state.dropdownOpen && 'rotate-180']"
+                />
+              </button>
               <div v-show="state.dropdownOpen" @click="state.dropdownOpen = false" class="fixed inset-0 h-full w-full z-10"></div>
-              <div 
-                v-show="state.dropdownOpen" 
-                class="absolute right-0 mt-2 py-2 bg-background rounded-lg shadow-lg border border-border z-20 min-w-[200px]"
+              <Transition
+                enter-active-class="transition ease-out duration-150"
+                enter-from-class="opacity-0 scale-95 -translate-y-1"
+                enter-to-class="opacity-100 scale-100 translate-y-0"
+                leave-active-class="transition ease-in duration-100"
+                leave-from-class="opacity-100 scale-100"
+                leave-to-class="opacity-0 scale-95 -translate-y-1"
               >
-                <button 
-                  v-show="canReceive" 
-                  @click="receiveSample()"
-                  class="w-full px-4 py-2 text-left text-foreground hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
+                <div
+                  v-show="state.dropdownOpen"
+                  class="absolute right-0 mt-2 w-56 rounded-lg border border-border bg-popover shadow-lg z-20 overflow-hidden"
                 >
-                  Receive
-                </button>
-                <button 
-                  v-show="canVerify" 
-                  @click="verifySample()"
-                  class="w-full px-4 py-2 text-left text-foreground hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
-                >
-                  Approve
-                </button>
-                <button 
-                  v-show="canReject" 
-                  @click="rejectSample()"
-                  class="w-full px-4 py-2 text-left text-foreground hover:bg-destructive hover:text-destructive-foreground transition-colors duration-200"
-                >
-                  Reject
-                </button>
-                <button 
-                  v-show="canCancel" 
-                  @click="cancelSample()"
-                  class="w-full px-4 py-2 text-left text-foreground hover:bg-destructive hover:text-destructive-foreground transition-colors duration-200"
-                >
-                  Cancel
-                </button>
-                <button 
-                  v-show="canReinstate" 
-                  @click="reInstateSample()"
-                  class="w-full px-4 py-2 text-left text-foreground hover:bg-destructive hover:text-destructive-foreground transition-colors duration-200"
-                >
-                  Reinstate
-                </button>
-                <button 
-                  v-show="canPublish" 
-                  @click="publishSample()"
-                  class="w-full px-4 py-2 text-left text-foreground hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
-                >
-                  {{ publishText }}
-                </button>
-                <button 
-                  v-show="canInvalidate" 
-                  @click="invalidateSample()"
-                  class="w-full px-4 py-2 text-left text-foreground hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
-                >
-                  Invalidate
-                </button>
-                <button 
-                  v-show="canRecover" 
-                  @click="recoverSample()"
-                  class="w-full px-4 py-2 text-left text-foreground hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
-                >
-                  Recover
-                </button>
-                <button 
-                  v-show="sample?.uid"
-                  @click="openDeriveModal()"
-                  class="w-full px-4 py-2 text-left text-foreground hover:bg-primary hover:text-primary-foreground transition-colors duration-200"
-                >
-                  Derive
-                </button>
-              </div>
+                  <div class="px-3 py-2.5 border-b border-border bg-muted/40">
+                    <p class="text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</p>
+                    <p class="text-sm font-semibold text-foreground">{{ formatStatusLabel(sample?.status) }}</p>
+                  </div>
+                  <div class="py-1.5">
+                    <button
+                      v-show="canReceive"
+                      @click="receiveSample(); state.dropdownOpen = false"
+                      class="w-full px-3 py-2 text-left text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors flex items-center gap-2"
+                    >
+                      <font-awesome-icon icon="download" class="w-3.5 text-muted-foreground" />
+                      Receive
+                    </button>
+                    <button
+                      v-show="canVerify"
+                      @click="verifySample(); state.dropdownOpen = false"
+                      class="w-full px-3 py-2 text-left text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors flex items-center gap-2"
+                    >
+                      <font-awesome-icon icon="check-circle" class="w-3.5 text-muted-foreground" />
+                      Approve
+                    </button>
+                    <button
+                      v-show="canReject"
+                      @click="rejectSample(); state.dropdownOpen = false"
+                      class="w-full px-3 py-2 text-left text-sm text-foreground hover:bg-destructive/10 hover:text-destructive transition-colors flex items-center gap-2"
+                    >
+                      <font-awesome-icon icon="times-circle" class="w-3.5 text-muted-foreground" />
+                      Reject
+                    </button>
+                    <button
+                      v-show="canCancel"
+                      @click="cancelSample(); state.dropdownOpen = false"
+                      class="w-full px-3 py-2 text-left text-sm text-foreground hover:bg-destructive/10 hover:text-destructive transition-colors flex items-center gap-2"
+                    >
+                      <font-awesome-icon icon="ban" class="w-3.5 text-muted-foreground" />
+                      Cancel
+                    </button>
+                    <button
+                      v-show="canReinstate"
+                      @click="reInstateSample(); state.dropdownOpen = false"
+                      class="w-full px-3 py-2 text-left text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors flex items-center gap-2"
+                    >
+                      <font-awesome-icon icon="chevron-circle-left" class="w-3.5 text-muted-foreground" />
+                      Reinstate
+                    </button>
+                    <button
+                      v-show="canPublish"
+                      @click="publishSample(); state.dropdownOpen = false"
+                      class="w-full px-3 py-2 text-left text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors flex items-center gap-2"
+                    >
+                      <font-awesome-icon icon="flag" class="w-3.5 text-muted-foreground" />
+                      {{ publishText }}
+                    </button>
+                    <button
+                      v-show="canInvalidate"
+                      @click="invalidateSample(); state.dropdownOpen = false"
+                      class="w-full px-3 py-2 text-left text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors flex items-center gap-2"
+                    >
+                      <font-awesome-icon icon="times-circle" class="w-3.5 text-muted-foreground" />
+                      Invalidate
+                    </button>
+                    <button
+                      v-show="canRecover"
+                      @click="recoverSample(); state.dropdownOpen = false"
+                      class="w-full px-3 py-2 text-left text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors flex items-center gap-2"
+                    >
+                      <font-awesome-icon icon="database" class="w-3.5 text-muted-foreground" />
+                      Recover
+                    </button>
+                    <button
+                      v-show="sample?.uid"
+                      @click="openDeriveModal()"
+                      class="w-full px-3 py-2 text-left text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors flex items-center gap-2 border-t border-border mt-1 pt-1.5"
+                    >
+                      <font-awesome-icon icon="code-branch" class="w-3.5 text-muted-foreground" />
+                      Derive
+                    </button>
+                  </div>
+                </div>
+              </Transition>
             </div>
           </div>
 

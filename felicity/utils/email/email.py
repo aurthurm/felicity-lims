@@ -2,11 +2,13 @@ import logging
 from pathlib import Path
 
 import emails
+from jinja2 import Template
 from emails.template import JinjaTemplate
 
 from felicity.core.config import get_settings
 
 settings = get_settings()
+logger = logging.getLogger(__name__)
 
 
 def send_email(
@@ -23,6 +25,27 @@ def send_email(
         html=JinjaTemplate(html_template),
         mail_from=(settings.EMAILS_FROM_NAME, settings.EMAILS_FROM_EMAIL),
     )
+
+    if settings.DEBUG:
+        rendered_subject = subject_template
+        rendered_html = html_template
+        try:
+            rendered_subject = Template(subject_template).render(**environment)
+            rendered_html = Template(html_template).render(**environment)
+        except Exception as exc:
+            logger.warning("Failed to render debug email preview: %s", exc)
+
+        logger.info("DEBUG EMAIL OUTBOUND")
+        logger.info(
+            "email.from=%s <%s>",
+            settings.EMAILS_FROM_NAME,
+            settings.EMAILS_FROM_EMAIL,
+        )
+        logger.info("email.to=%s", email_to)
+        logger.info("email.subject=%s", rendered_subject)
+        logger.info("email.context=%s", environment)
+        logger.info("email.body_html=%s", rendered_html)
+
     smtp_options = {"host": settings.SMTP_HOST, "port": settings.SMTP_PORT}
     if settings.SMTP_TLS:
         smtp_options["tls"] = True
@@ -31,7 +54,7 @@ def send_email(
     if settings.SMTP_PASSWORD:
         smtp_options["password"] = settings.SMTP_PASSWORD
     response = message.send(to=email_to, render=environment, smtp=smtp_options)
-    logging.info(f"send email result: {response}")
+    logger.info("send email result: %s", response)
 
 
 def send_test_email(email_to: str) -> None:

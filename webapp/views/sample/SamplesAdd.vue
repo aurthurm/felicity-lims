@@ -60,6 +60,7 @@ clientStore.fetchClients(clientParams);
 
 const clients = computed(() => clientStore.getClients);
 const selectedClient = ref<ClientType | null>(null);
+const clientContactsForDropdown = ref<ClientContactType[]>([]);
 const selectContact = (client: ClientType) => {
   selectedClient.value = client;
   clientContact.value = null;
@@ -163,20 +164,33 @@ function createDefaultClinicalData() {
   };
 }
 
-const {handleSubmit, errors} = useForm({
+const {handleSubmit, errors, setFieldValue} = useForm({
   validationSchema: arSchema,
   initialValues: {
     priority: 0,
-    client: patient?.value?.client,
+    client: null as ClientType | null,
+    clientContact: null as ClientContactType | null,
     samples: [createDefaultSample({})],
     clinicalData: createDefaultClinicalData(),
   } as any,
 });
 
-// Set selectedClient when patient's client is loaded
-if (patient?.value?.client) {
-  selectedClient.value = patient.value.client;
-}
+// Sync client (and thus contacts) when patient loads (e.g. after hard reload)
+watch(
+  () => patient.value?.client,
+  (patientClient) => {
+    if (patientClient) {
+      setFieldValue("client", patientClient);
+    }
+  },
+  { immediate: true }
+);
+
+const {value: clientRequestId} = useField("clientRequestId");
+const {value: clinicalData} = useField<ClinicalDataType>("clinicalData");
+const {value: client} = useField<ClientType>("client");
+const {value: clientContact} = useField<ClientContactType | null>("clientContact");
+const {value: priority} = useField("priority");
 
 watch(
   client,
@@ -189,11 +203,31 @@ watch(
   { immediate: true }
 );
 
-const {value: clientRequestId} = useField("clientRequestId");
-const {value: clinicalData} = useField<ClinicalDataType>("clinicalData");
-const {value: client} = useField<ClientType>("client");
-const {value: clientContact} = useField<ClientContactType | null>("clientContact");
-const {value: priority} = useField("priority");
+// Fetch client contacts when selected client doesn't have them (e.g. when loaded from patient)
+watch(
+  selectedClient,
+  async (client) => {
+    if (!client) {
+      clientContactsForDropdown.value = [];
+      return;
+    }
+    let contacts: ClientContactType[];
+    if (client.contacts?.length) {
+      contacts = client.contacts;
+      clientContactsForDropdown.value = contacts;
+    } else {
+      const uid = client.uid;
+      await clientStore.fetchClientContacts(uid);
+      if (selectedClient.value?.uid !== uid) return;
+      contacts = [...clientStore.getClientContacts];
+      clientContactsForDropdown.value = contacts;
+    }
+    if (contacts.length === 1) {
+      clientContact.value = contacts[0];
+    }
+  },
+  { immediate: true }
+);
 
 type PartialSample = Pick<SampleType, "sampleType" | "profiles" | "analyses"> & {
   dateCollected?: Date | string | { toDate?: () => Date };
@@ -393,7 +427,7 @@ const contactLabel = (contact: ClientContactType) => {
                 class="w-full"
                 placeholder="Select a Client Contact"
                 v-model="clientContact"
-                :options="selectedClient?.contacts ?? []"
+                :options="clientContactsForDropdown"
                 :custom-label="contactLabel"
                 :disabled="arSaving"
                 track-by="uid"

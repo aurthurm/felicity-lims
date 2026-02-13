@@ -35,7 +35,7 @@ function discardAntibiotic(antibiotic) {
   <div class="space-y-6">
     <fel-heading title="Laboratory Antibiotics"></fel-heading>
 
-    <div class="border shadow-sm rounded-lg bg-card p-6">
+    <div class="shadow-sm rounded-lg bg-card p-6">
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-border fel-table">
           <thead>

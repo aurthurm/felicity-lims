@@ -33,7 +33,7 @@ onMounted(() => {
   <div v-else class="min-h-screen flex flex-col">
     <header-main />
     <div class="flex flex-row flex-1">
-      <div class="bg-primary">
+      <div class="bg-primary overflow-hidden shrink-0">
         <side-bar />
       </div>
       <main class="px-8 pt-4 flex-1">

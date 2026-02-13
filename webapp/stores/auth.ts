@@ -40,6 +40,7 @@ interface IAuth {
     resetData: {
         canReset: boolean;
         username?: string;
+        userUid?: string;
     };
     activeLaboratory?: LaboratoryType;
     laboratories?: LaboratoryType[];
@@ -59,6 +60,7 @@ export const useAuthStore = defineStore('auth', () => {
         resetData: {
             canReset: false,
             username: '',
+            userUid: '',
         },
         activeLaboratory: undefined,
         laboratories: undefined,
@@ -254,8 +256,9 @@ export const useAuthStore = defineStore('auth', () => {
         )
             .then(res => {
                 auth.value.resetData = {
-                    canReset: !res?.username,
+                    canReset: !!res?.username,
                     username: res?.username,
+                    userUid: res?.userUid,
                 };
                 auth.value.processing = false;
             })
@@ -265,7 +268,7 @@ export const useAuthStore = defineStore('auth', () => {
     };
 
     const resetPassword = async (password: string, passwordc: string) => {
-        if (!auth.value?.resetData?.username) {
+        if (!auth.value?.resetData?.userUid) {
             auth.value.processing = false;
             return;
         }
@@ -274,7 +277,7 @@ export const useAuthStore = defineStore('auth', () => {
         await withClientMutation<PasswordResetMutation, PasswordResetMutationVariables>(
             PasswordResetDocument,
             {
-                userUid: auth.value.resetData.username,
+                userUid: auth.value.resetData.userUid,
                 password,
                 passwordc,
             },

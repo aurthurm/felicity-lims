@@ -71,24 +71,21 @@
         <fel-button @click="FormManager(true)">Add QC Level</fel-button>
       </fel-heading>
 
-        <div class="rounded-md border bg-card p-6 shadow-sm">
-            <div class="w-full">
-                <table class="w-full caption-bottom text-sm fel-table">
+        <div class="shadow-sm rounded-lg bg-card p-6">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-border fel-table">
                     <thead>
-                        <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                            <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Level</th>
-                            <th class="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</th>
-                        </tr>
+                    <tr>
+                        <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Level</th>
+                        <th class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                            <span class="sr-only">Actions</span>
+                        </th>
+                    </tr>
                     </thead>
-                    <tbody>
-                        <tr v-for="level in qcLevels" 
-                            :key="level?.uid"
-                            class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
-                        >
-                            <td class="p-4 align-middle">
-                                <span class="text-sm font-medium leading-none">{{ level?.level }}</span>
-                            </td>
-                            <td class="p-4 align-middle text-right">
+                    <tbody class="divide-y divide-border bg-background">
+                    <tr v-for="level in qcLevels" :key="level?.uid" class="hover:bg-muted/50">
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-foreground">{{ level?.level }}</td>
+                        <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                 <button 
                                     @click="FormManager(false, level)" 
                                     class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3"

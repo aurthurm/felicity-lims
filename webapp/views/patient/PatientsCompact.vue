@@ -170,7 +170,7 @@ onMounted(() => {
         :initial="{ opacity: 0, y: 100 }"
         :enter="{ opacity: 1, y: 0 }"
         :delay="400"
-        class="col-span-3  overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+        class="col-span-3 max-h-[calc(100vh-14rem)] overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
       >
         <fel-loader 
           v-if="fetchingPatients"
@@ -219,7 +219,7 @@ onMounted(() => {
         class="col-span-9 space-y-6"
       >
         <components.PatientInfo @editPatient="showModal = true" />
-        <fel-tabs :tabs="tabs" initial-tab="samples" class="rounded-lg" />
+        <fel-tabs :tabs="tabs" initial-tab="samples" :keep-alive="false" class="rounded-lg" />
       </section>
     </div>
 

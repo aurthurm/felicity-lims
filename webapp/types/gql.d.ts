@@ -5975,7 +5975,7 @@ export type PasswordResetValidityResponse = OperationError | PasswordResetValidi
 
 export type PasswordResetValidityType = {
   __typename?: 'PasswordResetValidityType';
-  authUid: Scalars['String']['output'];
+  userUid: Scalars['String']['output'];
   username: Scalars['String']['output'];
 };
 

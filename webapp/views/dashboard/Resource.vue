@@ -4,6 +4,7 @@ import { onMounted, watch, reactive, ref } from "vue";
 import { Chart } from "@antv/g2";
 import dayjs from "dayjs";
 import { useDashBoardStore } from "@/stores/dashboard";
+import StatCard from "@/components/ui/StatCard.vue";
 
 // Initialize store
 const dashBoardStore = useDashBoardStore();
@@ -200,17 +201,15 @@ const resetUserMatrix = () => {
         <div v-if="!dashboard.resourceStats?.instruments?.length" class="text-muted-foreground">
           No instrument data available
         </div>
-        <div v-else class="flex justify-start">
-          <div
+        <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <StatCard
             v-for="instr in dashboard.resourceStats?.instruments"
             :key="instr.group"
-            class="flex items-center bg-background shadow rounded-sm px-6 pt-3 pb-5 border border-foreground mr-8"
-          >
-            <span class="mr-4 font-bold text-foreground text-xl">
-              {{ instrumentPerf(instr?.count) }}
-            </span>
-            <span class="font-semibold text-muted-foreground text-l">{{ instr.group }}</span>
-          </div>
+            :title="instr.group"
+            :value="instrumentPerf(instr?.count)"
+            variant="primary"
+            tooltip="Percentage of total analyses run on this instrument within the selected date range"
+          />
         </div>
       </div>
 

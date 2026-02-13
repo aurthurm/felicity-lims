@@ -56,7 +56,9 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
         update_data = self._import(user_in)
 
         if "password" in update_data:
-            policy = password_check(user_in.password, user_in.user_name)
+            existing_user = await self.get(uid=user_uid)
+            username = user_in.user_name or (existing_user.user_name if existing_user else "")
+            policy = password_check(user_in.password, username)
             if not policy["password_ok"]:
                 raise Exception(policy["message"])
             hashed_password = get_password_hash(update_data["password"])

@@ -48,12 +48,15 @@ onUnmounted(() => {
           'bg-card shadow-xl text-card-foreground h-screen overflow-hidden absolute right-0 flex flex-col',
           contentWidth ? contentWidth : 'w-1/3',
         ]">
-          <div class="shrink-0 flex items-center justify-between border-b border-border p-8">
-            <p tabindex="0" class="focus:outline-none text-2xl font-semibold leading-6 text-card-foreground">
+          <div class="shrink-0 flex items-center justify-between gap-3 border-b border-border px-6 py-3">
+            <div tabindex="0" class="focus:outline-none min-w-0 flex-1">
               <slot name="header">Drawer Title</slot>
-            </p>
-            <button role="button" aria-label="close modal"
-              class="focus:outline-none focus:ring-2 focus:ring-ring rounded-lg cursor-pointer text-muted-foreground hover:text-destructive-foreground hover:bg-destructive p-2"
+            </div>
+            <button
+              type="button"
+              role="button"
+              aria-label="Close drawer"
+              class="focus:outline-none focus:ring-2 focus:ring-ring rounded-md cursor-pointer text-muted-foreground hover:text-destructive-foreground hover:bg-destructive p-1.5"
               @click="() => emit('close')">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M18 6L6 18" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
@@ -62,11 +65,13 @@ onUnmounted(() => {
             </button>
           </div>
 
-          <div class="flex-1 overflow-y-auto p-8">
-            <slot name="body">Drawer Body</slot>
+          <div class="flex-1 overflow-y-auto p-6">
+            <slot name="body">
+              <span class="sr-only">Drawer content</span>
+            </slot>
           </div>
 
-          <div class="shrink-0 border-t border-border p-8 flex items-center">
+          <div v-if="$slots.footer" class="shrink-0 border-t border-border p-6 flex items-center">
             <slot name="footer"></slot>
           </div>
         </div>

@@ -352,9 +352,8 @@ export const useDashBoardStore = defineStore('dashboard', () => {
         dashboard.value.filterRange.toIso = to.toISOString();
     };
 
-    const setCurrentPeformance = (event: Event): void => {
-        const target = event.target as HTMLSelectElement;
-        dashboard.value.currentPeformance = target.value;
+    const setCurrentPeformanceById = (performance: string): void => {
+        dashboard.value = { ...dashboard.value, currentPeformance: performance };
     };
 
     const setCurrentPeformancePeriod = (event: Event): void => {
@@ -431,7 +430,7 @@ export const useDashBoardStore = defineStore('dashboard', () => {
         getSampleLaggards,
         getSampleProcessPeformance,
         getAnalysisProcessPeformance,
-        setCurrentPeformance,
+        setCurrentPeformanceById,
         setCurrentPeformancePeriod,
     };
 });

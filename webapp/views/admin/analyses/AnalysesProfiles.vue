@@ -12,7 +12,8 @@ import {
 import { useSetupStore } from "@/stores/setup";
 import { useAnalysisStore } from "@/stores/analysis";
 import { useSampleStore } from "@/stores/sample";
-import useApiUtil  from "@/composables/api_util";
+import useApiUtil from "@/composables/api_util";
+import useNotifyToast from "@/composables/alert_toast";
 
 const VueMultiselect = defineAsyncComponent(
   () => import("vue-multiselect")
@@ -26,6 +27,7 @@ const analysisStore = useAnalysisStore();
 const sampleStore = useSampleStore();
 const setupStore = useSetupStore();
 const { withClientMutation } = useApiUtil();
+const { toastSuccess } = useNotifyToast();
 
 let currentTab = ref("analyses-services");
 const tabs = ["analyses-services", "mappings", "billing"];
@@ -34,6 +36,8 @@ let showModal = ref(false);
 let formTitle = ref("");
 const formAction = ref(true);
 const currentUid = ref<string | null>(null);
+const formSaving = ref(false);
+const profileUpdating = ref(false);
 
 let analysisProfile = reactive({}) as ProfileType;
 
@@ -72,22 +76,28 @@ const { value: departmentUid, errorMessage: departmentError } = useField<string 
 const { value: sampleTypesField, errorMessage: sampleTypesError } = useField<any[]>("sampleTypes");
 const { value: active } = useField<boolean>("active");
 
-function addAnalysisProfile(payload: { name: string; keyword: string | null; description: string | null; departmentUid: string | null; sampleTypes: string[]; active: boolean }): void {
-  withClientMutation<AddAnalysisProfileMutation, AddAnalysisProfileMutationVariables>(
+function addAnalysisProfile(payload: { name: string; keyword: string | null; description: string | null; departmentUid: string | null; sampleTypes: string[]; active: boolean }): Promise<void> {
+  return withClientMutation<AddAnalysisProfileMutation, AddAnalysisProfileMutationVariables>(
     AddAnalysisProfileDocument,
     { payload },
     "createProfile"
-  ).then((result) => analysisStore.addAnalysisProfile(result));
+  ).then((result) => {
+    analysisStore.addAnalysisProfile(result);
+    toastSuccess("Profile created successfully");
+  });
 }
 
-function editAnalysisProfile(payload: { name: string; keyword: string | null; description: string | null; departmentUid: string | null; sampleTypes: string[]; active: boolean }): void {
-  if (!currentUid.value) return;
-  const services = analysisProfile.analyses?.map((item) => item.uid);
-  withClientMutation<EditAnalysisProfileMutation, EditAnalysisProfileMutationVariables>(
+function editAnalysisProfile(payload: { name: string; keyword: string | null; description: string | null; departmentUid: string | null; sampleTypes: string[]; active: boolean }): Promise<void> {
+  if (!currentUid.value) return Promise.resolve();
+  const services = analysisProfile.analyses?.map((item) => item.uid) ?? [];
+  return withClientMutation<EditAnalysisProfileMutation, EditAnalysisProfileMutationVariables>(
     EditAnalysisProfileDocument,
     { uid: currentUid.value, payload: { ...payload, services } },
     "updateProfile"
-  ).then((result) => analysisStore.updateAnalysesProfile(result));
+  ).then((result) => {
+    analysisStore.updateAnalysesProfile(result);
+    toastSuccess("Profile updated successfully");
+  });
 }
 
 function selectProfile(profile: ProfileType): void {
@@ -106,7 +116,7 @@ function selectProfile(profile: ProfileType): void {
   analysisStore.fetchProfileMappings(profile?.uid)
 }
 
-function updateProfile(): void {
+async function updateProfile(): Promise<void> {
   const analyses: AnalysisType[] = [];
   analysesServices.value?.forEach((item) => {
     item[1].forEach((service: AnalysisType) => {
@@ -116,14 +126,19 @@ function updateProfile(): void {
     });
   });
   analysisProfile.analyses = analyses;
-  editAnalysisProfile({
-    name: analysisProfile.name ?? "",
-    keyword: analysisProfile.keyword ?? null,
-    description: analysisProfile.description ?? "",
-    departmentUid: analysisProfile.departmentUid ?? null,
-    sampleTypes: analysisProfile.sampleTypes?.map((item) => item.uid) ?? [],
-    active: analysisProfile.active ?? true,
-  });
+  profileUpdating.value = true;
+  try {
+    await editAnalysisProfile({
+      name: analysisProfile.name ?? "",
+      keyword: analysisProfile.keyword ?? null,
+      description: analysisProfile.description ?? "",
+      departmentUid: analysisProfile.departmentUid ?? null,
+      sampleTypes: analysisProfile.sampleTypes?.map((item) => item.uid) ?? [],
+      active: analysisProfile.active ?? true,
+    });
+  } finally {
+    profileUpdating.value = false;
+  }
 }
 
 function FormManager(create: boolean, obj?: ProfileType): void {
@@ -156,7 +171,7 @@ function FormManager(create: boolean, obj?: ProfileType): void {
   }
 }
 
-const saveForm = handleSubmit((values) => {
+const saveForm = handleSubmit(async (values) => {
   const payload = {
     name: values.name,
     keyword: values.keyword ?? null,
@@ -165,9 +180,17 @@ const saveForm = handleSubmit((values) => {
     sampleTypes: (values.sampleTypes ?? []).map((item: any) => item.uid),
     active: values.active,
   };
-  if (formAction.value === true) addAnalysisProfile(payload);
-  if (formAction.value === false) editAnalysisProfile(payload);
-  showModal.value = false;
+  formSaving.value = true;
+  try {
+    if (formAction.value === true) {
+      await addAnalysisProfile(payload);
+    } else {
+      await editAnalysisProfile(payload);
+    }
+    showModal.value = false;
+  } finally {
+    formSaving.value = false;
+  }
 });
 
 
@@ -278,10 +301,10 @@ const saveMappingForm = handleMappingSubmit((values) => {
                 :key="profile.uid"
                 @click.prevent.stop="selectProfile(profile)"
                 :class="[
-                  'rounded-md p-2 cursor-pointer transition-colors duration-200',
+                  'rounded-md p-2 cursor-pointer transition-colors duration-200 border-l-4',
                   profile?.uid === analysisProfile?.uid 
-                    ? 'bg-accent text-accent-foreground' 
-                    : 'hover:bg-accent/50'
+                    ? 'border-l-primary bg-primary/10 text-primary font-medium' 
+                    : 'border-l-transparent hover:bg-accent/50 hover:border-l-primary/30'
                 ]"
               >
                 <div class="flex items-center justify-between">
@@ -330,16 +353,18 @@ const saveMappingForm = handleMappingSubmit((values) => {
           </div>
 
           <!-- Tabs -->
-          <nav class="border-b border-border">
-            <div class="flex space-x-2">
+          <nav class="bg-background border-b border-border">
+            <div class="-mb-px flex justify-start">
               <button
                 v-for="tab in tabs"
                 :key="tab"
+                type="button"
                 :class="[
-                  'px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+                  'no-underline text-muted-foreground uppercase tracking-wide font-medium text-sm py-2 px-4',
+                  'border-b-2 transition-colors duration-200',
                   currentTab === tab
-                    ? 'border-b-2 border-primary text-foreground'
-                    : 'text-muted-foreground hover:text-foreground'
+                    ? 'border-primary text-primary font-medium'
+                    : 'border-transparent hover:border-primary/50 hover:text-primary/80'
                 ]"
                 @click="currentTab = tab"
               >
@@ -352,41 +377,60 @@ const saveMappingForm = handleMappingSubmit((values) => {
           <div class="rounded-lg border border-border bg-card">
             <div class="p-6">
               <!-- Analyses Services Tab -->
-              <div v-if="currentTab === 'analyses-services'" class="space-y-6">
-                <div class="grid grid-cols-3 gap-6">
-                  <div v-for="category in analysesServices" :key="category[0]" class="space-y-4">
-                    <fel-accordion>
-                      <template v-slot:title>
-                        <span class="text-sm font-medium">{{ category[0] }}</span>
-                      </template>
-                      <template v-slot:body>
-                        <ul class="space-y-2 pt-2">
-                          <li v-for="service in category[1]" :key="service?.uid" class="flex items-start space-x-2">
-                            <div class="flex items-center h-5">
+              <div v-if="currentTab === 'analyses-services'" class="flex flex-col min-h-0">
+                <!-- Sticky header + action bar -->
+                <div class="flex items-center justify-between gap-4 px-4 py-3 mb-4 border-b border-border bg-muted/30 shrink-0">
+                  <h3 class="text-sm font-medium text-foreground">Analyses in profile</h3>
+                  <fel-button
+                    type="button"
+                    :loading="profileUpdating"
+                    @click="updateProfile()"
+                  >
+                    <span class="inline-flex items-center gap-2">
+                      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      Update Profile
+                    </span>
+                  </fel-button>
+                </div>
+
+                <!-- Scrollable category grid -->
+                <div class="overflow-y-auto overscroll-contain flex-1 min-h-[200px] max-h-[420px]">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <div v-for="category in analysesServices" :key="category[0]" class="min-w-0">
+                      <fel-accordion compact>
+                        <template v-slot:title>
+                          <span class="text-sm truncate">{{ category[0] }}</span>
+                        </template>
+                        <template v-slot:body>
+                          <ul class="space-y-0.5 py-1">
+                            <li
+                              v-for="service in category[1]"
+                              :key="service?.uid"
+                              class="flex items-center gap-2 py-1.5 px-2 rounded-md hover:bg-accent/50 transition-colors cursor-pointer"
+                              @click="service.checked = !service.checked"
+                            >
                               <input
                                 type="checkbox"
                                 :id="`toggle-${service?.uid}`"
+                                class="h-4 w-4 rounded border-input text-primary focus:ring-ring shrink-0 cursor-pointer"
                                 v-model="service.checked"
-                                class="h-4 w-4 rounded border-input bg-background text-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                                @click.stop
                               />
-                            </div>
-                            <label :for="`toggle-${service?.uid}`" class="text-sm text-foreground">
-                              {{ service?.name }}
-                            </label>
-                          </li>
-                        </ul>
-                      </template>
-                    </fel-accordion>
+                              <label
+                                :for="`toggle-${service?.uid}`"
+                                class="text-sm text-foreground cursor-pointer truncate flex-1 min-w-0"
+                                @click.stop
+                              >
+                                {{ service?.name }}
+                              </label>
+                            </li>
+                          </ul>
+                        </template>
+                      </fel-accordion>
+                    </div>
                   </div>
-                </div>
-
-                <div class="flex justify-end pt-4">
-                  <button
-                    @click="updateProfile()"
-                    class="inline-flex items-center justify-center bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
-                  >
-                    Update Profile
-                  </button>
                 </div>
               </div>
 
@@ -540,12 +584,13 @@ const saveMappingForm = handleMappingSubmit((values) => {
         </div>
 
         <div class="pt-4">
-          <button
+          <fel-button
             type="submit"
-            class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
+            class="w-full"
+            :loading="formSaving"
           >
             Save Changes
-          </button>
+          </fel-button>
         </div>
       </form>
     </template>

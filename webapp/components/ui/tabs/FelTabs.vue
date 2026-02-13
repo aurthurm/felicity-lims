@@ -10,11 +10,15 @@ interface Tab {
   hidden?: boolean;
 }
 
-const props = defineProps<{
-  tabs: Tab[];
-  initialTab?: string;
-  tabKey?: string;  // ⭐ NEW: query param key (default = "tab")
-}>();
+const props = withDefaults(
+  defineProps<{
+    tabs: Tab[];
+    initialTab?: string;
+    tabKey?: string;  // query param key (default = "tab")
+    keepAlive?: boolean;  // wrap tab content in KeepAlive (can cause errors with async components)
+  }>(),
+  { keepAlive: true }
+);
 
 const route = useRoute();
 const router = useRouter();
@@ -141,7 +145,7 @@ watch(
     </nav>
 
     <div class="mt-4">
-      <KeepAlive>
+      <KeepAlive v-if="props.keepAlive">
         <component
           v-if="currentTab"
           :key="currentTab.id"
@@ -149,6 +153,12 @@ watch(
           v-bind="currentTab.props || {}"
         />
       </KeepAlive>
+      <component
+        v-else-if="currentTab"
+        :key="currentTab.id"
+        :is="currentTab.component"
+        v-bind="currentTab.props || {}"
+      />
     </div>
   </section>
 </template>

@@ -13,7 +13,7 @@ import { SwitchActiveLaboratoryMutation, SwitchActiveLaboratoryMutationVariables
 
 // Lazily load components for better performance
 const Logo = defineAsyncComponent(() => import("@/components/logo/Logo.vue"));
-
+const FelBadge = defineAsyncComponent(() => import("@/components/ui/FelBadge.vue"));
 const UserPreferences = defineAsyncComponent(() => import("@/components/user/UserPreferences.vue"));
 
 const {isFullscreen, toggle} = useFullscreen()
@@ -48,6 +48,16 @@ const userFullName = computed(() => {
 // Error handling
 const {errors, clearErrors, withClientMutation} = useApiUtil();
 const showErrors = ref(false);
+
+// Deduplicate errors: group identical messages and show count when > 1
+const deduplicatedErrors = computed(() => {
+  const counts = new Map<string, number>();
+  for (const err of errors.value) {
+    const msg = typeof err === 'string' ? err : (err?.error ?? String(err));
+    counts.set(msg, (counts.get(msg) ?? 0) + 1);
+  }
+  return Array.from(counts.entries()).map(([message, count]) => ({ message, count }));
+});
 
 //User Preferences
 const showPreferences = ref(false);
@@ -393,11 +403,12 @@ const switchLabNow = () => {
       <p v-if="errors.length === 0" class="text-muted-foreground italic">No errors to display</p>
       <ul v-else aria-label="Error messages" class="divide-y divide-border">
         <li
-            v-for="(err, idx) in errors"
+            v-for="(item, idx) in deduplicatedErrors"
             :key="idx"
-            class="mb-2 p-3 bg-background rounded text-sm border-l-4 border-destructive"
+            class="mb-2 p-3 bg-background rounded text-sm border-l-4 border-destructive flex items-start gap-2"
         >
-          <code class="block whitespace-pre-wrap">{{ err }}</code>
+          <code class="flex-1 whitespace-pre-wrap">{{ item.message }}</code>
+          <fel-badge v-if="item.count > 1" variant="destructive" size="sm" class="shrink-0">{{ item.count }}</fel-badge>
         </li>
       </ul>
     </template>
@@ -423,6 +434,9 @@ const switchLabNow = () => {
 
     <template v-slot:body>
       <form action="post" class="p-6 space-y-6">
+        <p class="text-sm text-muted-foreground bg-muted/50 rounded-lg p-4 border border-border">
+          <span class="font-medium text-foreground">Note:</span> Switching laboratories will automatically log you out. You will need to sign in again for the change to take effect.
+        </p>
         <div class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <label class="col-span-2 space-y-2">

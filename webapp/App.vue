@@ -9,7 +9,7 @@ import userPreferenceComposable from "@/composables/preferences";
 const {currentRoute, push} = useRouter();
 const authStore = useAuthStore();
 const streamStore = useStreamStore();
-const {loadPreferredTheme} = userPreferenceComposable();
+const { loadPreferredTheme, fetchUserPreferencesFromServer } = userPreferenceComposable();
 
 watch(
   () => authStore.auth.isAuthenticated,
@@ -18,6 +18,9 @@ watch(
       push({ name: "LOGIN" });
     } else {
       streamStore.subscribeToActivityStream();
+      // Fetch user preferences from server to sync mega menu, theme, etc.
+      // (localStorage provides instant load on refresh; server is source of truth)
+      fetchUserPreferencesFromServer();
       // Only redirect to dashboard if we are on login page
       if (currentRoute.value.name === "LOGIN") {
         push({ name: "DASHBOARD" });

@@ -67,6 +67,7 @@ mutation ValidatePassResetToken($token: String!) {
         ... on PasswordResetValidityType {
         __typename
         username
+        userUid
         }
         ... on OperationError {
         __typename

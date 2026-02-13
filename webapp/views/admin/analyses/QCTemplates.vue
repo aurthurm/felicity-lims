@@ -114,33 +114,31 @@
         <fel-button @click="FormManager(true)">Add QC Template</fel-button>
       </fel-heading>
 
-        <div class="rounded-md border bg-card p-6 shadow-sm">
+        <div class="shadow-sm rounded-lg bg-card p-6">
             <div class="overflow-x-auto">
-                <table class="w-full fel-table">
+                <table class="min-w-full divide-y divide-border fel-table">
                     <thead>
-                    <tr class="border-b border-border bg-muted/50">
-                        <th class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">QC Template Name</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">Quality Control level(s)</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">Department(s)</th>
-                        <th class="px-6 py-3 text-right text-sm font-medium text-muted-foreground">Actions</th>
+                    <tr>
+                        <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">QC Template Name</th>
+                        <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Quality Control level(s)</th>
+                        <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Department(s)</th>
+                        <th class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                            <span class="sr-only">Actions</span>
+                        </th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr v-for="templt in qcTemplates" :key="templt?.uid" class="hover:bg-accent/50 transition-colors duration-200">
-                        <td class="px-6 py-4 whitespace-nowrap border-b border-border">
+                    <tbody class="divide-y divide-border bg-background">
+                    <tr v-for="templt in qcTemplates" :key="templt?.uid" class="hover:bg-muted/50">
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-foreground">
                           <div class="font-medium text-foreground">{{ templt?.name }}</div>
                           <div class="text-sm text-muted-foreground" v-if="templt?.description">{{ templt?.description }}</div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap border-b border-border">
-                          <div class="text-sm text-foreground">{{ levelsNames(templt?.qcLevels ?? []) }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap border-b border-border">
-                          <div class="text-sm text-foreground">{{ templt?.category }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right border-b border-border">
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-foreground">{{ levelsNames(templt?.qcLevels ?? []) }}</td>
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-foreground">{{ templt?.category }}</td>
+                        <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                             <button 
                               @click="FormManager(false, templt)" 
-                              class="inline-flex items-center px-3 py-1.5 border border-border bg-background text-foreground text-sm font-medium transition-colors duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring hover:bg-accent hover:text-accent-foreground"
+                              class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
                             >
                               Edit
                             </button>

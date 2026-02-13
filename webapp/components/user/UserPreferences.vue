@@ -109,6 +109,9 @@ async function savePreferences() {
 
     <!-- Main content -->
     <div v-else class="space-y-6">
+      <p class="text-sm text-muted-foreground bg-muted/50 rounded-lg p-4 border border-border">
+        <span class="font-medium text-foreground">Note:</span> Some changes require you to log out and log back in to take effect.
+      </p>
       <!-- Theme and Default Route in one line -->
       <div class="grid grid-cols-2 gap-4">
         <!-- Theme Preference -->

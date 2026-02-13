@@ -4306,7 +4306,7 @@ union PasswordResetValidityResponse = PasswordResetValidityType | OperationError
 
 type PasswordResetValidityType {
   username: String!
-  authUid: String!
+  userUid: String!
 }
 
 type PatientCursorPage {

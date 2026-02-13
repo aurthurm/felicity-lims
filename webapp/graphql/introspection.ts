@@ -29661,7 +29661,7 @@ export default {
         "name": "PasswordResetValidityType",
         "fields": [
           {
-            "name": "authUid",
+            "name": "userUid",
             "type": {
               "kind": "NON_NULL",
               "ofType": {

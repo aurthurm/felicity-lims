@@ -26,7 +26,7 @@ export type ValidatePassResetTokenMutationVariables = Exact<{
 
 export type ValidatePassResetTokenMutation = { __typename?: 'Mutation', validatePasswordResetToken:
     | { __typename: 'OperationError', error: string, suggestion?: string | null }
-    | { __typename: 'PasswordResetValidityType', username: string }
+    | { __typename: 'PasswordResetValidityType', username: string, userUid: string }
    };
 
 export type PasswordResetMutationVariables = Exact<{

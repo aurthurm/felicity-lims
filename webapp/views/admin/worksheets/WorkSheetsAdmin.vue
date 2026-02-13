@@ -219,10 +219,10 @@ const sampleTypes = computed<SampleTypeTyp[]>(() => sampleStore.getSampleTypes);
             v-for="wst in workSheetTemplates"
             :key="wst.uid"
             :class="[
-              'w-full flex justify-between items-center p-2 rounded-lg border shadow-sm transition-colors',
+              'w-full flex justify-between items-center p-2 rounded-lg border-l-4 border shadow-sm transition-colors duration-200',
               workSheetTemplate?.uid === wst.uid
-                ? 'border-primary bg-primary/10'
-                : 'border-border bg-card hover:bg-muted/50'
+                ? 'border-l-primary border-border bg-primary/10'
+                : 'border-l-transparent border-border bg-card hover:bg-muted/50 hover:border-l-primary/30'
             ]"
           >
             <a

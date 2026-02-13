@@ -100,7 +100,7 @@ export type ValidatePassResetTokenMutation = (
     )
     | (
       { __typename: 'PasswordResetValidityType' }
-      & Pick<Types.PasswordResetValidityType, 'username'>
+      & Pick<Types.PasswordResetValidityType, 'username' | 'userUid'>
     )
    }
 );
@@ -750,6 +750,7 @@ export const ValidatePassResetTokenDocument = gql`
     ... on PasswordResetValidityType {
       __typename
       username
+      userUid
     }
     ... on OperationError {
       __typename

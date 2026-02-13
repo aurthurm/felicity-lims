@@ -96,40 +96,40 @@
 </script>
 
 <template>
-  <fel-heading title="Analyses Categories">
-    <fel-button @click="FormManager(true, null)">Add Analyses Category</fel-button>
-  </fel-heading>
+  <div class="space-y-6">
+    <fel-heading title="Analyses Categories">
+      <fel-button @click="FormManager(true, null)">Add Analyses Category</fel-button>
+    </fel-heading>
 
-  <div class="overflow-x-auto mt-4">
-      <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card text-card-foreground rounded-lg border border-border">
-      <table class="min-w-full fel-table">
+    <div class="shadow-sm rounded-lg bg-card p-6">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-border fel-table">
           <thead>
           <tr>
-              <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Category Name</th>
-              <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Department</th>
-              <th class="px-4 py-2 border-b border-border"></th>
+            <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Category Name</th>
+            <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Department</th>
+            <th class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+              <span class="sr-only">Actions</span>
+            </th>
           </tr>
           </thead>
-          <tbody class="bg-card">
-          <tr v-for="category in analysesCategories" :key="category?.uid" class="hover:bg-accent/50">
-              <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
-                <div class="text-sm text-foreground">{{ category?.name }}</div>
-              </td>
-              <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
-                <div class="text-sm text-foreground">{{ category?.department?.name }}</div>
-              </td>
-              <td class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
-                  <button 
-                    @click="FormManager(false, category)" 
-                    class="px-2 py-1 mr-2 border border-border bg-background text-foreground transition-colors duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring hover:bg-accent hover:text-accent-foreground"
-                  >
-                    Edit
-                  </button>
-              </td>
+          <tbody class="divide-y divide-border bg-background">
+          <tr v-for="category in analysesCategories" :key="category?.uid" class="hover:bg-muted/50">
+            <td class="px-3 py-4 whitespace-nowrap text-sm text-foreground">{{ category?.name }}</td>
+            <td class="px-3 py-4 whitespace-nowrap text-sm text-foreground">{{ category?.department?.name }}</td>
+            <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+              <button
+                @click="FormManager(false, category)"
+                class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
+              >
+                Edit
+              </button>
+            </td>
           </tr>
           </tbody>
-      </table>
+        </table>
       </div>
+    </div>
   </div>
 
   <!-- Location Edit Form Modal -->

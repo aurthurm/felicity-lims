@@ -9,20 +9,20 @@ import {
 } from "@/graphql/operations/analyses.mutations";
 import { useSetupStore } from "@/stores/setup";
 import { useAnalysisStore } from "@/stores/analysis";
-import useApiUtil  from "@/composables/api_util";
-
+import useApiUtil from "@/composables/api_util";
+import useNotifyToast from "@/composables/alert_toast";
 
 const analysisStore = useAnalysisStore();
 const setupStore = useSetupStore();
 const { withClientMutation } = useApiUtil();
-
-let currentTab = ref("analyses-services");
-const tabs = ["analyses-services"];
+const { toastSuccess } = useNotifyToast();
 
 let showModal = ref(false);
 let formTitle = ref("");
 const formAction = ref(true);
 const currentUid = ref<string | null>(null);
+const formSaving = ref(false);
+const templateUpdating = ref(false);
 
 let analysisTemplate = reactive({}) as AnalysisTemplateType;
 
@@ -56,22 +56,28 @@ const { value: description, errorMessage: descriptionError } = useField<string |
 const { value: departmentUid, errorMessage: departmentError } = useField<string | null>("departmentUid");
 const { value: active } = useField<boolean>("active");
 
-function addAnalysisTemplate(payload: { name: string; description: string | null; departmentUid: string | null; active: boolean }): void {
-  withClientMutation<AddAnalysisTemplateMutation, AddAnalysisTemplateMutationVariables>(
+function addAnalysisTemplate(payload: { name: string; description: string | null; departmentUid: string | null }): Promise<void> {
+  return withClientMutation<AddAnalysisTemplateMutation, AddAnalysisTemplateMutationVariables>(
     AddAnalysisTemplateDocument,
-    { payload },
+    { payload: { name: payload.name, description: payload.description, departmentUid: payload.departmentUid } },
     "createAnalysisTemplate"
-  ).then((result) => analysisStore.addAnalysisTemplate(result));
+  ).then((result) => {
+    analysisStore.addAnalysisTemplate(result);
+    toastSuccess("Template created successfully");
+  });
 }
 
-function editAnalysisTemplate(payload: { name: string; description: string | null; departmentUid: string | null; active: boolean }): void {
-  if (!currentUid.value) return;
-  const services = analysisTemplate.analyses?.map((item) => item.uid);
-  withClientMutation<EditAnalysisTemplateMutation, EditAnalysisTemplateMutationVariables>(
+function editAnalysisTemplate(payload: { name: string; description: string | null; departmentUid: string | null }): Promise<void> {
+  if (!currentUid.value) return Promise.resolve();
+  const services = analysisTemplate.analyses?.map((item) => item.uid) ?? [];
+  return withClientMutation<EditAnalysisTemplateMutation, EditAnalysisTemplateMutationVariables>(
     EditAnalysisTemplateDocument,
-    { uid: currentUid.value, payload: { ...payload, services } },
+    { uid: currentUid.value, payload: { name: payload.name, description: payload.description, departmentUid: payload.departmentUid, services } },
     "updateAnalysisTemplate"
-  ).then((result) => analysisStore.updateAnalysesTemplate(result));
+  ).then((result) => {
+    analysisStore.updateAnalysesTemplate(result);
+    toastSuccess("Template updated successfully");
+  });
 }
 
 function select(template: AnalysisTemplateType): void {
@@ -88,7 +94,7 @@ function select(template: AnalysisTemplateType): void {
   });
 }
 
-function updateTemplate(): void {
+async function updateTemplate(): Promise<void> {
   const analyses: AnalysisType[] = [];
   analysesServices.value?.forEach((item) => {
     item[1].forEach((service: AnalysisType) => {
@@ -98,12 +104,16 @@ function updateTemplate(): void {
     });
   });
   analysisTemplate.analyses = analyses;
-  editAnalysisTemplate({
-    name: analysisTemplate.name ?? "",
-    description: analysisTemplate.description ?? null,
-    departmentUid: analysisTemplate.departmentUid ?? null,
-    active: analysisTemplate.active ?? true,
-  });
+  templateUpdating.value = true;
+  try {
+    await editAnalysisTemplate({
+      name: analysisTemplate.name ?? "",
+      description: analysisTemplate.description ?? null,
+      departmentUid: analysisTemplate.departmentUid ?? null,
+    });
+  } finally {
+    templateUpdating.value = false;
+  }
 }
 
 function FormManager(create: boolean, obj?: AnalysisTemplateType): void {
@@ -132,16 +142,23 @@ function FormManager(create: boolean, obj?: AnalysisTemplateType): void {
   }
 }
 
-const saveForm = handleSubmit((values) => {
+const saveForm = handleSubmit(async (values) => {
   const payload = {
     name: values.name,
     description: values.description ?? null,
     departmentUid: values.departmentUid ? values.departmentUid : null,
-    active: values.active,
   };
-  if (formAction.value === true) addAnalysisTemplate(payload);
-  if (formAction.value === false) editAnalysisTemplate(payload);
-  showModal.value = false;
+  formSaving.value = true;
+  try {
+    if (formAction.value === true) {
+      await addAnalysisTemplate(payload);
+    } else {
+      await editAnalysisTemplate(payload);
+    }
+    showModal.value = false;
+  } finally {
+    formSaving.value = false;
+  }
 });
 
 </script>
@@ -166,10 +183,10 @@ const saveForm = handleSubmit((values) => {
                 :key="template.uid"
                 @click.prevent.stop="select(template)"
                 :class="[
-                  'rounded-md p-2 cursor-pointer transition-colors duration-200',
+                  'rounded-md p-2 cursor-pointer transition-colors duration-200 border-l-4',
                   template?.uid === analysisTemplate?.uid 
-                    ? 'bg-accent text-accent-foreground' 
-                    : 'hover:bg-accent/50'
+                    ? 'border-l-primary bg-primary/10 text-primary font-medium' 
+                    : 'border-l-transparent hover:bg-accent/50 hover:border-l-primary/30'
                 ]"
               >
                 <div class="flex items-center justify-between">
@@ -212,88 +229,64 @@ const saveForm = handleSubmit((values) => {
             </div>
           </div>
 
-          <!-- Tabs -->
-          <nav class="border-b border-border">
-            <div class="flex space-x-2">
-              <button
-                v-for="tab in tabs"
-                :key="tab"
-                :class="[
-                  'px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
-                  currentTab === tab
-                    ? 'border-b-2 border-primary text-foreground'
-                    : 'text-muted-foreground hover:text-foreground'
-                ]"
-                @click="currentTab = tab"
+          <!-- Analyses Content -->
+          <div class="rounded-lg border border-border bg-card flex flex-col min-h-0">
+            <!-- Sticky header + action bar -->
+            <div class="flex items-center justify-between gap-4 px-4 py-3 border-b border-border bg-muted/30 shrink-0">
+              <h3 class="text-sm font-medium text-foreground">Analyses in template</h3>
+              <fel-button
+                type="button"
+                :loading="templateUpdating"
+                @click="updateTemplate()"
               >
-                {{ tab }}
-              </button>
+                <span class="inline-flex items-center gap-2">
+                  <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  Update Template
+                </span>
+              </fel-button>
             </div>
-          </nav>
 
-          <!-- Content -->
-          <div class="rounded-lg border border-border bg-card">
-            <div class="p-6">
-              <div v-if="currentTab === 'analyses-services'">
-                <h3>Analyses</h3>
-                <hr />
-                <section
-                  class="col-span-4 overflow-y-scroll overscroll-contain analyses-scroll bg-white p-1"
+            <!-- Scrollable category grid -->
+            <div class="overflow-y-auto overscroll-contain flex-1 min-h-[200px] max-h-[420px] p-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                <div
+                  v-for="category in analysesServices"
+                  :key="category[0]"
+                  class="min-w-0"
                 >
-                  <div class="grid grid-cols-6 gap-2 w-full">
-                    <div
-                      class="col-span-2"
-                      v-for="category in analysesServices"
-                      :key="category[0]"
-                    >
-                      <fel-accordion>
-                        <template v-slot:title>{{ category[0] }}</template>
-                        <template v-slot:body>
-                          <div>
-                            <ul>
-                              <li
-                                v-for="service in category[1]"
-                                :key="service?.uid"
-                                class="cursor-pointer"
-                                :class="[
-                                  { 'border-sky-800 bg-gray-200 underline pl-3': false },
-                                ]"
-                              >
-                                <div class="grow p-1">
-                                  <div
-                                    :class="[
-                                      'font-medium text-gray-500 hover:text-gray-700',
-                                      { 'text-gray-700 font-medium': false },
-                                    ]"
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      :id="`toggle-${service?.uid}`"
-                                      class="form-control"
-                                      v-model="service.checked"
-                                    />
-                                    <label
-                                      :for="`toggle-${service?.uid}`"
-                                      class="text-gray-700 ml-4"
-                                      >{{ service?.name }}</label
-                                    >
-                                  </div>
-                                </div>
-                                <hr />
-                              </li>
-                            </ul>
-                          </div>
-                        </template>
-                      </fel-accordion>
-                    </div>
-                  </div>
-                  <button
-                    class="px-2 py-1 border-sky-800 border text-sky-800 rounded-sm transition duration-300 hover:bg-sky-800 hover:text-white focus:outline-none"
-                    @click="updateTemplate()"
-                  >
-                    Update Template
-                  </button>
-                </section>
+                  <fel-accordion compact>
+                    <template v-slot:title>
+                      <span class="text-sm truncate">{{ category[0] }}</span>
+                    </template>
+                    <template v-slot:body>
+                      <ul class="space-y-0.5 py-1">
+                        <li
+                          v-for="service in category[1]"
+                          :key="service?.uid"
+                          class="flex items-center gap-2 py-1.5 px-2 rounded-md hover:bg-accent/50 transition-colors cursor-pointer"
+                          @click="service.checked = !service.checked"
+                        >
+                          <input
+                            type="checkbox"
+                            :id="`toggle-${service?.uid}`"
+                            class="h-4 w-4 rounded border-input text-primary focus:ring-ring shrink-0 cursor-pointer"
+                            v-model="service.checked"
+                            @click.stop
+                          />
+                          <label
+                            :for="`toggle-${service?.uid}`"
+                            class="text-sm text-foreground cursor-pointer truncate flex-1 min-w-0"
+                            @click.stop
+                          >
+                            {{ service?.name }}
+                          </label>
+                        </li>
+                      </ul>
+                    </template>
+                  </fel-accordion>
+                </div>
               </div>
             </div>
           </div>
@@ -358,12 +351,13 @@ const saveForm = handleSubmit((values) => {
         </div>
 
         <div class="pt-4">
-          <button
+          <fel-button
             type="submit"
-            class="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring"
+            class="w-full"
+            :loading="formSaving"
           >
             Save Changes
-          </button>
+          </fel-button>
         </div>
       </form>
     </template>

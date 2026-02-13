@@ -1,8 +1,11 @@
 import { reactive, toRefs, computed } from 'vue';
 import useNotifyToast from './alert_toast';
 import useApiUtil from './api_util';
+import { useAuthStore } from '@/stores/auth';
 import { DepartmentType, UserPreferenceType } from '@/types/gql';
 import { GetUserPreferencesDocument, GetUserPreferencesQuery, GetUserPreferencesQueryVariables } from '@/graphql/operations/_queries';
+
+const UI_PREFERENCES_STORAGE_KEY = 'felicity_ui_preferences';
 
 export type ThemeVariant =
   | 'light'
@@ -34,7 +37,70 @@ const state = reactive({
     defaultRoute: '',
 });
 
+let preferencesLoadedFromStorage = false;
+
+function persistUiPreferencesToStorage(): void {
+    try {
+        if (typeof window === 'undefined') return;
+        localStorage.setItem(UI_PREFERENCES_STORAGE_KEY, JSON.stringify({
+            megaMenu: state.megaMenu,
+            expandedMenu: state.expandedMenu,
+            defaultRoute: state.defaultRoute,
+        }));
+    } catch {
+        // Ignore storage errors
+    }
+}
+
+function loadFromLocalStorage(): void {
+    try {
+        if (typeof window === 'undefined') return;
+        const stored = localStorage.getItem(UI_PREFERENCES_STORAGE_KEY);
+        if (stored) {
+            const prefs = JSON.parse(stored);
+            if (prefs.megaMenu !== undefined) state.megaMenu = prefs.megaMenu;
+            if (prefs.expandedMenu !== undefined) state.expandedMenu = prefs.expandedMenu;
+            if (prefs.defaultRoute !== undefined) state.defaultRoute = prefs.defaultRoute;
+        }
+    } catch {
+        // Ignore parse errors
+    }
+}
+
+function loadFromAuth(): void {
+    try {
+        const authStore = useAuthStore();
+        const preference = authStore.auth?.user?.preference;
+        if (preference && (preference.megaMenu !== undefined || preference.expandedMenu !== undefined)) {
+            if (preference.megaMenu !== undefined && preference.megaMenu !== null) {
+                state.megaMenu = preference.megaMenu;
+            }
+            if (preference.expandedMenu !== undefined && preference.expandedMenu !== null) {
+                state.expandedMenu = preference.expandedMenu;
+            }
+            if (preference.defaultRoute) {
+                state.defaultRoute = preference.defaultRoute;
+            }
+            persistUiPreferencesToStorage();
+        }
+    } catch {
+        // Auth store may not be ready
+    }
+}
+
+function ensurePreferencesLoaded(): void {
+    if (preferencesLoadedFromStorage) return;
+    preferencesLoadedFromStorage = true;
+    loadFromLocalStorage();
+    // Only use auth as fallback when localStorage has no saved UI preferences
+    // (localStorage is updated on save, so it takes precedence over auth from login)
+    if (!localStorage.getItem(UI_PREFERENCES_STORAGE_KEY)) {
+        loadFromAuth();
+    }
+}
+
 export default function userPreferenceComposable() {
+    ensurePreferencesLoaded();
     /**
      * Apply theme to DOM and localStorage
      */
@@ -107,6 +173,7 @@ export default function userPreferenceComposable() {
             if (preference.defaultRoute) {
                 state.defaultRoute = preference.defaultRoute;
             }
+            persistUiPreferencesToStorage();
         } catch (error) {
             toastError(`Failed to initialize preferences: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
@@ -123,6 +190,7 @@ export default function userPreferenceComposable() {
             if (key === 'theme') {
                 applyTheme(value as ThemeVariant);
             }
+            persistUiPreferencesToStorage();
         } catch (error) {
             toastError(`Failed to update preference: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }

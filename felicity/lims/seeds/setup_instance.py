@@ -43,7 +43,10 @@ async def seed_geographies() -> None:
     c_code = country_data.get("code")
 
     if c_name and c_code:
-        country = await country_service.get(name=c_name)
+        # Resolve by unique code first so seed reruns remain idempotent.
+        country = await country_service.get(code=c_code)
+        if not country:
+            country = await country_service.get(name=c_name)
         if not country:
             country_in = schemas.CountryCreate(name=c_name, code=c_code)
             country = await country_service.create(country_in)
@@ -54,7 +57,11 @@ async def seed_geographies() -> None:
                 p_name = _prv.get("name")
                 p_code = _prv.get("code")
                 if p_name and p_code:
-                    province = await province_service.get(name=p_name, code=p_code)
+                    province = await province_service.get(code=p_code)
+                    if not province:
+                        province = await province_service.get(
+                            name=p_name, country_uid=country.uid
+                        )
                     if not province:
                         pr_in = schemas.ProvinceCreate(
                             name=p_name, code=p_code, country_uid=country.uid
@@ -67,9 +74,11 @@ async def seed_geographies() -> None:
                             d_name = _dist.get("name")
                             d_code = _dist.get("code")
                             if d_name and d_code:
-                                district = await district_service.get(
-                                    name=d_name, code=d_code
-                                )
+                                district = await district_service.get(code=d_code)
+                                if not district:
+                                    district = await district_service.get(
+                                        name=d_name, province_uid=province.uid
+                                    )
                                 if not district:
                                     di_in = schemas.DistrictCreate(
                                         name=d_name,

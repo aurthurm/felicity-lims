@@ -138,6 +138,7 @@ interface IEnhancedAuth {
     resetData: {
         canReset: boolean;
         username?: string;
+        userUid?: string;
     };
 
     // Laboratory context
@@ -243,6 +244,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
         resetData: {
             canReset: false,
             username: '',
+            userUid: '',
         },
 
         // Laboratory context
@@ -915,6 +917,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
             auth.value.resetData = {
                 canReset: !!res?.username,
                 username: res?.username,
+                userUid: res?.userUid,
             };
         } catch (err) {
             auth.value.lastError = String(err);
@@ -924,7 +927,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
     };
 
     const resetPassword = async (password: string, passwordc: string) => {
-        if (!auth.value?.resetData?.username) {
+        if (!auth.value?.resetData?.userUid) {
             return;
         }
 
@@ -933,7 +936,7 @@ export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
             await withClientMutation<PasswordResetMutation, PasswordResetMutationVariables>(
                 PasswordResetDocument,
                 {
-                    userUid: auth.value.resetData.username,
+                    userUid: auth.value.resetData.userUid,
                     password,
                     passwordc,
                 },

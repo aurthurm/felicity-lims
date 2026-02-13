@@ -24,6 +24,7 @@ from felicity.apps.user.services import (
     UserService,
     UserPreferenceService,
 )
+from felicity.apps.user import schemas as user_schemas
 
 logger = logging.getLogger(__name__)
 
@@ -99,10 +100,34 @@ class UserQuery:
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def user_preferences(self, info) -> UserPreferenceType:
         current_user = await auth_from_info(info)
-        return await UserPreferenceService().get(
+        preference_service = UserPreferenceService()
+        preference = await preference_service.get(
             user_uid=current_user.uid,
             related=["departments"]
         )
+        if preference:
+            return preference
+
+        pref_in = user_schemas.UserPreferenceCreate(
+            user_uid=current_user.uid,
+            expanded_menu=False,
+            mega_menu=False,
+            theme="LIGHT",
+            default_route=None,
+        )
+        try:
+            await preference_service.create(pref_in)
+        except Exception:
+            # Another request may have created preferences concurrently.
+            pass
+
+        preference = await preference_service.get(
+            user_uid=current_user.uid,
+            related=["departments"]
+        )
+        if not preference:
+            raise Exception("Failed to initialize user preferences")
+        return preference
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def user_by_email(self, info, email: str) -> UserType | None:

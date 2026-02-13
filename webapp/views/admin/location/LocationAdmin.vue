@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, computed, defineAsyncComponent } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import { useField, useForm } from "vee-validate";
 import { object, string } from "yup";
 import {
@@ -17,18 +17,12 @@ import {
 } from '@/graphql/operations/admin.mutations';
 
 import { useLocationStore } from '@/stores/location';
-import  useApiUtil  from '@/composables/api_util';
-const modal = defineAsyncComponent(
-  () => import('@/components/ui/FelModal.vue')
-)
+import useApiUtil from '@/composables/api_util';
+import FelButton from '@/components/ui/buttons/FelButton.vue';
+import FelSelect from '@/components/ui/select/FelSelect.vue';
 
-const locationStore = useLocationStore()
-const { withClientMutation } = useApiUtil()
-
-interface IForm extends CountryType, ProvinceType, DistrictType {
-  countryUid: string,
-  provinceUid: string
-};
+const locationStore = useLocationStore();
+const { withClientMutation } = useApiUtil();
 
 let createLocation = ref<boolean>(true);
 let showModal = ref<boolean>(false);
@@ -39,6 +33,11 @@ let province = reactive({}) as ProvinceType;
 let district = reactive({}) as DistrictType;
 let formTitle = ref<string>('');
 const currentUid = ref<string | null>(null);
+
+// Search filters
+const countrySearch = ref('');
+const provinceSearch = ref('');
+const districtSearch = ref('');
 
 const formSchema = object({
   name: string().required("Name is required"),
@@ -59,27 +58,64 @@ const { handleSubmit, errors, resetForm, setValues } = useForm({
 
 const { value: name } = useField<string>("name");
 const { value: code } = useField<string>("code");
-const { value: countryUid } = useField<string | null>("countryUid");
-const { value: provinceUid } = useField<string | null>("provinceUid");
+const { value: countryUid, setValue: setCountryUid } = useField<string | null>("countryUid");
+const { value: provinceUid, setValue: setProvinceUid } = useField<string | null>("provinceUid");
 
 locationStore.fetchCountries();
-const countries = computed(() => locationStore.getCountries)
+const countries = computed(() => locationStore.getCountries);
+const provinces = computed(() => locationStore.getProvinces);
+const districts = computed(() => locationStore.getDistricts);
+
+// Filtered lists with search
+const filteredCountries = computed(() => {
+  const list = countries.value;
+  const q = countrySearch.value?.toLowerCase().trim() || '';
+  if (!q) return list;
+  return list.filter((c) =>
+    (c.name || '').toLowerCase().includes(q) || (c.code || '').toLowerCase().includes(q)
+  );
+});
+
+const filteredProvinces = computed(() => {
+  const list = provinces.value;
+  const q = provinceSearch.value?.toLowerCase().trim() || '';
+  if (!q) return list;
+  return list.filter((p) =>
+    (p.name || '').toLowerCase().includes(q) || (p.code || '').toLowerCase().includes(q)
+  );
+});
+
+const filteredDistricts = computed(() => {
+  const list = districts.value;
+  const q = districtSearch.value?.toLowerCase().trim() || '';
+  if (!q) return list;
+  return list.filter((d) =>
+    (d.name || '').toLowerCase().includes(q) || (d.code || '').toLowerCase().includes(q)
+  );
+});
+
+// Select options for country/province in edit forms
+const countryOptions = computed(() =>
+  countries.value.map((c) => ({ value: c.uid, label: `${c.name || ''} (${c.code || ''})` }))
+);
+
+const provinceOptions = computed(() =>
+  provinces.value.map((p) => ({ value: p.uid, label: `${p.name || ''} (${p.code || ''})` }))
+);
 
 function addCountry(payload: { name: string; code: string }): void {
   withClientMutation<AddCountryMutation, AddCountryMutationVariables>(AddCountryDocument, { payload }, "createCountry").then((result) => {
-    locationStore.addCountry(result)
+    locationStore.addCountry(result);
     Object.assign(country, result);
   });
 }
 
 function editCountry(payload: { name: string; code: string }): void {
-  if (!currentUid.value) {
-    return;
-  }
+  if (!currentUid.value) return;
   const incoming = { ...payload, active: true };
   withClientMutation<EditCountryMutation, EditCountryMutationVariables>(EditCountryDocument, { uid: currentUid.value, payload: incoming }, "updateCountry").then(
     (result) => {
-      locationStore.updateCountry(result)
+      locationStore.updateCountry(result);
       Object.assign(country, result);
     },
   );
@@ -88,19 +124,17 @@ function editCountry(payload: { name: string; code: string }): void {
 function addProvince(payload: { name: string; code: string }): void {
   const incoming = { ...payload, countryUid: country.uid };
   withClientMutation<AddProvinceMutation, AddProvinceMutationVariables>(AddProvinceDocument, { payload: incoming }, "createProvince").then((result) => {
-    locationStore.addProvince(result)
+    locationStore.addProvince(result);
     Object.assign(province, result);
   });
 }
 
 function editProvince(payload: { name: string; code: string; countryUid?: string | null }): void {
-  if (!currentUid.value) {
-    return;
-  }
+  if (!currentUid.value) return;
   const incoming = { ...payload, active: true };
   withClientMutation<EditProvinceMutation, EditProvinceMutationVariables>(EditProvinceDocument, { uid: currentUid.value, payload: incoming }, "updateProvince").then(
     (result) => {
-      locationStore.updateProvince(result)
+      locationStore.updateProvince(result);
       Object.assign(province, result);
     },
   );
@@ -109,19 +143,17 @@ function editProvince(payload: { name: string; code: string; countryUid?: string
 function addDistrict(payload: { name: string; code: string }): void {
   const incoming = { ...payload, provinceUid: province.uid };
   withClientMutation<AddDistrictMutation, AddDistrictMutationVariables>(AddDistrictDocument, { payload: incoming }, "createDistrict").then((result) => {
-    locationStore.addDistrict(result)
+    locationStore.addDistrict(result);
     Object.assign(district, result);
   });
 }
 
 function editDistrict(payload: { name: string; code: string; provinceUid?: string | null }): void {
-  if (!currentUid.value) {
-    return;
-  }
+  if (!currentUid.value) return;
   const incoming = { ...payload, active: true };
   withClientMutation<EditDistrictMutation, EditDistrictMutationVariables>(EditDistrictDocument, { uid: currentUid.value, payload: incoming }, "updateDistrict").then(
     (result) => {
-      locationStore.updateDistrict(result)
+      locationStore.updateDistrict(result);
       Object.assign(district, result);
     },
   );
@@ -135,42 +167,42 @@ function isProvinceSelected(): boolean {
   return province.uid !== undefined;
 }
 
-
-const provinces = computed(() => locationStore.getProvinces)
-const districts = computed(() => locationStore.getDistricts)
-
-let selectLocation = (target: string, selected: ICountry | IProvince | IDistrict): void => {
+function selectLocation(target: string, selected: CountryType | ProvinceType | DistrictType): void {
   if (target === 'country') {
     Object.assign(country, { ...selected });
     locationStore.filterProvincesByCountry(selected.uid!);
-  };
-
+  }
   if (target === 'province') {
     Object.assign(province, { ...selected });
     locationStore.filterDistrictsByProvince(selected.uid!);
-  };
-
+  }
   if (target === 'district') Object.assign(district, { ...selected });
-};
+}
 
-let resetSelected = (target: string): void => {
+function resetSelected(target: string): void {
   if (target === 'country') {
-    Object.assign(country, {} as ICountry);
-    Object.assign(province, {} as IProvince);
-    Object.assign(district, {} as IDistrict);
+    Object.assign(country, {} as CountryType);
+    Object.assign(province, {} as ProvinceType);
+    Object.assign(district, {} as DistrictType);
   }
   if (target === 'province') {
-    Object.assign(province, {} as IProvince);
-    Object.assign(district, {} as IDistrict);
+    Object.assign(province, {} as ProvinceType);
+    Object.assign(district, {} as DistrictType);
   }
-  if (target === 'district') Object.assign(district, {} as IDistrict);
-};
+  if (target === 'district') Object.assign(district, {} as DistrictType);
+}
 
-function FormManager(create: boolean, target: string, locationObj = {} as any): void {
+function clearSelection(): void {
+  Object.assign(country, {} as CountryType);
+  Object.assign(province, {} as ProvinceType);
+  Object.assign(district, {} as DistrictType);
+}
+
+function FormManager(create: boolean, target: string, locationObj = {} as CountryType | ProvinceType | DistrictType): void {
   createLocation.value = create;
   targetLocation.value = target;
   showModal.value = true;
-  formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + target.toUpperCase();
+  formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + target.charAt(0).toUpperCase() + target.slice(1);
   if (create) {
     resetSelected(target);
     currentUid.value = null;
@@ -209,75 +241,241 @@ const saveForm = handleSubmit((values): void => {
   showModal.value = false;
 });
 
-</script>>
+// Breadcrumb trail
+const breadcrumbTrail = computed(() => {
+  const parts: string[] = [];
+  if (country.name) parts.push(country.name);
+  if (province.name) parts.push(province.name);
+  if (district.name) parts.push(district.name);
+  return parts;
+});
 
+const inputClass = "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
+</script>
 
 <template>
   <div class="space-y-6">
-    <div class="grid grid-cols-12 gap-6">
-      <section class="col-span-3">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-2xl font-semibold text-foreground">Countries</h2>
-          <button
-            class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
-            @click="FormManager(true, 'country')">
-            Add Country
-          </button>
+    <fel-heading title="Country, Provinces & Districts">
+      <template #subtitle>
+        <span class="text-muted-foreground">Manage geographic hierarchy for patient and client addresses.</span>
+      </template>
+      <FelButton @click="FormManager(true, 'country')">
+        <font-awesome-icon icon="plus" class="mr-2" />
+        Add Country
+      </FelButton>
+    </fel-heading>
+
+    <!-- Breadcrumb trail -->
+    <div v-if="breadcrumbTrail.length" class="flex items-center gap-2 text-sm">
+      <span class="text-muted-foreground">Selected:</span>
+      <span class="font-medium text-foreground">{{ breadcrumbTrail.join(' › ') }}</span>
+      <button
+        type="button"
+        class="ml-2 text-xs text-muted-foreground hover:text-foreground underline"
+        @click="clearSelection"
+      >
+        Clear selection
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Countries -->
+      <section class="bg-card rounded-lg border border-border shadow-sm overflow-hidden flex flex-col">
+        <div class="shrink-0 p-4 border-b border-border bg-muted/30">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-base font-semibold text-foreground flex items-center gap-2">
+              <font-awesome-icon icon="flag" class="text-primary/60" />
+              Countries
+            </h2>
+            <span class="text-xs text-muted-foreground">{{ filteredCountries.length }} total</span>
+          </div>
+          <div class="relative">
+            <font-awesome-icon icon="magnifying-glass" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <input
+              v-model="countrySearch"
+              type="text"
+              placeholder="Search countries..."
+              :class="[inputClass, 'pl-9']"
+            />
+          </div>
         </div>
-        <div class="rounded-md border h-[70vh] overflow-y-auto">
-          <div v-for="c in countries" :key="c.uid"
-            :class="country?.uid === c.uid ? 'flex items-center justify-between p-4 border-b hover:bg-muted/50 data-[state=selected]:bg-muted bg-muted' : 'flex items-center justify-between p-4 border-b hover:bg-muted/50 data-[state=selected]:bg-muted'">
-            <a @click.prevent.stop="selectLocation('country', c)" class="font-medium text-foreground">
-              <span>{{ c.name }}</span>
-            </a>
-            <button @click="FormManager(false, 'country', c)" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0">
-              <font-awesome-icon icon="pen" />
+        <div class="flex-1 min-h-[200px] max-h-[400px] overflow-y-auto">
+          <template v-if="filteredCountries.length">
+            <button
+              v-for="c in filteredCountries"
+              :key="c.uid"
+              type="button"
+              :class="[
+                'w-full flex items-center justify-between gap-3 px-4 py-3 text-left transition-colors border-b border-border last:border-b-0',
+                country?.uid === c.uid
+                  ? 'bg-primary/10 text-primary'
+                  : 'hover:bg-muted/50 text-foreground'
+              ]"
+              @click="selectLocation('country', c)"
+            >
+              <span class="font-medium truncate">{{ c.name }}</span>
+              <span class="shrink-0 text-xs text-muted-foreground">{{ c.code }}</span>
+              <button
+                type="button"
+                class="shrink-0 p-1.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
+                aria-label="Edit country"
+                @click.stop="FormManager(false, 'country', c)"
+              >
+                <font-awesome-icon icon="pen" class="w-3.5 h-3.5" />
+              </button>
             </button>
+          </template>
+          <div v-else class="flex flex-col items-center justify-center py-12 px-4 text-center text-muted-foreground">
+            <font-awesome-icon icon="flag" class="w-10 h-10 mb-3 opacity-40" />
+            <p class="text-sm">{{ countrySearch ? 'No matches found' : 'No countries yet' }}</p>
+            <FelButton v-if="!countrySearch" variant="outline" class="mt-3" @click="FormManager(true, 'country')">
+              Add first country
+            </FelButton>
           </div>
         </div>
       </section>
 
-      <section class="col-span-4" v-if="isCountrySelected()">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-2xl font-semibold text-foreground">Provinces</h2>
-          <button
-            class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
-            @click="FormManager(true, 'province')">
+      <!-- Provinces -->
+      <section class="bg-card rounded-lg border border-border shadow-sm overflow-hidden flex flex-col">
+        <div class="shrink-0 p-4 border-b border-border bg-muted/30">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-base font-semibold text-foreground flex items-center gap-2">
+              <font-awesome-icon icon="map" class="text-primary/60" />
+              Provinces
+            </h2>
+            <span v-if="isCountrySelected()" class="text-xs text-muted-foreground">{{ filteredProvinces.length }} total</span>
+          </div>
+          <template v-if="isCountrySelected()">
+            <div class="relative">
+              <font-awesome-icon icon="magnifying-glass" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <input
+                v-model="provinceSearch"
+                type="text"
+                placeholder="Search provinces..."
+                :class="[inputClass, 'pl-9']"
+              />
+            </div>
+          </template>
+        </div>
+        <div class="flex-1 min-h-[200px] max-h-[400px] overflow-y-auto">
+          <template v-if="!isCountrySelected()">
+            <div class="flex flex-col items-center justify-center py-12 px-4 text-center text-muted-foreground">
+              <font-awesome-icon icon="map" class="w-10 h-10 mb-3 opacity-40" />
+              <p class="text-sm">Select a country to view provinces</p>
+            </div>
+          </template>
+          <template v-else-if="filteredProvinces.length">
+            <button
+              v-for="p in filteredProvinces"
+              :key="p.uid"
+              type="button"
+              :class="[
+                'w-full flex items-center justify-between gap-3 px-4 py-3 text-left transition-colors border-b border-border last:border-b-0',
+                province?.uid === p.uid
+                  ? 'bg-primary/10 text-primary'
+                  : 'hover:bg-muted/50 text-foreground'
+              ]"
+              @click="selectLocation('province', p)"
+            >
+              <span class="font-medium truncate">{{ p.name }}</span>
+              <span class="shrink-0 text-xs text-muted-foreground">{{ p.code }}</span>
+              <button
+                type="button"
+                class="shrink-0 p-1.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
+                aria-label="Edit province"
+                @click.stop="FormManager(false, 'province', p)"
+              >
+                <font-awesome-icon icon="pen" class="w-3.5 h-3.5" />
+              </button>
+            </button>
+          </template>
+          <template v-else>
+            <div class="flex flex-col items-center justify-center py-12 px-4 text-center text-muted-foreground">
+              <font-awesome-icon icon="map" class="w-10 h-10 mb-3 opacity-40" />
+              <p class="text-sm">{{ provinceSearch ? 'No matches found' : 'No provinces yet' }}</p>
+              <FelButton v-if="!provinceSearch" variant="outline" class="mt-3" @click="FormManager(true, 'province')">
+                Add first province
+              </FelButton>
+            </div>
+          </template>
+        </div>
+        <div v-if="isCountrySelected()" class="shrink-0 p-3 border-t border-border">
+          <FelButton variant="outline" class="w-full" @click="FormManager(true, 'province')">
+            <font-awesome-icon icon="plus" class="mr-2" />
             Add Province
-          </button>
-        </div>
-        <div class="rounded-md border h-[70vh] overflow-y-auto">
-          <div v-for="p in provinces" :key="p.uid"
-            :class="province?.uid === p.uid ? 'flex items-center justify-between p-4 border-b hover:bg-muted/50 data-[state=selected]:bg-muted bg-muted' : 'flex items-center justify-between p-4 border-b hover:bg-muted/50 data-[state=selected]:bg-muted'">
-            <a @click.prevent.stop="selectLocation('province', p)" class="font-medium text-foreground">
-              <span>{{ p.name }}</span>
-            </a>
-            <button @click="FormManager(false, 'province', p)" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0">
-              <font-awesome-icon icon="pen" />
-            </button>
-          </div>
+          </FelButton>
         </div>
       </section>
 
-      <section class="col-span-5" v-if="isProvinceSelected()">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-2xl font-semibold text-foreground">Districts</h2>
-          <button
-            class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
-            @click="FormManager(true, 'district')">
-            Add District
-          </button>
-        </div>
-        <div class="rounded-md border h-[70vh] overflow-y-auto">
-          <div v-for="d in districts" :key="d.uid"
-            :class="district?.uid === d.uid ? 'flex items-center justify-between p-4 border-b hover:bg-muted/50 data-[state=selected]:bg-muted bg-muted' : 'flex items-center justify-between p-4 border-b hover:bg-muted/50 data-[state=selected]:bg-muted'">
-            <a @click.prevent.stop="selectLocation('district', d)" class="font-medium text-foreground">
-              <span>{{ d.name }}</span>
-            </a>
-            <button @click="FormManager(false, 'district', d)" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0">
-              <font-awesome-icon icon="pen" />
-            </button>
+      <!-- Districts -->
+      <section class="bg-card rounded-lg border border-border shadow-sm overflow-hidden flex flex-col">
+        <div class="shrink-0 p-4 border-b border-border bg-muted/30">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-base font-semibold text-foreground flex items-center gap-2">
+              <font-awesome-icon icon="location-dot" class="text-primary/60" />
+              Districts
+            </h2>
+            <span v-if="isProvinceSelected()" class="text-xs text-muted-foreground">{{ filteredDistricts.length }} total</span>
           </div>
+          <template v-if="isProvinceSelected()">
+            <div class="relative">
+              <font-awesome-icon icon="magnifying-glass" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <input
+                v-model="districtSearch"
+                type="text"
+                placeholder="Search districts..."
+                :class="[inputClass, 'pl-9']"
+              />
+            </div>
+          </template>
+        </div>
+        <div class="flex-1 min-h-[200px] max-h-[400px] overflow-y-auto">
+          <template v-if="!isProvinceSelected()">
+            <div class="flex flex-col items-center justify-center py-12 px-4 text-center text-muted-foreground">
+              <font-awesome-icon icon="location-dot" class="w-10 h-10 mb-3 opacity-40" />
+              <p class="text-sm">Select a province to view districts</p>
+            </div>
+          </template>
+          <template v-else-if="filteredDistricts.length">
+            <button
+              v-for="d in filteredDistricts"
+              :key="d.uid"
+              type="button"
+              :class="[
+                'w-full flex items-center justify-between gap-3 px-4 py-3 text-left transition-colors border-b border-border last:border-b-0',
+                district?.uid === d.uid
+                  ? 'bg-primary/10 text-primary'
+                  : 'hover:bg-muted/50 text-foreground'
+              ]"
+              @click="selectLocation('district', d)"
+            >
+              <span class="font-medium truncate">{{ d.name }}</span>
+              <span class="shrink-0 text-xs text-muted-foreground">{{ d.code }}</span>
+              <button
+                type="button"
+                class="shrink-0 p-1.5 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
+                aria-label="Edit district"
+                @click.stop="FormManager(false, 'district', d)"
+              >
+                <font-awesome-icon icon="pen" class="w-3.5 h-3.5" />
+              </button>
+            </button>
+          </template>
+          <template v-else>
+            <div class="flex flex-col items-center justify-center py-12 px-4 text-center text-muted-foreground">
+              <font-awesome-icon icon="location-dot" class="w-10 h-10 mb-3 opacity-40" />
+              <p class="text-sm">{{ districtSearch ? 'No matches found' : 'No districts yet' }}</p>
+              <FelButton v-if="!districtSearch" variant="outline" class="mt-3" @click="FormManager(true, 'district')">
+                Add first district
+              </FelButton>
+            </div>
+          </template>
+        </div>
+        <div v-if="isProvinceSelected()" class="shrink-0 p-3 border-t border-border">
+          <FelButton variant="outline" class="w-full" @click="FormManager(true, 'district')">
+            <font-awesome-icon icon="plus" class="mr-2" />
+            Add District
+          </FelButton>
         </div>
       </section>
     </div>
@@ -290,36 +488,61 @@ const saveForm = handleSubmit((values): void => {
     </template>
 
     <template v-slot:body>
-      <form class="space-y-6" @submit.prevent="saveForm">
-        <div class="grid grid-cols-2 gap-6">
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Name</span>
-            <input 
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-              v-model="name" 
-              placeholder="Name ..." />
-            <div class="text-sm text-destructive">{{ errors.name }}</div>
-          </label>
-          <label class="block col-span-1 space-y-2">
-            <span class="text-sm font-medium text-foreground">Code</span>
-            <input 
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" 
-              v-model="code" 
-              placeholder="Code ..." />
-            <div class="text-sm text-destructive">{{ errors.code }}</div>
-          </label>
+      <form class="space-y-5" @submit.prevent="saveForm">
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-foreground">Name</label>
+            <input
+              v-model="name"
+              type="text"
+              :class="inputClass"
+              placeholder="e.g. United States"
+            />
+            <p v-if="errors.name" class="text-sm text-destructive">{{ errors.name }}</p>
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-foreground">Code</label>
+            <input
+              v-model="code"
+              type="text"
+              :class="inputClass"
+              placeholder="e.g. US"
+            />
+            <p v-if="errors.code" class="text-sm text-destructive">{{ errors.code }}</p>
+          </div>
         </div>
-        <hr class="border-border" />
-        <button 
-          type="submit" 
-          class="inline-flex w-full items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
-          Save Form
-        </button>
+
+        <!-- Country selector when editing province -->
+        <div v-if="targetLocation === 'province'" class="space-y-2">
+          <FelSelect
+            label="Country"
+            name="countryUid"
+            :model-value="countryUid"
+            :options="countryOptions"
+            @update:model-value="setCountryUid($event)"
+          />
+        </div>
+
+        <!-- Province selector when editing district -->
+        <div v-if="targetLocation === 'district'" class="space-y-2">
+          <FelSelect
+            label="Province"
+            name="provinceUid"
+            :model-value="provinceUid"
+            :options="provinceOptions"
+            @update:model-value="setProvinceUid($event)"
+          />
+        </div>
+
+        <div class="flex gap-3 pt-2">
+          <FelButton type="submit" class="flex-1">
+            Save
+          </FelButton>
+          <FelButton variant="outline" type="button" @click="showModal = false">
+            Cancel
+          </FelButton>
+        </div>
       </form>
     </template>
   </fel-modal>
 </template>
-
-<style lang="postcss" scoped>
-/* Removed custom styles as they're now handled by the style guide classes */
-</style>

@@ -1,32 +1,33 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent } from 'vue';
-import { useLocationStore } from '@/stores/location';
+import { useRoute } from 'vue-router';
+import { getAdminBreadcrumbLabel } from '@/config/admin';
+
 const VersionDisplay = defineAsyncComponent(
   () => import("./VersionDisplay.vue")
-)
+);
 
-const locationStore = useLocationStore()
-const resetSelected = () => locationStore.updateConfRoute("");
-const selectedRoute = computed(() => locationStore.getConfRoute)
+const route = useRoute();
+
+// Route-based breadcrumb: persists on reload (derived from URL, not in-memory state)
+const breadcrumbLabel = computed(() => getAdminBreadcrumbLabel(route.path));
 </script>
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Felicity Configurations">
+    <fel-heading title="Settings">
+      <template #subtitle>
+        <nav class="flex items-center" aria-label="Breadcrumb">
+          <router-link to="/admin" class="no-underline text-muted-foreground hover:text-primary transition-colors">
+            Home
+          </router-link>
+          <span v-if="breadcrumbLabel" class="mx-2" aria-hidden="true">/</span>
+          <span v-if="breadcrumbLabel" class="font-medium" aria-current="page">{{ breadcrumbLabel }}</span>
+        </nav>
+      </template>
       <VersionDisplay />
     </fel-heading>
 
-    <div class="flex items-center text-sm">
-      <span @click="resetSelected" class="cursor-pointer">
-        <router-link to="/admin" class="no-underline">
-          <h4 class="text-foreground font-medium">Home</h4>
-        </router-link>
-      </span>
-      <span v-if="selectedRoute" class="mx-2 text-muted-foreground">&rarr;</span>
-      <span v-if="selectedRoute" class="text-muted-foreground font-medium">{{ selectedRoute }}</span>
-    </div>
-    
-    <hr>
     <router-view />
   </div>
 </template>

@@ -15,7 +15,9 @@ const props = withDefaults(defineProps<Props>(), {
     <div class="flex items-center justify-between">
       <div>
         <h1 class="text-2xl font-bold text-card-foreground">{{ title }}</h1>
-        <p v-if="subtitle" class="mt-1 text-sm text-muted-foreground">{{ subtitle }}</p>
+        <div v-if="subtitle || $slots.subtitle" class="mt-1 text-sm text-muted-foreground">
+          <slot name="subtitle">{{ subtitle }}</slot>
+        </div>
       </div>
       <!-- Right side content  -->
       <div>

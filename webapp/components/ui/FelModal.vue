@@ -33,7 +33,7 @@
                 <div class="flex-1">
                   <slot name="header">
                     <h3 class="text-lg font-semibold text-card-foreground">
-                      Default Header
+                      {{ title || 'Default Header' }}
                     </h3>
                   </slot>
                 </div>
@@ -87,6 +87,7 @@ export default defineComponent({
   name: 'enhanced-modal',
   props: {
     contentWidth: String,
+    title: String,
   },
   emits: ['close', 'after-leave'],
   setup(props, { emit }) {

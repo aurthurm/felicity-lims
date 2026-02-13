@@ -156,13 +156,13 @@
         discount = { ...billingStore.profileDiscount } as ProfileDiscountType
       }
       if(target?.value === "analysis"){
-        discount = { ...billingStore.analyisDiscount } as AnalysisDiscountType
+        discount = { ...billingStore.analysisDiscount } as AnalysisDiscountType
       }
       setDiscountValues({
         discountType: discount.discountType ?? "",
         valueType: discount.valueType ?? "",
-        startDate: discount.startDate ?? "",
-        endDate: discount.endDate ?? "",
+        startDate: toDateInputFormat(discount.startDate) || "",
+        endDate: toDateInputFormat(discount.endDate) || "",
         voucherUid: discount.voucherUid ?? null,
         valuePercent: discount.valuePercent ?? 0.0,
         valueAmount: discount.valueAmount ?? 0.0,
@@ -174,9 +174,15 @@
   const discountTypes = ref(["sale", "voucher"])
   const valueTypes = ref(["percentage", "amount"])
 
+  /** Convert ISO datetime to yyyy-MM-dd for HTML date inputs */
+  const toDateInputFormat = (dateStr: string | null | undefined): string => {
+    if (!dateStr) return "";
+    return dateStr.split("T")[0] ?? "";
+  };
+
   const updateDiscounting = handleDiscountSubmit((values) => {
     const payload = { ...values };
-    let discount = target.value == 'profile' ? billingStore.profileDiscount : billingStore.analyisDiscount;
+    let discount = target.value == 'profile' ? billingStore.profileDiscount : billingStore.analysisDiscount;
     if(target.value == 'profile'){
       withClientMutation<EditProfileDiscountMutation, EditProfileDiscountMutationVariables>(
         EditProfileDiscountDocument,
@@ -201,14 +207,14 @@
 </script>
 
 <template>
-    <div class="grid grid-cols-12 gap-8 p-6">
+    <div class="grid grid-cols-12 gap-4 p-4">
       <section class="col-span-6">
-        <div class="space-y-6">
+        <div class="space-y-3">
           <div class="flex items-center justify-between">
             <h3 class="text-lg font-semibold text-foreground">Pricing Information</h3>
           </div>
-          <div class="rounded-lg border border-border bg-card p-6">
-            <form class="space-y-6" @submit.prevent="updatePricing">
+          <div class="rounded-lg border border-border bg-card p-4">
+            <form class="space-y-4" @submit.prevent="updatePricing">
               <div class="space-y-4">
                 <label class="space-y-2">
                   <span class="text-sm font-medium text-muted-foreground">Amount ($)</span>
@@ -238,12 +244,12 @@
       </section>
 
       <section class="col-span-6">
-        <div class="space-y-6">
+        <div class="space-y-3">
           <div class="flex items-center justify-between">
             <h3 class="text-lg font-semibold text-foreground">Discounts Information</h3>
           </div>
-          <div class="rounded-lg border border-border bg-card p-6">
-            <form class="space-y-6" @submit.prevent="updateDiscounting">
+          <div class="rounded-lg border border-border bg-card p-4">
+            <form class="space-y-4" @submit.prevent="updateDiscounting">
               <div class="grid grid-cols-2 gap-4">
                 <label class="space-y-2">
                   <span class="text-sm font-medium text-muted-foreground">Discount Type</span>

@@ -8,6 +8,9 @@
   import { GroupType, PermissionType } from '@/types/gql';
   import * as shield from '@/guards'
 
+  const VueMultiselect = defineAsyncComponent(
+    () => import('vue-multiselect')
+  )
   const FelSwitch = defineAsyncComponent(
     () => import("@/components/ui/switch/FelSwitch.vue")
   )
@@ -89,7 +92,7 @@
   function FormManager(create: boolean, obj = {} as GroupType): void {
     formAction.value = create;
     showModal.value = true;
-    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "ANALYSES PROFILE";
+    formTitle.value = (create ? 'CREATE' : 'EDIT') + ' ' + "USER GROUP";
     if (create) {
       currentUid.value = null;
       resetForm({
@@ -100,9 +103,12 @@
       });
     } else {
       currentUid.value = obj.uid ?? null;
+      const pagesArray = Array.isArray(obj.pages)
+        ? obj.pages
+        : (typeof obj.pages === 'string' ? obj.pages.split(',').map((p) => p.trim()).filter(Boolean) : []);
       setValues({
         name: obj.name ?? "",
-        pages: (obj.pages as unknown as string[]) ?? [],
+        pages: pagesArray,
       });
     }
   }
@@ -213,21 +219,15 @@
             <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
               Pages
             </label>
-            <select 
+            <VueMultiselect
               v-model="pagesField"
-              multiple
-              :size="pages.length"
-              class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <option 
-                v-for="page in pages"
-                :key="page"
-                :value="page"
-                class="py-1"
-              >
-                {{ page }}
-              </option>
-            </select>
+              :options="pages"
+              :multiple="true"
+              :close-on-select="false"
+              :use-teleport="true"
+              placeholder="Select access pages"
+              class="multiselect-primary"
+            />
             <p v-if="pagesError" class="text-sm text-destructive">{{ pagesError }}</p>
           </div>
         </div>

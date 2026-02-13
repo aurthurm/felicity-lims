@@ -193,20 +193,17 @@
             <!-- Laboratory Multi-Select -->
             <div class="space-y-2">
               <label class="block text-sm font-medium text-foreground">Assigned Laboratories</label>
-              <div class="border-2 border-input rounded-md p-3 space-y-2 max-h-32 overflow-y-auto">
-                <div v-for="lab in setupStore.getLaboratories" :key="lab.uid" class="flex items-center space-x-3">
-                  <input
-                    :id="`lab-${lab.uid}`"
-                    v-model="laboratoryUids"
-                    :value="lab.uid"
-                    type="checkbox"
-                    class="h-4 w-4 text-primary focus:ring-ring border-input rounded"
-                  />
-                  <label :for="`lab-${lab.uid}`" class="flex-1 cursor-pointer text-sm">
-                    {{ lab.name }} ({{ lab.code }})
-                  </label>
-                </div>
-              </div>
+              <VueMultiselect
+                v-model="selectedLaboratories"
+                :options="laboratoriesForSelect"
+                :multiple="true"
+                :close-on-select="false"
+                :use-teleport="true"
+                label="displayLabel"
+                track-by="uid"
+                placeholder="Select laboratories"
+                class="multiselect-primary"
+              />
             </div>
 
             <!-- Active Laboratory Selection -->
@@ -298,6 +295,10 @@ import { useSetupStore } from "@/stores/setup";
 import useApiUtil  from "@/composables/api_util";
 import FelProtectedInput from "@/components/ui/form/FelProtectedInput.vue";
 
+const VueMultiselect = defineAsyncComponent(
+  () => import("vue-multiselect")
+);
+
 const userStore = useUserStore();
 const setupStore = useSetupStore();
 onMounted(() => {
@@ -366,6 +367,27 @@ const { value: isBlocked } = useField<boolean>("isBlocked");
 const { value: laboratoryUids } = useField<string[]>("laboratoryUids");
 const { value: activeLaboratoryUid, errorMessage: activeLaboratoryUidError } = useField<string | null>("activeLaboratoryUid");
 
+const laboratoriesForSelect = computed(() =>
+  setupStore.getLaboratories.map((lab) => ({
+    ...lab,
+    displayLabel: lab.code ? `${lab.name} (${lab.code})` : lab.name,
+  }))
+);
+
+const selectedLaboratories = computed({
+  get: () =>
+    laboratoryUids.value
+      .map((uid) => setupStore.getLaboratories.find((l) => l.uid === uid))
+      .filter(Boolean)
+      .map((lab) => ({
+        ...lab,
+        displayLabel: lab?.code ? `${lab.name} (${lab.code})` : lab?.name ?? '',
+      })),
+  set: (labs) => {
+    laboratoryUids.value = (labs || []).map((l) => l.uid);
+  },
+});
+
 const { withClientMutation } = useApiUtil();
 function addUser(payload: AddUserMutationVariables): void {
   withClientMutation<AddUserMutation, AddUserMutationVariables>(AddUserDocument, payload, "createUser").then((result) =>
@@ -426,7 +448,9 @@ function FormManager(create: boolean, obj: UserType = {} as UserType): void {
       passwordc: "",
       isActive: obj?.isActive ?? true,
       isBlocked: obj?.isBlocked ?? false,
-      laboratoryUids: (obj?.laboratories as string[]) || [],
+      laboratoryUids: Array.isArray(obj?.laboratories)
+        ? obj.laboratories.map((l) => (typeof l === 'string' ? l : (l as { uid: string }).uid))
+        : [],
       activeLaboratoryUid: obj?.activeLaboratoryUid || "",
     });
   }

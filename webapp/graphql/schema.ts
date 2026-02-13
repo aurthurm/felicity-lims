@@ -5978,7 +5978,7 @@ export type PasswordResetValidityResponse = OperationError | PasswordResetValidi
 
 export type PasswordResetValidityType = {
   __typename?: 'PasswordResetValidityType';
-  authUid: Scalars['String']['output'];
+  userUid: Scalars['String']['output'];
   username: Scalars['String']['output'];
 };
 
@@ -13144,7 +13144,7 @@ export type GraphCacheResolvers = {
     success?: GraphCacheResolver<WithTypename<ParseMessageResult>, Record<string, never>, Scalars['Boolean'] | string>
   },
   PasswordResetValidityType?: {
-    authUid?: GraphCacheResolver<WithTypename<PasswordResetValidityType>, Record<string, never>, Scalars['String'] | string>,
+    userUid?: GraphCacheResolver<WithTypename<PasswordResetValidityType>, Record<string, never>, Scalars['String'] | string>,
     username?: GraphCacheResolver<WithTypename<PasswordResetValidityType>, Record<string, never>, Scalars['String'] | string>
   },
   PatientCursorPage?: {
@@ -17833,7 +17833,7 @@ export type GraphCacheUpdaters = {
     success?: GraphCacheUpdateResolver<Maybe<WithTypename<ParseMessageResult>>, Record<string, never>>
   },
   PasswordResetValidityType?: {
-    authUid?: GraphCacheUpdateResolver<Maybe<WithTypename<PasswordResetValidityType>>, Record<string, never>>,
+    userUid?: GraphCacheUpdateResolver<Maybe<WithTypename<PasswordResetValidityType>>, Record<string, never>>,
     username?: GraphCacheUpdateResolver<Maybe<WithTypename<PasswordResetValidityType>>, Record<string, never>>
   },
   PatientCursorPage?: {

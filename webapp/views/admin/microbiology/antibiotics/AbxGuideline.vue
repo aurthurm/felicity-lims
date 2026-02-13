@@ -129,7 +129,7 @@ const saveForm = handleSubmit((values) => {
       <fel-button @click="FormManager(true)">Add Guideline</fel-button>      
     </fel-heading>
 
-    <div class="border shadow-sm rounded-lg bg-card p-6">
+    <div class="shadow-sm rounded-lg bg-card p-6">
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-border fel-table">
           <thead>

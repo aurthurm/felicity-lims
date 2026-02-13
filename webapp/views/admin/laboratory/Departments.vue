@@ -68,25 +68,29 @@
             <fel-button @click="FormManager(true, null)">Add Department</fel-button>
         </fel-heading>
 
-        <div class="rounded-md border bg-card">
-            <div class="relative w-full overflow-auto">
-                <table class="w-full caption-bottom text-sm fel-table">
-                    <thead class="[&_tr]:border-b">
-                        <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                            <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Name</th>
-                            <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground"></th>
-                        </tr>
+        <div class="shadow-sm rounded-lg bg-card p-6">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-border fel-table">
+                    <thead>
+                    <tr>
+                        <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</th>
+                        <th class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                            <span class="sr-only">Actions</span>
+                        </th>
+                    </tr>
                     </thead>
-                    <tbody class="[&_tr:last-child]:border-0">
-                        <tr v-for="dept in departments" :key="dept?.uid" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                            <td class="px-4 py-2 align-middle">{{ dept?.name }}</td>
-                            <td class="px-4 py-2 align-middle text-right">
-                                <button @click="FormManager(false, dept)" 
-                                    class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
-                                    Edit
-                                </button>
-                            </td>
-                        </tr>
+                    <tbody class="divide-y divide-border bg-background">
+                    <tr v-for="dept in departments" :key="dept?.uid" class="hover:bg-muted/50">
+                        <td class="px-3 py-4 whitespace-nowrap text-sm text-foreground">{{ dept?.name }}</td>
+                        <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                            <button
+                                @click="FormManager(false, dept)"
+                                class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
+                            >
+                                Edit
+                            </button>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </div>

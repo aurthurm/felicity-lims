@@ -124,6 +124,9 @@ def password_check(password: str, username: str) -> dict:
         not similar to username
     """
 
+    # Normalize optional username to avoid policy crashes during reset flows.
+    username = username or ""
+
     # calculating the length
     length_error = len(password) < 8
 

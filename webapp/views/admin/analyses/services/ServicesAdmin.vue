@@ -153,6 +153,19 @@ import { mutateForm, resetForm } from '@/utils';
 // Mapping
 analysisStore.fetchCodingStandards()
 const mappings = computed(() => analysisStore.analysesMapings?.filter(m => m.analysisUid === analysisService?.uid))
+
+// Overview sections for General tab
+const overviewSections = computed(() => [
+  { id: 'uncertainities', label: 'Uncertainties', count: analysisService?.uncertainties?.length ?? 0, hint: 'Instrument/method variance rules' },
+  { id: 'result-options', label: 'Result Options', count: analysisService?.resultOptions?.length ?? 0, hint: 'Coded result values' },
+  { id: 'interims', label: 'Interims', count: analysisService?.interims?.length ?? 0, hint: 'Instrument interim mappings' },
+  { id: 'correction-factor', label: 'Correction Factors', count: analysisService?.correctionFactors?.length ?? 0, hint: 'Instrument correction factors' },
+  { id: 'detection-limits', label: 'Detection Limits', count: analysisService?.detectionLimits?.length ?? 0, hint: 'Lower/upper detection range' },
+  { id: 'specifications', label: 'Specifications', count: analysisService?.specifications?.length ?? 0, hint: 'Reference ranges & flags' },
+  { id: 'mappings', label: 'Mappings', count: mappings.value?.length ?? 0, hint: 'Coding standard mappings' },
+  { id: 'billing', label: 'Billing', count: '—', hint: 'Pricing configuration' },
+  { id: 'sms-templates', label: 'SMS Templates', count: '—', hint: 'Result notification templates' },
+])
 let showMappingModal = ref(false);
 let mappingFormTitle = ref("");
 const mappingFormAction = ref(true);
@@ -208,27 +221,31 @@ function saveMappingForm(): void {
     </fel-heading>
 
     <div class="grid grid-cols-12 gap-4 mt-2">
-      <section class="col-span-2 overflow-y-scroll overscroll-contain max-h-[540px] bg-card text-card-foreground rounded-lg border border-border p-4">
+      <section class="col-span-3 overflow-y-scroll overscroll-contain max-h-[540px] bg-card text-card-foreground rounded-lg border border-border p-4">
         <div class="w-full">
-            <accordion v-for="category in analysesServices" :key="category[0]">
+            <accordion v-for="category in analysesServices" :key="category[0]" compact>
               <template v-slot:title>{{ category[0] }}</template>
               <template v-slot:body>
                   <div>
-                    <ul>
+                    <ul class="pl-3">
                       <li 
                       v-for="service in category[1]" 
                       :key="service?.uid" 
-                      class="cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors duration-200"
+                      class="cursor-pointer rounded transition-colors duration-200 py-1 pl-2 border-l-4"
                       @click="selectAnalysisService(service)"
                       :class="[
-                        { 'bg-accent text-accent-foreground': service.uid === analysisService.uid },
+                        service.uid === analysisService.uid
+                          ? 'border-l-primary bg-primary/10 text-primary font-medium'
+                          : 'border-l-transparent hover:bg-accent hover:text-accent-foreground hover:border-l-primary/30',
                       ]"
                       >
-                        <div class="grow p-2">
+                        <div class="grow px-1">
                           <div 
                             :class="[
-                            'font-medium text-muted-foreground hover:text-foreground flex justify-between',
-                              { 'text-foreground font-medium': service.uid === analysisService.uid },
+                            'font-medium flex justify-between',
+                              service.uid === analysisService.uid
+                                ? 'text-primary'
+                                : 'text-muted-foreground hover:text-foreground',
                             ]"
                           >
                             <span>{{ service?.name }}</span>
@@ -243,7 +260,7 @@ function saveMappingForm(): void {
         </div>
       </section>
 
-      <section class="col-span-10" v-if="analysisService?.uid !== undefined">
+      <section class="col-span-9" v-if="analysisService?.uid !== undefined">
         <!-- Question Listing Item Card -->
         <div class="bg-card text-card-foreground rounded-lg border border-border shadow-sm hover:shadow-md transition-shadow duration-200 px-4 sm:px-6 md:px-2 py-4" >
           <div class="grid grid-cols-12 gap-3">
@@ -325,15 +342,17 @@ function saveMappingForm(): void {
         </div>
 
         <!-- Sample and Case Data -->
-        <nav class="bg-card text-card-foreground shadow-sm rounded-lg mt-2">
+        <nav class="bg-background border-b border-border mt-2">
           <div class="-mb-px flex justify-start">
             <a
               v-for="tab in tabs"
               :key="tab"
               :class="[
-                'no-underline text-muted-foreground uppercase tracking-wide font-bold text-xs py-2 px-4 rounded-lg transition-colors duration-200',
-                { 'bg-primary text-primary-foreground': currentTab === tab },
-                { 'hover:bg-accent hover:text-accent-foreground': currentTab !== tab }
+                'no-underline text-muted-foreground uppercase tracking-wide font-medium text-sm py-2 px-4',
+                'border-b-2 transition-colors duration-200',
+                currentTab === tab
+                  ? 'border-primary text-primary font-medium'
+                  : 'border-transparent hover:border-primary/50 hover:text-primary/80'
               ]"
               @click="currentTab = tab"
             >
@@ -344,9 +363,21 @@ function saveMappingForm(): void {
 
       <section class="mt-2 p-4 bg-card text-card-foreground rounded-lg border border-border">
         <div v-if="currentTab === 'general'">
-          <h3 class="text-lg font-bold text-foreground">General</h3>
-          <hr class="border-border my-2"> 
-          <input type="text" class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring">
+          <h3 class="text-lg font-bold text-foreground mb-4">Overview</h3>
+          <p class="text-muted-foreground text-sm mb-6">Summary of all configuration sections for this analysis service. Click any card to jump to that tab.</p>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <button
+              v-for="section in overviewSections"
+              :key="section.id"
+              type="button"
+              @click="currentTab = section.id"
+              class="flex flex-col items-start p-4 rounded-lg border border-border bg-card text-card-foreground text-left cursor-pointer transition-colors duration-200 hover:border-primary/50 hover:bg-accent/50 focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              <span class="text-sm font-medium text-foreground uppercase tracking-wide">{{ section.label }}</span>
+              <span class="mt-1 text-2xl font-bold text-primary">{{ section.count }}</span>
+              <span class="mt-1 text-xs text-muted-foreground">{{ section.hint }}</span>
+            </button>
+          </div>
         </div>
         <div v-else-if="currentTab === 'uncertainities'">
           <analysis-uncertainty :analysis="analysisService" :analysisUid="analysisService?.uid"/>

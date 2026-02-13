@@ -110,7 +110,7 @@ ProfilePictureUploadResponse = strawberry.union(
 @strawberry.type
 class PasswordResetValidityType:
     username: str
-    auth_uid: str
+    user_uid: str
 
 
 PasswordResetValidityResponse = strawberry.union(
@@ -477,9 +477,8 @@ class UserMutations:
         user = await user_service.get_by_email(email)
         if not user:
             return OperationError(error="Your token is invalid")
-        auth = await user_service.get(uid=user.auth_uid)
         return PasswordResetValidityType(
-            username=auth.user_name, auth_uid=user.auth_uid
+            username=user.user_name, user_uid=user.uid
         )
 
     @strawberry.mutation()
