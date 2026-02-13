@@ -25,6 +25,9 @@
     "server:schema:export": "strawberry export-schema felicity.api.gql.schema:schema > ./felicity/api/gql/schema.graphql",
     "server:schema:export:tofront": "strawberry export-schema felicity.api.gql.schema:schema > ./webapp/graphql/schema.graphql",
     "standalone:build": "rm -rf felicity/templates/static/* && NODE_OPTIONS='--max-old-space-size=4096' vite build && cp -r dist/** felicity/templates/static",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build",
     "db:upgrade": "felicity-lims upgrade",
     "db:revision": "felicity-lims revision",
     "db:updates": "felicity-lims updates"
@@ -115,6 +118,7 @@
     "@parcel/watcher": "^2.5.1",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.19",
+    "@tauri-apps/cli": "^2.10.0",
     "@types/node": "^24.10.1",
     "@urql/devtools": "^2.0.3",
     "@vitejs/plugin-vue": "^6.0.2",
