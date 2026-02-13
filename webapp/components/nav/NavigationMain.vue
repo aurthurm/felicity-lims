@@ -6,7 +6,7 @@ import {useRouter} from "vue-router";
 import useApiUtil from "@/composables/api_util";
 import userPreferenceComposable from "@/composables/preferences";
 import * as guards from "@/guards";
-import { useFullscreen } from "@vueuse/core";
+import { useFullscreen, onClickOutside } from "@vueuse/core";
 import { LaboratoryType } from "@/types/gql";
 import { SwitchActiveLaboratoryDocument } from "@/graphql/operations/_mutations";
 import { SwitchActiveLaboratoryMutation, SwitchActiveLaboratoryMutationVariables } from "@/types/gqlops";
@@ -22,6 +22,7 @@ const {isFullscreen, toggle} = useFullscreen()
 const router = useRouter();
 const menuOpen = ref(false);
 const dropdownOpen = ref(false);
+let megaMenuCloseTimeout: ReturnType<typeof setTimeout> | null = null;
 
 // Close menu when route changes
 watch(() => router.currentRoute.value, (current, previous) => {
@@ -42,7 +43,14 @@ const userLaboratories = computed(
 const userFullName = computed(() => {
   const firstName = authStore.auth?.user?.firstName || '';
   const lastName = authStore.auth?.user?.lastName || '';
-  return `${firstName} ${lastName}`.trim();
+  return `${firstName} ${lastName}`.trim() || authStore.auth?.user?.email || 'User';
+});
+const userEmail = computed(() => authStore.auth?.user?.email || '');
+const userInitials = computed(() => {
+  const firstName = authStore.auth?.user?.firstName || '';
+  const lastName = authStore.auth?.user?.lastName || '';
+  const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+  return initials || authStore.auth?.user?.email?.charAt(0)?.toUpperCase() || 'U';
 });
 
 // Error handling
@@ -170,6 +178,29 @@ const closeMenus = () => {
   dropdownOpen.value = false;
 };
 
+const onMegaMenuEnter = () => {
+  if (megaMenuCloseTimeout) {
+    clearTimeout(megaMenuCloseTimeout);
+    megaMenuCloseTimeout = null;
+  }
+  menuOpen.value = true;
+};
+const onMegaMenuLeave = () => {
+  megaMenuCloseTimeout = setTimeout(() => {
+    menuOpen.value = false;
+    megaMenuCloseTimeout = null;
+  }, 150);
+};
+
+const userMenuRef = ref<HTMLElement | null>(null);
+const megaMenuRef = ref<HTMLElement | null>(null);
+onClickOutside(userMenuRef, () => {
+  dropdownOpen.value = false;
+});
+onClickOutside(megaMenuRef, () => {
+  menuOpen.value = false;
+});
+
 // Handle escape key to close menus
 const handleKeyDown = (event: KeyboardEvent) => {
   if (event.key === 'Escape') {
@@ -212,7 +243,7 @@ const switchLabNow = () => {
   >
     <!-- Brand and menu section -->
     <div class="flex-1">
-      <div class="flex text-right align-middle">
+      <div class="flex items-center">
         <!-- Logo and brand name -->
         <router-link
             to="/"
@@ -226,52 +257,67 @@ const switchLabNow = () => {
           </h1>
         </router-link>
 
-       <span v-if="useMegaMenu" class="mx-8 border-l border-border my-2" aria-hidden="true"></span>
+       <span v-if="useMegaMenu" class="mx-8 border-l border-border h-8 self-center" aria-hidden="true"></span>
 
-        <!-- Main menu dropdown trigger -->
-        <button v-if="useMegaMenu" 
-            @click="menuOpen = !menuOpen"
-            class="hidden md:flex md:items-center focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md p-2"
-            :aria-expanded="menuOpen"
-            aria-controls="main-menu"
-        >
-          <span
-              class="text-xl font-medium mr-2 text-primary-foreground/80 hover:text-primary-foreground uppercase">Menu</span>
-          <font-awesome-icon
-              :icon="menuOpen ? 'chevron-up' : 'chevron-down'"
-              class="text-muted-foreground transition-transform duration-200"
-              aria-hidden="true"
-          />
-        </button>
-
-        <!-- Main menu dropdown content -->
+        <!-- Mega menu: hover to open, smooth transitions -->
         <div
-            v-show="menuOpen"
-            id="main-menu"
-            class="absolute left-64 top-12 mt-1 p-4 w-1/2 bg-primary rounded-md shadow-lg border border-border z-20"
-            @click.away="menuOpen = false"
+            v-if="useMegaMenu"
+            ref="megaMenuRef"
+            class="relative hidden md:block"
+            @mouseenter="onMegaMenuEnter"
+            @mouseleave="onMegaMenuLeave"
         >
-          <div
-              class="grid grid-cols-3 gap-4"
-              role="menu"
-              aria-label="Main Menu"
+          <button
+              @click="menuOpen = !menuOpen"
+              class="flex items-center gap-2 h-9 px-4 rounded-lg text-sm font-medium text-primary-foreground/90 hover:text-primary-foreground hover:bg-primary-foreground/10 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-foreground/40 focus:ring-offset-2 focus:ring-offset-primary"
+              :aria-expanded="menuOpen"
+              aria-controls="main-menu"
+              aria-haspopup="true"
           >
-            <router-link
-                v-for="item in navItems"
-                :key="item.id"
-                v-show="guards.canAccessPage(item.guard)"
-                :to="item.route"
-                :id="`${item.id}-link`"
-                class="flex items-center py-2 px-4 text-primary-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                role="menuitem"
-                @click="menuOpen = false"
+            <span>Menu</span>
+            <font-awesome-icon
+                :icon="menuOpen ? 'chevron-up' : 'chevron-down'"
+                class="text-primary-foreground/70 text-xs transition-transform duration-200"
+                aria-hidden="true"
+            />
+          </button>
+
+          <Transition
+              enter-active-class="transition ease-out duration-200"
+              enter-from-class="opacity-0 scale-95 -translate-y-1"
+              enter-to-class="opacity-100 scale-100 translate-y-0"
+              leave-active-class="transition ease-in duration-150"
+              leave-from-class="opacity-100 scale-100 translate-y-0"
+              leave-to-class="opacity-0 scale-95 -translate-y-1"
+          >
+            <div
+                v-show="menuOpen"
+                id="main-menu"
+                class="absolute left-0 top-full mt-1 min-w-[600px] rounded-xl border border-border bg-popover text-popover-foreground shadow-xl z-20 overflow-hidden"
+                role="menu"
+                aria-label="Main Menu"
             >
-              <span class="mr-4" aria-hidden="true">
-                <font-awesome-icon :icon="item.icon"/>
-              </span>
-              <span class="text-lg font-medium">{{ item.label }}</span>
-            </router-link>
-          </div>
+              <div class="p-4">
+                <div class="grid grid-cols-3 gap-2" role="none">
+                  <router-link
+                      v-for="item in navItems"
+                      :key="item.id"
+                      v-show="guards.canAccessPage(item.guard)"
+                      :to="item.route"
+                      :id="`${item.id}-link`"
+                      class="flex items-center gap-3 rounded-lg py-2.5 px-3 text-foreground hover:bg-accent hover:text-accent-foreground transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-popover"
+                      role="menuitem"
+                      @click="menuOpen = false"
+                  >
+                    <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted/80" aria-hidden="true">
+                      <font-awesome-icon :icon="item.icon" class="text-muted-foreground"/>
+                    </span>
+                    <span class="text-sm font-medium">{{ item.label }}</span>
+                  </router-link>
+                </div>
+              </div>
+            </div>
+          </Transition>
         </div>
       </div>
     </div>
@@ -281,102 +327,132 @@ const switchLabNow = () => {
       <!-- Errors button -->
       <button
           v-if="errors.length > 0"
-          class="flex items-center px-4 py-2 text-primary-foreground/80 hover:text-primary-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md"
+          class="flex items-center gap-2 h-9 px-4 rounded-lg text-sm font-medium text-primary-foreground/90 hover:text-primary-foreground hover:bg-primary-foreground/10 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-primary"
           @click="showErrors = true"
           aria-label="Show errors"
       >
-        <font-awesome-icon icon="bell" class="mr-2" aria-hidden="true"/>
-        <span class="text-lg font-medium mr-2 uppercase">Errors</span>
-        <span class="bg-destructive text-destructive-foreground text-xs rounded-full px-2 py-1">{{
-            errors.length
-          }}</span>
+        <font-awesome-icon icon="bell" class="shrink-0" aria-hidden="true"/>
+        <span>Errors</span>
+        <span class="bg-destructive text-destructive-foreground text-xs rounded-full px-2 py-0.5 min-w-[1.25rem] text-center">{{ errors.length }}</span>
       </button>
 
-      <span v-if="errors.length > 0" class="border-l border-border h-6" aria-hidden="true"></span>
+      <span v-if="errors.length > 0" class="border-l border-border h-8 self-center" aria-hidden="true"></span>
 
       <!-- Notifications button -->
       <button
-          class="flex items-center px-4 py-2 text-primary-foreground/80 hover:text-primary-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md"
+          class="flex items-center gap-2 h-9 px-4 rounded-lg text-sm font-medium text-primary-foreground/90 hover:text-primary-foreground hover:bg-primary-foreground/10 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-primary"
           @click="toggleNotifications(true)"
           aria-label="Show notifications"
       >
-        <font-awesome-icon icon="bell" class="mr-2" aria-hidden="true"/>
-        <span class="text-lg font-medium uppercase">Notifications</span>
+        <font-awesome-icon icon="bell" class="shrink-0" aria-hidden="true"/>
+        <span>Notifications</span>
       </button>
 
-      <span class="border-l border-border h-6" aria-hidden="true"></span>
+      <span class="border-l border-border h-8 self-center" aria-hidden="true"></span>
 
       <!-- Admin settings link -->
       <router-link
           v-show="guards.canAccessPage(guards.pages.ADMINISTRATION)"
           to="/admin"
-          class="flex items-center px-4 py-2 text-primary-foreground/80 hover:text-primary-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md"
+          class="flex items-center gap-2 h-9 px-4 rounded-lg text-sm font-medium text-primary-foreground/90 hover:text-primary-foreground hover:bg-primary-foreground/10 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-primary"
           aria-label="Settings"
       >
-        <font-awesome-icon icon="cog" class="mr-2" aria-hidden="true"/>
-        <span class="text-lg font-medium uppercase">Settings</span>
+        <font-awesome-icon icon="cog" class="shrink-0" aria-hidden="true"/>
+        <span>Settings</span>
       </router-link>
 
-      <div class="px-4 flex text-right items-center relative"> 
-        <span
-            class="flex justify-center items-center h-8 w-8 rounded-full border-2 border-border hover:border-primary text-primary-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-primary cursor-pointer"
-            aria-hidden="true"
-            tabindex="0">
-          <font-awesome-icon icon="user"/>
-        </span>
-
-        <div class="relative">
-          <button
-              @click="dropdownOpen = !dropdownOpen"
-              class=" text-primary-foreground/80 hover:text-primary-foreground hidden md:flex md:items-center ml-2 focus:outline-none rounded-lg p-1 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-primary"
-              :aria-expanded="dropdownOpen"
-              aria-controls="user-menu"
+      <!-- User menu trigger -->
+      <div ref="userMenuRef" class="relative pl-4">
+        <button
+            @click="dropdownOpen = !dropdownOpen"
+            class="flex items-center gap-2 min-h-9 py-2 px-4 rounded-lg text-sm font-medium text-primary-foreground/90 hover:text-primary-foreground hover:bg-primary-foreground/10 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-foreground/40 focus:ring-offset-2 focus:ring-offset-primary"
+            :aria-expanded="dropdownOpen"
+            aria-controls="user-menu"
+            aria-haspopup="true"
+        >
+          <span
+              class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-foreground/20 text-xs font-semibold text-primary-foreground ring-2 ring-primary-foreground/30"
+              aria-hidden="true"
           >
-            <span class="text-lg font-medium uppercase">{{ userFullName }}</span>
-            <font-awesome-icon
-                :icon="dropdownOpen ? 'chevron-up' : 'chevron-down'"
-                class="ml-2 text-primary-foreground/80 transition-transform" aria-hidden="true"
-            />
-          </button>
+            {{ userInitials }}
+          </span>
+          <div class="hidden md:block text-left min-w-0">
+            <span class="block text-sm font-medium truncate max-w-[140px]">{{ userFullName }}</span>
+            <span v-if="userEmail" class="block text-xs text-primary-foreground/70 truncate max-w-[140px]">{{ userEmail }}</span>
+          </div>
+          <font-awesome-icon
+              :icon="dropdownOpen ? 'chevron-up' : 'chevron-down'"
+              class="hidden md:block shrink-0 text-primary-foreground/70 text-xs transition-transform duration-200"
+              aria-hidden="true"
+          />
+        </button>
 
+        <!-- User dropdown menu -->
+        <Transition
+            enter-active-class="transition ease-out duration-150"
+            enter-from-class="opacity-0 scale-95 -translate-y-1"
+            enter-to-class="opacity-100 scale-100 translate-y-0"
+            leave-active-class="transition ease-in duration-100"
+            leave-from-class="opacity-100 scale-100 translate-y-0"
+            leave-to-class="opacity-0 scale-95 -translate-y-1"
+        >
           <div
               v-show="dropdownOpen"
               id="user-menu"
-              class="absolute right-0 top-11 py-2 w-48 bg-popover text-popover-foreground rounded-lg shadow-xl z-20"
-              @click.away="dropdownOpen = false"
-              role="menu">
-            <button
-                class="w-full text-left cursor-pointer py-2 px-4 flex items-center hover:bg-primary hover:text-primary-foreground uppercase transition-colors focus:outline-none focus:bg-accent focus:text-accent-foreground rounded"
-                role="menuitem"
-                @click.away="showPreferences = true; dropdownOpen = false"
-            >
-              <font-awesome-icon icon="user-gear" class="mr-2" aria-hidden="true"/>
-              Preferences
-            </button>
-            <button
-                @click="authStore.logout()"
-                class="w-full text-left cursor-pointer py-2 px-4 flex items-center hover:bg-primary hover:text-primary-foreground uppercase transition-colors focus:outline-none focus:bg-accent focus:text-accent-foreground rounded"
-                role="menuitem"
-            >
-              <font-awesome-icon icon="sign-out-alt" class="mr-2" aria-hidden="true"/>
-              Log out
-            </button>
+              class="absolute right-0 top-full mt-2 w-56 rounded-xl border border-border bg-popover text-popover-foreground shadow-lg z-30 overflow-hidden"
+              role="menu"
+              aria-orientation="vertical"
+          >
+            <!-- User info header -->
+            <div class="px-4 py-3 bg-muted/50 border-b border-border">
+              <p class="text-sm font-medium text-foreground truncate">{{ userFullName }}</p>
+              <p v-if="userEmail" class="text-xs text-muted-foreground truncate mt-0.5">{{ userEmail }}</p>
+              <p v-if="activeLaboratory?.name" class="text-xs text-muted-foreground truncate mt-1 flex items-center gap-1.5">
+                <font-awesome-icon icon="vial" class="shrink-0 opacity-70" aria-hidden="true"/>
+                {{ activeLaboratory.name }}
+              </p>
+            </div>
+
+            <!-- Menu items -->
+            <div class="py-1.5">
+              <button
+                  class="w-full text-left py-2.5 px-4 flex items-center gap-3 text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors focus:outline-none focus:bg-accent focus:text-accent-foreground"
+                  role="menuitem"
+                  @click="showPreferences = true; dropdownOpen = false"
+              >
+                <font-awesome-icon icon="user-gear" class="w-4 text-muted-foreground" aria-hidden="true"/>
+                Preferences
+              </button>
+              <button
+                  v-if="(userLaboratories?.length ?? 0) > 1"
+                  class="w-full text-left py-2.5 px-4 flex items-center gap-3 text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors focus:outline-none focus:bg-accent focus:text-accent-foreground"
+                  role="menuitem"
+                  @click="showModal = true; dropdownOpen = false"
+              >
+                <font-awesome-icon icon="shuffle" class="w-4 text-muted-foreground" aria-hidden="true"/>
+                Switch laboratory
+              </button>
+            </div>
+
+            <div class="border-t border-border" role="separator"/>
+            <div class="py-1.5">
+              <button
+                  @click="authStore.logout()"
+                  class="w-full text-left py-2.5 px-4 flex items-center gap-3 text-sm text-destructive hover:bg-destructive/10 transition-colors focus:outline-none focus:bg-destructive/10"
+                  role="menuitem"
+              >
+                <font-awesome-icon icon="sign-out-alt" class="w-4" aria-hidden="true"/>
+                Log out
+              </button>
+            </div>
           </div>
-        </div>
+        </Transition>
       </div>
-      <button v-if="(userLaboratories?.length ?? 0) > 1"
-          @click="showModal = true"
-          class="flex items-center p-2 text-primary-foreground/80 hover:text-primary-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md"
-          :aria-label="isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'">
-          <font-awesome-icon icon="shuffle"
-          class="text-muted-foreground transition-transform duration-200"
-          aria-hidden="true" />
-      </button>
       <button
           @click="toggle"
-          class="flex items-center p-2 text-primary-foreground/80 hover:text-primary-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-md"
+          class="flex items-center justify-center h-9 w-9 shrink-0 rounded-lg text-primary-foreground/90 hover:text-primary-foreground hover:bg-primary-foreground/10 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-primary"
           :aria-label="isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'">
-        <font-awesome-icon :icon="isFullscreen ? 'compress' : 'expand'"/>
+        <font-awesome-icon :icon="isFullscreen ? 'compress' : 'expand'" class="shrink-0"/>
       </button>
     </div>
   </nav>
