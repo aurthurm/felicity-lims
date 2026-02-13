@@ -452,7 +452,7 @@ const saveForm = handleSubmit((formValues) => {
 </template>
 
 <style lang="postcss" scoped>
-@reference "@/assets/css/style.css";
+@reference "@tw";
 .multiselect-blue {
   @apply rounded-md border border-input bg-background;
 }

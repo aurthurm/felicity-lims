@@ -337,8 +337,8 @@ function toggleView(choice: string): void {
         </thead>
         <tbody class="bg-background">
           <tr v-for="analyte in qcSet?.analytes" :key="analyte.uid">
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border"></td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <td class="px-1 py-1 whitespace-nowrap border-b border-border"></td>
+            <td class="px-1 py-1 whitespace-nowrap border-b border-border">
               <div class="text-sm leading-5 text-foreground">
                 {{ analyte?.name }}
               </div>
@@ -346,12 +346,12 @@ function toggleView(choice: string): void {
             <td
               v-for="result in analyte?.items"
               :key="result.uid"
-              class="px-1 py-1 whitespace-no-wrap border-b border-border"
+              class="px-1 py-1 whitespace-nowrap border-b border-border"
             >
               <div class="flex items-center gap-x-4">
                 <div>
-                  <div class="text-md font-semibold italics text-primary"> {{ result?.sample?.qcLevel?.level }}</div>
-                  <div class="text-sm italics text-primary">({{ result?.status }})</div>
+                  <div class="text-base font-semibold italic text-primary"> {{ result?.sample?.qcLevel?.level }}</div>
+                  <div class="text-sm italic text-primary">({{ result?.status }})</div>
                   <input
                     type="checkbox"
                     class="mr-2"
@@ -469,14 +469,14 @@ function toggleView(choice: string): void {
                 :disabled="isDisabledRowCheckBox(result)"
               />
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border"></td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <td class="px-1 py-1 whitespace-nowrap border-b border-border"></td>
+            <td class="px-1 py-1 whitespace-nowrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ result.analysis?.name }}
               </div>
               <div class="italic text-sm text-muted-foreground">({{ result?.sample?.qcLevel?.level }})</div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <td class="px-1 py-1 whitespace-nowrap border-b border-border">
               <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
                 {{ result.laboratoryInstrument?.labName || "---" }}
               </div>
@@ -495,7 +495,7 @@ function toggleView(choice: string): void {
                 </select>
               </label>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <td class="px-1 py-1 whitespace-nowrap border-b border-border">
               <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
                 {{ result.method?.name }}
               </div>
@@ -509,19 +509,19 @@ function toggleView(choice: string): void {
                 </select>
               </label>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <td class="px-1 py-1 whitespace-nowrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ `${result.submittedBy?.firstName ?? '--'} ${result.submittedBy?.lastName ?? '--'}` }}
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <td class="px-1 py-1 whitespace-nowrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 <span v-for="reviewer in result.verifiedBy" :key="reviewer.firstName" class="ml-1">
                   {{ `${reviewer?.firstName ?? '--'} ${reviewer?.lastName ?? '--'},` }}
                 </span>
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <td class="px-1 py-1 whitespace-nowrap border-b border-border">
               <div v-if="!isEditable(result) || result?.analysis?.interims?.length === 0"
                 class="text-sm leading-5 text-primary">
                 ---
@@ -536,7 +536,7 @@ function toggleView(choice: string): void {
                 </select>
               </label>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <td class="px-1 py-1 whitespace-nowrap border-b border-border">
               <div v-if="!isEditable(result)" class="text-sm leading-5 text-primary">
                 {{ result?.result }}
               </div>
@@ -567,7 +567,7 @@ function toggleView(choice: string): void {
                 </select>
               </label>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <td class="px-1 py-1 whitespace-nowrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 <span v-if="result?.retest" class="text-primary">
                   <font-awesome-icon icon="fa-check-circle" />
@@ -577,13 +577,13 @@ function toggleView(choice: string): void {
                 </span>
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <td class="px-1 py-1 whitespace-nowrap border-b border-border">
               <div class="text-sm leading-5 text-primary">{{ parseDate(result?.dateSubmitted) }}</div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <td class="px-1 py-1 whitespace-nowrap border-b border-border">
               <div class="text-sm leading-5 text-primary">{{ parseDate(result?.dateVerified) }}</div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <td class="px-1 py-1 whitespace-nowrap border-b border-border">
               <button
                 type="button"
                 class="p-1 bg-primary text-primary-foreground rounded-sm leading-none"
@@ -592,7 +592,7 @@ function toggleView(choice: string): void {
               </button>
             </td>
             <td
-              class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5"
+              class="px-1 py-1 whitespace-nowrap text-right border-b border-border text-sm leading-5"
             >
             </td>
           </tr>

@@ -44,7 +44,7 @@
     <div v-if="updateInfo">
       <div v-if="updateInfo.update_available" class="flex flex-col gap-2 mt-2">
         <div class="flex items-center gap-2">
-          <a v-if="updateInfo.release_url" :href="updateInfo.release_url" target="_blank" rel="noopener" class="text-blue-600 hover:underline text-xs font-medium">
+          <a v-if="updateInfo.release_url" :href="updateInfo.release_url" target="_blank" rel="noopener" class="text-primary hover:underline text-xs font-medium">
             View Release on GitHub
           </a>
           <button @click="showNotes = !showNotes" class="text-xs text-primary underline focus:outline-none">
@@ -96,7 +96,7 @@
     .then(({ data: { version }} ) => {
       currentVersion.value = version
     })
-    .catch((err) => {
+    .catch(() => {
       error.value = "Failed to get current version"
     })
     .finally(() => (loading.value = false));
@@ -115,7 +115,7 @@
         toastInfo("No updates available")
       }
     })
-    .catch((err) => {
+    .catch(() => {
       error.value = "Failed to get current version"
     })
     .finally(() => (loading.value = false));

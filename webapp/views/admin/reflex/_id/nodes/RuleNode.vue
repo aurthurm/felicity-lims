@@ -65,9 +65,9 @@ const ruleExpression = computed(() => {
  */
 const connectorBadgeColor = computed(() => {
   if (props.data.connector === 'OR') {
-    return 'bg-orange-100 text-orange-800 border-orange-300';
+    return 'bg-warning/15 text-warning border-warning/40';
   }
-  return 'bg-amber-100 text-amber-800 border-amber-300';
+  return 'bg-warning/15 text-warning border-warning/40';
 });
 
 /**
@@ -82,30 +82,30 @@ const isNumericValue = computed(() => {
   <div
     class="rule-node"
     :class="{
-      'ring-2 ring-amber-500 ring-offset-2': selected,
-      'hover:ring-1 hover:ring-amber-300': !selected,
+      'ring-2 ring-warning ring-offset-2': selected,
+      'hover:ring-1 hover:ring-warning/60': !selected,
     }"
   >
     <!-- Input Handle (from Decision or another Rule) -->
     <Handle
       type="target"
       :position="Position.Left"
-      class="!bg-amber-500 !w-3 !h-3 !border-2 !border-white"
+      class="!bg-warning !w-3 !h-3 !border-2 !border-background"
     />
 
     <!-- Output Handle (to another Rule or Action) -->
     <Handle
       type="source"
       :position="Position.Right"
-      class="!bg-amber-500 !w-3 !h-3 !border-2 !border-white"
+      class="!bg-warning !w-3 !h-3 !border-2 !border-background"
     />
 
     <!-- Node Header -->
     <div class="flex items-center justify-between mb-2">
       <div class="flex items-center space-x-2">
         <!-- Scale Icon -->
-        <div class="text-amber-600 text-lg">⚖️</div>
-        <span class="text-xs font-semibold text-amber-600 uppercase">Rule</span>
+        <div class="text-warning text-lg">⚖️</div>
+        <span class="text-xs font-semibold text-warning uppercase">Rule</span>
       </div>
       <!-- Connector Badge (AND/OR) -->
       <span
@@ -119,9 +119,9 @@ const isNumericValue = computed(() => {
 
     <!-- Rule Expression -->
     <div class="rule-expression">
-      <div class="font-mono text-sm text-foreground bg-amber-50 px-3 py-2 rounded border border-amber-200">
-        <span class="font-semibold text-amber-900">{{ analysisName }}</span>
-        <span class="text-amber-600 mx-2">{{ operatorSymbol }}</span>
+      <div class="font-mono text-sm text-foreground bg-warning/10 px-3 py-2 rounded border border-warning/30">
+        <span class="font-semibold text-foreground">{{ analysisName }}</span>
+        <span class="text-warning mx-2">{{ operatorSymbol }}</span>
         <span
           class="font-semibold"
           :class="isNumericValue ? 'text-primary' : 'text-success'"
@@ -132,7 +132,7 @@ const isNumericValue = computed(() => {
     </div>
 
     <!-- Detailed View (when selected) -->
-    <div v-if="selected" class="mt-3 pt-3 border-t border-amber-100 space-y-2">
+    <div v-if="selected" class="mt-3 pt-3 border-t border-warning/20 space-y-2">
       <!-- Analysis Details -->
       <div>
         <div class="text-xs font-semibold text-foreground">Test:</div>
@@ -167,9 +167,9 @@ const isNumericValue = computed(() => {
 </template>
 
 <style scoped>
-@reference "@/assets/css/style.css";
+@reference "@tw";
 .rule-node {
-  @apply bg-card border-2 border-amber-400 rounded-lg shadow-md;
+  @apply bg-card border-2 border-warning/60 rounded-lg shadow-md;
   @apply px-4 py-3 min-w-[220px] max-w-[320px];
   @apply transition-all duration-200;
 }
@@ -188,7 +188,7 @@ const isNumericValue = computed(() => {
 }
 
 .rule-node.node-valid {
-  @apply border-amber-400 bg-card;
+  @apply border-warning/60 bg-card;
 }
 
 /* Selected state */

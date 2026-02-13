@@ -492,6 +492,8 @@ class UserMutations:
         user_service = UserService()
 
         user = await user_service.get(uid=user_uid)
+        if not user:
+            return OperationError(error=f"User with uid {user_uid} not found")
         if password != passwordc:
             return OperationError(error="Passwords do not match")
 

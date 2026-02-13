@@ -3,6 +3,8 @@ import { onMounted, ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import useSampleComposable from "@/composables/samples"
 
+defineOptions({ name: "BarcodePrintView" })
+
 // Initialize route and composables
 const route = useRoute()
 const { barcodeSamples } = useSampleComposable()
@@ -110,7 +112,7 @@ const printBarcodes = () => {
       </span>
       <button 
         type="submit" 
-        class="ml-4 rounded-sm border border-destructive px-2 py-1 text-orange-500 transition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none" 
+        class="ml-4 rounded-sm border border-destructive px-2 py-1 text-destructive transition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none" 
         @click="printBarcodes()"
       >
         <span>Print</span>

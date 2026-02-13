@@ -49,6 +49,7 @@ specifiers:
   '@vueuse/core': ^14.0.0
   '@vueuse/motion': 3.0.3
   axios: ^1.13.2
+  baseline-browser-mapping: ^2.9.19
   ckeditor5: ^47.2.0
   concurrently: ^9.2.1
   crypto-js: ^4.2.0
@@ -198,6 +199,7 @@ devDependencies:
   '@vitejs/plugin-vue': 6.0.2_vite@7.2.4+vue@3.5.24
   '@vitejs/plugin-vue-jsx': 5.1.2_vite@7.2.4+vue@3.5.24
   '@vue/compiler-sfc': 3.5.24
+  baseline-browser-mapping: 2.9.19
   concurrently: 9.2.1
   eslint: 9.39.1_jiti@2.6.1
   eslint-config-prettier: 10.1.8_eslint@9.39.1
@@ -7053,8 +7055,8 @@ packages:
     engines: {node: ^4.5.0 || >= 5.9}
     dev: false
 
-  /baseline-browser-mapping/2.8.31:
-    resolution: {integrity: sha512-a28v2eWrrRWPpJSzxc+mKwm0ZtVx/G8SepdQZDArnXYU/XS+IF6mp8aB/4E+hH1tyGCoDo3KlUCdlSxGDsRkAw==}
+  /baseline-browser-mapping/2.9.19:
+    resolution: {integrity: sha512-ipDqC8FrAl/76p2SSWKSI+H9tFwm7vYqXQrItCuiVPt26Km0jS+NzSsBWAaBusvSbQcfJG+JitdMm+wZAgTYqg==}
     hasBin: true
 
   /birpc/2.8.0:
@@ -7091,7 +7093,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      baseline-browser-mapping: 2.8.31
+      baseline-browser-mapping: 2.9.19
       caniuse-lite: 1.0.30001756
       electron-to-chromium: 1.5.259
       node-releases: 2.0.27

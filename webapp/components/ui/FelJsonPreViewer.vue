@@ -343,7 +343,7 @@ class JsonViewer {
 </script>
 
 <style>
-@reference "@/assets/css/style.css";
+@reference "@tw";
 .jv-light-con {
   @apply text-foreground;
 }

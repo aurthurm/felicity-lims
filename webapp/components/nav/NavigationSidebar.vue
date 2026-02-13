@@ -12,10 +12,10 @@ function toggleNavText(): void {
 </script>
 
 <style scoped>
-@reference "@/assets/css/style.css";
+@reference "@tw";
 
 .router-link-active {
-  @apply bg-gray-800/25 text-gray-100 border-l-4 border-gray-100;
+  @apply bg-primary/20 text-primary-foreground border-l-4 border-primary-foreground;
 }
 
 /* Icon stays fixed, text slides in/out from underneath */
@@ -95,7 +95,7 @@ function toggleNavText(): void {
       <nav id="aside-nav" class="" role="navigation">
 
         <router-link v-show="guards.canAccessPage(guards.pages.DASHBOARD)" to="/dashboard" id="dashboard-link"
-          class="flex items-center mt-1 p-2 pl-3 pr-4 text-gray-100 hover:bg-gray-800 hover:bg-opacity/25 hover:text-white border-l-4 border-gray-800">
+          class="flex items-center mt-1 p-2 pl-3 pr-4 text-primary-foreground hover:bg-primary/20 hover:text-primary-foreground border-l-4 border-primary">
           <span class="nav-icon"><font-awesome-icon icon="tachometer-alt" /></span>
           <span :class="['nav-text-wrapper', viewNavText ? 'nav-text-visible' : 'nav-text-hidden']">
             <span class="nav-text-slide">Dashboard</span>
@@ -103,7 +103,7 @@ function toggleNavText(): void {
         </router-link>
 
         <router-link v-show="guards.canAccessPage(guards.pages.BILLING)" to="/billing" id="billing-link"
-          class="flex items-center mt-1 p-2 pl-3 pr-4 text-gray-100 hover:bg-gray-800 hover:bg-opacity/25 hover:text-white border-l-4 border-gray-800">
+          class="flex items-center mt-1 p-2 pl-3 pr-4 text-primary-foreground hover:bg-primary/20 hover:text-primary-foreground border-l-4 border-primary">
           <span class="nav-icon"><font-awesome-icon icon="money-bill" /></span>
           <span :class="['nav-text-wrapper', viewNavText ? 'nav-text-visible' : 'nav-text-hidden']">
             <span class="nav-text-slide">Billing</span>
@@ -112,7 +112,7 @@ function toggleNavText(): void {
         
         <router-link v-show="guards.canAccessPage(guards.pages.PATIENTS_COMPACT)" to="/patients-compact"
           id="patients-compact-link"
-          class="flex items-center mt-1 py-2 pl-3 pr-4 text-gray-100 hover:bg-gray-800 hover:bg-opacity/25 hover:text-white border-l-4 border-gray-800">
+          class="flex items-center mt-1 py-2 pl-3 pr-4 text-primary-foreground hover:bg-primary/20 hover:text-primary-foreground border-l-4 border-primary">
           <span class="nav-icon"><font-awesome-icon icon="bullseye" /></span>
           <span :class="['nav-text-wrapper', viewNavText ? 'nav-text-visible' : 'nav-text-hidden']">
             <span class="nav-text-slide">Compact</span>
@@ -120,7 +120,7 @@ function toggleNavText(): void {
         </router-link>
         
         <router-link v-show="guards.canAccessPage(guards.pages.PATIENTS)" to="/patients" id="patients-link"
-          class="flex items-center mt-1 py-2 pl-3 pr-4 text-gray-100 hover:bg-gray-800 hover:bg-opacity/25 hover:text-white border-l-4 border-gray-800">
+          class="flex items-center mt-1 py-2 pl-3 pr-4 text-primary-foreground hover:bg-primary/20 hover:text-primary-foreground border-l-4 border-primary">
           <span class="nav-icon"><font-awesome-icon icon="user-injured" /></span>
           <span :class="['nav-text-wrapper', viewNavText ? 'nav-text-visible' : 'nav-text-hidden']">
             <span class="nav-text-slide">Patients</span>
@@ -128,7 +128,7 @@ function toggleNavText(): void {
         </router-link>
         
         <router-link v-show="guards.canAccessPage(guards.pages.CLIENTS)" to="/clients" id="clients-link"
-          class="flex items-center mt-1 py-2 pl-3 pr-4 text-gray-100 hover:bg-gray-800 hover:bg-opacity/25 hover:text-white border-l-4 border-gray-800">
+          class="flex items-center mt-1 py-2 pl-3 pr-4 text-primary-foreground hover:bg-primary/20 hover:text-primary-foreground border-l-4 border-primary">
           <span class="nav-icon"><font-awesome-icon icon="clinic-medical" /></span>
           <span :class="['nav-text-wrapper', viewNavText ? 'nav-text-visible' : 'nav-text-hidden']">
             <span class="nav-text-slide">Clients</span>
@@ -136,7 +136,7 @@ function toggleNavText(): void {
         </router-link>
         
         <router-link v-show="guards.canAccessPage(guards.pages.SAMPLES)" to="/samples" id="samples-link"
-          class="flex items-center mt-1 py-2 pl-3 pr-4 text-gray-100 hover:bg-gray-800 hover:bg-opacity/25 hover:text-white border-l-4 border-gray-800">
+          class="flex items-center mt-1 py-2 pl-3 pr-4 text-primary-foreground hover:bg-primary/20 hover:text-primary-foreground border-l-4 border-primary">
           <span class="nav-icon"><font-awesome-icon icon="vial" /></span>
           <span :class="['nav-text-wrapper', viewNavText ? 'nav-text-visible' : 'nav-text-hidden']">
             <span class="nav-text-slide">Samples</span>
@@ -144,7 +144,7 @@ function toggleNavText(): void {
         </router-link>
         
         <router-link v-show="guards.canAccessPage(guards.pages.WORKSHEETS)" to="/worksheets" id="worksheets-link"
-          class="flex items-center mt-1 py-2 pl-3 pr-4 text-gray-100 hover:bg-gray-800 hover:bg-opacity/25 hover:text-white border-l-4 border-gray-800">
+          class="flex items-center mt-1 py-2 pl-3 pr-4 text-primary-foreground hover:bg-primary/20 hover:text-primary-foreground border-l-4 border-primary">
           <span class="nav-icon"><font-awesome-icon icon="grip-vertical" /></span>
           <span :class="['nav-text-wrapper', viewNavText ? 'nav-text-visible' : 'nav-text-hidden']">
             <span class="nav-text-slide">WorkSheets</span>
@@ -155,7 +155,7 @@ function toggleNavText(): void {
           v-show="guards.canAccessPage(guards.pages.QC_SAMPLES)"
           to="/quality-control"
           id="quality-control-link"
-          class="flex items-center mt-1 py-2 pl-3 pr-4 text-gray-100 hover:bg-gray-800 hover:bg-opacity/25 hover:text-white border-l-4 border-gray-800"
+          class="flex items-center mt-1 py-2 pl-3 pr-4 text-primary-foreground hover:bg-primary/20 hover:text-primary-foreground border-l-4 border-primary"
         >
           <span class="nav-icon"><font-awesome-icon icon="anchor" /></span>
           <span :class="['nav-text-wrapper', viewNavText ? 'nav-text-visible' : 'nav-text-hidden']">
@@ -165,7 +165,7 @@ function toggleNavText(): void {
         
         <router-link v-show="guards.canAccessPage(guards.pages.NOTICE_MANAGER)" to="/notice-manager"
           id="notice-manager-link"
-          class="flex items-center mt-1 py-2 pl-3 pr-4 text-gray-100 hover:bg-gray-800 hover:bg-opacity/25 hover:text-white border-l-4 border-gray-800">
+          class="flex items-center mt-1 py-2 pl-3 pr-4 text-primary-foreground hover:bg-primary/20 hover:text-primary-foreground border-l-4 border-primary">
           <span class="nav-icon"><font-awesome-icon icon="bell" /></span>
           <span :class="['nav-text-wrapper', viewNavText ? 'nav-text-visible' : 'nav-text-hidden']">
             <span class="nav-text-slide">NoticeManager</span>
@@ -173,7 +173,7 @@ function toggleNavText(): void {
         </router-link>
         
         <router-link v-show="guards.canAccessPage(guards.pages.BIO_BANKING)" to="/bio-banking" id="bio-banking-link"
-          class="flex items-center mt-1 py-2 pl-3 pr-4 text-gray-100 hover:bg-gray-800 hover:bg-opacity/25 hover:text-white border-l-4 border-gray-800">
+          class="flex items-center mt-1 py-2 pl-3 pr-4 text-primary-foreground hover:bg-primary/20 hover:text-primary-foreground border-l-4 border-primary">
           <span class="nav-icon"><font-awesome-icon icon="database" /></span>
           <span :class="['nav-text-wrapper', viewNavText ? 'nav-text-visible' : 'nav-text-hidden']">
             <span class="nav-text-slide">BioBanking</span>
@@ -181,7 +181,7 @@ function toggleNavText(): void {
         </router-link>
         
         <router-link v-show="guards.canAccessPage(guards.pages.REFERRAL)" to="/shipments" id="shipments-link"
-          class="flex items-center mt-1 py-2 pl-3 pr-4 text-gray-100 hover:bg-gray-800 hover:bg-opacity/25 hover:text-white border-l-4 border-gray-800">
+          class="flex items-center mt-1 py-2 pl-3 pr-4 text-primary-foreground hover:bg-primary/20 hover:text-primary-foreground border-l-4 border-primary">
           <span class="nav-icon"><font-awesome-icon icon="truck" /></span>
           <span :class="['nav-text-wrapper', viewNavText ? 'nav-text-visible' : 'nav-text-hidden']">
             <span class="nav-text-slide">Referrals</span>
@@ -189,7 +189,7 @@ function toggleNavText(): void {
         </router-link>
         
         <router-link v-show="guards.canAccessPage(guards.pages.INVENTORY)" to="/inventory" id="inventory-link"
-          class="flex items-center mt-1 py-2 pl-3 pr-4 text-gray-100 hover:bg-gray-800 hover:bg-opacity/25 hover:text-white border-l-4 border-gray-800">
+          class="flex items-center mt-1 py-2 pl-3 pr-4 text-primary-foreground hover:bg-primary/20 hover:text-primary-foreground border-l-4 border-primary">
           <span class="nav-icon"><font-awesome-icon icon="fa-solid fa-boxes-stacked" /></span>
           <span :class="['nav-text-wrapper', viewNavText ? 'nav-text-visible' : 'nav-text-hidden']">
             <span class="nav-text-slide">Inventory</span>
@@ -197,7 +197,7 @@ function toggleNavText(): void {
         </router-link>
         
         <router-link v-show="guards.canAccessPage(guards.pages.SCHEMES)" to="/schemes" id="scheme-link"
-          class="flex items-center mt-1 py-2 pl-3 pr-4 text-gray-100 hover:bg-gray-800 hover:bg-opacity/25 hover:text-white border-l-4 border-gray-800">
+          class="flex items-center mt-1 py-2 pl-3 pr-4 text-primary-foreground hover:bg-primary/20 hover:text-primary-foreground border-l-4 border-primary">
           <span class="nav-icon"><font-awesome-icon icon="project-diagram" /></span>
           <span :class="['nav-text-wrapper', viewNavText ? 'nav-text-visible' : 'nav-text-hidden']">
             <span class="nav-text-slide">Projects</span>
@@ -205,7 +205,7 @@ function toggleNavText(): void {
         </router-link>
         
         <router-link v-show="guards.canAccessPage(guards.pages.DOCUMENT)" to="/documents" id="documents-link"
-          class="flex items-center mt-1 py-2 pl-3 pr-4 text-gray-100 hover:bg-gray-800 hover:bg-opacity/25 hover:text-white border-l-4 border-gray-800">
+          class="flex items-center mt-1 py-2 pl-3 pr-4 text-primary-foreground hover:bg-primary/20 hover:text-primary-foreground border-l-4 border-primary">
           <span class="nav-icon"><font-awesome-icon icon="file" /></span>
           <span :class="['nav-text-wrapper', viewNavText ? 'nav-text-visible' : 'nav-text-hidden']">
             <span class="nav-text-slide">Documents</span>
@@ -217,7 +217,7 @@ function toggleNavText(): void {
       <div class="mt-8 flex justify-center" style="margin-top: 30px;">
         <button 
           @click="toggleNavText()"
-          class="text-gray-100 hover:text-white hover:bg-gray-800 hover:bg-opacity/25 p-2 rounded transition-all duration-300 ease-out"
+          class="text-primary-foreground hover:text-primary-foreground hover:bg-primary/20 p-2 rounded transition-all duration-300 ease-out"
           :title="viewNavText ? 'Collapse menu' : 'Expand menu'"
         >
           <font-awesome-icon :icon="viewNavText ? 'chevron-circle-left' : 'chevron-circle-right'" class="text-lg transition-transform duration-300 ease-out" />
@@ -226,10 +226,10 @@ function toggleNavText(): void {
     </div>
     <div class="grow"></div>
     <Transition name="footer-slide">
-      <footer v-if="viewNavText" id="asideFooter" class="flex-none bg-gray-700 text-center text-gray-100 p-4">
+      <footer v-if="viewNavText" id="asideFooter" class="flex-none bg-primary/80 text-center text-primary-foreground p-4">
         <hr />
         <span>&copy; 2025 </span>|
-        <router-link to="/about" class="text-gray-200"> About</router-link>
+        <router-link to="/about" class="text-primary-foreground/80"> About</router-link>
         <hr />
       </footer>
     </Transition>

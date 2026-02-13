@@ -50,7 +50,9 @@ const selectLaboratory = async () => {
       const redirectTo = router.currentRoute.value.query.redirect as string || '/dashboard';
       router.push(redirectTo);
     }
-  } catch {} finally {
+  } catch (error) {
+    console.warn("Failed to switch laboratory", error);
+  } finally {
     isLoading.value = false;
   }
 };
@@ -62,21 +64,6 @@ const quickSelectLaboratory = async (laboratory: LaboratoryType) => {
 
 const refreshLaboratories = async () => {
   await contextStore.refreshLaboratories();
-};
-
-const formatTimeAgo = (date: Date): string => {
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffMins = Math.floor(diffMs / (1000 * 60));
-  const diffHours = Math.floor(diffMins / 60);
-  const diffDays = Math.floor(diffHours / 24);
-
-  if (diffMins < 1) return 'Just now';
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays < 7) return `${diffDays}d ago`;
-  
-  return date.toLocaleDateString();
 };
 
 // Auto-redirect if user already has valid context
@@ -130,8 +117,8 @@ onMounted(() => {
     <main class="flex-1 flex items-center justify-center py-12">
       <div class="max-w-2xl w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-8">
-          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <i class="fas fa-building text-2xl text-blue-600"></i>
+          <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-building text-2xl text-primary"></i>
           </div>
           <h2 class="text-2xl font-semibold text-foreground mb-2">Select Laboratory</h2>
           <p class="text-muted-foreground">
@@ -168,12 +155,12 @@ onMounted(() => {
                 class="p-4 border border-input rounded-lg hover:bg-accent text-left transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <div class="flex items-center space-x-3">
-                  <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                  <div class="w-3 h-3 rounded-full bg-warning"></div>
                   <div class="flex-1">
                     <div class="font-medium text-sm">{{ lab.name }}</div>
                     <div class="text-xs text-muted-foreground">{{ lab.code }}</div>
                   </div>
-                  <i class="fas fa-star text-yellow-500 text-sm"></i>
+                  <i class="fas fa-star text-warning text-sm"></i>
                 </div>
               </button>
             </div>
@@ -193,7 +180,7 @@ onMounted(() => {
                 class="p-4 border border-input rounded-lg hover:bg-accent text-left transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <div class="flex items-center space-x-3">
-                  <div class="w-3 h-3 rounded-full bg-orange-500"></div>
+                  <div class="w-3 h-3 rounded-full bg-accent-foreground"></div>
                   <div class="flex-1">
                     <div class="font-medium text-sm">{{ lab.name }}</div>
                     <div class="text-xs text-muted-foreground">{{ lab.code }}</div>
@@ -253,16 +240,16 @@ onMounted(() => {
                     </div>
                     
                     <div class="flex items-center space-x-2">
-                      <div v-if="laboratory.uid === currentLaboratory?.uid" class="flex items-center space-x-1 text-green-600">
+                      <div v-if="laboratory.uid === currentLaboratory?.uid" class="flex items-center space-x-1 text-success">
                         <i class="fas fa-check-circle text-sm"></i>
                         <span class="text-xs">Current</span>
                       </div>
                       
-                      <div v-if="frequentLaboratories.some(l => l.uid === laboratory.uid)" class="text-yellow-500" title="Frequently used">
+                      <div v-if="frequentLaboratories.some(l => l.uid === laboratory.uid)" class="text-warning" title="Frequently used">
                         <i class="fas fa-star text-sm"></i>
                       </div>
                       
-                      <div v-if="recentLaboratories.some(l => l.uid === laboratory.uid)" class="text-orange-500" title="Recently used">
+                      <div v-if="recentLaboratories.some(l => l.uid === laboratory.uid)" class="text-accent-foreground" title="Recently used">
                         <i class="fas fa-clock text-sm"></i>
                       </div>
                     </div>

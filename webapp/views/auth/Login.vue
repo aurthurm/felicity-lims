@@ -40,7 +40,7 @@ const login = handleSubmit((values) => {
 </script>
 
 <template>
-  <div class="flex min-h-screen items-center justify-center bg-linear-to-br from-primary to-accent p-6">
+  <div class="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary to-accent p-6">
     <div class="w-full max-w-md">
       <div class="relative -top-20 flex items-center justify-center">
         <Logo :styling="'h-36 w-36'" />
@@ -58,18 +58,14 @@ const login = handleSubmit((values) => {
         <form v-if="!auth.isAuthenticated" class="space-y-5" @submit.prevent="login">
           <!-- Username Field -->
           <div class="space-y-1">
-            <label class="text-sm font-medium text-foreground" for="username">
+            <label class="fel-label" for="username">
               Username
             </label>
             <div class="relative">
               <input
                 id="username"
                 v-model="username"
-                :class="[
-                  'w-full rounded-lg border px-4 py-2 outline-none transition-colors duration-200',
-                  'focus:border-accent focus:ring-2 focus:ring-indigo-200',
-                  errors?.username ? 'border-destructive' : 'border-border'
-                ]"
+                :class="['fel-input', errors?.username ? 'border-destructive' : '']"
                 :disabled="auth.processing"
                 placeholder="Enter your username"
                 type="text"
@@ -93,18 +89,14 @@ const login = handleSubmit((values) => {
 
           <!-- Password Field -->
           <div class="space-y-1">
-            <label class="text-sm font-medium text-foreground" for="password">
+            <label class="fel-label" for="password">
               Password
             </label>
             <div class="relative">
               <input
                 id="password"
                 v-model="password"
-                :class="[
-                  'w-full rounded-lg border px-4 py-2 outline-none transition-colors duration-200',
-                  'focus:border-accent focus:ring-2 focus:ring-indigo-200',
-                  errors?.password ? 'border-destructive' : 'border-border'
-                ]"
+                :class="['fel-input', errors?.password ? 'border-destructive' : '']"
                 :disabled="auth.processing"
                 placeholder="Enter your password"
                 type="password"
@@ -129,7 +121,7 @@ const login = handleSubmit((values) => {
           <!-- Forgot Password Link -->
           <div class="flex justify-end">
             <button
-              class="text-sm text-accent transition-colors duration-200 hover:text-indigo-800"
+              class="text-sm text-accent transition-colors duration-200 hover:text-accent"
               type="button"
               @click="emit('forgot')"
             >

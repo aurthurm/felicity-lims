@@ -450,25 +450,25 @@ const saveMappingForm = handleMappingSubmit((values) => {
                   <table class="w-full fel-table">
                     <thead>
                       <tr class="border-b border-border bg-muted/50">
-                        <th class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">Name</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">Code</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-muted-foreground">Standard</th>
-                        <th class="px-6 py-3 text-right text-sm font-medium text-muted-foreground">Actions</th>
+                        <th class="text-left">Name</th>
+                        <th class="text-left">Code</th>
+                        <th class="text-left">Standard</th>
+                        <th class="text-right">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr v-for="mapping in mappings" :key="mapping.uid" class="hover:bg-accent/50 transition-colors duration-200">
-                        <td class="px-6 py-4 whitespace-nowrap border-b border-border">
+                        <td class="whitespace-nowrap border-b border-border">
                           <div class="font-medium text-foreground">{{ mapping?.name }}</div>
                           <div class="text-sm text-muted-foreground" v-if="mapping?.description">{{ mapping?.description }}</div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap border-b border-border text-sm text-foreground">
+                        <td class="whitespace-nowrap border-b border-border">
                           {{ mapping?.code }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap border-b border-border text-sm text-foreground">
+                        <td class="whitespace-nowrap border-b border-border">
                           {{ mapping?.codingStandard?.name }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right border-b border-border">
+                        <td class="whitespace-nowrap text-right border-b border-border">
                           <button 
                             @click="MappingFormManager(false, mapping)"
                             class="inline-flex items-center px-3 py-1.5 border border-input bg-background text-foreground text-sm font-medium transition-colors duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring hover:bg-accent hover:text-accent-foreground"
@@ -505,7 +505,7 @@ const saveMappingForm = handleMappingSubmit((values) => {
   <!-- Profile Form Modal -->
   <fel-modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
-      <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
+      <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
 
     <template v-slot:body>
@@ -599,7 +599,7 @@ const saveMappingForm = handleMappingSubmit((values) => {
   <!-- Mapping Form Modal -->
   <fel-modal v-if="showMappingModal" @close="showMappingModal = false">
     <template v-slot:header>
-      <h3 class="text-xl font-semibold text-foreground">{{ mappingFormTitle }}</h3>
+      <h3 class="text-lg font-semibold text-foreground">{{ mappingFormTitle }}</h3>
     </template>
 
     <template v-slot:body>

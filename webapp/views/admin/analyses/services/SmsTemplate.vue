@@ -141,7 +141,7 @@ import { GetSmsTemplatesByTargetDocument } from '@/graphql/operations/sms-templa
   function deleteSmsTemplate(uid: string): void {
       if (confirm('Are you sure you want to delete this SMS template?')) {
           withClientMutation<DeleteSmsTemplateMutation, DeleteSmsTemplateMutationVariables>(DeleteSmsTemplateDocument, { uid }, "deleteSmsTemplate")
-          .then((result) => {
+          .then(() => {
             const index = templates.value.findIndex(t => t.uid === uid);
             if (index !== -1) {
               templates.value.splice(index, 1);
@@ -249,28 +249,28 @@ import { GetSmsTemplatesByTargetDocument } from '@/graphql/operations/sms-templa
             </thead>
             <tbody class="bg-card">
             <tr v-for="template in templates" :key="template?.uid" class="hover:bg-accent/50">
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <td class="px-4 py-2 whitespace-nowrap border-b border-border">
                   <div class="text-sm text-foreground">{{ template.name }}</div>
                   <div class="text-xs text-muted-foreground">{{ template.description }}</div>
                 </td>
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <td class="px-4 py-2 whitespace-nowrap border-b border-border">
                   <div class="text-sm text-foreground">{{ triggerLabel(template.specificationTrigger || '') }}</div>
                 </td>
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <td class="px-4 py-2 whitespace-nowrap border-b border-border">
                   <div class="text-sm text-foreground">{{ audienceLabel(template.audience || '') }}</div>
                 </td>
                 <td class="px-4 py-2 border-b border-border">
                   <div class="text-sm text-foreground max-w-xs">{{ template.template }}</div>
                 </td>
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
-                  <span :class="template.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'" 
+                <td class="px-4 py-2 whitespace-nowrap border-b border-border">
+                  <span :class="template.isActive ? 'bg-success/15 text-success' : 'bg-destructive/15 text-destructive'" 
                         class="px-2 py-1 text-xs font-medium rounded-full">
                     {{ template.isActive ? 'Active' : 'Inactive' }}
                   </span>
                 </td>
-                <td class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
+                <td class="px-4 py-2 whitespace-nowrap text-right border-b border-border">
                     <button @click="FormManager(false, template)" class="px-2 py-1 mr-2 border border-border bg-background text-foreground transition-colors duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring hover:bg-accent hover:text-accent-foreground">Edit</button>
-                    <button @click="deleteSmsTemplate(template.uid)" class="px-2 py-1 border border-red-500 bg-background text-red-600 transition-colors duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring hover:bg-red-50">Delete</button>
+                    <button @click="deleteSmsTemplate(template.uid)" class="px-2 py-1 border border-destructive bg-background text-destructive transition-colors duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring hover:bg-destructive/10">Delete</button>
                 </td>
             </tr>
             </tbody>

@@ -18,7 +18,7 @@
     () => import('@/components/ui/datatable/FelDataTable.vue')
   )
 
- type IQCRequestType = {
+ type QCRequestType = {
     qcTemplate?: QCTemplateType;
     qcLevels?: QCLevelType[];
     analysisProfiles?: ProfileType[]; 
@@ -48,7 +48,7 @@
       defaultSort: true,
       showInToggler: false,
       hidden: false,
-      customRender: function (qcset, _) {
+      customRender: function (qcset) {
         return h('div', parseDate(qcset.createdAt));
       },
     },
@@ -58,7 +58,7 @@
       sortable: false,
       sortBy: "asc",
       hidden: false,
-      customRender: function (qcset, _) {
+      customRender: function (qcset) {
         return h('div', qcSetSamples(qcset.samples ?? []));
       },
     },
@@ -68,7 +68,7 @@
       sortable: false,
       sortBy: "asc",
       hidden: false,
-      customRender: function (qcset, _) {
+      customRender: function (qcset) {
         return h('div', qcSetProfileAnalyses(qcset.samples ?? []));
       },
     },    {
@@ -84,13 +84,13 @@
       sortable: false,
       hidden: false,
       showInToggler: false,
-      customRender: function (qcset, _) {
+      customRender: function (qcset) {
       return h(RouterLink, {
         to: {
           name:'qc-set-detail', params: { qcSetUid: qcset.uid }
         },
         class:
-          "px-2 mr-2 border-primary border text-gray-500rounded-smtransition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none",
+          "px-2 mr-2 border border-primary text-muted-foreground rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none",
         innerHTML: 'View Run Set',
       });
     },
@@ -128,7 +128,7 @@
   });
   sampleStore.fetchQCSets(qcSetParams);
 
-  function searchQCSets(opts: any): void {
+  function searchQCSets(opts: { filterStatus?: string }): void {
     qcSetParams.first = 25;
     qcSetParams.after = "";
     qcSetParams.status = opts.filterStatus;
@@ -137,21 +137,8 @@
   }
 
   const analysesProfiles = computed<ProfileType[]>(() => analysisStore.getAnalysesProfiles);
-  const analysesServices = computed<AnalysisType[]>(() => {
-    const services: AnalysisType[] = analysisStore.getAnalysesServicesSimple;
-    let s = new Set<AnalysisType>();
-    services.forEach((service: AnalysisType) => {
-      if(service.profiles?.length === 0){
-        s.add(service)
-      }
-    })
-    return [...s];
-  });
-
-
   // QC Request
   let showModal = ref<boolean>(false);
-  let formAction = ref<boolean>(true);
   let form = reactive({ 
     departmentUid: undefined,
     samples: [] as QCRequestType[]
@@ -185,18 +172,8 @@
       form.samples?.splice(index, 1);
   }
 
-  function FormManager(create: boolean, obj: QCRequestType):void {
-    formAction.value = create;
-    showModal.value = true;
-    if (create) {
-      Object.assign(form, {} as QCRequestType);
-    } else {
-      Object.assign(form, { ...obj });
-    }
-  }
-
   function saveForm(): void {
-    if (formAction.value === true) addQCRequest();
+    addQCRequest();
     showModal.value = false;
   }
 
@@ -379,7 +356,7 @@
                     </div>
                     <div class="ml-4">
                       <button @click.prevent="removeQCSet(index)"
-                        class="px-2 py-1 mr-2 border-destructive border text-orange-600rounded-smtransition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none">Remove</button>
+                        class="px-2 py-1 mr-2 border border-destructive text-destructive rounded-sm transition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none">Remove</button>
                     </div>
                 </div>
                 <hr>
@@ -400,4 +377,3 @@
 
 
 </template>
-

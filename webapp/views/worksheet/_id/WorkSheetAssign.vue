@@ -302,28 +302,28 @@ function areAllChecked(): boolean {
                 @change="checkCheck(analysisResult)"
               />
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border"></td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <td class="px-1 py-1 whitespace-nowrap border-b border-border"></td>
+            <td class="px-1 py-1 whitespace-nowrap border-b border-border">
               <div class="text-sm leading-5 text-primary font-semibold">
                 {{ analysisResult?.sample?.sampleId }}
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <td class="px-1 py-1 whitespace-nowrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ analysisResult?.analysis?.name }}
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <td class="px-1 py-1 whitespace-nowrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ analysisResult?.sample?.createdAt }}
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <td class="px-1 py-1 whitespace-nowrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ analysisResult?.sample?.dateReceived }}
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <td class="px-1 py-1 whitespace-nowrap border-b border-border">
               <div class="text-sm leading-5 text-primary">
                 {{ analysisResult?.sample?.status }}
               </div>

@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from typing import List, Optional
 
@@ -117,17 +118,21 @@ class UserQuery:
         )
         try:
             await preference_service.create(pref_in)
-        except Exception:
+        except Exception as exc:
             # Another request may have created preferences concurrently.
-            pass
+            logger.warning("User preferences create race for %s: %s", current_user.uid, exc)
 
-        preference = await preference_service.get(
-            user_uid=current_user.uid,
-            related=["departments"]
-        )
-        if not preference:
-            raise Exception("Failed to initialize user preferences")
-        return preference
+        # Retry fetch briefly to smooth out create races/transaction visibility.
+        for _ in range(3):
+            preference = await preference_service.get(
+                user_uid=current_user.uid,
+                related=["departments"]
+            )
+            if preference:
+                return preference
+            await asyncio.sleep(0.05)
+
+        raise Exception("Failed to initialize user preferences")
 
     @strawberry.field(permission_classes=[IsAuthenticated])
     async def user_by_email(self, info, email: str) -> UserType | None:

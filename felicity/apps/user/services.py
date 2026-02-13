@@ -57,7 +57,9 @@ class UserService(BaseService[User, UserCreate, UserUpdate]):
 
         if "password" in update_data:
             existing_user = await self.get(uid=user_uid)
-            username = user_in.user_name or (existing_user.user_name if existing_user else "")
+            username = user_in.user_name or (
+                (existing_user.user_name or "") if existing_user else ""
+            )
             policy = password_check(user_in.password, username)
             if not policy["password_ok"]:
                 raise Exception(policy["message"])

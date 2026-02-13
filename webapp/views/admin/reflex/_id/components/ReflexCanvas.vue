@@ -466,10 +466,10 @@ defineExpose({
 </template>
 
 <style scoped>
-@reference "@/assets/css/style.css";
+@reference "@tw";
 .reflex-canvas-container {
   @apply relative w-full h-full;
-  @apply bg-muted;
+  background-color: hsl(var(--muted));
 }
 
 .reflex-canvas {
@@ -506,7 +506,7 @@ kbd {
 </style>
 
 <style>
-@reference "@/assets/css/style.css";
+@reference "@tw";
 
 /* Global Vue Flow styling */
 .vue-flow__node {

@@ -317,7 +317,7 @@ const InventoryOrders = defineComponent({
                                                                         placeholder={''}
                                                                     />
                                                                 </td>
-                                                                <td class="px-1 whitespace-no-wrap">
+                                                                <td class="px-1 whitespace-nowrap">
                                                                     <button
                                                                         type="button"
                                                                         class="w-16 bg-primary text-primary-foreground rounded-sm leading-none px-2 py-1"
@@ -402,7 +402,7 @@ const InventoryOrders = defineComponent({
                                                                 <td>
                                                                     <p>{orderProduct?.quantity}</p>
                                                                 </td>
-                                                                <td class="px-1 py-1 whitespace-no-wrap">
+                                                                <td class="px-1 py-1 whitespace-nowrap">
                                                                     <label class="block">
                                                                         <input
                                                                             class="form-input"

@@ -301,17 +301,20 @@ const inputClass = "flex h-10 w-full rounded-md border border-input bg-backgroun
         </div>
         <div class="flex-1 min-h-[200px] max-h-[400px] overflow-y-auto">
           <template v-if="filteredCountries.length">
-            <button
+            <div
               v-for="c in filteredCountries"
               :key="c.uid"
-              type="button"
+              role="button"
+              tabindex="0"
               :class="[
-                'w-full flex items-center justify-between gap-3 px-4 py-3 text-left transition-colors border-b border-border last:border-b-0',
+                'w-full flex items-center justify-between gap-3 px-4 py-3 text-left transition-colors border-b border-border last:border-b-0 cursor-pointer',
                 country?.uid === c.uid
                   ? 'bg-primary/10 text-primary'
                   : 'hover:bg-muted/50 text-foreground'
               ]"
               @click="selectLocation('country', c)"
+              @keydown.enter.prevent="selectLocation('country', c)"
+              @keydown.space.prevent="selectLocation('country', c)"
             >
               <span class="font-medium truncate">{{ c.name }}</span>
               <span class="shrink-0 text-xs text-muted-foreground">{{ c.code }}</span>
@@ -323,7 +326,7 @@ const inputClass = "flex h-10 w-full rounded-md border border-input bg-backgroun
               >
                 <font-awesome-icon icon="pen" class="w-3.5 h-3.5" />
               </button>
-            </button>
+            </div>
           </template>
           <div v-else class="flex flex-col items-center justify-center py-12 px-4 text-center text-muted-foreground">
             <font-awesome-icon icon="flag" class="w-10 h-10 mb-3 opacity-40" />
@@ -365,17 +368,20 @@ const inputClass = "flex h-10 w-full rounded-md border border-input bg-backgroun
             </div>
           </template>
           <template v-else-if="filteredProvinces.length">
-            <button
+            <div
               v-for="p in filteredProvinces"
               :key="p.uid"
-              type="button"
+              role="button"
+              tabindex="0"
               :class="[
-                'w-full flex items-center justify-between gap-3 px-4 py-3 text-left transition-colors border-b border-border last:border-b-0',
+                'w-full flex items-center justify-between gap-3 px-4 py-3 text-left transition-colors border-b border-border last:border-b-0 cursor-pointer',
                 province?.uid === p.uid
                   ? 'bg-primary/10 text-primary'
                   : 'hover:bg-muted/50 text-foreground'
               ]"
               @click="selectLocation('province', p)"
+              @keydown.enter.prevent="selectLocation('province', p)"
+              @keydown.space.prevent="selectLocation('province', p)"
             >
               <span class="font-medium truncate">{{ p.name }}</span>
               <span class="shrink-0 text-xs text-muted-foreground">{{ p.code }}</span>
@@ -387,7 +393,7 @@ const inputClass = "flex h-10 w-full rounded-md border border-input bg-backgroun
               >
                 <font-awesome-icon icon="pen" class="w-3.5 h-3.5" />
               </button>
-            </button>
+            </div>
           </template>
           <template v-else>
             <div class="flex flex-col items-center justify-center py-12 px-4 text-center text-muted-foreground">
@@ -437,17 +443,20 @@ const inputClass = "flex h-10 w-full rounded-md border border-input bg-backgroun
             </div>
           </template>
           <template v-else-if="filteredDistricts.length">
-            <button
+            <div
               v-for="d in filteredDistricts"
               :key="d.uid"
-              type="button"
+              role="button"
+              tabindex="0"
               :class="[
-                'w-full flex items-center justify-between gap-3 px-4 py-3 text-left transition-colors border-b border-border last:border-b-0',
+                'w-full flex items-center justify-between gap-3 px-4 py-3 text-left transition-colors border-b border-border last:border-b-0 cursor-pointer',
                 district?.uid === d.uid
                   ? 'bg-primary/10 text-primary'
                   : 'hover:bg-muted/50 text-foreground'
               ]"
               @click="selectLocation('district', d)"
+              @keydown.enter.prevent="selectLocation('district', d)"
+              @keydown.space.prevent="selectLocation('district', d)"
             >
               <span class="font-medium truncate">{{ d.name }}</span>
               <span class="shrink-0 text-xs text-muted-foreground">{{ d.code }}</span>
@@ -459,7 +468,7 @@ const inputClass = "flex h-10 w-full rounded-md border border-input bg-backgroun
               >
                 <font-awesome-icon icon="pen" class="w-3.5 h-3.5" />
               </button>
-            </button>
+            </div>
           </template>
           <template v-else>
             <div class="flex flex-col items-center justify-center py-12 px-4 text-center text-muted-foreground">

@@ -30,14 +30,14 @@ const ContainerView = defineComponent({
                     <div class="grid grid-cols-2 gap-6">
                         <div class="col-span-1 space-y-4">
                             <div class="flex items-center">
-                                <span class="text-foreground text-md font-bold w-52">Name:</span>
-                                <span class="text-foreground text-md">{this.storageContainer?.name}</span>
+                                <span class="text-foreground text-base font-bold w-52">Name:</span>
+                                <span class="text-foreground text-base">{this.storageContainer?.name}</span>
                             </div>
                             <div class="flex items-center">
-                                <span class="text-foreground text-md font-bold w-52">Layout:</span>
-                                <span class="text-foreground text-md">{this.storageContainer?.grid ? 'grid' : 'column'}</span>
+                                <span class="text-foreground text-base font-bold w-52">Layout:</span>
+                                <span class="text-foreground text-base">{this.storageContainer?.grid ? 'grid' : 'column'}</span>
                                 {this.storageContainer?.grid ? (
-                                    <span class="ml-2 text-foreground text-md italic bg-muted px-2 py-1 rounded-md">
+                                    <span class="ml-2 text-foreground text-base italic bg-muted px-2 py-1 rounded-md">
                                         {this.storageContainer?.rowWise ? 'by-row' : 'by-column'}
                                     </span>
                                 ) : null}
@@ -45,12 +45,12 @@ const ContainerView = defineComponent({
                         </div>
                         <div class="col-span-1 space-y-4">
                             <div class="flex items-center">
-                                <span class="text-foreground text-md font-bold w-52">Slots:</span>
-                                <span class="text-foreground text-md">{this.storageContainer?.slots}</span>
+                                <span class="text-foreground text-base font-bold w-52">Slots:</span>
+                                <span class="text-foreground text-base">{this.storageContainer?.slots}</span>
                             </div>
                             <div class="flex items-center">
-                                <span class="text-foreground text-md font-bold w-52">Empty Slots:</span>
-                                <span class="text-foreground text-md">
+                                <span class="text-foreground text-base font-bold w-52">Empty Slots:</span>
+                                <span class="text-foreground text-base">
                                     {(this.storageContainer?.slots ?? 0) - (this.storageContainer?.samples?.length ?? 0)}
                                 </span>
                             </div>

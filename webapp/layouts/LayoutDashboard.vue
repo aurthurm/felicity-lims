@@ -24,7 +24,7 @@ onMounted(() => {
 
 <template>
   <div v-if="useMegaMenu"
-  class="font-roboto antialiased min-h-screen flex flex-col">
+  class="antialiased min-h-screen flex flex-col">
     <header-main/>
     <main class="px-8 pt-4 flex-1">
       <slot/>

@@ -192,7 +192,7 @@ class ClientMutations:
         obj_in = schemas.ClientContactCreate(**incoming)
         client_contact = await ClientContactService().create(obj_in)
         return ClientContactType(
-            **client_contact.marshal_simple(exclude=["is_superuser", "auth_uid"])
+            **client_contact.marshal_simple(exclude=["is_superuser", "user_uid"])
         )
 
     @strawberry.mutation(
@@ -229,7 +229,7 @@ class ClientMutations:
         obj_in = schemas.ClientContactUpdate(**client_contact.to_dict())
         client_contact = await ClientContactService().update(client_contact.uid, obj_in)
         return ClientContactType(
-            **client_contact.marshal_simple(exclude=["is_superuser", "auth_uid"])
+            **client_contact.marshal_simple(exclude=["is_superuser", "user_uid"])
         )
 
     @strawberry.field(

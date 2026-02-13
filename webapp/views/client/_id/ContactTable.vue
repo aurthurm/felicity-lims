@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { ref, defineAsyncComponent } from "vue";
+import { ref } from "vue";
 import { useRoute } from "vue-router";
-import modal from "@/components/ui/FelModal.vue";
 import {
   DeleteClientContactDocument, DeleteClientContactMutation, DeleteClientContactMutationVariables,
   AddClientContactDocument, AddClientContactMutation, AddClientContactMutationVariables,
@@ -23,10 +22,6 @@ let formTitle = ref("");
 let showContactModal = ref(false);
 let createContact = ref(false);
 let contact = ref({} as ClientContactType);
-
-const props = defineProps({
-  clientUid: String,
-});
 
 // Load initial data
 const clientUid = (router.query.clientUid as string) || '';
@@ -120,7 +115,7 @@ const deleteClientContact = (contact: ClientContactType) => {
         </thead>
         <tbody class="bg-background">
           <tr v-for="cont in clientContacts" :key="cont.uid">
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <td class="px-1 py-1 whitespace-nowrap border-b border-border">
               <div class="flex items-center">
                 <div>
                   <div class="text-sm leading-5 text-foreground">
@@ -129,20 +124,20 @@ const deleteClientContact = (contact: ClientContactType) => {
                 </div>
               </div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <td class="px-1 py-1 whitespace-nowrap border-b border-border">
               <div class="text-sm leading-5 text-primary">{{ cont.email }}</div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap border-b border-border">
+            <td class="px-1 py-1 whitespace-nowrap border-b border-border">
               <div class="text-sm leading-5 text-primary">{{ cont.mobilePhone }}</div>
             </td>
-            <td class="px-1 py-1 whitespace-no-wrap text-right border-b border-border text-sm leading-5">
+            <td class="px-1 py-1 whitespace-nowrap text-right border-b border-border text-sm leading-5">
               <button v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.CLIENT)"
                 @click="FormManager(false, cont)"
-                class="px-2 py-1 mr-2 border-border border text-orange-500rounded-smtransition duration-300 hover:bg-muted hover:text-primary-foreground focus:outline-none">
+                class="px-2 py-1 mr-2 border border-border text-muted-foreground rounded-sm transition duration-300 hover:bg-muted hover:text-primary-foreground focus:outline-none">
                 Edit
               </button> <button v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.CLIENT)"
                 @click="deleteClientContact(cont)"
-                class="px-2 py-1 mr-2 border-destructive border text-orange-500rounded-smtransition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none">
+                class="px-2 py-1 mr-2 border border-destructive text-destructive rounded-sm transition duration-300 hover:bg-destructive hover:text-primary-foreground focus:outline-none">
                 Deactivate
               </button>
             </td>

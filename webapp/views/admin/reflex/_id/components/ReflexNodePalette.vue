@@ -270,7 +270,7 @@ const toggleCollapse = () => {
 </template>
 
 <style scoped>
-@reference "@/assets/css/style.css";
+@reference "@tw";
 .node-palette {
   @apply w-64 bg-card border-r border-border shadow-sm;
   @apply flex flex-col h-full overflow-hidden;

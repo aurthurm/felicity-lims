@@ -106,7 +106,7 @@ const historyStatus = computed(() => {
 </template>
 
 <style scoped>
-@reference "@/assets/css/style.css";
+@reference "@tw";
 .history-controls {
   @apply flex items-center space-x-2;
 }

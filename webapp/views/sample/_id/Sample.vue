@@ -251,16 +251,16 @@ const handleDerived = (derivedSamples: SampleType[]) => {
 function getStatusBadgeClass(status?: string | null): string {
   const s = status?.toLowerCase() ?? "";
   const map: Record<string, string> = {
-    expected: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 border border-amber-200 dark:border-amber-800",
-    received: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 border border-blue-200 dark:border-blue-800",
-    awaiting: "bg-slate-100 text-slate-800 dark:bg-slate-800/50 dark:text-slate-300 border border-slate-200 dark:border-slate-700",
-    paired: "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800",
-    approved: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800",
-    published: "bg-violet-100 text-violet-800 dark:bg-violet-900/30 dark:text-violet-400 border border-violet-200 dark:border-violet-800",
-    cancelled: "bg-gray-100 text-gray-700 dark:bg-gray-800/50 dark:text-gray-400 border border-gray-200 dark:border-gray-700",
-    rejected: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 border border-red-200 dark:border-red-800",
-    stored: "bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-400 border border-teal-200 dark:border-teal-800",
-    invalidated: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400 border border-orange-200 dark:border-orange-800",
+    expected: "bg-warning/15 text-warning border border-warning/30",
+    received: "bg-info/15 text-info border border-info/30",
+    awaiting: "bg-muted text-muted-foreground border border-border",
+    paired: "bg-accent/15 text-accent border border-accent/30",
+    approved: "bg-success/15 text-success border border-success/30",
+    published: "bg-primary/15 text-primary border border-primary/30",
+    cancelled: "bg-muted text-muted-foreground border border-border",
+    rejected: "bg-destructive/15 text-destructive border border-destructive/30",
+    stored: "bg-secondary text-secondary-foreground border border-border",
+    invalidated: "bg-warning/15 text-warning border border-warning/30",
   };
   return map[s] ?? "bg-muted text-muted-foreground border border-border";
 }

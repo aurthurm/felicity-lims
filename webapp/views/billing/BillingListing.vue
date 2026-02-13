@@ -22,14 +22,14 @@ const selectedBill = ref<TestBillType | undefined>(undefined);
 // Helper functions
 function getStatusBadgeClass(status: string): string {
   const statusMap: Record<string, string> = {
-    "pending": "bg-yellow-100 text-yellow-800",
-    "received": "bg-blue-100 text-blue-800",
-    "approved": "bg-green-100 text-green-800",
-    "published": "bg-purple-100 text-purple-800",
-    "rejected": "bg-red-100 text-red-800",
-    "cancelled": "bg-gray-100 text-gray-800",
+    "pending": "bg-warning/15 text-warning",
+    "received": "bg-info/15 text-info",
+    "approved": "bg-success/15 text-success",
+    "published": "bg-accent/15 text-accent",
+    "rejected": "bg-destructive/15 text-destructive",
+    "cancelled": "bg-muted text-muted-foreground",
   };
-  return statusMap[status?.toLowerCase()] || "bg-gray-100 text-gray-800";
+  return statusMap[status?.toLowerCase()] || "bg-muted text-muted-foreground";
 }
 
 function openBillDetail(bill: TestBillType): void {
@@ -146,7 +146,7 @@ const tableColumns = ref([
     hidden: false,
     customRender: function (bill, _) {
       const balance = parseFloat(bill?.totalCharged || 0) - parseFloat(bill?.totalPaid || 0);
-      const statusClass = balance > 0 ? "text-red-600" : "text-green-600";
+      const statusClass = balance > 0 ? "text-destructive" : "text-success";
       return h("span", { class: statusClass }, `$${balance.toFixed(2)}`);
     },
   },
@@ -157,7 +157,7 @@ const tableColumns = ref([
     hidden: false,
     customRender: function (bill, _) {
       const isPartial = bill?.partial ? "Yes" : "No";
-      const statusClass = bill?.partial ? "bg-orange-100 text-orange-800" : "bg-green-100 text-green-800";
+      const statusClass = bill?.partial ? "bg-warning/15 text-warning" : "bg-success/15 text-success";
       return h("span",
         { class: `px-2 py-1 rounded text-sm font-medium ${statusClass}` },
         isPartial
@@ -171,7 +171,7 @@ const tableColumns = ref([
     hidden: false,
     customRender: function (bill, _) {
       const status = bill?.isActive ? "Active" : "Inactive";
-      const statusClass = bill?.isActive ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800";
+      const statusClass = bill?.isActive ? "bg-success/15 text-success" : "bg-muted text-muted-foreground";
       return h("span",
         { class: `px-2 py-1 rounded text-sm font-medium ${statusClass}` },
         status

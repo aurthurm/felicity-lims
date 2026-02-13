@@ -420,7 +420,7 @@ const submitDeriveRequest = async () => {
 </template>
 
 <style scoped>
-@reference "@/assets/css/style.css";
+@reference "@tw";
 
 :deep(.multiselect-primary) {
   @apply bg-background text-foreground;

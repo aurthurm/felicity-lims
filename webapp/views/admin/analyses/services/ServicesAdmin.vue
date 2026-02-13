@@ -266,18 +266,18 @@ function saveMappingForm(): void {
           <div class="grid grid-cols-12 gap-3">
             <!-- Meta Column -->
             <div class="sm:col-span-2 text-center hidden sm:block">
-              <div class="grid grid-rows-2 mx-auto mb-1 py-3 w-4/5 2lg:w-3/5 rounded-lg bg-primary" >
+              <div class="grid grid-rows-2 mx-auto mb-1 py-3 w-4/5 2xl:w-3/5 rounded-lg bg-primary" >
                 <p class="font-bold text-primary-foreground">KEYWORD</p>
                 <div class="inline-block font-medium text-2xl text-primary-foreground">
                   <font-awesome-icon icon="fa-exclamation-circle" />
                 </div>
-                <div class="inline-block font-medium text-primary-foreground text-md mt-2">{{ analysisService?.keyword }}</div>
+                <div class="inline-block font-medium text-primary-foreground text-base mt-2">{{ analysisService?.keyword }}</div>
               </div>
             </div>
             <!-- Summary Column -->
             <div class="col-span-12 sm:col-start-3 sm:col-end-13 px-3 sm:px-0">
               <div
-                class="flex justify-between sm:text-sm md:text-md lg:text-lg text-foreground font-bold"
+                class="flex justify-between sm:text-sm md:text-base lg:text-lg text-foreground font-bold"
               >
                 <span>{{ analysisService?.name }}</span>
                 <div>
@@ -298,42 +298,42 @@ function saveMappingForm(): void {
                 <div class="col-span-1">
                   <!-- Client Details -->
                   <div class="flex">
-                    <span class="text-muted-foreground text-md font-bold w-52">Category:</span>
-                    <span class="text-foreground text-md">{{ analysisService?.category?.name || 'un-categprised' }}</span>
+                    <span class="text-muted-foreground text-base font-bold w-52">Category:</span>
+                    <span class="text-foreground text-base">{{ analysisService?.category?.name || 'uncategorised' }}</span>
                   </div>
                   <div class="flex">
-                    <span class="text-muted-foreground text-md font-bold w-52">Unit:</span>
-                    <span class="text-foreground text-md">{{ analysisService?.unit?.name }}</span>
+                    <span class="text-muted-foreground text-base font-bold w-52">Unit:</span>
+                    <span class="text-foreground text-base">{{ analysisService?.unit?.name }}</span>
                   </div>
                   <div class="flex">
-                    <span class="text-muted-foreground text-md font-bold w-52">SortKey:</span>
-                    <span class="text-foreground text-md">{{ analysisService?.sortKey || '---' }}</span>
+                    <span class="text-muted-foreground text-base font-bold w-52">SortKey:</span>
+                    <span class="text-foreground text-base">{{ analysisService?.sortKey || '---' }}</span>
                   </div>
                   <div class="flex mt-2">
-                    <span class="text-muted-foreground text-md font-bold w-52">TAT (minutes):</span>
-                    <span class="text-foreground text-md mr-2">{{ analysisService?.tatLengthMinutes }}</span>
+                    <span class="text-muted-foreground text-base font-bold w-52">TAT (minutes):</span>
+                    <span class="text-foreground text-base mr-2">{{ analysisService?.tatLengthMinutes }}</span>
                   </div>
                   <div class="flex mt-2">
-                    <span class="text-muted-foreground text-md font-bold w-52">Precision (decimals):</span>
-                    <span class="text-foreground text-md mr-2">{{ analysisService?.precision }}</span>
+                    <span class="text-muted-foreground text-base font-bold w-52">Precision (decimals):</span>
+                    <span class="text-foreground text-base mr-2">{{ analysisService?.precision }}</span>
                   </div>
                 </div>
                 <div class="col-span-1">
                   <div class="col-span-2 flex mt-2">
-                    <span class="text-muted-foreground text-md font-bold w-52">Methods:</span>
-                    <span class="text-foreground text-md mr-2">{{ analysisService?.methods?.map(s => s.name)?.join(', ') }}</span>
+                    <span class="text-muted-foreground text-base font-bold w-52">Methods:</span>
+                    <span class="text-foreground text-base mr-2">{{ analysisService?.methods?.map(s => s.name)?.join(', ') }}</span>
                   </div>
                   <div class="col-span-2 flex mt-2">
-                    <span class="text-muted-foreground text-md font-bold w-52">Sample Types:</span>
-                    <span class="text-foreground text-md mr-2">{{ analysisService?.sampleTypes?.map(s => s.name)?.join(', ') }}</span>
+                    <span class="text-muted-foreground text-base font-bold w-52">Sample Types:</span>
+                    <span class="text-foreground text-base mr-2">{{ analysisService?.sampleTypes?.map(s => s.name)?.join(', ') }}</span>
                   </div>
                   <div class="flex mt-2">
-                    <span class="text-muted-foreground text-md font-bold w-52">Required verifications:</span>
-                    <span class="text-foreground text-md mr-2">{{ analysisService?.requiredVerifications }}</span>
+                    <span class="text-muted-foreground text-base font-bold w-52">Required verifications:</span>
+                    <span class="text-foreground text-base mr-2">{{ analysisService?.requiredVerifications }}</span>
                   </div>
                   <div class="col-span-4 flex mt-2">
-                    <span class="text-muted-foreground text-md font-bold w-52">Allow self-verification:</span>
-                    <span class="text-foreground text-md mr-2">{{ analysisService?.selfVerification }}</span>
+                    <span class="text-muted-foreground text-base font-bold w-52">Allow self-verification:</span>
+                    <span class="text-foreground text-base mr-2">{{ analysisService?.selfVerification }}</span>
                   </div>
                 </div>
               </div>
@@ -418,21 +418,21 @@ function saveMappingForm(): void {
                     </thead>
                     <tbody class="bg-card">
                     <tr v-for="mapp in mappings" :key="mapp" class="hover:bg-accent/50">
-                        <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                        <td class="px-4 py-2 whitespace-nowrap border-b border-border">
                           <div class="flex items-center">
                             <div class="text-sm text-foreground">{{ mapp.codingStandard?.name }}</div>
                           </div>
                         </td>
-                        <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                        <td class="px-4 py-2 whitespace-nowrap border-b border-border">
                           <div class="text-sm text-foreground">{{ mapp.name }}</div>
                         </td>
-                        <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                        <td class="px-4 py-2 whitespace-nowrap border-b border-border">
                           <div class="text-sm text-foreground">{{ mapp.code }}</div>
                         </td>
-                        <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                        <td class="px-4 py-2 whitespace-nowrap border-b border-border">
                           <div class="text-sm text-foreground">{{ mapp.description }}</div>
                         </td>
-                        <td class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
+                        <td class="px-4 py-2 whitespace-nowrap text-right border-b border-border">
                             <button @click="MappingFormManager(false, mapp)" class="px-2 py-1 mr-2 border border-border bg-background text-foreground transition-colors duration-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-ring hover:bg-accent hover:text-accent-foreground">Edit</button>
                         </td>
                     </tr>

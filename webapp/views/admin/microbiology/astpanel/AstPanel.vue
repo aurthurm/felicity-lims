@@ -3,26 +3,26 @@ import { defineAsyncComponent, onMounted, ref } from 'vue';
 import { useForm, useField } from 'vee-validate';
 import * as yup from 'yup';
 import useApiUtil from '@/composables/api_util';
-import { AbxAntibioticType, AbxASTPanelType, AbxOrganismType } from "@/types/gql";
+import { AbxAntibioticType, AbxASTPanelType, AbxOrganismType } from"@/types/gql";
 import {
-  AddAbxAstPanelDocument,
-  AddAbxAstPanelMutation,
-  AddAbxAstPanelMutationVariables,
-  EditAbxAstPanelDocument,
-  EditAbxAstPanelMutation,
-  EditAbxAstPanelMutationVariables
-} from "@/graphql/operations/microbiology.mutations";
+ AddAbxAstPanelDocument,
+ AddAbxAstPanelMutation,
+ AddAbxAstPanelMutationVariables,
+ EditAbxAstPanelDocument,
+ EditAbxAstPanelMutation,
+ EditAbxAstPanelMutationVariables
+} from"@/graphql/operations/microbiology.mutations";
 import {
-  GetAbxAstPanelAllDocument,
-  GetAbxAstPanelAllQuery,
-  GetAbxAstPanelAllQueryVariables,
-  GetAbxLaboratoryAntibioticsDocument,
-  GetAbxLaboratoryAntibioticsQuery,
-  GetAbxLaboratoryAntibioticsQueryVariables,
-  GetAbxOrganismAllDocument,
-  GetAbxOrganismAllQuery,
-  GetAbxOrganismAllQueryVariables,
-} from "@/graphql/operations/microbiology.queries";
+ GetAbxAstPanelAllDocument,
+ GetAbxAstPanelAllQuery,
+ GetAbxAstPanelAllQueryVariables,
+ GetAbxLaboratoryAntibioticsDocument,
+ GetAbxLaboratoryAntibioticsQuery,
+ GetAbxLaboratoryAntibioticsQueryVariables,
+ GetAbxOrganismAllDocument,
+ GetAbxOrganismAllQuery,
+ GetAbxOrganismAllQueryVariables,
+} from"@/graphql/operations/microbiology.queries";
 import { addListsUnique } from '@/utils';
 import { AbxOrganismCursorPage } from '@/graphql/schema';
 
@@ -42,19 +42,19 @@ const organisms = ref<AbxOrganismType[]>([]);
 const filteredOrganisms = ref<AbxOrganismType[]>([]);
 
 const astPanelSchema = yup.object({
-  name: yup.string().trim().required('Panel name is required'),
-  selectedAntibiotics: yup.array().of(yup.string().trim()).min(1, 'Select at least one antibiotic'),
-  selectedOrganisms: yup.array().of(yup.string().trim()).min(1, 'Select at least one organism'),
+ name: yup.string().trim().required('Panel name is required'),
+ selectedAntibiotics: yup.array().of(yup.string().trim()).min(1, 'Select at least one antibiotic'),
+ selectedOrganisms: yup.array().of(yup.string().trim()).min(1, 'Select at least one organism'),
 });
 
 const { handleSubmit, resetForm, setValues, errors } = useForm({
-  validationSchema: astPanelSchema,
-  initialValues: {
-    name: '',
-    description: '',
-    selectedAntibiotics: [] as string[],
-    selectedOrganisms: [] as string[],
-  },
+ validationSchema: astPanelSchema,
+ initialValues: {
+ name: '',
+ description: '',
+ selectedAntibiotics: [] as string[],
+ selectedOrganisms: [] as string[],
+ },
 });
 const { value: name } = useField<string>('name');
 const { value: description } = useField<string>('description');
@@ -63,301 +63,290 @@ const { value: selectedOrganisms } = useField<string[]>('selectedOrganisms');
 
 // Fetch initial data
 onMounted(() => {
-  fetchAntibiotics();
-  fetchOrganisms();
-  fetchPanels();
+ fetchAntibiotics();
+ fetchOrganisms();
+ fetchPanels();
 });
 
 // Fetch functions
 function fetchAntibiotics() {
-  withClientQuery<GetAbxLaboratoryAntibioticsQuery, GetAbxLaboratoryAntibioticsQueryVariables>(
-    GetAbxLaboratoryAntibioticsDocument, {}, "abxLaboratoryAntibiotics"
-  ).then((result) => {
-    if (result) {
-      antibiotics.value = result as AbxAntibioticType[];
-      filteredAntibiotics.value = [...antibiotics.value];
-    }
-  });
+ withClientQuery<GetAbxLaboratoryAntibioticsQuery, GetAbxLaboratoryAntibioticsQueryVariables>(
+ GetAbxLaboratoryAntibioticsDocument, {},"abxLaboratoryAntibiotics"
+ ).then((result) => {
+ if (result) {
+ antibiotics.value = result as AbxAntibioticType[];
+ filteredAntibiotics.value = [...antibiotics.value];
+ }
+ });
 }
 
 function fetchOrganisms() {
-  withClientQuery<GetAbxOrganismAllQuery, GetAbxOrganismAllQueryVariables>(
-      GetAbxOrganismAllDocument, {
-        text: searchOrgText.value,
-        pageSize: 25,
-        sortBy: ["name"],
-      }, "abxOrganismAll"
-  ).then((result) => {
-    // The organism list can be big, so we need to handle keeping selecteds on each search before replacement
-    organisms.value = organisms.value?.filter(org => selectedOrganisms.value.includes(org.uid)) || [];
-    organisms.value = addListsUnique(organisms.value, (result as AbxOrganismCursorPage)?.items as AbxOrganismType[], "uid");
-    filteredOrganisms.value = [...organisms.value];
-  })
+ withClientQuery<GetAbxOrganismAllQuery, GetAbxOrganismAllQueryVariables>(
+ GetAbxOrganismAllDocument, {
+ text: searchOrgText.value,
+ pageSize: 25,
+ sortBy: ["name"],
+ },"abxOrganismAll"
+ ).then((result) => {
+ // The organism list can be big, so we need to handle keeping selecteds on each search before replacement
+ organisms.value = organisms.value?.filter(org => selectedOrganisms.value.includes(org.uid)) || [];
+ organisms.value = addListsUnique(organisms.value, (result as AbxOrganismCursorPage)?.items as AbxOrganismType[],"uid");
+ filteredOrganisms.value = [...organisms.value];
+ })
 }
 
 function fetchPanels() {
-  withClientQuery<GetAbxAstPanelAllQuery, GetAbxAstPanelAllQueryVariables>(
-    GetAbxAstPanelAllDocument, {}, "abxAstPanelAll"
-  ).then((result) => {
-    if (result) {
-      panels.value = result as AbxASTPanelType[];
-      panels.value.forEach(panel => panel.organisms?.forEach(org => organisms.value.push(org)));
-    }
-  });
+ withClientQuery<GetAbxAstPanelAllQuery, GetAbxAstPanelAllQueryVariables>(
+ GetAbxAstPanelAllDocument, {},"abxAstPanelAll"
+ ).then((result) => {
+ if (result) {
+ panels.value = result as AbxASTPanelType[];
+ panels.value.forEach(panel => panel.organisms?.forEach(org => organisms.value.push(org)));
+ }
+ });
 }
 
 // Form management
 function FormManager(create: boolean, panel = {} as AbxASTPanelType): void {
-  formAction.value = create;
-  showModal.value = true;
-  formTitle.value = (create ? 'Create' : 'Edit') + ' AST Panel';
-  
+ formAction.value = create;
+ showModal.value = true;
+ formTitle.value = (create ? 'Create' : 'Edit') + ' AST Panel';
   if (create) {
-    currentUid.value = null;
-    resetForm();
-  } else {
-    currentUid.value = panel.uid ?? null;
-    setValues({
-      name: panel.name ?? '',
-      description: panel.description ?? '',
-      selectedAntibiotics: panel.antibiotics?.map(a => a.uid) || [],
-      selectedOrganisms: panel.organisms?.map(o => o.uid) || [],
-    });
-  }
+ currentUid.value = null;
+ resetForm();
+ } else {
+ currentUid.value = panel.uid ?? null;
+ setValues({
+ name: panel.name ?? '',
+ description: panel.description ?? '',
+ selectedAntibiotics: panel.antibiotics?.map(a => a.uid) || [],
+ selectedOrganisms: panel.organisms?.map(o => o.uid) || [],
+ });
+ }
 }
 
 const saveForm = handleSubmit((formValues) => {
-  const payload = {
-    name: formValues.name,
-    description: formValues.description,
-    antibiotics: formValues.selectedAntibiotics,
-    organisms: formValues.selectedOrganisms
-  };
+ const payload = {
+ name: formValues.name,
+ description: formValues.description,
+ antibiotics: formValues.selectedAntibiotics,
+ organisms: formValues.selectedOrganisms
+ };
 
-  if (formAction.value) {
-    withClientMutation<AddAbxAstPanelMutation, AddAbxAstPanelMutationVariables>(
-      AddAbxAstPanelDocument, { payload }, "createAbxAstPanel"
-    ).then((result) => {
-      if (result) {
-        panels.value.unshift(result as AbxASTPanelType);
-      }
-    });
-  } else if (currentUid.value) {
-    withClientMutation<EditAbxAstPanelMutation, EditAbxAstPanelMutationVariables>(
-      EditAbxAstPanelDocument, {
-        uid: currentUid.value,
-        payload
-      }, "updateAbxAstPanel"
-    ).then((result) => {
-      if (result) {
-        const idx = panels.value.findIndex(item => item.uid === result.uid);
-        if (idx > -1) {
-          panels.value = [
-            ...panels.value.map((item, index) => index === idx ? result : item),
-          ] as AbxASTPanelType[];
-        }
-      }
-    });
-  }
+ if (formAction.value) {
+ withClientMutation<AddAbxAstPanelMutation, AddAbxAstPanelMutationVariables>(
+ AddAbxAstPanelDocument, { payload },"createAbxAstPanel"
+ ).then((result) => {
+ if (result) {
+ panels.value.unshift(result as AbxASTPanelType);
+ }
+ });
+ } else if (currentUid.value) {
+ withClientMutation<EditAbxAstPanelMutation, EditAbxAstPanelMutationVariables>(
+ EditAbxAstPanelDocument, {
+ uid: currentUid.value,
+ payload
+ },"updateAbxAstPanel"
+ ).then((result) => {
+ if (result) {
+ const idx = panels.value.findIndex(item => item.uid === result.uid);
+ if (idx > -1) {
+ panels.value = [
+ ...panels.value.map((item, index) => index === idx ? result : item),
+ ] as AbxASTPanelType[];
+ }
+ }
+ });
+ }
 
-  showModal.value = false;
+ showModal.value = false;
 });
 
 // Filter functions
 function filterAntibiotics() {
-  if (!searchAbxText.value) {
-    filteredAntibiotics.value = [...antibiotics.value];
-    return;
-  }
-  filteredAntibiotics.value = antibiotics.value.filter(abx => 
-    abx.name.toLowerCase().includes(searchAbxText.value.toLowerCase())
-  );
+ if (!searchAbxText.value) {
+ filteredAntibiotics.value = [...antibiotics.value];
+ return;
+ }
+ filteredAntibiotics.value = antibiotics.value.filter(abx =>  abx.name.toLowerCase().includes(searchAbxText.value.toLowerCase())
+ );
 }
 
 function filterOrganisms() {
-  if (!searchOrgText.value) {
-    filteredOrganisms.value = [...organisms.value];
-    return;
-  }
-  fetchOrganisms()
+ if (!searchOrgText.value) {
+ filteredOrganisms.value = [...organisms.value];
+ return;
+ }
+ fetchOrganisms()
 }
 </script>
 
 <template>
-  <fel-heading title="AST Panels">
-    <fel-button @click="FormManager(true)">Add Panel</fel-button>      
-  </fel-heading>
+ <fel-heading title="AST Panels">
+ <fel-button @click="FormManager(true)">Add Panel</fel-button>  </fel-heading>
 
-  <div class="overflow-x-auto">
-    <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard rounded-lg">
-      <table class="min-w-full divide-y divide-border fel-table">
-        <thead>
-          <tr>
-            <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Name</th>
-            <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Description</th>
-            <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Organisms</th>
-            <th class="px-3 py-3.5 text-left text-sm font-semibold text-foreground">Antibiotics</th>
-            <th class="px-3 py-3.5"></th>
-          </tr>
-        </thead>
-        <tbody class="bg-background divide-y divide-border">
-          <tr v-for="panel in panels" :key="panel?.uid">
-            <td class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">{{ panel?.name }}</td>
-            <td class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">{{ panel?.description }}</td>
-            <td class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">
-              {{ panel?.organisms?.map(org => org.name).join(', ') }}
-            </td>
-            <td class="px-3 py-3.5 whitespace-nowrap text-sm text-foreground">
-              {{ panel?.antibiotics?.map(abx => abx.name).join(', ') }}
-            </td>
-            <td class="px-3 py-3.5 whitespace-nowrap text-right text-sm">
-              <button @click="FormManager(false, panel)"
-                      class="px-3 py-1.5 bg-primary text-primary-foreground rounded-sm transition duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
-                Edit
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+ <div class="overflow-x-auto">
+ <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard rounded-lg">
+ <table class="min-w-full divide-y divide-border fel-table">
+ <thead>
+ <tr>
+ <th class="text-left text-sm font-semibold text-foreground">Name</th>
+ <th class="text-left text-sm font-semibold text-foreground">Description</th>
+ <th class="text-left text-sm font-semibold text-foreground">Organisms</th>
+ <th class="text-left text-sm font-semibold text-foreground">Antibiotics</th>
+ <th class=""></th>
+ </tr>
+ </thead>
+ <tbody class="bg-background divide-y divide-border">
+ <tr v-for="panel in panels" :key="panel?.uid">
+ <td class="whitespace-nowrap text-sm text-foreground">{{ panel?.name }}</td>
+ <td class="whitespace-nowrap text-sm text-foreground">{{ panel?.description }}</td>
+ <td class="whitespace-nowrap text-sm text-foreground">
+ {{ panel?.organisms?.map(org => org.name).join(', ') }}
+ </td>
+ <td class="whitespace-nowrap text-sm text-foreground">
+ {{ panel?.antibiotics?.map(abx => abx.name).join(', ') }}
+ </td>
+ <td class="whitespace-nowrap text-right text-sm">
+ <button @click="FormManager(false, panel)"
+ class="px-3 py-1.5 bg-primary text-primary-foreground rounded-sm transition duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+ Edit
+ </button>
+ </td>
+ </tr>
+ </tbody>
+ </table>
+ </div>
+ </div>
 
-  <!-- Panel Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
-    <template v-slot:header>
-      <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
-    </template>
+ <!-- Panel Form Modal -->
+ <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
+ <template v-slot:header>
+ <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
+ </template>
 
-    <template v-slot:body>
-      <form @submit.prevent="saveForm" class="space-y-6 p-4">
-        <div class="space-y-4">
-          <div class="grid grid-cols-1 gap-4">
-            <label class="block">
-              <span class="text-sm font-medium text-foreground">Panel Name</span>
-              <input
-                  v-model="name"
-                  class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  placeholder="Enter panel name"
-              />
-              <p v-if="errors.name" class="text-sm text-destructive">{{ errors.name }}</p>
-            </label>
-            <label class="block">
-              <span class="text-sm font-medium text-foreground">Description</span>
-              <textarea
-                  v-model="description"
-                  rows="2"
-                  class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  placeholder="Enter description"
-              ></textarea>
-            </label>
-          </div>
+ <template v-slot:body>
+ <form @submit.prevent="saveForm" class="space-y-6 p-4">
+ <div class="space-y-4">
+ <div class="grid grid-cols-1 gap-4">
+ <label class="block">
+ <span class="text-sm font-medium text-foreground">Panel Name</span>
+ <input
+ v-model="name"
+ class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+ placeholder="Enter panel name"
+ />
+ <p v-if="errors.name" class="text-sm text-destructive">{{ errors.name }}</p>
+ </label>
+ <label class="block">
+ <span class="text-sm font-medium text-foreground">Description</span>
+ <textarea
+ v-model="description"
+ rows="2"
+ class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+ placeholder="Enter description"
+ ></textarea>
+ </label>
+ </div>
 
-          <!-- Organisms Selection with Selected List -->
-          <div class="flex gap-4">
-            <div class="w-2/3 space-y-2">
-              <label class="block">
-                <span class="text-sm font-medium text-foreground">Search Organisms</span>
-                <input
-                    v-model="searchOrgText"
-                    @input="filterOrganisms"
-                    class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    placeholder="Search organisms..."
-                />
-              </label>
-              <div class="border border-border rounded-md p-2 h-64 overflow-y-auto">
-                <div v-for="org in filteredOrganisms" :key="org.uid" class="flex items-center py-1">
-                  <input
-                      type="checkbox"
-                      :value="org.uid"
-                      v-model="selectedOrganisms"
-                      class="rounded border-border text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary/50"
-                  />
-                  <span class="ml-2 text-sm text-foreground">{{ org.name }}</span>
-                </div>
-              </div>
-              <p v-if="errors.selectedOrganisms" class="text-sm text-destructive">{{ errors.selectedOrganisms }}</p>
-            </div>
-            
-            <!-- Selected Organisms List -->
-            <div class="w-1/3">
-              <div class="text-sm font-medium text-foreground mb-1">Selected Organisms</div>
-              <div class="border border-border rounded-md p-2 h-72 overflow-y-auto bg-background">
-                <div v-for="orgUid in selectedOrganisms" 
-                     :key="orgUid" 
-                     class="flex items-center justify-between py-1 px-2 mb-1 bg-background rounded-md shadow-sm">
-                  <span class="text-sm text-foreground">
-                    {{ organisms?.find(o => o.uid === orgUid)?.name }}
-                  </span>
-                  <button 
-                    @click="selectedOrganisms = selectedOrganisms.filter(id => id !== orgUid)"
-                    class="text-destructive hover:text-destructive/80 text-sm"
-                  >
-                    ×
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+ <!-- Organisms Selection with Selected List -->
+ <div class="flex gap-4">
+ <div class="w-2/3 space-y-2">
+ <label class="block">
+ <span class="text-sm font-medium text-foreground">Search Organisms</span>
+ <input
+ v-model="searchOrgText"
+ @input="filterOrganisms"
+ class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+ placeholder="Search organisms..."
+ />
+ </label>
+ <div class="border border-border rounded-md p-2 h-64 overflow-y-auto">
+ <div v-for="org in filteredOrganisms" :key="org.uid" class="flex items-center py-1">
+ <input
+ type="checkbox"
+ :value="org.uid"
+ v-model="selectedOrganisms"
+ class="rounded border-border text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary/50"
+ />
+ <span class="ml-2 text-sm text-foreground">{{ org.name }}</span>
+ </div>
+ </div>
+ <p v-if="errors.selectedOrganisms" class="text-sm text-destructive">{{ errors.selectedOrganisms }}</p>
+ </div>
+  <!-- Selected Organisms List -->
+ <div class="w-1/3">
+ <div class="text-sm font-medium text-foreground mb-1">Selected Organisms</div>
+ <div class="border border-border rounded-md p-2 h-72 overflow-y-auto bg-background">
+ <div v-for="orgUid in selectedOrganisms"  :key="orgUid"  class="flex items-center justify-between py-1 px-2 mb-1 bg-background rounded-md shadow-sm">
+ <span class="text-sm text-foreground">
+ {{ organisms?.find(o => o.uid === orgUid)?.name }}
+ </span>
+ <button  @click="selectedOrganisms = selectedOrganisms.filter(id => id !== orgUid)"
+ class="text-destructive hover:text-destructive/80 text-sm"
+ >
+ ×
+ </button>
+ </div>
+ </div>
+ </div>
+ </div>
 
-          <!-- Antibiotics Selection with Selected List -->
-          <div class="flex gap-4">
-            <div class="w-2/3 space-y-2">
-              <label class="block">
-                <span class="text-sm font-medium text-foreground">Search Antibiotics</span>
-                <input
-                    v-model="searchAbxText"
-                    @input="filterAntibiotics"
-                    class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    placeholder="Search antibiotics..."
-                />
-              </label>
-              <div class="border border-border rounded-md p-2 h-64 overflow-y-auto">
-                <div v-for="abx in filteredAntibiotics" :key="abx.uid" class="flex items-center py-1">
-                  <input
-                      type="checkbox"
-                      :value="abx.uid"
-                      v-model="selectedAntibiotics"
-                      class="rounded border-border text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary/50"
-                  />
-                  <span class="ml-2 text-sm text-foreground">{{ abx.name }}</span>
-                </div>
-              </div>
-              <p v-if="errors.selectedAntibiotics" class="text-sm text-destructive">{{ errors.selectedAntibiotics }}</p>
-            </div>
-            
-            <!-- Selected Antibiotics List -->
-            <div class="w-1/3">
-              <div class="text-sm font-medium text-foreground mb-1">Selected Antibiotics</div>
-              <div class="border border-border rounded-md p-2 h-72 overflow-y-auto bg-background">
-                <div v-for="abxUid in selectedAntibiotics" 
-                     :key="abxUid" 
-                     class="flex items-center justify-between py-1 px-2 mb-1 bg-background rounded-md shadow-sm">
-                  <span class="text-sm text-foreground">
-                    {{ antibiotics.find(a => a.uid == abxUid)?.name }}
-                  </span>
-                  <button 
-                    @click="selectedAntibiotics = selectedAntibiotics.filter(id => id !== abxUid)"
-                    class="text-destructive hover:text-destructive/80 text-sm"
-                  >
-                    ×
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+ <!-- Antibiotics Selection with Selected List -->
+ <div class="flex gap-4">
+ <div class="w-2/3 space-y-2">
+ <label class="block">
+ <span class="text-sm font-medium text-foreground">Search Antibiotics</span>
+ <input
+ v-model="searchAbxText"
+ @input="filterAntibiotics"
+ class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+ placeholder="Search antibiotics..."
+ />
+ </label>
+ <div class="border border-border rounded-md p-2 h-64 overflow-y-auto">
+ <div v-for="abx in filteredAntibiotics" :key="abx.uid" class="flex items-center py-1">
+ <input
+ type="checkbox"
+ :value="abx.uid"
+ v-model="selectedAntibiotics"
+ class="rounded border-border text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary/50"
+ />
+ <span class="ml-2 text-sm text-foreground">{{ abx.name }}</span>
+ </div>
+ </div>
+ <p v-if="errors.selectedAntibiotics" class="text-sm text-destructive">{{ errors.selectedAntibiotics }}</p>
+ </div>
+  <!-- Selected Antibiotics List -->
+ <div class="w-1/3">
+ <div class="text-sm font-medium text-foreground mb-1">Selected Antibiotics</div>
+ <div class="border border-border rounded-md p-2 h-72 overflow-y-auto bg-background">
+ <div v-for="abxUid in selectedAntibiotics"  :key="abxUid"  class="flex items-center justify-between py-1 px-2 mb-1 bg-background rounded-md shadow-sm">
+ <span class="text-sm text-foreground">
+ {{ antibiotics.find(a => a.uid == abxUid)?.name }}
+ </span>
+ <button  @click="selectedAntibiotics = selectedAntibiotics.filter(id => id !== abxUid)"
+ class="text-destructive hover:text-destructive/80 text-sm"
+ >
+ ×
+ </button>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
 
-        <div class="mt-6">
-          <button
-              type="submit"
-              class="w-full bg-primary text-primary-foreground rounded-sm px-4 py-2 transition-colors duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-          >
-            Save Panel
-          </button>
-        </div>
-      </form>
-    </template>
-  </fel-modal>
+ <div class="mt-6">
+ <button
+ type="submit"
+ class="w-full bg-primary text-primary-foreground rounded-sm px-4 py-2 transition-colors duration-300 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+ >
+ Save Panel
+ </button>
+ </div>
+ </form>
+ </template>
+ </fel-modal>
 </template>
 
 <style scoped>

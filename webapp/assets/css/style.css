@@ -14,7 +14,7 @@
     --umo-container-background: #f4f5f7;
     --umo-button-hover-background: #f1f3f5;
     --umo-text-selection-background: #94cfff;
-    --umo-font-family: helvetica neue, helvetica, pingfang sc, hiragino sans gb, microsoft yahei, simsun, sans-serif;
+    --umo-font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     --umo-font-size: 14px;
     --umo-font-size-small: 12px;
     --umo-text-color: rgb(51, 54, 57);
@@ -79,7 +79,7 @@ html[theme-mode='dark']{
     }
 
     .fel-table th {
-        @apply px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider;
+        @apply px-4 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider;
     }
 
     .fel-table tbody {
@@ -87,7 +87,7 @@ html[theme-mode='dark']{
     }
 
     .fel-table td {
-        @apply px-3 py-2 text-sm text-foreground;
+        @apply px-4 py-3 text-sm text-foreground;
     }
 
     .fel-table tbody tr {
@@ -511,7 +511,7 @@ html[theme-mode='dark']{
 @layer components {
     /* Your custom component classes go here */
     .btn-primary {
-        @apply px-4 py-2 text-sm border border-sky-800 text-gray-800 rounded-sm hover:bg-sky-800 hover:text-gray-100 transition-colors duration-150;
+        @apply px-4 py-2 text-sm border border-primary text-foreground rounded-sm hover:bg-primary hover:text-primary-foreground transition-colors duration-150;
     }
 
     .btn {
@@ -519,11 +519,11 @@ html[theme-mode='dark']{
     }
 
     .btn-secondary {
-        @apply bg-gray-200 text-gray-800 hover:bg-gray-300;
+        @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
     }
 
     .card {
-        @apply bg-white rounded-lg shadow-md p-4;
+        @apply bg-card text-card-foreground rounded-lg shadow-md p-4;
     }
 }
 
@@ -578,12 +578,43 @@ html[theme-mode='dark']{
         grid-template-columns: repeat(20, minmax(0, 1fr));
     }
 
-    /* Form utilities */
-    .form-input,
-    .form-textarea,
-    .form-select,
+    /* Form primitives */
+    .fel-label {
+        @apply block text-sm font-medium text-foreground;
+    }
+
+    .fel-input,
+    .fel-select,
+    .fel-textarea {
+        @apply mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground transition-colors duration-200;
+        @apply focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring;
+        @apply disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted;
+    }
+
+    .fel-input-error {
+        @apply border-destructive;
+    }
+
+    /* Backward-compatible aliases */
+    .form-input {
+        @apply mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground transition-colors duration-200;
+        @apply focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring;
+        @apply disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted;
+    }
+
+    .form-select {
+        @apply mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground transition-colors duration-200;
+        @apply focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring;
+        @apply disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted;
+    }
+
+    .form-textarea {
+        @apply mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground transition-colors duration-200;
+        @apply focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring;
+        @apply disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted;
+    }
+
     .form-multiselect {
-        padding-top: 4px;
-        padding-bottom: 4px;
+        @apply mt-1;
     }
 }

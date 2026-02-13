@@ -103,6 +103,8 @@ def password_similarity(
     ratio > max_similarity is similar
     ratio <= max_similarity is not similar
     """
+    username = username or ""
+    password = password or ""
     ratio = SequenceMatcher(None, username, password).ratio()
     return True if ratio > max_similarity else False, ratio
 
@@ -126,6 +128,7 @@ def password_check(password: str, username: str) -> dict:
 
     # Normalize optional username to avoid policy crashes during reset flows.
     username = username or ""
+    password = password or ""
 
     # calculating the length
     length_error = len(password) < 8

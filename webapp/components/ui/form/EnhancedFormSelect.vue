@@ -193,7 +193,7 @@ const isSelected = (value: string | number) => {
                 :checked="isSelected(option.value)"
                 :disabled="option.disabled"
                 @change="updateValue"
-                class="h-4 w-4 text-primary focus:ring-ring border-gray-300 rounded"
+                class="h-4 w-4 text-primary focus:ring-ring border-input rounded"
               />
               <span class="text-sm">{{ option.label }}</span>
             </label>

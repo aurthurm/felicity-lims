@@ -439,7 +439,7 @@ onMounted(() => {
                 :value="lab.uid"
                 @change="onLaboratorySelectionChange"
                 type="checkbox"
-                class="h-4 w-4 text-primary focus:ring-ring border-gray-300 rounded"
+                class="h-4 w-4 text-primary focus:ring-ring border-input rounded"
               />
               <label :for="`lab-${lab.uid}`" class="flex-1 cursor-pointer">
                 <div class="flex items-center justify-between">
@@ -504,7 +504,7 @@ onMounted(() => {
             <input
               v-model="isActive"
               type="checkbox"
-              class="h-4 w-4 text-primary focus:ring-ring border-gray-300 rounded"
+              class="h-4 w-4 text-primary focus:ring-ring border-input rounded"
             />
             <span class="text-sm font-medium text-foreground">Active User</span>
           </label>
@@ -513,7 +513,7 @@ onMounted(() => {
             <input
               v-model="isBlocked"
               type="checkbox"
-              class="h-4 w-4 text-destructive focus:ring-ring border-gray-300 rounded"
+              class="h-4 w-4 text-destructive focus:ring-ring border-input rounded"
             />
             <span class="text-sm font-medium text-foreground">Blocked</span>
           </label>

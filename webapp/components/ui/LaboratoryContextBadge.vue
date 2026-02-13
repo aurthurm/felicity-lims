@@ -45,9 +45,9 @@ const variantClasses = computed(() => {
 });
 
 const dotColor = computed(() => {
-  if (!currentLaboratory.value) return 'bg-gray-400';
-  if (isContextSwitching.value) return 'bg-yellow-500';
-  return 'bg-green-500';
+  if (!currentLaboratory.value) return 'bg-muted-foreground';
+  if (isContextSwitching.value) return 'bg-warning';
+  return 'bg-success';
 });
 </script>
 
@@ -98,7 +98,7 @@ const dotColor = computed(() => {
     ]"
     title="No laboratory context"
   >
-    <div class="w-2 h-2 rounded-full bg-gray-400"></div>
+    <div class="w-2 h-2 rounded-full bg-muted-foreground"></div>
     <span>No Lab</span>
   </div>
 </template>

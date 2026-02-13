@@ -89,13 +89,13 @@ function saveForm() {
           <div class="grid grid-cols-12 gap-3" v-else>
             <!-- Summary Column -->
             <div class="col-span-12 px-3 sm:px-0">
-              <div class="flex justify-between sm:text-sm md:text-md lg:text-lg text-foreground font-bold">
+              <div class="flex justify-between sm:text-sm md:text-base lg:text-lg text-foreground font-bold">
                 <span>{{ clientStore.client?.name }}</span>
                 <div>
                   <button 
                     v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.CLIENT)"
                     @click="FormManager(false, clientStore.client)"
-                    class="p-1 ml-2 rounded-sm border border-foreground text-muted-foreground text-md transition duration-300 hover:text-primary focus:outline-none"
+                    class="p-1 ml-2 rounded-sm border border-foreground text-muted-foreground text-base transition duration-300 hover:text-primary focus:outline-none"
                   >
                     <font-awesome-icon icon="fa-edit" />
                   </button>
@@ -107,26 +107,26 @@ function saveForm() {
                   <!-- Client Details -->
                   <div class="flex">
                     <span class="text-foreground text-sm font-medium w-16">Province:</span>
-                    <span class="text-foreground text-sm md:text-md">{{ clientStore.client?.district?.province?.name }}</span>
+                    <span class="text-foreground text-sm md:text-base">{{ clientStore.client?.district?.province?.name }}</span>
                   </div>
                   <div class="flex">
                     <span class="text-foreground text-sm font-medium w-16">District:</span>
-                    <span class="text-foreground text-sm md:text-md">{{ clientStore.client?.district?.name }}</span>
+                    <span class="text-foreground text-sm md:text-base">{{ clientStore.client?.district?.name }}</span>
                   </div>
                   <div class="flex">
                     <span class="text-foreground text-sm font-medium w-16">Code:</span>
-                    <span class="text-foreground text-sm md:text-md">{{ clientStore.client?.code }}</span>
+                    <span class="text-foreground text-sm md:text-base">{{ clientStore.client?.code }}</span>
                   </div>
                 </div>
                 <div class="col-span-1">
                   <!-- Communication Details -->
                   <div class="flex">
                     <span class="text-foreground text-sm font-medium w-16">Email:</span>
-                    <span class="text-foreground text-sm md:text-md">{{ clientStore.client?.email }}</span>
+                    <span class="text-foreground text-sm md:text-base">{{ clientStore.client?.email }}</span>
                   </div>
                   <div class="flex">
                     <span class="text-foreground text-sm font-medium w-16">Mobile:</span>
-                    <span class="text-foreground text-sm md:text-md">{{ clientStore.client?.mobilePhone }}</span>
+                    <span class="text-foreground text-sm md:text-base">{{ clientStore.client?.mobilePhone }}</span>
                   </div>
                 </div>
               </div>

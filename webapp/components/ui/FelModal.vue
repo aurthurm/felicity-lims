@@ -25,6 +25,7 @@
                 'max-h-[90vh] overflow-hidden flex flex-col',
                 contentWidth ? contentWidth : 'w-full max-w-2xl'
               ]"
+              v-bind="$attrs"
               @click.stop
               ref="modalRef"
             >
@@ -85,6 +86,7 @@ import { defineComponent, onMounted, onUnmounted, ref, Teleport } from 'vue'
 
 export default defineComponent({
   name: 'enhanced-modal',
+  inheritAttrs: false,
   props: {
     contentWidth: String,
     title: String,

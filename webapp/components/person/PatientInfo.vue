@@ -33,14 +33,14 @@ const editPatient = (patient: PatientType | undefined) => {
           {{ patient?.patientId }}
         </div>
         <!-- Age -->
-        <div class="flex flex-col items-center justify-center mx-auto py-2 w-4/5 2lg:w-3/5 rounded-sm bg-muted hover:bg-muted/90 transition-colors duration-300">
-          <div class="inline-block font-semibold text-muted-foreground text-sm lg:text-md">
+        <div class="flex flex-col items-center justify-center mx-auto py-2 w-4/5 2xl:w-3/5 rounded-sm bg-muted hover:bg-muted/90 transition-colors duration-300">
+          <div class="inline-block font-semibold text-muted-foreground text-sm lg:text-base">
             {{ patient?.gender }}
           </div>
           <div class="inline-block font-bold text-2xl text-muted-foreground my-2">
             {{ patient?.age }}
           </div>
-          <div class="inline-block font-semibold text-muted-foreground text-sm lg:text-md">
+          <div class="inline-block font-semibold text-muted-foreground text-sm lg:text-base">
             Yrs Old
           </div>
         </div>
@@ -48,13 +48,13 @@ const editPatient = (patient: PatientType | undefined) => {
 
       <!-- Summary Column -->
       <div class="col-span-12 sm:col-start-3 sm:col-end-13 px-3 sm:px-0">
-        <div class="flex justify-between sm:text-sm md:text-md lg:text-lg">
+        <div class="flex justify-between sm:text-sm md:text-base lg:text-lg">
           <span class="font-bold text-foreground">{{ patient?.firstName?.toUpperCase() }}
             {{ patient?.lastName?.toUpperCase() }}</span>
           <div class="flex items-center">
-            <span class="font-medium text-md text-muted-foreground">{{ parseDate(patient?.dateOfBirth, false) }}</span>
+            <span class="font-medium text-base text-muted-foreground">{{ parseDate(patient?.dateOfBirth, false) }}</span>
             <button v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.PATIENT)" @click="editPatient(patient)"
-              class="p-1 ml-2 border border-border text-muted-foreground text-md rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-primary">
+              class="p-1 ml-2 border border-border text-muted-foreground text-base rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-primary">
               <font-awesome-icon icon="fa-edit" />
             </button>
             <router-link v-show="route.fullPath.includes('patients-compact')" :to="{
@@ -76,19 +76,19 @@ const editPatient = (patient: PatientType | undefined) => {
             <!-- Client Details -->
             <div class="flex justify-between items-center mt-2">
               <span class="text-foreground text-sm font-semibold">Country</span>
-              <span class="text-muted-foreground text-sm md:text-md">{{
+              <span class="text-muted-foreground text-sm md:text-base">{{
                 patient?.country?.name
               }}</span>
             </div>
             <div class="flex justify-between items-center mt-2">
               <span class="text-foreground text-sm font-semibold">District:</span>
-              <span class="text-muted-foreground text-sm md:text-md">{{
+              <span class="text-muted-foreground text-sm md:text-base">{{
                 patient?.district?.name
               }}</span>
             </div>
             <div class="flex justify-between items-center mt-2">
               <span class="text-foreground text-sm font-semibold">Province: </span>
-              <span class="text-muted-foreground text-sm md:text-md">{{
+              <span class="text-muted-foreground text-sm md:text-base">{{
                 patient?.province?.name
               }}</span>
             </div>
@@ -100,19 +100,19 @@ const editPatient = (patient: PatientType | undefined) => {
             <!-- Client Details -->
             <div class="flex justify-between items-center mt-2">
               <span class="text-foreground text-sm font-semibold">Client</span>
-              <span class="text-muted-foreground text-sm md:text-md">{{
+              <span class="text-muted-foreground text-sm md:text-base">{{
                 patient?.client?.name
               }}</span>
             </div>
             <div class="flex justify-between items-center mt-2">
               <span class="text-foreground text-sm font-semibold">District:</span>
-              <span class="text-muted-foreground text-sm md:text-md">{{
+              <span class="text-muted-foreground text-sm md:text-base">{{
                 patient?.client?.district?.name
               }}</span>
             </div>
             <div class="flex justify-between items-center mt-2">
               <span class="text-foreground text-sm font-semibold">Province: </span>
-              <span class="text-muted-foreground text-sm md:text-md">{{
+              <span class="text-muted-foreground text-sm md:text-base">{{
                 patient?.client?.district?.province?.name
               }}</span>
             </div>
@@ -123,26 +123,26 @@ const editPatient = (patient: PatientType | undefined) => {
             <div class="flex justify-between items-center mt-2">
               <span class="text-foreground whitespace-nowrap text-sm font-semibold">Client Patient ID:
               </span>
-              <span class="text-muted-foreground text-sm md:text-md">
+              <span class="text-muted-foreground text-sm md:text-base">
                 {{ patient?.clientPatientId }}</span>
             </div>
             <div class="flex justify-between items-center mt-2">
               <span class="text-foreground whitespace-nowrap text-sm font-semibold">Mobile:
               </span>
-              <span class="text-muted-foreground text-sm md:text-md">
+              <span class="text-muted-foreground text-sm md:text-base">
                 {{ patient?.phoneMobile }}</span>
             </div>
             <div class="flex justify-between items-center mt-2">
               <span class="text-foreground whitespace-nowrap text-sm font-semibold">Consent SMS:
               </span>
-              <span class="text-muted-foreground text-sm md:text-md">
+              <span class="text-muted-foreground text-sm md:text-base">
                 {{ patient?.consentSms ? 'Yes' : 'No' }}</span>
             </div>
             <div class="flex justify-between items-center mt-2" v-for="identification in patient?.identifications" :key="identification.uid">
               <span class="text-foreground whitespace-nowrap text-sm font-semibold">{{ identification?.identification?.name
               }}:
               </span>
-              <span class="text-muted-foreground text-sm md:text-md">
+              <span class="text-muted-foreground text-sm md:text-base">
                 {{ identification?.value }}</span>
             </div>
           </div>

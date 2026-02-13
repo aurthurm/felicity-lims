@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6">
     <div class="flex justify-between items-center">
-      <h1 class="text-2xl font-semibold">Users</h1>
+      <h1 class="text-2xl font-bold text-card-foreground">Users</h1>
       <button
         @click="FormManager(true)"
         class="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
@@ -18,7 +18,7 @@
             <th
               v-for="header in headers"
               :key="header"
-              class="px-6 py-3 text-left text-sm font-medium text-muted-foreground tracking-wider"
+              class="text-left"
             >
               {{ header }}
             </th>
@@ -26,9 +26,9 @@
         </thead>
         <tbody class="bg-background divide-y divide-border">
           <tr v-for="user in users" :key="user.uid" class="hover:bg-muted/50">
-            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ user.firstName }} {{ user.lastName }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ user.email }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">
+            <td class="whitespace-nowrap">{{ user.firstName }} {{ user.lastName }}</td>
+            <td class="whitespace-nowrap">{{ user.email }}</td>
+            <td class="whitespace-nowrap">
               <span
                 :class="[
                   'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
@@ -38,9 +38,9 @@
                 {{ user.isActive ? 'Active' : 'Inactive' }}
               </span>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ user.groups?.map(g => g?.name).join(', ') }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ user.userName }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">
+            <td class="whitespace-nowrap">{{ user.groups?.map(g => g?.name).join(', ') }}</td>
+            <td class="whitespace-nowrap">{{ user.userName }}</td>
+            <td class="whitespace-nowrap">
               <span
                 :class="[
                   'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
@@ -50,9 +50,9 @@
                 {{ user.isBlocked ? 'Blocked' : 'Active' }}
               </span>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ getLaboratoryName(user.activeLaboratoryUid || "") }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ user.laboratories?.length }} Labs</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-right">
+            <td class="whitespace-nowrap">{{ getLaboratoryName(user.activeLaboratoryUid || "") }}</td>
+            <td class="whitespace-nowrap">{{ user.laboratories?.length }} Labs</td>
+            <td class="whitespace-nowrap text-right">
               <button
                 @click="FormManager(false, user)"
                 class="text-primary hover:text-primary/80 focus:outline-none focus:underline"
@@ -73,49 +73,49 @@
         <div class="grid grid-cols-2 gap-6">
           <!-- OPTION 1: Enhanced visibility with explicit colors -->
           <div class="space-y-2">
-            <label for="firstName" class="block text-sm font-medium text-foreground">
+            <label for="firstName" class="fel-label">
               First Name
             </label>
             <input
               id="firstName"
               v-model="firstName"
               type="text"
-              class="mt-1 block w-full rounded-md border-2 border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground transition-colors duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring hover:border-muted-foreground/40"
+              class="fel-input"
               placeholder="Enter first name"
             />
             <p v-if="firstNameError" class="text-sm text-destructive">{{ firstNameError }}</p>
           </div>
 
           <div class="space-y-2">
-            <label for="lastName" class="block text-sm font-medium text-foreground">
+            <label for="lastName" class="fel-label">
               Last Name
             </label>
             <input
               id="lastName"
               v-model="lastName"
               type="text"
-              class="mt-1 block w-full rounded-md border-2 border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground transition-colors duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring hover:border-muted-foreground/40"
+              class="fel-input"
               placeholder="Enter last name"
             />
             <p v-if="lastNameError" class="text-sm text-destructive">{{ lastNameError }}</p>
           </div>
 
           <div class="space-y-2">
-            <label for="email" class="block text-sm font-medium text-foreground">
+            <label for="email" class="fel-label">
               Email
             </label>
             <input
               id="email"
               v-model="email"
               type="email"
-              class="mt-1 block w-full rounded-md border-2 border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground transition-colors duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring hover:border-muted-foreground/40"
+              class="fel-input"
               placeholder="Enter email address"
             />
             <p v-if="emailError" class="text-sm text-destructive">{{ emailError }}</p>
           </div>
 
           <div class="space-y-2">
-            <label for="userName" class="block text-sm font-medium text-foreground">
+            <label for="userName" class="fel-label">
               Username
             </label>
             <!-- <input
@@ -123,7 +123,7 @@
               v-model="form.userName"
               type="text"
               :disabled="form.userUid != ''"
-              class="mt-1 block w-full rounded-md border-2 border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground transition-colors duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring hover:border-muted-foreground/40 disabled:bg-muted disabled:border-border disabled:cursor-not-allowed disabled:text-muted-foreground"
+              class="fel-input"
               placeholder="Enter username"
             /> -->
             <FelProtectedInput
@@ -137,41 +137,41 @@
           </div>
 
           <div class="space-y-2">
-            <label for="password" class="block text-sm font-medium text-foreground">
+            <label for="password" class="fel-label">
               Password
             </label>
             <input
               id="password"
               v-model="password"
               type="password"
-              class="mt-1 block w-full rounded-md border-2 border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground transition-colors duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring hover:border-muted-foreground/40"
+              class="fel-input"
               placeholder="Enter password"
             />
             <p v-if="passwordError" class="text-sm text-destructive">{{ passwordError }}</p>
           </div>
 
           <div class="space-y-2">
-            <label for="passwordc" class="block text-sm font-medium text-foreground">
+            <label for="passwordc" class="fel-label">
               Confirm Password
             </label>
             <input
               id="passwordc"
               v-model="passwordc"
               type="password"
-              class="mt-1 block w-full rounded-md border-2 border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground transition-colors duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring hover:border-muted-foreground/40"
+              class="fel-input"
               placeholder="Confirm password"
             />
             <p v-if="passwordcError" class="text-sm text-destructive">{{ passwordcError }}</p>
           </div>
 
           <div class="col-span-2 space-y-2">
-            <label for="groupUid" class="block text-sm font-medium text-foreground">
+            <label for="groupUid" class="fel-label">
               Group
             </label>
             <select
               id="groupUid"
               v-model="groupUid"
-              class="mt-1 block w-full rounded-md border-2 border-input bg-background px-3 py-2 text-sm text-foreground transition-colors duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring hover:border-muted-foreground/40"
+              class="fel-select"
             >
               <option value="" class="text-muted-foreground">Select a group</option>
               <option
@@ -188,11 +188,11 @@
 
           <!-- Laboratory Assignment Section -->
           <div class="col-span-2 space-y-4 border-t border-border pt-6">
-            <h4 class="text-md font-medium text-foreground">Laboratory Access (Optional)</h4>
+            <h4 class="text-base font-medium text-foreground">Laboratory Access (Optional)</h4>
             
             <!-- Laboratory Multi-Select -->
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-foreground">Assigned Laboratories</label>
+              <label class="fel-label">Assigned Laboratories</label>
               <VueMultiselect
                 v-model="selectedLaboratories"
                 :options="laboratoriesForSelect"
@@ -208,10 +208,10 @@
 
             <!-- Active Laboratory Selection -->
             <div v-if="laboratoryUids && laboratoryUids.length > 0" class="space-y-2">
-              <label class="block text-sm font-medium text-foreground">Default Active Laboratory</label>
+              <label class="fel-label">Default Active Laboratory</label>
               <select
                 v-model="activeLaboratoryUid"
-                class="mt-1 block w-full rounded-md border-2 border-input bg-background px-3 py-2 text-sm text-foreground transition-colors duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring hover:border-muted-foreground/40"
+                class="fel-select"
               >
                 <option value="">Select default laboratory...</option>
                 <option
@@ -501,7 +501,7 @@ const headers = [
 </script>
 
 <style scoped>
-@reference "@/assets/css/style.css";
+@reference "@tw";
 
 /* Alternative: CSS custom properties approach for better field visibility */
 .form-field-enhanced {

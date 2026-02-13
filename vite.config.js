@@ -17,6 +17,7 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': path.resolve(__dirname, './webapp'),
+            '@tw': path.resolve(__dirname, './webapp/assets/css/style.css'),
         },
     },
 });

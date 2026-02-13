@@ -685,7 +685,7 @@ const saveForm = handleSubmit((formValues) => {
 </template>
 
 <style scoped>
-@reference "@/assets/css/style.css";
+@reference "@tw";
 .multiselect-blue {
   @apply rounded-md border-border shadow-sm focus:border-primary focus:ring focus:ring-primary/50;
 }

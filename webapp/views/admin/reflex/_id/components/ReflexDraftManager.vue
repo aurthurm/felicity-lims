@@ -184,7 +184,7 @@ const handleClearDraft = () => {
 </template>
 
 <style scoped>
-@reference "@/assets/css/style.css";
+@reference "@tw";
 .draft-manager {
   @apply space-y-2;
 }

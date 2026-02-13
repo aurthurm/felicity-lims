@@ -48,7 +48,7 @@ const changePassword = () => {
 </script>
 
 <template>
-  <div class="flex min-h-screen items-center justify-center bg-linear-to-br from-primary to-accent p-6">
+  <div class="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary to-accent p-6">
     <div class="w-full max-w-md">
       <div class="space-y-6 rounded-xl bg-background/95 p-8 shadow-2xl backdrop-blur-sm">
         <!-- Logo Section -->
@@ -78,7 +78,7 @@ const changePassword = () => {
             <div class="mb-6">
               <button
                 type="button"
-                class="inline-flex items-center text-sm text-accent transition-colors duration-200 hover:text-indigo-800"
+                class="inline-flex items-center text-sm text-accent transition-colors duration-200 hover:text-accent"
                 @click="emit('forgot')"
               >
                 <span class="mr-1">←</span> Back to Login
@@ -87,15 +87,11 @@ const changePassword = () => {
 
             <!-- Email Input -->
             <div class="space-y-1">
-              <label class="text-sm font-medium text-foreground" for="email">Email</label>
+              <label class="fel-label" for="email">Email</label>
               <input
                 id="email"
                 v-model="email"
-                :class="[
-                  'w-full rounded-lg border px-4 py-2 outline-none transition-colors duration-200',
-                  'focus:border-accent focus:ring-2 focus:ring-indigo-200',
-                  !email ? 'border-border' : 'border-border'
-                ]"
+                class="fel-input"
                 :disabled="auth.processing"
                 placeholder="Enter your email"
                 type="email"
@@ -106,7 +102,7 @@ const changePassword = () => {
             <div class="flex justify-end">
               <button
                 type="button"
-                class="text-sm text-accent transition-colors duration-200 hover:text-indigo-800"
+                class="text-sm text-accent transition-colors duration-200 hover:text-accent"
                 @click="authStore.setReceivedResetToken(true)"
               >
                 Received a Token?
@@ -135,7 +131,7 @@ const changePassword = () => {
             <div class="mb-6">
               <button
                 type="button"
-                class="inline-flex items-center text-sm text-accent transition-colors duration-200 hover:text-indigo-800"
+                class="inline-flex items-center text-sm text-accent transition-colors duration-200 hover:text-accent"
                 @click="authStore.setReceivedResetToken(false)"
               >
                 <span class="mr-1">←</span> Token not received
@@ -143,15 +139,11 @@ const changePassword = () => {
             </div>
 
             <div class="space-y-1">
-              <label class="text-sm font-medium text-foreground" for="token">Reset Token</label>
+              <label class="fel-label" for="token">Reset Token</label>
               <input
                 id="token"
                 v-model="token"
-                :class="[
-                  'w-full rounded-lg border px-4 py-2 outline-none transition-colors duration-200',
-                  'focus:border-accent focus:ring-2 focus:ring-indigo-200',
-                  !token ? 'border-border' : 'border-border'
-                ]"
+                class="fel-input"
                 :disabled="auth.processing"
                 placeholder="Enter your reset token"
                 type="text"
@@ -186,15 +178,11 @@ const changePassword = () => {
 
           <div class="space-y-4">
             <div class="space-y-1">
-              <label class="text-sm font-medium text-foreground" for="password">New Password</label>
+              <label class="fel-label" for="password">New Password</label>
               <input
                 id="password"
                 v-model="resetForm.password"
-                :class="[
-                  'w-full rounded-lg border px-4 py-2 outline-none transition-colors duration-200',
-                  'focus:border-accent focus:ring-2 focus:ring-indigo-200',
-                  !formIsValid ? 'border-red-300' : 'border-border'
-                ]"
+                :class="['fel-input', !formIsValid ? 'border-destructive' : '']"
                 :disabled="auth.processing"
                 placeholder="Enter new password"
                 type="password"
@@ -202,15 +190,11 @@ const changePassword = () => {
             </div>
 
             <div class="space-y-1">
-              <label class="text-sm font-medium text-foreground" for="passwordc">Confirm Password</label>
+              <label class="fel-label" for="passwordc">Confirm Password</label>
               <input
                 id="passwordc"
                 v-model="resetForm.passwordc"
-                :class="[
-                  'w-full rounded-lg border px-4 py-2 outline-none transition-colors duration-200',
-                  'focus:border-accent focus:ring-2 focus:ring-indigo-200',
-                  !formIsValid ? 'border-red-300' : 'border-border'
-                ]"
+                :class="['fel-input', !formIsValid ? 'border-destructive' : '']"
                 :disabled="auth.processing"
                 placeholder="Confirm new password"
                 type="password"

@@ -157,7 +157,7 @@ onUnmounted(() => {
       <div class="flex items-center space-x-2">
         <div :class="[
           'w-2 h-2 rounded-full',
-          currentLaboratory ? 'bg-green-500' : 'bg-gray-400'
+          currentLaboratory ? 'bg-success' : 'bg-muted'
         ]"></div>
         
         <!-- Laboratory Info -->
@@ -224,13 +224,13 @@ onUnmounted(() => {
         <div v-if="currentLaboratory" class="p-3 border-b border-border bg-muted/50">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-3">
-              <div class="w-2 h-2 rounded-full bg-green-500"></div>
+              <div class="w-2 h-2 rounded-full bg-success"></div>
               <div>
                 <div class="font-medium text-sm">{{ currentLaboratory.name }}</div>
                 <div class="text-xs text-muted-foreground">{{ currentLaboratory.code }} • Current</div>
               </div>
             </div>
-            <i class="fas fa-check text-green-500 text-sm"></i>
+            <i class="fas fa-check text-success text-sm"></i>
           </div>
         </div>
 
@@ -245,12 +245,12 @@ onUnmounted(() => {
               :disabled="lab.uid === currentLaboratory?.uid"
               class="w-full flex items-center space-x-3 p-2 rounded hover:bg-accent text-left disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+              <div class="w-2 h-2 rounded-full bg-info"></div>
               <div class="flex-1">
                 <div class="text-sm font-medium">{{ lab.name }}</div>
                 <div class="text-xs text-muted-foreground">{{ lab.code }}</div>
               </div>
-              <i class="fas fa-star text-xs text-yellow-500"></i>
+              <i class="fas fa-star text-xs text-warning"></i>
             </button>
           </div>
         </div>
@@ -266,7 +266,7 @@ onUnmounted(() => {
               :disabled="lab.uid === currentLaboratory?.uid"
               class="w-full flex items-center space-x-3 p-2 rounded hover:bg-accent text-left disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <div class="w-2 h-2 rounded-full bg-orange-500"></div>
+              <div class="w-2 h-2 rounded-full bg-warning"></div>
               <div class="flex-1">
                 <div class="text-sm font-medium">{{ lab.name }}</div>
                 <div class="text-xs text-muted-foreground">{{ lab.code }}</div>
@@ -299,7 +299,7 @@ onUnmounted(() => {
             >
               <div :class="[
                 'w-2 h-2 rounded-full',
-                lab.uid === currentLaboratory?.uid ? 'bg-green-500' : 'bg-gray-400'
+                lab.uid === currentLaboratory?.uid ? 'bg-success' : 'bg-muted'
               ]"></div>
               <div class="flex-1">
                 <div class="text-sm font-medium">{{ lab.name }}</div>
@@ -308,7 +308,7 @@ onUnmounted(() => {
                   <span v-if="lab.email"> • {{ lab.email }}</span>
                 </div>
               </div>
-              <i v-if="lab.uid === currentLaboratory?.uid" class="fas fa-check text-green-500 text-sm"></i>
+              <i v-if="lab.uid === currentLaboratory?.uid" class="fas fa-check text-success text-sm"></i>
             </button>
           </div>
         </div>
@@ -323,7 +323,7 @@ onUnmounted(() => {
               class="flex items-center justify-between p-2 text-xs text-muted-foreground"
             >
               <div class="flex items-center space-x-2">
-                <div class="w-1.5 h-1.5 rounded-full bg-gray-400"></div>
+                <div class="w-1.5 h-1.5 rounded-full bg-muted"></div>
                 <span>{{ item.laboratoryName }}</span>
               </div>
               <div class="flex items-center space-x-2">
@@ -344,7 +344,7 @@ onUnmounted(() => {
     'flex items-center space-x-2 px-3 py-2 rounded-md bg-muted/50',
     compact ? 'text-sm' : 'text-base'
   ]">
-    <div class="w-2 h-2 rounded-full bg-green-500"></div>
+    <div class="w-2 h-2 rounded-full bg-success"></div>
     <div v-if="!compact" class="flex flex-col items-start">
       <span class="font-medium text-sm leading-none">{{ currentLaboratory.name }}</span>
       <span class="text-xs text-muted-foreground">{{ currentLaboratory.code }}</span>
@@ -354,7 +354,7 @@ onUnmounted(() => {
 
   <!-- No Laboratory -->
   <div v-else class="flex items-center space-x-2 px-3 py-2 rounded-md bg-muted/50 text-muted-foreground">
-    <div class="w-2 h-2 rounded-full bg-gray-400"></div>
+    <div class="w-2 h-2 rounded-full bg-muted"></div>
     <span class="text-sm">No Laboratory Access</span>
   </div>
 </template>

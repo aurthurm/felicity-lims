@@ -3,7 +3,7 @@ import { ref, computed, onMounted, watch } from "vue";
 import { useField, useForm } from "vee-validate";
 import * as yup from "yup";
 import { useRouter } from "vue-router";
-import { UserType, GroupType, LaboratoryType, OrganizationType } from "@/types/gql";
+import { UserType, LaboratoryType, OrganizationType } from "@/types/gql";
 import { useUserStore } from "@/stores/user";
 import useApiUtil from "@/composables/api_util";
 import useNotifyToast from "@/composables/alert_toast";
@@ -39,33 +39,6 @@ interface CreateUserMutationVariables {
   };
 }
 
-interface AssignUserToLaboratoriesMutation {
-  assignUserToLaboratories: {
-    __typename: "UserType" | "OperationError";
-    uid?: string;
-    error?: string;
-  };
-}
-
-interface AssignUserToLaboratoriesMutationVariables {
-  userUid: string;
-  laboratoryUids: string[];
-  activeLaboratoryUid?: string;
-}
-
-interface SendWelcomeEmailMutation {
-  sendWelcomeEmail: {
-    __typename: "SuccessType" | "OperationError";
-    success?: boolean;
-    error?: string;
-  };
-}
-
-interface SendWelcomeEmailMutationVariables {
-  userUid: string;
-  includeTemporaryPassword: boolean;
-}
-
 const CreateUserEnhancedDocument = `
   mutation CreateUserEnhanced($payload: EnhancedUserCreateInputType!) {
     createUserEnhanced(payload: $payload) {
@@ -95,68 +68,6 @@ const CreateUserEnhancedDocument = `
         }
         createdAt
         updatedAt
-      }
-      ... on OperationError {
-        error
-      }
-    }
-  }
-`;
-
-const ValidateUserDataDocument = `
-  mutation ValidateUserData($payload: UserValidationInputType!) {
-    validateUserData(payload: $payload) {
-      ... on UserValidationResultType {
-        emailAvailable
-        usernameAvailable
-        employeeIdAvailable
-        suggestions
-      }
-      ... on OperationError {
-        error
-      }
-    }
-  }
-`;
-
-const UploadProfilePictureDocument = `
-  mutation UploadProfilePicture($payload: ProfilePictureUploadInputType!) {
-    uploadProfilePicture(payload: $payload) {
-      ... on ProfilePictureUploadResultType {
-        user {
-          uid
-          firstName
-          lastName
-          profilePicture
-        }
-        profilePictureUrl
-        message
-      }
-      ... on OperationError {
-        error
-      }
-    }
-  }
-`;
-
-const AssignUserToLaboratoriesDocument = `
-  mutation AssignUserToLaboratories($userUid: String!, $laboratoryUids: [String!]!, $activeLaboratoryUid: String) {
-    assignUserToLaboratories(userUid: $userUid, laboratoryUids: $laboratoryUids, activeLaboratoryUid: $activeLaboratoryUid) {
-      ... on UserType {
-        uid
-      }
-      ... on OperationError {
-        error
-      }
-    }
-  }
-`;
-
-const SendWelcomeEmailDocument = `
-  mutation SendWelcomeEmail($userUid: String!, $includeTemporaryPassword: Boolean!) {
-    sendWelcomeEmail(userUid: $userUid, includeTemporaryPassword: $includeTemporaryPassword) {
-      ... on SuccessType {
-        success
       }
       ... on OperationError {
         error
@@ -258,7 +169,7 @@ const userSchema = yup.object({
   includeCredentials: yup.boolean().default(false),
 });
 
-const { handleSubmit, resetForm, setValues } = useForm({
+const { handleSubmit, resetForm } = useForm({
   validationSchema: userSchema,
   initialValues: {
     firstName: "",
@@ -299,7 +210,6 @@ const { value: laboratoryUids, errorMessage: laboratoryUidsError } = useField<st
 const { value: activeLaboratoryUid, errorMessage: activeLaboratoryUidError } = useField<string | null>("activeLaboratoryUid");
 const { value: isActive } = useField<boolean>("isActive");
 const { value: isBlocked } = useField<boolean>("isBlocked");
-const { value: profilePicture } = useField<string | null>("profilePicture");
 const { value: sendWelcomeEmail } = useField<boolean>("sendWelcomeEmail");
 const { value: includeCredentials } = useField<boolean>("includeCredentials");
 
@@ -378,12 +288,6 @@ const isValidPassword = (password: string) => {
          /[A-Z]/.test(password) && 
          /[a-z]/.test(password) && 
          /\d/.test(password);
-};
-
-// Helper methods
-const getLaboratoryName = (labUid: string) => {
-  const lab = laboratories.value.find(l => l.uid === labUid);
-  return lab?.name || "Unknown Laboratory";
 };
 
 const getOrganizationName = (orgUid: string) => {
@@ -506,7 +410,7 @@ const saveUser = handleSubmit(async (values) => {
     } else {
       toastError(userResult.error || "Failed to create user");
     }
-  } catch (error) {
+  } catch {
     toastError("Failed to create user");
   } finally {
     processing.value = false;
@@ -596,8 +500,8 @@ onMounted(() => {
     <!-- Success Step -->
     <div v-if="currentStep === totalSteps + 1" class="space-y-6">
       <div class="text-center py-12">
-        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <i class="fas fa-check text-2xl text-green-600"></i>
+        <div class="w-16 h-16 bg-success/15 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-check text-2xl text-success"></i>
         </div>
         <h3 class="text-xl font-semibold text-foreground mb-2">User Created Successfully!</h3>
         <p class="text-muted-foreground mb-6">
@@ -625,7 +529,7 @@ onMounted(() => {
             </div>
             <div v-if="sendWelcomeEmail" class="flex justify-between">
               <span class="font-medium">Welcome Email:</span>
-              <span class="text-green-600">Sent</span>
+              <span class="text-success">Sent</span>
             </div>
           </div>
         </div>
@@ -666,7 +570,7 @@ onMounted(() => {
                 step === currentStep
                   ? 'bg-primary text-primary-foreground'
                   : step < currentStep
-                    ? 'bg-green-500 text-white'
+                    ? 'bg-success text-success-foreground'
                     : 'bg-muted text-muted-foreground hover:bg-muted/80'
               ]"
             >
@@ -824,7 +728,7 @@ onMounted(() => {
                   <input
                     v-model="generatePassword"
                     type="checkbox"
-                    class="h-4 w-4 text-primary focus:ring-ring border-gray-300 rounded"
+                    class="h-4 w-4 text-primary focus:ring-ring border-input rounded"
                   />
                   <span class="text-sm font-medium text-foreground">Generate secure password</span>
                 </label>
@@ -937,7 +841,7 @@ onMounted(() => {
                     :value="lab.uid"
                     @change="onLaboratorySelectionChange"
                     type="checkbox"
-                    class="h-4 w-4 text-primary focus:ring-ring border-gray-300 rounded"
+                    class="h-4 w-4 text-primary focus:ring-ring border-input rounded"
                   />
                   <label :for="`lab-${lab.uid}`" class="flex-1 cursor-pointer">
                     <div class="flex items-center justify-between">
@@ -972,14 +876,14 @@ onMounted(() => {
 
             <!-- User Status -->
             <div class="space-y-4">
-              <h4 class="text-md font-medium text-foreground">User Status</h4>
+              <h4 class="text-base font-medium text-foreground">User Status</h4>
               
               <div class="flex items-center space-x-6">
                 <label class="flex items-center space-x-3">
                   <input
                     v-model="isActive"
                     type="checkbox"
-                    class="h-4 w-4 text-primary focus:ring-ring border-gray-300 rounded"
+                    class="h-4 w-4 text-primary focus:ring-ring border-input rounded"
                   />
                   <span class="text-sm font-medium text-foreground">Active User</span>
                 </label>
@@ -988,7 +892,7 @@ onMounted(() => {
                   <input
                     v-model="isBlocked"
                     type="checkbox"
-                    class="h-4 w-4 text-destructive focus:ring-ring border-gray-300 rounded"
+                    class="h-4 w-4 text-destructive focus:ring-ring border-input rounded"
                   />
                   <span class="text-sm font-medium text-foreground">Blocked</span>
                 </label>
@@ -997,14 +901,14 @@ onMounted(() => {
 
             <!-- Notification Settings -->
             <div class="space-y-4">
-              <h4 class="text-md font-medium text-foreground">Notification Settings</h4>
+              <h4 class="text-base font-medium text-foreground">Notification Settings</h4>
               
               <div class="space-y-3">
                 <label class="flex items-center space-x-3">
                   <input
                     v-model="sendWelcomeEmail"
                     type="checkbox"
-                    class="h-4 w-4 text-primary focus:ring-ring border-gray-300 rounded"
+                    class="h-4 w-4 text-primary focus:ring-ring border-input rounded"
                   />
                   <div>
                     <div class="text-sm font-medium text-foreground">Send Welcome Email</div>
@@ -1016,7 +920,7 @@ onMounted(() => {
                   <input
                     v-model="includeCredentials"
                     type="checkbox"
-                    class="h-4 w-4 text-primary focus:ring-ring border-gray-300 rounded"
+                    class="h-4 w-4 text-primary focus:ring-ring border-input rounded"
                   />
                   <div>
                     <div class="text-sm font-medium text-foreground">Include Login Credentials</div>

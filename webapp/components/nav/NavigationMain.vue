@@ -422,7 +422,7 @@ const switchLabNow = () => {
       </div>
     </template>
     <template v-slot:body>
-      <user-preferences />
+      <user-preferences v-if="showPreferences" />
     </template>
   </fel-drawer>
 
@@ -440,7 +440,7 @@ const switchLabNow = () => {
         <div class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <label class="col-span-2 space-y-2">
-              <span class="text-md font-medium">Laboratory Name</span>
+              <span class="text-base font-medium">Laboratory Name</span>
               <select 
                 class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                 v-model="targetLaboratoryUid"

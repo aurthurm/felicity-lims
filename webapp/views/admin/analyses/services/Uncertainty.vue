@@ -154,22 +154,22 @@
             </thead>
             <tbody class="bg-card">
             <tr v-for="variance in analysis?.uncertainties" :key="variance?.uid" class="hover:bg-accent/50">
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <td class="px-4 py-2 whitespace-nowrap border-b border-border">
                   <div class="text-sm text-foreground">{{ instrumentName(variance?.instrumentUid) }}</div>
                 </td>
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <td class="px-4 py-2 whitespace-nowrap border-b border-border">
                   <div class="text-sm text-foreground">{{ methodName(variance?.methodUid) }}</div>
                 </td>
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <td class="px-4 py-2 whitespace-nowrap border-b border-border">
                   <div class="text-sm text-foreground">{{ variance.min }}</div>
                 </td>
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <td class="px-4 py-2 whitespace-nowrap border-b border-border">
                   <div class="text-sm text-foreground">{{ variance.max }}</div>
                 </td>
-                <td class="px-4 py-2 whitespace-no-wrap border-b border-border">
+                <td class="px-4 py-2 whitespace-nowrap border-b border-border">
                   <div class="text-sm text-foreground">{{ variance.value }}</div>
                 </td>
-                <td class="px-4 py-2 whitespace-no-wrap text-right border-b border-border">
+                <td class="px-4 py-2 whitespace-nowrap text-right border-b border-border">
                     <button @click="FormManager(false, variance)" class="px-2 py-1 mr-2 border border-border bg-background text-foreground transition-colors duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring hover:bg-accent hover:text-accent-foreground">Edit</button>
                 </td>
             </tr>

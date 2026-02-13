@@ -448,7 +448,7 @@ const handleDelete = () => {
 </template>
 
 <style scoped>
-@reference "@/assets/css/style.css";
+@reference "@tw";
 .node-inspector {
   @apply w-80 bg-card border-l border-border shadow-sm;
   @apply flex flex-col h-full overflow-hidden;

@@ -89,14 +89,14 @@ const showMappingModal = ref(false);
 
 // Target fields configuration
 const targetFields = [
-  { key: 'result' as MappingKey, label: 'Result', color: 'bg-blue-100 border-blue-300' },
-  { key: 'keyword' as MappingKey, label: 'Keyword', color: 'bg-red-100 border-red-300' },
-  { key: 'reference_range' as MappingKey, label: 'Reference Range', color: 'bg-green-100 border-green-300' },
-  { key: 'result_date' as MappingKey, label: 'Result Date', color: 'bg-purple-100 border-purple-300' },
-  { key: 'units' as MappingKey, label: 'Units', color: 'bg-yellow-100 border-yellow-300' },
-  { key: 'sample_id' as MappingKey, label: 'Sample ID', color: 'bg-pink-100 border-pink-300' },
-  { key: 'instrument' as MappingKey, label: 'Instrument', color: 'bg-indigo-100 border-indigo-300' },
-  { key: 'result_status' as MappingKey, label: 'Result Status (F=Final, P=Preliminary)', color: 'bg-orange-100 border-orange-300' }
+  { key: 'result' as MappingKey, label: 'Result', color: 'bg-info/15 border-info/40' },
+  { key: 'keyword' as MappingKey, label: 'Keyword', color: 'bg-destructive/10 border-destructive/30' },
+  { key: 'reference_range' as MappingKey, label: 'Reference Range', color: 'bg-success/15 border-success/40' },
+  { key: 'result_date' as MappingKey, label: 'Result Date', color: 'bg-accent/15 border-accent/40' },
+  { key: 'units' as MappingKey, label: 'Units', color: 'bg-warning/15 border-warning/40' },
+  { key: 'sample_id' as MappingKey, label: 'Sample ID', color: 'bg-primary/10 border-primary/30' },
+  { key: 'instrument' as MappingKey, label: 'Instrument', color: 'bg-secondary border-border' },
+  { key: 'result_status' as MappingKey, label: 'Result Status (F=Final, P=Preliminary)', color: 'bg-warning/15 border-warning/40' }
 ];
 
 // Computed driver mapping (from FRONTEND_DRIVER_MAPPING.md)
@@ -476,7 +476,7 @@ watch(() => props.isOpen, (newVal) => {
       <div class="space-y-4">
         <!-- Raw Message Input -->
         <div class="">
-          <h4 class="text-md font-semibold text-foreground mb-3">Paste ASTM/HL7 Message</h4>
+          <h4 class="text-base font-semibold text-foreground mb-3">Paste ASTM/HL7 Message</h4>
           
           <textarea
             v-model="rawInput"
@@ -496,7 +496,7 @@ watch(() => props.isOpen, (newVal) => {
             <button
               v-if="parsedMessage"
               @click="applyMappings"
-              class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
+              class="px-4 py-2 bg-success text-primary-foreground rounded-md hover:bg-success/90 transition"
             >
               Extract Data
             </button>
@@ -504,7 +504,7 @@ watch(() => props.isOpen, (newVal) => {
             <button
               v-if="parsedMessage && Object.values(mappings).some(m => m.length > 0)"
               @click="downloadMappingConfig"
-              class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition"
+              class="px-4 py-2 bg-secondary text-primary-foreground rounded-md hover:bg-secondary/80 transition"
             >
               Save Mappings
             </button>
@@ -512,13 +512,13 @@ watch(() => props.isOpen, (newVal) => {
             <button
               v-if="parsedMessage"
               @click="clearAll"
-              class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
+              class="px-4 py-2 bg-destructive text-primary-foreground rounded-md hover:bg-destructive/90 transition"
             >
               Clear
             </button>
           </div>
 
-          <div v-if="parseError" class="mt-2 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+          <div v-if="parseError" class="mt-2 p-3 bg-destructive/10 border border-destructive/30 rounded text-destructive text-sm">
             ⚠️ {{ parseError }}
           </div>
         </div>
@@ -527,14 +527,14 @@ watch(() => props.isOpen, (newVal) => {
         <div class="flex gap-2">
           <button
             @click="showDebugInfo = !showDebugInfo"
-            class="px-3 py-1 text-xs bg-gray-400 text-white rounded hover:bg-gray-500 transition"
+            class="px-3 py-1 text-xs bg-muted-foreground text-primary-foreground rounded hover:bg-muted/80 transition"
           >
             {{ showDebugInfo ? 'Hide' : 'Show' }} Debug Info
           </button>
         </div>
 
         <!-- Debug Info Panel -->
-        <div v-if="showDebugInfo && debugInfo" class="bg-gray-100 border border-gray-300 rounded p-3 text-xs font-mono">
+        <div v-if="showDebugInfo && debugInfo" class="bg-muted border border-border rounded p-3 text-xs font-mono">
           <div class="mb-2">
             <strong>First Segment:</strong> {{ debugInfo.segmentKey }}
           </div>
@@ -543,31 +543,31 @@ watch(() => props.isOpen, (newVal) => {
           </div>
           <div class="mb-2">
             <strong>Sample Field Structure (Field 0):</strong>
-            <pre class="bg-white border border-gray-200 p-2 rounded mt-1 overflow-auto max-h-40">{{ debugInfo.sampleStructure }}</pre>
+            <pre class="bg-card border border-border p-2 rounded mt-1 overflow-auto max-h-40">{{ debugInfo.sampleStructure }}</pre>
           </div>
           <div>
             <strong>Full Parsed Message:</strong>
-            <pre class="bg-white border border-gray-200 p-2 rounded mt-1 overflow-auto max-h-64">{{ JSON.stringify(parsedMessage, null, 2) }}</pre>
+            <pre class="bg-card border border-border p-2 rounded mt-1 overflow-auto max-h-64">{{ JSON.stringify(parsedMessage, null, 2) }}</pre>
           </div>
         </div>
 
         <!-- Three Column Layout -->
         <div v-if="parsedMessage" class="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <!-- Left: Parsed Message Segments -->
-          <div class="col-span-1 bg-white border border-border rounded-lg shadow p-4 max-h-[500px] overflow-auto">
-            <h4 class="text-md font-semibold mb-3 sticky top-0 bg-white pb-2 border-b">Parsed Message Segments</h4>
+          <div class="col-span-1 bg-card border border-border rounded-lg shadow p-4 max-h-[500px] overflow-auto">
+            <h4 class="text-base font-semibold mb-3 sticky top-0 bg-card pb-2 border-b">Parsed Message Segments</h4>
             <div class="space-y-3 font-mono text-xs">
               <template v-for="(segments, skey) in parsedMessage" :key="skey">
                 <div class="mb-6">
                   <template v-for="(segment, sIdx) in segments" :key="`${skey}-${sIdx}`">
                     <div class="mb-3">
-                      <div class="font-bold text-blue-600 mb-2">{{ skey }}:</div>
+                      <div class="font-bold text-info mb-2">{{ skey }}:</div>
                       
                       <!-- Render clickable segment -->
                       <div v-if="!segment.fields" class="ml-4">
                         <button
                           @click="handleFieldClick(`${skey}[${sIdx}].raw`)"
-                          class="hover:bg-yellow-200 px-1 rounded transition-colors"
+                          class="hover:bg-warning/25 px-1 rounded transition-colors"
                         >
                           "{{ segment.raw }}"
                         </button>
@@ -576,7 +576,7 @@ watch(() => props.isOpen, (newVal) => {
                       <div v-else class="ml-4 mt-2 font-mono text-sm break-all">
                         <template v-for="(fieldPart, idx) in renderSegmentFields(segment, skey as string, sIdx)" :key="`fld-${skey}-${sIdx}-${idx}`">
                           <!-- Separator -->
-                          <span v-if="fieldPart.type === 'separator'" class="text-gray-400 select-none">{{ fieldPart.content }}</span>
+                          <span v-if="fieldPart.type === 'separator'" class="text-muted-foreground select-none">{{ fieldPart.content }}</span>
                           <!-- Clickable button -->
                           <button
                             v-else-if="fieldPart.type === 'button' && fieldPart.path"
@@ -598,15 +598,15 @@ watch(() => props.isOpen, (newVal) => {
                 </div>
               </template>
               
-              <div class="p-2 bg-gray-100 rounded text-xs text-gray-600 mt-2">
+              <div class="p-2 bg-muted rounded text-xs text-muted-foreground mt-2">
                 💡 Click on any field to map it to a target variable
               </div>
             </div>
           </div>
 
           <!-- Center: Field Mappings -->
-          <div class="col-span-1 bg-white border border-border rounded-lg shadow p-4 max-h-[500px] overflow-auto">
-            <h4 class="text-md font-semibold mb-3 sticky top-0 bg-white pb-2 border-b">Field Mappings</h4>
+          <div class="col-span-1 bg-card border border-border rounded-lg shadow p-4 max-h-[500px] overflow-auto">
+            <h4 class="text-base font-semibold mb-3 sticky top-0 bg-card pb-2 border-b">Field Mappings</h4>
             <div class="space-y-3">
               <div
                 v-for="field in targetFields"
@@ -614,19 +614,19 @@ watch(() => props.isOpen, (newVal) => {
                 :class="['border-2 rounded-lg p-3', field.color]"
               >
                 <h5 class="font-semibold mb-2">{{ field.label }}</h5>
-                <div v-if="mappings[field.key].length === 0" class="text-xs text-gray-500 italic">
+                <div v-if="mappings[field.key].length === 0" class="text-xs text-muted-foreground italic">
                   No mappings. Click a field in the segments.
                 </div>
                 <div v-else class="space-y-1">
                   <div
                     v-for="(path, idx) in mappings[field.key]"
                     :key="idx"
-                    class="flex items-center justify-between bg-white rounded p-2 text-xs"
+                    class="flex items-center justify-between bg-card rounded p-2 text-xs"
                   >
-                    <code class="font-mono text-gray-700 truncate flex-1">{{ path }}</code>
+                    <code class="font-mono text-foreground truncate flex-1">{{ path }}</code>
                     <button
                       @click="removeMapping(field.key, idx)"
-                      class="p-1 hover:bg-red-100 rounded ml-2 text-red-600"
+                      class="p-1 hover:bg-destructive/10 rounded ml-2 text-destructive"
                       title="Remove mapping"
                     >
                       ✕
@@ -638,47 +638,47 @@ watch(() => props.isOpen, (newVal) => {
           </div>
 
           <!-- Right: Extracted Data & Driver Preview -->
-          <div class="col-span-1 bg-white border border-border rounded-lg shadow p-4 max-h-[500px] overflow-auto">
+          <div class="col-span-1 bg-card border border-border rounded-lg shadow p-4 max-h-[500px] overflow-auto">
             <!-- Driver JSON -->
             <div class="mb-4">
               <div class="flex items-center justify-between mb-2">
-                <h5 class="text-sm font-semibold text-gray-700">Driver Configuration:</h5>
+                <h5 class="text-sm font-semibold text-foreground">Driver Configuration:</h5>
                 <button
                   v-if="Object.keys(driverMapping).length > 0"
                   @click="downloadMappingConfig"
-                  class="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition"
+                  class="px-2 py-1 bg-info text-primary-foreground text-xs rounded hover:bg-info/90 transition"
                   title="Download driver configuration"
                 >
                   Download
                 </button>
               </div>
-              <pre class="bg-gray-50 border border-gray-200 p-2 rounded text-xs overflow-auto max-h-[250px]">{{ JSON.stringify(driverMapping, null, 2) }}</pre>
+              <pre class="bg-muted/60 border border-border p-2 rounded text-xs overflow-auto max-h-[250px]">{{ JSON.stringify(driverMapping, null, 2) }}</pre>
             </div>
 
             <!-- Extracted Data -->
             <div class="mb-4">
               <div class="flex items-center justify-between mb-2">
-                <h5 class="text-sm font-semibold text-gray-700">Extracted Data:</h5>
+                <h5 class="text-sm font-semibold text-foreground">Extracted Data:</h5>
                 <button
                   v-if="extractedData"
                   @click="downloadExtractedData"
-                  class="px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 transition"
+                  class="px-2 py-1 bg-success text-primary-foreground text-xs rounded hover:bg-success/90 transition"
                   title="Download extracted data"
                 >
                   Download
                 </button>
               </div>
-              <pre v-if="extractedData" class="bg-gray-50 border border-gray-200 p-2 rounded text-xs overflow-auto max-h-[200px]">
+              <pre v-if="extractedData" class="bg-muted/60 border border-border p-2 rounded text-xs overflow-auto max-h-[200px]">
                 {{ JSON.stringify(extractedData, null, 2) }}
               </pre>
-              <p v-else class="text-xs text-gray-500 italic">Click "Extract Data" to see results</p>
+              <p v-else class="text-xs text-muted-foreground italic">Click "Extract Data" to see results</p>
             </div>
           </div>
         </div>
 
         <!-- Empty State -->
-        <div v-else class="text-center py-12 bg-gray-50 rounded-lg border border-gray-200">
-          <p class="text-gray-500">Paste a message and click "Parse Message" to begin</p>
+        <div v-else class="text-center py-12 bg-muted/60 rounded-lg border border-border">
+          <p class="text-muted-foreground">Paste a message and click "Parse Message" to begin</p>
         </div>
       </div>
     </template>
@@ -708,12 +708,12 @@ watch(() => props.isOpen, (newVal) => {
     class="fixed inset-0 bg-black50 flex items-center justify-center z-50"
     @click.self="showMappingModal = false"
   >
-    <div class="bg-white rounded-lg shadow-xl p-6 max-w-2xl w-full mx-4">
+    <div class="bg-card rounded-lg shadow-xl p-6 max-w-2xl w-full mx-4">
       <h3 class="text-xl font-bold mb-4">Map Field to Target Variable</h3>
       
-      <div class="mb-4 p-3 bg-gray-100 rounded">
-        <p class="text-sm text-gray-600 mb-1">Selected Path:</p>
-        <code class="text-sm font-mono text-blue-800 break-all">{{ selectedPath }}</code>
+      <div class="mb-4 p-3 bg-muted rounded">
+        <p class="text-sm text-muted-foreground mb-1">Selected Path:</p>
+        <code class="text-sm font-mono text-info break-all">{{ selectedPath }}</code>
       </div>
       
       <div class="grid grid-cols-2 gap-3 mb-4 max-h-[400px] overflow-auto">
@@ -729,7 +729,7 @@ watch(() => props.isOpen, (newVal) => {
       
       <button
         @click="showMappingModal = false; selectedPath = null"
-        class="w-full px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition"
+        class="w-full px-4 py-2 bg-muted text-foreground rounded hover:bg-muted-foreground transition"
       >
         Cancel
       </button>

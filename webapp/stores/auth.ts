@@ -194,11 +194,15 @@ export const useAuthStore = defineStore('auth', () => {
 
     const persistAuth = async (data: any) => {
         try {
-            auth.value = {
+            const newAuth = {
                 ...data,
                 isAuthenticated: true,
                 processing: false,
             };
+            // Persist to localStorage BEFORE updating store so urql's getAuthData()
+            // (which reads from localStorage) has the token when watchers fire
+            await authToStorage(newAuth as AuthenticatedData);
+            auth.value = newAuth;
         } catch (error) {
             reset();
         }
@@ -206,21 +210,21 @@ export const useAuthStore = defineStore('auth', () => {
 
     const authenticate = async (payload: AuthenticateUserMutationVariables) => {
         auth.value.processing = true;
-        await withClientMutation<AuthenticateUserMutation, AuthenticateUserMutationVariables>(
-            AuthenticateUserDocument,
-            payload,
-            'authenticateUser'
-        )
-            .then(res => {
-                if (!res) {
-                    auth.value.processing = false;
-                    return;
-                }
-                persistAuth(res);
-            })
-            .catch(err => {
-                auth.value.processing = false;
-            });
+        try {
+            const res = await withClientMutation<AuthenticateUserMutation, AuthenticateUserMutationVariables>(
+                AuthenticateUserDocument,
+                payload,
+                'authenticateUser'
+            );
+            if (!res) {
+                return;
+            }
+            await persistAuth(res);
+        } catch (err) {
+            // Error handled by withClientMutation
+        } finally {
+            auth.value.processing = false;
+        }
     };
 
     const setForgotPassword = (v: boolean) => {

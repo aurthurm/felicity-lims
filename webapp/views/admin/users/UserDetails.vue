@@ -3,7 +3,7 @@ import { ref, computed, onMounted } from "vue";
 import { useField, useForm } from "vee-validate";
 import * as yup from "yup";
 import { useRoute, useRouter } from "vue-router";
-import { UserType, GroupType, LaboratoryType } from "@/types/gql";
+import { UserType, LaboratoryType } from "@/types/gql";
 import { useUserStore } from "@/stores/user";
 import useApiUtil from "@/composables/api_util";
 import useNotifyToast from "@/composables/alert_toast";
@@ -148,8 +148,6 @@ const userStore = useUserStore();
 
 // Fetch required data
 userStore.fetchGroupsAndPermissions();
-const groups = computed(() => userStore.getGroups);
-
 // Mock data - in real implementation, these would come from GraphQL queries
 const allLaboratories = ref<LaboratoryType[]>([
   { 
@@ -170,7 +168,7 @@ const allLaboratories = ref<LaboratoryType[]>([
 
 // State
 const user = ref<UserType | null>(null);
-const userPermissions = ref<any[]>([]);
+const userPermissions = ref<UserPermissionsQuery["userPermissions"]>([]);
 const loading = ref(false);
 const saving = ref(false);
 const isEditing = ref(false);
@@ -203,7 +201,6 @@ const { handleSubmit, resetForm, setValues } = useForm({
 const { value: firstName, errorMessage: firstNameError } = useField<string>("firstName");
 const { value: lastName, errorMessage: lastNameError } = useField<string>("lastName");
 const { value: email, errorMessage: emailError } = useField<string>("email");
-const { value: userName } = useField<string | null>("userName");
 const { value: isActive } = useField<boolean>("isActive");
 const { value: isBlocked } = useField<boolean>("isBlocked");
 const { value: laboratoryUids } = useField<string[]>("laboratoryUids");
@@ -222,12 +219,6 @@ const getUserGroups = (user: UserType) => {
 const getLaboratoryName = (labUid: string) => {
   const lab = allLaboratories.value.find(l => l.uid === labUid);
   return lab?.name || "Unknown Laboratory";
-};
-
-const getActiveLaboratory = (user: UserType) => {
-  if (!user.activeLaboratoryUid) return "None";
-  const lab = user.laboratories?.find(l => l.uid === user.activeLaboratoryUid);
-  return lab?.name || "Unknown";
 };
 
 const unassignedLaboratories = computed(() => {
@@ -266,7 +257,7 @@ const fetchUser = async () => {
 
     // Fetch user permissions
     await fetchUserPermissions();
-  } catch (error) {
+  } catch {
     toastError("Failed to fetch user details");
   } finally {
     loading.value = false;
@@ -283,7 +274,9 @@ const fetchUserPermissions = async () => {
     );
 
     userPermissions.value = result.userPermissions;
-  } catch {}
+  } catch (error) {
+    console.warn("Failed to fetch user permissions", error);
+  }
 };
 
 const toggleEdit = () => {
@@ -335,7 +328,7 @@ const saveUser = handleSubmit(async (values) => {
     } else {
       toastError(result.error || "Failed to update user");
     }
-  } catch (error) {
+  } catch {
     toastError("Failed to update user");
   } finally {
     saving.value = false;
@@ -364,7 +357,7 @@ const saveLabAssignments = handleSubmit(async (values) => {
     } else {
       toastError(result.error || "Failed to update laboratory assignments");
     }
-  } catch (error) {
+  } catch {
     toastError("Failed to update laboratory assignments");
   } finally {
     saving.value = false;
@@ -575,7 +568,7 @@ onMounted(() => {
                 <input
                 v-model="isActive"
                 type="checkbox"
-                class="h-4 w-4 text-primary focus:ring-ring border-gray-300 rounded"
+                class="h-4 w-4 text-primary focus:ring-ring border-input rounded"
               />
                 <span class="text-sm font-medium text-foreground">Active User</span>
               </label>
@@ -584,7 +577,7 @@ onMounted(() => {
                 <input
                 v-model="isBlocked"
                 type="checkbox"
-                class="h-4 w-4 text-destructive focus:ring-ring border-gray-300 rounded"
+                class="h-4 w-4 text-destructive focus:ring-ring border-input rounded"
               />
                 <span class="text-sm font-medium text-foreground">Blocked</span>
               </label>
@@ -593,12 +586,12 @@ onMounted(() => {
             <div v-else class="flex items-center space-x-4">
               <span :class="[
                 'inline-flex items-center rounded-md px-3 py-1 text-sm font-medium',
-                user.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                user.isActive ? 'bg-success/15 text-success' : 'bg-destructive/15 text-destructive'
               ]">
                 {{ user.isActive ? 'Active' : 'Inactive' }}
               </span>
               
-              <span v-if="user.isBlocked" class="inline-flex items-center rounded-md bg-red-100 text-red-800 px-3 py-1 text-sm font-medium">
+              <span v-if="user.isBlocked" class="inline-flex items-center rounded-md bg-destructive/15 text-destructive px-3 py-1 text-sm font-medium">
                 Blocked
               </span>
             </div>
@@ -741,7 +734,7 @@ onMounted(() => {
                   <div v-for="group in user.groups" :key="group.uid" class="space-y-2">
                     <div class="font-medium text-sm">{{ group.name }}</div>
                     <div class="flex flex-wrap gap-2">
-                      <span v-for="permission in group.permissions" :key="permission.uid" class="inline-flex items-center rounded-md bg-blue-100 text-blue-800 px-2 py-1 text-xs font-medium">
+                      <span v-for="permission in group.permissions" :key="permission.uid" class="inline-flex items-center rounded-md bg-primary/15 text-primary px-2 py-1 text-xs font-medium">
                         {{ permission.action }}:{{ permission.target }}
                       </span>
                     </div>
@@ -763,7 +756,7 @@ onMounted(() => {
                       {{ labPerm.laboratoryUid ? getLaboratoryName(labPerm.laboratoryUid) : "Global" }}
                     </div>
                     <div class="flex flex-wrap gap-2">
-                      <span v-for="permission in labPerm.permissions" :key="permission" class="inline-flex items-center rounded-md bg-green-100 text-green-800 px-2 py-1 text-xs font-medium">
+                      <span v-for="permission in labPerm.permissions" :key="permission" class="inline-flex items-center rounded-md bg-success/15 text-success px-2 py-1 text-xs font-medium">
                         {{ permission }}
                       </span>
                     </div>
