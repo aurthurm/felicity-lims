@@ -6,7 +6,7 @@ import httpx
 from fastapi import APIRouter, HTTPException
 from packaging import version
 
-__version__ = "0.2.2"
+__version__ = "0.2.3"
 
 from felicity.core.config import settings
 from felicity.core.dtz import timenow_dt
