@@ -6,7 +6,8 @@ _The Next Generation Open Source Laboratory Information Management System (LIMS)
 
 Current release: **0.2.3**
 
-![Beak LIMS](https://github.com/user-attachments/assets/bd6af479-e0a0-4337-9a1d-632e139741a0)
+![Beak LIMS](https://github.com/user-attachments/assets/f97c969e-57c4-43ab-be9e-f4bb27bf95ac)
+
 
 ---
 
