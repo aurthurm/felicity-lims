@@ -1,8 +1,8 @@
 # **Beak LIMS**
 
-**(Enterprise-Grade Laboratory Information Management System)**
+**Open Source Laboratory Information Management System**
 
-_The Next Generation Open Source Laboratory Information Management System (LIMS)_
+_Modern LIMS for clinical, medical, and research laboratories_
 
 Current release: **0.2.3**
 
@@ -12,53 +12,45 @@ Current release: **0.2.3**
 ---
 
 > ### Heads up: Felicity LIMS is now **Beak LIMS**
-> This project was originally called **Felicity LIMS** (from “felicity” — the quality of being good, pleasant, or desirable).
-> As part of aligning with the broader **Beak Insights** product family (Beak LIMS, Beak POS, Beak Dash, etc.), we’ve rebranded the
-> product to **Beak LIMS**.
+> This project was originally called **Felicity LIMS**. We've rebranded to **Beak LIMS** as part of our Beak Insights initiative.
 >
-> The idea behind “Beak” comes from a bird’s beak: a precise tool that goes through dirt and complexity to uncover the good stuff.
-> **Beak LIMS** does the same for clinical laboratories – a toolkit that digs through workflow and data complexity to surface the
-> hidden gems: clean results, reliable operations, and better decisions, one sample at a time.
+> The name "Beak" reflects our approach: a precise tool for uncovering insights from complex laboratory data.
 >
 > The open‑source license, architecture, and roadmap remain the same — only the product name and branding have changed.
 
 
 ## **Overview**
 
-**Beak LIMS** is an enterprise-grade, open-source Laboratory Information Management System designed for modern clinical, medical, and research laboratory environments. Built with production-ready architecture, it provides comprehensive sample lifecycle management, multi-tenant data isolation, and HIPAA-compliant security features.
+**Beak LIMS** is an open-source Laboratory Information Management System for clinical, medical, and research laboratory environments. We've built it with modern async architecture, multi-tenant support, and comprehensive sample lifecycle management.
 
-This sophisticated LIMS platform empowers laboratories to accurately manage sample lifecycles, metadata, and experimental data while ensuring regulatory compliance, operational efficiency, and seamless instrument integration. The system implements a robust multi-tenant architecture that allows multiple laboratories to operate securely within a single deployment, each with complete data isolation, customized workflows, and independent instrument configurations.
+Our goal is to provide accurate tracking of samples and experimental data throughout the laboratory workflow. We implement multi-tenant architecture that allows multiple laboratories to operate securely within a single deployment, each with complete data isolation, customized workflows, and independent instrument configurations.
 
-Beak strives to promote an accurate flow of sample and associated experimental data to and through a laboratory to produce information that is used to make conclusions and critical decisions. The platform ensures comprehensive audit trails, field-level encryption for sensitive data, enterprise-grade security measures suitable for healthcare environments, and industry-standard protocol support (ASTM, HL7) for bi-directional instrument communication.
-
-With its modular, domain-driven architecture and modern async-first technology stack, Beak LIMS scales from small specialty labs to large hospital networks while maintaining performance, data integrity, and non-blocking I/O for 100+ concurrent instrument connections.
-
-_Beak – a focused toolkit that pecks through operational noise to uncover the value hidden in your data._
+The system provides comprehensive audit trails, field-level encryption for sensitive patient data, and industry-standard protocol support (ASTM, HL7) for bi-directional instrument communication. We use a modular, domain-driven architecture with an async-first technology stack designed for scalability and performance.
 
 ### **Key Features**
 
--   **Multi-Tenant Architecture**: Laboratory-level data isolation with tenant context management ensuring secure multi-lab operations
--   **Seamless Instrument Integration**: Bi-directional communication with laboratory instruments via ASTM and HL7 protocols with 100+ concurrent connections
--   **Comprehensive Workflow Management**: Track samples from receipt to dispatch with full lifecycle management, worksheets, and QC tracking
--   **Real-Time Analytics**: Interactive dashboards for actionable insights, performance monitoring, and quality metrics
--   **HIPAA Compliance**: Field-level encryption for sensitive patient data with comprehensive audit trails and regulatory compliance
--   **Advanced Sample Management**: Complete sample lifecycle tracking, worksheets, quality control, analysis results, and storage management
--   **Enterprise Security**: JWT-based authentication, role-based access control (RBAC), laboratory-scoped permissions, and data encryption
+-   **Multi-Tenant Architecture**: Laboratory-level data isolation with tenant context management for secure multi-lab operations
+-   **Instrument Integration**: Bi-directional communication with laboratory instruments via ASTM and HL7 protocols using async socket architecture
+-   **Workflow Management**: Track samples from receipt to dispatch with full lifecycle management, worksheets, and QC tracking
+-   **Real-Time Analytics**: Interactive dashboards for performance monitoring and quality metrics
+-   **HIPAA-Compatible Security**: Field-level encryption for sensitive patient data with comprehensive audit trails (Note: Full HIPAA compliance requires organizational policies beyond software features)
+-   **Sample Management**: Complete sample lifecycle tracking, worksheets, quality control, analysis results, and storage management
+-   **Security**: JWT-based authentication, role-based access control (RBAC), laboratory-scoped permissions, and data encryption
 -   **Document Management**: QMS document management with versioning, collaborative editing, and audit trail support
 -   **Microbiology Module**: Specialized workflows with antibiotic susceptibility testing, organism management, breakpoint analysis, and panel creation
--   **Inventory Management**: Comprehensive stock management with transactions, adjustments, orders, requests, and automatic reordering
--   **Billing & Analytics**: Automated billing for testing services with detailed financial reporting and performance analytics
--   **Data Integrity**: Metadata tracking, comprehensive audit logging, version control, and trail-ability for regulatory compliance
--   **Async-First Architecture**: Non-blocking I/O with asyncio for high concurrency, efficient resource usage, and responsive UI
--   **GraphQL API**: Modern GraphQL API with real-time subscription support for live data updates and interactive dashboards
--   **Scalability**: Domain-driven modular architecture with repository-service pattern supporting 100+ instrument connections and scaling to enterprise deployments
--   **Open Source**: Fully open-source with active development and community support for customization and integration
+-   **Inventory Management**: Stock management with transactions, adjustments, orders, requests, and automatic reordering
+-   **Billing & Analytics**: Automated billing for testing services with financial reporting and performance analytics
+-   **Data Integrity**: Metadata tracking, comprehensive audit logging, version control, and traceability for regulatory compliance
+-   **Async-First Architecture**: Non-blocking I/O with asyncio for high concurrency and efficient resource usage
+-   **GraphQL API**: Modern GraphQL API with real-time subscription support for live data updates
+-   **Scalable Design**: Domain-driven modular architecture with repository-service pattern designed for concurrent instrument connections
+-   **Open Source**: Fully open-source with active development and community contributions
 
 ---
 
 ## **Deployment Profiles (Lightweight vs Heavyweight)**
 
-Beak supports two practical operating profiles, aligned with `future-plans.md`.
+Beak supports two practical operating profiles:
 
 ### **Lightweight Mode**
 
@@ -539,9 +531,8 @@ We welcome contributions from the community! Whether you're fixing bugs, adding 
 
 ### **Areas We Need Help**
 
--   Protocol handlers (Modbus, DNP3, IEC 61850)
 -   Advanced metrics and monitoring
--   Performance optimizations
+-   Performance testing and optimizations
 -   Documentation and tutorials
 -   Community plugins and extensions
 -   Testing and QA
@@ -593,9 +584,9 @@ Have questions or want to get involved? Reach out!
 
 ## **Project Status**
 
-**Current Version**: 4.x (Active Development)
-**Last Updated**: October 2025
-**Stability**: Production-ready core with active feature development
+**Current Version**: 0.2.3 (Active Development)
+**Last Updated**: February 2026
+**Stability**: Core features stable, active feature development ongoing
 **Python Support**: 3.11+
 **Node.js Support**: 18+
 
