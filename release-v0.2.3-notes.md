@@ -1,4 +1,4 @@
-## Felicity LIMS v0.2.3
+## Beak LIMS v0.2.3
 
 Release date: 2026-02-14
 

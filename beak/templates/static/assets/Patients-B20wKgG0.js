@@ -1,0 +1,1 @@
+import{_ as t,r as o,c as s,o as n,a as c}from"./index-DCVfsbos.js";const a={},i={class:"space-y-6"};function r(_,l){const e=o("router-view");return n(),s("div",i,[c(e)])}const p=t(a,[["render",r],["__file","/home/administrator/Documents/Development/beak-insights/beak/beak-lims/webapp/views/patient/Patients.vue"]]);export{p as default};

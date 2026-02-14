@@ -2,15 +2,15 @@
 
 ## Overview
 
-Patient management in Felicity LIMS handles patient registry, demographics, and HIPAA-compliant data handling with field-level encryption and searchable encryption indices.
+Patient management in Beak LIMS handles patient registry, demographics, and HIPAA-compliant data handling with field-level encryption and searchable encryption indices.
 
 ## Architecture
 
-- **Entities**: `felicity/apps/patient/entities.py` — Patient, PatientIdentification
-- **Repository**: `felicity/apps/patient/repository.py` — CRUD, encrypted search
-- **Services**: `felicity/apps/patient/services.py` — PatientService, search logic
-- **Search Indices**: `felicity/apps/patient/search_indices.py` — PatientSearchIndex, PhoneSearchIndex, DateSearchIndex
-- **Search Service**: `felicity/apps/patient/search_service.py` — SearchableEncryptionService
+- **Entities**: `beak/apps/patient/entities.py` — Patient, PatientIdentification
+- **Repository**: `beak/apps/patient/repository.py` — CRUD, encrypted search
+- **Services**: `beak/apps/patient/services.py` — PatientService, search logic
+- **Search Indices**: `beak/apps/patient/search_indices.py` — PatientSearchIndex, PhoneSearchIndex, DateSearchIndex
+- **Search Service**: `beak/apps/patient/search_service.py` — SearchableEncryptionService
 
 ## Encrypted Fields (PII)
 
@@ -37,7 +37,7 @@ Patient management in Felicity LIMS handles patient registry, demographics, and 
 
 ## GraphQL
 
-Patient queries and mutations are exposed via `felicity/api/gql/patient/`. See the schema for available operations.
+Patient queries and mutations are exposed via `beak/api/gql/patient/`. See the schema for available operations.
 
 ## See Also
 

@@ -163,8 +163,8 @@ const submitResults = () =>
   { 
     uid: analysisResult.value.uid, 
     result: analysisResult.value.result ?? "",
-    methodUid: "felicity_ast", 
-    laboratoryInstrumentUid: "felicity_ast" 
+    methodUid: "beak_ast",
+    laboratoryInstrumentUid: "beak_ast"
   }
   ], NotificationObjectType.Sample, sample?.uid!)
     .then(() => {});

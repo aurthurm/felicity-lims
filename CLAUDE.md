@@ -6,11 +6,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Backend Development
 
--   **Start development server**: `pnpm server:uv:watch` or `uvicorn felicity.main:felicity --reload`
+-   **Start development server**: `pnpm server:uv:watch` or `uvicorn beak.main:beak --reload`
 -   **Production server**: `pnpm server:gu` (Gunicorn with 5 workers)
--   **Run tests**: `pnpm server:test` or `bash ./felicity/scripts/test.sh` (supports "unit" or "integration" args)
--   **Lint code**: `pnpm server:lint` or `bash ./felicity/scripts/lint.sh` (uses ruff)
--   **Format code**: `pnpm server:format` or `bash ./felicity/scripts/format.sh` (uses ruff format)
+-   **Run tests**: `pnpm server:test` or `bash ./beak/scripts/test.sh` (supports "unit" or "integration" args)
+-   **Lint code**: `pnpm server:lint` or `bash ./beak/scripts/lint.sh` (uses ruff)
+-   **Format code**: `pnpm server:format` or `bash ./beak/scripts/format.sh` (uses ruff format)
 -   **Database migration**: `pnpm db:upgrade` or `beak-lims db upgrade`
 -   **Create migration**: `pnpm db:revision` or `beak-lims revision`
 
@@ -40,8 +40,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 The system implements multi-tenancy with laboratory-level data isolation:
 
--   **Tenant Context**: `felicity/core/tenant_context.py` manages user, laboratory, and organization context per request
--   **Middleware**: `felicity/lims/middleware/tenant.py` extracts tenant context from JWT tokens
+-   **Tenant Context**: `beak/core/tenant_context.py` manages user, laboratory, and organization context per request
+-   **Middleware**: `beak/lims/middleware/tenant.py` extracts tenant context from JWT tokens
 -   **Data Isolation**: Repository and service layers automatically filter data by laboratory_uid
 -   **Entity Scoping**: Models inherit from `LabScopedEntity` to enforce tenant boundaries
 
@@ -49,16 +49,16 @@ The system implements multi-tenancy with laboratory-level data isolation:
 
 #### Repository-Service Pattern
 
--   **Entities**: Domain models in `felicity/apps/*/entities/` (SQLAlchemy models)
--   **Repositories**: Data access layer in `felicity/apps/*/repository/` extending `BaseRepository`
--   **Services**: Business logic layer in `felicity/apps/*/services/` extending `BaseService`
--   **GraphQL Layer**: Query/mutation resolvers in `felicity/api/gql/*/`
+-   **Entities**: Domain models in `beak/apps/*/entities/` (SQLAlchemy models)
+-   **Repositories**: Data access layer in `beak/apps/*/repository/` extending `BaseRepository`
+-   **Services**: Business logic layer in `beak/apps/*/services/` extending `BaseService`
+-   **GraphQL Layer**: Query/mutation resolvers in `beak/api/gql/*/`
 
 #### Base Classes
 
--   **BaseRepository**: `felicity/apps/abstract/repository.py` - Provides CRUD operations, pagination, tenant filtering
--   **BaseService**: `felicity/apps/abstract/service.py` - Wraps repository with business logic, audit logging
--   **LabScopedEntity**: `felicity/apps/abstract/entity/` - Base model with tenant awareness and audit fields
+-   **BaseRepository**: `beak/apps/abstract/repository.py` - Provides CRUD operations, pagination, tenant filtering
+-   **BaseService**: `beak/apps/abstract/service.py` - Wraps repository with business logic, audit logging
+-   **LabScopedEntity**: `beak/apps/abstract/entity/` - Base model with tenant awareness and audit fields
 
 ### Key Application Modules
 
@@ -75,7 +75,7 @@ The system implements multi-tenancy with laboratory-level data isolation:
 
 The GraphQL API is organized by domain with centralized schema composition:
 
--   **Schema**: `felicity/api/gql/schema.py` combines all domain types and operations
+-   **Schema**: `beak/api/gql/schema.py` combines all domain types and operations
 -   **Types**: Each module exports types list (e.g., `analysis_types`, `patient_types`)
 -   **Operations**: Separate Query/Mutation classes per domain, combined in main schema
 -   **Code Generation**: Frontend types generated from schema using GraphQL Code Generator
@@ -108,7 +108,7 @@ The project uses Docker Compose for local development with:
 
 ### Testing Strategy
 
--   **Unit Tests**: `felicity/tests/unit/` - Test individual components in isolation
--   **Integration Tests**: `felicity/tests/integration/` - Test service interactions
+-   **Unit Tests**: `beak/tests/unit/` - Test individual components in isolation
+-   **Integration Tests**: `beak/tests/integration/` - Test service interactions
 -   **Test Configuration**: pytest with async support, separate test database
 -   **Environment**: Set `TESTING=True` environment variable for test runs

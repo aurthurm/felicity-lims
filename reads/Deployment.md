@@ -2,7 +2,7 @@
 
 ## Overview
 
-Felicity LIMS can be deployed via Docker Compose or standalone. Production typically uses Gunicorn with Uvicorn workers.
+Beak LIMS can be deployed via Docker Compose or standalone. Production typically uses Gunicorn with Uvicorn workers.
 
 ## Docker Development
 
@@ -11,7 +11,7 @@ Felicity LIMS can be deployed via Docker Compose or standalone. Production typic
 docker compose -f docker-compose.dev.yml up -d --build
 
 # Run migrations
-docker compose -f docker-compose.dev.yml exec felicity-api felicity-lims db upgrade
+docker compose -f docker-compose.dev.yml exec beak-api beak-lims db upgrade
 ```
 
 ## Production Server
@@ -20,7 +20,7 @@ docker compose -f docker-compose.dev.yml exec felicity-api felicity-lims db upgr
 # Gunicorn with 5 workers
 pnpm server:gu
 # or
-gunicorn felicity.main:felicity --workers 5 --worker-class uvicorn.workers.UvicornH11Worker --bind 0.0.0.0:8000
+gunicorn beak.main:beak --workers 5 --worker-class uvicorn.workers.UvicornH11Worker --bind 0.0.0.0:8000
 ```
 
 ## Frontend Build

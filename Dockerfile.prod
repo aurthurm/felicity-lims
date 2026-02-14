@@ -23,25 +23,25 @@ RUN chown beak:beak /app
 
 FROM server-base AS server-aio
 WORKDIR /app
-COPY --chown=felicity:felicity felicity ./felicity
-COPY --chown=felicity:felicity requirements.txt requirements-dev.txt setup.py alembic.ini .
-COPY --from=webapp-build --chown=felicity:felicity /app/dist /app/felicity/templates/static
+COPY --chown=beak:beak beak ./beak
+COPY --chown=beak:beak requirements.txt requirements-dev.txt setup.py alembic.ini .
+COPY --from=webapp-build --chown=beak:beak /app/dist /app/beak/templates/static
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install -e .
 USER beak
 ENV PYTHONPATH=/app
-CMD ["gunicorn", "felicity.main:felicity", "--bind", "0.0.0.0:8000", "--workers", "1", "--worker-class", "uvicorn.workers.UvicornWorker"]
+CMD ["gunicorn", "beak.main:beak", "--bind", "0.0.0.0:8000", "--workers", "1", "--worker-class", "uvicorn.workers.UvicornWorker"]
 
 FROM server-base AS server-api
 WORKDIR /app
-COPY --chown=felicity:felicity felicity ./felicity
-COPY --chown=felicity:felicity requirements.txt requirements-dev.txt setup.py alembic.ini .
+COPY --chown=beak:beak beak ./beak
+COPY --chown=beak:beak requirements.txt requirements-dev.txt setup.py alembic.ini .
 RUN --mount=type=cache,target=/root/.cache/pip \
-    rm -rf /app/felicity/templates/static/* && \
+    rm -rf /app/beak/templates/static/* && \
     pip install -e .
 USER beak
 ENV PYTHONPATH=/app
-CMD ["gunicorn", "felicity.main:felicity", "--bind", "0.0.0.0:8000", "--workers", "1", "--worker-class", "uvicorn.workers.UvicornWorker"]
+CMD ["gunicorn", "beak.main:beak", "--bind", "0.0.0.0:8000", "--workers", "1", "--worker-class", "uvicorn.workers.UvicornWorker"]
 
 FROM nginx:latest AS nginx-static
 WORKDIR /app

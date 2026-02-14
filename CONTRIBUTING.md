@@ -1,6 +1,6 @@
-# Contributing to Felicity LIMS
+# Contributing to Beak LIMS
 
-Thank you for your interest in contributing to Felicity LIMS! This document provides guidance on how to contribute effectively to the project.
+Thank you for your interest in contributing to Beak LIMS! This document provides guidance on how to contribute effectively to the project.
 
 ---
 
@@ -43,7 +43,7 @@ We are committed to providing a welcoming and inclusive environment for all cont
 
 ### Fork the Repository
 
-1. Visit [Felicity LIMS Repository](https://github.com/beak-insights/beak-lims)
+1. Visit [Beak LIMS Repository](https://github.com/beak-insights/beak-lims)
 2. Click the **Fork** button in the top-right corner
 3. This creates a copy of the repository under your GitHub account
 
@@ -76,8 +76,8 @@ git clone https://github.com/YOUR_USERNAME/beak-lims.git
 cd beak-lims
 
 # Create virtual environment
-conda create -n felicity python=3.11
-conda activate felicity
+conda create -n beak python=3.11
+conda activate beak
 
 # Install dependencies
 pip install -r requirements.txt
@@ -292,10 +292,10 @@ const SampleCard: FC<SampleProps> = ({ sampleId, status, onStatusChange }) => {
 
 ```bash
 # Linting (Python - Ruff)
-bash ./felicity/scripts/lint.sh
+bash ./beak/scripts/lint.sh
 
 # Formatting (Python - Ruff)
-bash ./felicity/scripts/format.sh
+bash ./beak/scripts/format.sh
 
 # Linting (Frontend - ESLint)
 pnpm webapp:lint
@@ -411,8 +411,8 @@ No functional changes, improves maintainability.
 2. **Check Code Quality**
 
     ```bash
-    bash ./felicity/scripts/lint.sh
-    bash ./felicity/scripts/format.sh
+    bash ./beak/scripts/lint.sh
+    bash ./beak/scripts/format.sh
     ```
 
 3. **Update Documentation**
@@ -593,7 +593,7 @@ Maintainers use labels to organize issues:
 
 ## Semantic Versioning
 
-Felicity LIMS follows [Semantic Versioning 2.0.0](https://semver.org/).
+Beak LIMS follows [Semantic Versioning 2.0.0](https://semver.org/).
 
 ### Version Format
 
@@ -667,16 +667,16 @@ git push upstream v4.1.0
 pnpm server:test
 
 # Run specific test file
-pnpm server:test felicity/tests/unit/apps/patient/test_services.py
+pnpm server:test beak/tests/unit/apps/patient/test_services.py
 
 # Run with coverage
 pnpm server:test --cov
 
 # Run only unit tests
-bash ./felicity/scripts/test.sh unit
+bash ./beak/scripts/test.sh unit
 
 # Run only integration tests
-bash ./felicity/scripts/test.sh integration
+bash ./beak/scripts/test.sh integration
 ```
 
 ### Writing Tests
@@ -685,7 +685,7 @@ bash ./felicity/scripts/test.sh integration
 
 ```python
 import pytest
-from felicity.apps.patient.services import PatientService
+from beak.apps.patient.services import PatientService
 
 @pytest.mark.asyncio
 async def test_get_patient_by_uid():
@@ -901,7 +901,7 @@ Contributors will be recognized in:
 
 ## License
 
-By contributing to Felicity LIMS, you agree that your contributions will be licensed under the MIT License.
+By contributing to Beak LIMS, you agree that your contributions will be licensed under the MIT License.
 
 ---
 
@@ -913,4 +913,4 @@ By contributing to Felicity LIMS, you agree that your contributions will be lice
 
 ---
 
-Thank you for contributing to Felicity LIMS! 🎉
+Thank you for contributing to Beak LIMS! 🎉

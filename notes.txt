@@ -2,58 +2,58 @@
 // For every push change and bump the version up
 
 // Server All in one
-export $(grep -v '^#' .env | xargs) && DOCKER_BUILDKIT=1 docker build -f Dockerfile.prod --target server-aio -t amusendame/felicity-lims:aio-0.2.3 .
-docker push amusendame/felicity-lims:aio-0.2.3
+export $(grep -v '^#' .env | xargs) && DOCKER_BUILDKIT=1 docker build -f Dockerfile.prod --target server-aio -t amusendame/beak-lims:aio-0.2.3 .
+docker push amusendame/beak-lims:aio-0.2.3
 
 // Server API
-export $(grep -v '^#' .env | xargs) && DOCKER_BUILDKIT=1 docker build -f Dockerfile.prod --target server-api -t amusendame/felicity-lims:api-0.2.3 .
-docker push amusendame/felicity-lims:api-0.2.3
+export $(grep -v '^#' .env | xargs) && DOCKER_BUILDKIT=1 docker build -f Dockerfile.prod --target server-api -t amusendame/beak-lims:api-0.2.3 .
+docker push amusendame/beak-lims:api-0.2.3
 
 // View a summary of image vulnerabilities and recommendations
 docker scout quickview
 
 // Build nginx static
-export $(grep -v '^#' .env | xargs) && DOCKER_BUILDKIT=1 docker build -f Dockerfile.prod --target nginx-static -t amusendame/felicity-static-nginx:0.2.3 .
-docker push amusendame/felicity-static-nginx:0.2.3
+export $(grep -v '^#' .env | xargs) && DOCKER_BUILDKIT=1 docker build -f Dockerfile.prod --target nginx-static -t amusendame/beak-static-nginx:0.2.3 .
+docker push amusendame/beak-static-nginx:0.2.3
 
 // Build caddy static
-export $(grep -v '^#' .env | xargs) && DOCKER_BUILDKIT=1 docker build -f Dockerfile.prod --target caddy-static -t amusendame/felicity-static-caddy:0.2.3 .
-docker push amusendame/felicity-static-caddy:0.2.3
+export $(grep -v '^#' .env | xargs) && DOCKER_BUILDKIT=1 docker build -f Dockerfile.prod --target caddy-static -t amusendame/beak-static-caddy:0.2.3 .
+docker push amusendame/beak-static-caddy:0.2.3
 
 // 
-psql -U postgres -p 5432 -d felicity_lims -c "grant all on schema public to felicity"
+psql -U postgres -p 5432 -d beak_lims -c "grant all on schema public to beak"
 
 // Git tags
 git tag -a v0.2.3 -m "Prepare release 0.2.3"
 git push origin v0.2.3
 
 // setup mounted volumes
-mkdir -p ~/felicity_data/minio
-mkdir -p ~/felicity_data/dragonfly
-mkdir -p ~/felicity_data/postgres
-mkdir -p ~/felicity_data/dbgate
+mkdir -p ~/beak_data/minio
+mkdir -p ~/beak_data/dragonfly
+mkdir -p ~/beak_data/postgres
+mkdir -p ~/beak_data/dbgate
 
 // inspect image file contents
-docker run --rm amusendame/felicity-lims:api-0.2.3 ls -ltr /ap
+docker run --rm amusendame/beak-lims:api-0.2.3 ls -ltr /ap
 
 // inspect layers for size
-docker history amusendame/felicity-lims:aio-0.2.3
+docker history amusendame/beak-lims:aio-0.2.3
 
 
 
 // swarm -- not working yet
 docker swarm init 
-docker stack deploy -c docker-compose.prod.native.yml -c docker-compose.swarm.yml felicity
+docker stack deploy -c docker-compose.prod.native.yml -c docker-compose.swarm.yml beak
 
 docker stack ls
 docker service ls
-docker service logs felicity_felicity-api
-docker service logs felicity_felicity-api --tail 50
+docker service logs beak_beak-api
+docker service logs beak_beak-api --tail 50
 
-docker stack rm felicity
+docker stack rm beak
 
-docker volume ls | grep felicity
+docker volume ls | grep beak
 docker volume rm <volume_name>
 
-docker network ls | grep felicity
+docker network ls | grep beak
 docker network rm <network_name>

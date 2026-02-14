@@ -2,7 +2,7 @@
 
 ## Overview
 
-Technical support resources for Felicity LIMS deployment, troubleshooting, and operations.
+Technical support resources for Beak LIMS deployment, troubleshooting, and operations.
 
 ## Common Issues
 
@@ -13,8 +13,8 @@ Technical support resources for Felicity LIMS deployment, troubleshooting, and o
 
 ### Database
 
-- **Migrations**: Run `pnpm db:upgrade` or `felicity-lims db upgrade`
-- **Create migration**: `pnpm db:revision` or `felicity-lims revision`
+- **Migrations**: Run `pnpm db:upgrade` or `beak-lims db upgrade`
+- **Create migration**: `pnpm db:revision` or `beak-lims revision`
 
 ### Development
 

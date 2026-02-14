@@ -21,8 +21,8 @@ strict_optional = false
 
 [[tool.mypy.overrides]]
 module = [
-    "felicity.api.*", "felicity.apps.*", "felicity.tests.*", 
-    "felicity.migrations.*", "felicity.core.uid_gen.*"
+    "beak.api.*", "beak.apps.*", "beak.tests.*", 
+    "beak.migrations.*", "beak.core.uid_gen.*"
 ]
 ignore_errors = true
 

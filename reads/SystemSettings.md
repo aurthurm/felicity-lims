@@ -7,9 +7,9 @@ System settings control application configuration, laboratory defaults, and feat
 ## Configuration
 
 - **Environment**: Copy `env.example` to `.env` for local development
-- **Core config**: `felicity/core/config.py` — database URLs, Redis, MongoDB, MinIO, etc.
+- **Core config**: `beak/core/config.py` — database URLs, Redis, MongoDB, MinIO, etc.
 - **Lightweight mode**: When REDIS_SERVER, MONGODB_SERVER, MINIO_SERVER are not set:
-  - Redis: In-memory FelicityBroadcast
+  - Redis: In-memory BeakBroadcast
   - MongoDB: Audit logs and documents use PostgreSQL
   - MinIO: Local MEDIA_DIR for files
 

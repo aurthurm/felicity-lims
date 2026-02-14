@@ -272,7 +272,7 @@ class TestPerformance:
 ```yaml
 # docker-compose additions
 services:
-  felicity-assistant:
+  beak-assistant:
     build:
       context: .
       dockerfile: Dockerfile.assistant
@@ -288,7 +288,7 @@ services:
       - mongodb
       - redis
     volumes:
-      - ./felicity:/app/felicity
+      - ./beak:/app/beak
 ```
 
 #### Resource Allocation
@@ -407,8 +407,8 @@ on:
   push:
     branches: [main]
     paths:
-      - 'felicity/apps/assistant/**'
-      - 'felicity/api/gql/assistant/**'
+      - 'beak/apps/assistant/**'
+      - 'beak/api/gql/assistant/**'
 
 jobs:
   test:
@@ -417,8 +417,8 @@ jobs:
       - uses: actions/checkout@v3
       - name: Run tests
         run: |
-          pytest felicity/tests/assistant/ -v
-          pytest felicity/tests/integration/assistant/ -v
+          pytest beak/tests/assistant/ -v
+          pytest beak/tests/integration/assistant/ -v
 
   deploy:
     needs: test
@@ -452,7 +452,7 @@ async def backup_conversations():
     }
 
     await storage_service.upload(
-        bucket="felicity-backups",
+        bucket="beak-backups",
         key=f"assistant/conversations_{datetime.now():%Y%m%d}.json",
         data=backup_data
     )
@@ -679,7 +679,7 @@ ROI:
 
 ### 16.1 Summary
 
-The Felicity LIMS AI Assistant represents a transformative addition to the laboratory information management system, enabling:
+The Beak LIMS AI Assistant represents a transformative addition to the laboratory information management system, enabling:
 
 1. **Simplified Workflows**: Complex multi-step processes reduced to simple conversations
 2. **Enhanced Accessibility**: Lower barrier to entry for new users
@@ -713,7 +713,7 @@ Over the next 2-3 years, the AI Assistant will evolve to become:
 - An **intelligent advisor** providing proactive insights
 - A **training platform** that learns and improves continuously
 - A **collaboration hub** connecting lab staff, clinicians, and systems
-- A **competitive advantage** that sets Felicity LIMS apart
+- A **competitive advantage** that sets Beak LIMS apart
 
 ---
 

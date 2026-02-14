@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "Felicity LIMS",
+  "productName": "Beak LIMS",
   "version": "0.2.3",
-  "identifier": "com.felicity.lims",
+  "identifier": "com.beak.lims",
   "build": {
     "frontendDist": "../dist",
     "devUrl": "http://localhost:5173",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "Felicity LIMS",
+        "title": "Beak LIMS",
         "width": 800,
         "height": 600,
         "resizable": true,

@@ -14,8 +14,8 @@ Inventory management handles stock, transactions, adjustments, orders, and reque
 
 ## Architecture
 
-- **Entities**: `felicity/apps/inventory/` — Stock, Product, Transaction, Order, etc.
-- **GraphQL**: `felicity/api/gql/inventory/` — Queries and mutations
+- **Entities**: `beak/apps/inventory/` — Stock, Product, Transaction, Order, etc.
+- **GraphQL**: `beak/api/gql/inventory/` — Queries and mutations
 
 ## Integration
 

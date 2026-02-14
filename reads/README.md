@@ -1,6 +1,6 @@
-# Felicity LIMS Documentation
+# Beak LIMS Documentation
 
-This folder contains documentation for the Felicity LIMS application covering architecture, modules, compliance, and development guides.
+This folder contains documentation for the Beak LIMS application covering architecture, modules, compliance, and development guides.
 
 ## Documentation Index
 

@@ -2,7 +2,7 @@
 
 ## 1. Introduction
 
-Felicity LIMS uses **Tailwind CSS v4** with a CSS-first configuration. Theme variables are defined in `webapp/assets/css/style.css` using `@theme` and `@layer theme`. Utility classes like `bg-primary`, `text-foreground`, and `border-border` map to CSS custom properties, enabling components to adapt automatically to the active theme.
+Beak LIMS uses **Tailwind CSS v4** with a CSS-first configuration. Theme variables are defined in `webapp/assets/css/style.css` using `@theme` and `@layer theme`. Utility classes like `bg-primary`, `text-foreground`, and `border-border` map to CSS custom properties, enabling components to adapt automatically to the active theme.
 
 ## 2. Core Concepts
 

@@ -40,7 +40,7 @@ services:
 
   beak-api:
     container_name: beak-api
-    image: amusendame/felicity-lims:api-0.2.3 # Pinning image version for stability
+    image: amusendame/beak-lims:api-0.2.3 # Pinning image version for stability
     restart: unless-stopped
     env_file:
       - .env # Load environment variables from .env file
@@ -61,7 +61,7 @@ services:
     networks:
       - beaknet
     volumes:
-      - beak_media:/app/felicity/media # Mount volume for media uploads
+      - beak_media:/app/beak/media # Mount volume for media uploads
     depends_on:
       # Ensure all backend services are running before the API starts
       - beak-postgres

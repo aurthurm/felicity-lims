@@ -1,6 +1,6 @@
 # Webapp Design Fixes
 
-Design, typography, and styling issues identified across the Felicity LIMS webapp, with recommended fixes.
+Design, typography, and styling issues identified across the Beak LIMS webapp, with recommended fixes.
 
 ---
 

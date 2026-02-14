@@ -2,7 +2,7 @@
 
 ## Overview
 
-Felicity LIMS is built for high concurrency and efficient resource usage with async-first architecture.
+Beak LIMS is built for high concurrency and efficient resource usage with async-first architecture.
 
 ## Architecture Considerations
 

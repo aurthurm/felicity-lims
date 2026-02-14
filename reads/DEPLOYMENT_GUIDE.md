@@ -11,7 +11,7 @@
 
 ## Overview
 
-This guide provides step-by-step instructions for deploying HIPAA-compliant encryption to existing Felicity LIMS clients
+This guide provides step-by-step instructions for deploying HIPAA-compliant encryption to existing Beak LIMS clients
 with non-encrypted data. The process uses a zero-downtime migration strategy with comprehensive validation and rollback
 procedures.
 
@@ -59,13 +59,13 @@ sudo -u postgres pg_dump \
   --verbose \
   --format=custom \
   --compress=9 \
-  --file=felicity_pre_hipaa_$(date +%Y%m%d_%H%M%S).backup \
-  felicity_production
+  --file=beak_pre_hipaa_$(date +%Y%m%d_%H%M%S).backup \
+  beak_production
 
 # Verify backup integrity
 sudo -u postgres pg_restore \
   --list \
-  felicity_pre_hipaa_$(date +%Y%m%d_%H%M%S).backup
+  beak_pre_hipaa_$(date +%Y%m%d_%H%M%S).backup
 ```
 
 ### 1.3 Environment Configuration
@@ -76,17 +76,17 @@ export HIPAA_ENCRYPTION_KEY="your-encryption-key-here"
 export SEARCH_ENCRYPTION_KEY="your-search-key-here"
 
 # Add to .env file for persistence
-echo "HIPAA_ENCRYPTION_KEY=${HIPAA_ENCRYPTION_KEY}" >> /opt/felicity/.env
-echo "SEARCH_ENCRYPTION_KEY=${SEARCH_ENCRYPTION_KEY}" >> /opt/felicity/.env
-echo "USE_ENCRYPTED_SEARCH=false" >> /opt/felicity/.env
-echo "HIPAA_MIGRATION_COMPLETE=false" >> /opt/felicity/.env
+echo "HIPAA_ENCRYPTION_KEY=${HIPAA_ENCRYPTION_KEY}" >> /opt/beak/.env
+echo "SEARCH_ENCRYPTION_KEY=${SEARCH_ENCRYPTION_KEY}" >> /opt/beak/.env
+echo "USE_ENCRYPTED_SEARCH=false" >> /opt/beak/.env
+echo "HIPAA_MIGRATION_COMPLETE=false" >> /opt/beak/.env
 ```
 
 ### 1.4 Code Deployment
 
 ```bash
 # Deploy HIPAA branch code
-cd /opt/felicity
+cd /opt/beak
 git fetch origin data-at-rest
 git checkout data-at-rest
 
@@ -94,7 +94,7 @@ git checkout data-at-rest
 pip install -r requirements.txt
 
 # Test application startup
-python -c "from felicity.apps.patient.entities import Patient; print('Import test passed')"
+python -c "from beak.apps.patient.entities import Patient; print('Import test passed')"
 ```
 
 ---
@@ -105,17 +105,17 @@ python -c "from felicity.apps.patient.entities import Patient; print('Import tes
 
 ```bash
 # Run schema extension migration
-cd /opt/felicity
+cd /opt/beak
 python -m alembic upgrade head
 
 # Verify new tables created
-psql felicity_production -c "
+psql beak_production -c "
 SELECT table_name FROM information_schema.tables 
 WHERE table_name IN ('patient_search_index', 'phone_search_index', 'date_search_index');
 "
 
 # Verify new columns added
-psql felicity_production -c "
+psql beak_production -c "
 SELECT column_name FROM information_schema.columns 
 WHERE table_name = 'patient' AND column_name LIKE '%_encrypted';
 "
@@ -125,10 +125,10 @@ WHERE table_name = 'patient' AND column_name LIKE '%_encrypted';
 
 ```bash
 # Run schema validation (migration scripts - see HIPAA_MIGRATION_STRATEGY.md for implementation)
-# python felicity/scripts/validate_hipaa_schema.py
+# python beak/scripts/validate_hipaa_schema.py
 
 # Check migration status
-psql felicity_production -c "
+psql beak_production -c "
 SELECT 
   'patient' as table_name,
   COUNT(*) as total_records,
@@ -152,11 +152,11 @@ FROM analysis_result;
 ```bash
 # Test migration on small subset (dry run)
 # Migration scripts - implement per HIPAA_MIGRATION_STRATEGY.md
-# cd /opt/felicity && python -m migration.run_hipaa_migration --dry-run --batch-size 10
+# cd /opt/beak && python -m migration.run_hipaa_migration --dry-run --batch-size 10
 
 # Test encryption/decryption
 python -c "
-from felicity.utils.encryption import encrypt_pii, decrypt_pii
+from beak.utils.encryption import encrypt_pii, decrypt_pii
 test_data = 'John Doe'
 encrypted = encrypt_pii(test_data)
 decrypted = decrypt_pii(encrypted)
@@ -169,7 +169,7 @@ print('Encryption test passed')
 
 ```bash
 # Start migration with logging
-cd /opt/felicity
+cd /opt/beak
 nohup python -m migration.run_hipaa_migration \
   --batch-size 100 \
   > migration_$(date +%Y%m%d_%H%M%S).log 2>&1 &
@@ -185,7 +185,7 @@ python -m migration.run_hipaa_migration --validate-only
 
 ```bash
 # Monitor database performance
-psql felicity_production -c "
+psql beak_production -c "
 SELECT 
   schemaname,
   tablename,
@@ -209,7 +209,7 @@ htop
 ```bash
 # Validate batches during migration
 while true; do
-  psql felicity_production -c "
+  psql beak_production -c "
     SELECT 
       migration_status,
       COUNT(*) 
@@ -228,12 +228,12 @@ done
 
 ```bash
 # Update feature flags
-sed -i 's/USE_ENCRYPTED_SEARCH=false/USE_ENCRYPTED_SEARCH=true/' /opt/felicity/.env
+sed -i 's/USE_ENCRYPTED_SEARCH=false/USE_ENCRYPTED_SEARCH=true/' /opt/beak/.env
 
 # Restart application services
-systemctl restart felicity-web
-systemctl restart felicity-worker
-systemctl restart felicity-scheduler
+systemctl restart beak-web
+systemctl restart beak-worker
+systemctl restart beak-scheduler
 ```
 
 ### 4.2 Application Testing
@@ -242,7 +242,7 @@ systemctl restart felicity-scheduler
 # Test patient search functionality
 python -c "
 import asyncio
-from felicity.apps.patient.services import PatientService
+from beak.apps.patient.services import PatientService
 
 async def test_search():
     service = PatientService()
@@ -255,7 +255,7 @@ asyncio.run(test_search())
 # Test analysis result search
 python -c "
 import asyncio
-from felicity.apps.analysis.services.result import AnalysisResultService
+from beak.apps.analysis.services.result import AnalysisResultService
 
 async def test_result_search():
     service = AnalysisResultService()
@@ -270,12 +270,12 @@ asyncio.run(test_result_search())
 
 ```bash
 # Benchmark search performance
-# python -m felicity.scripts.benchmark_search \
+# python -m beak.scripts.benchmark_search \
   --iterations 100 \
   --search-terms "John,Smith,test@example.com"
 
 # Compare with baseline metrics
-# python -m felicity.scripts.compare_performance \
+# python -m beak.scripts.compare_performance \
   --baseline baseline_metrics.json \
   --current current_metrics.json
 ```
@@ -291,17 +291,17 @@ asyncio.run(test_result_search())
 python -m migration.run_hipaa_migration --validate-only
 
 # Data integrity checks
-# python -m felicity.scripts.validate_encryption  # Implement per HIPAA_MIGRATION_STRATEGY
+# python -m beak.scripts.validate_encryption  # Implement per HIPAA_MIGRATION_STRATEGY
 
 # Search accuracy validation
-# python -m felicity.scripts.validate_search_results  # Implement per HIPAA_MIGRATION_STRATEGY
+# python -m beak.scripts.validate_search_results  # Implement per HIPAA_MIGRATION_STRATEGY
 ```
 
 ### 5.2 Client User Acceptance Testing
 
 ```bash
 # Create test accounts for client validation
-# python -m felicity.scripts.create_test_data \
+# python -m beak.scripts.create_test_data \
   --client-id CLIENT_001 \
   --test-patients 10 \
   --test-results 50
@@ -343,14 +343,14 @@ EOF
 
 ```bash
 # Update final feature flag
-sed -i 's/HIPAA_MIGRATION_COMPLETE=false/HIPAA_MIGRATION_COMPLETE=true/' /opt/felicity/.env
+sed -i 's/HIPAA_MIGRATION_COMPLETE=false/HIPAA_MIGRATION_COMPLETE=true/' /opt/beak/.env
 
 # Run cleanup migration (IRREVERSIBLE)
 python -m alembic upgrade head
 
 # Restart services
-systemctl restart felicity-web
-systemctl restart felicity-worker
+systemctl restart beak-web
+systemctl restart beak-worker
 ```
 
 ---
@@ -364,27 +364,27 @@ systemctl restart felicity-worker
 pkill -f run_migration.py
 
 # Check data integrity
-# python -m felicity.scripts.validate_data_integrity  # Implement per HIPAA_MIGRATION_STRATEGY
+# python -m beak.scripts.validate_data_integrity  # Implement per HIPAA_MIGRATION_STRATEGY
 
 # If data corruption detected, restore from backup
-sudo -u postgres dropdb felicity_production
-sudo -u postgres createdb felicity_production
+sudo -u postgres dropdb beak_production
+sudo -u postgres createdb beak_production
 sudo -u postgres pg_restore \
-  --dbname=felicity_production \
-  felicity_pre_hipaa_$(date +%Y%m%d_%H%M%S).backup
+  --dbname=beak_production \
+  beak_pre_hipaa_$(date +%Y%m%d_%H%M%S).backup
 ```
 
 ### Planned Rollback (After Issues Found)
 
 ```bash
 # Disable encrypted search
-sed -i 's/USE_ENCRYPTED_SEARCH=true/USE_ENCRYPTED_SEARCH=false/' /opt/felicity/.env
+sed -i 's/USE_ENCRYPTED_SEARCH=true/USE_ENCRYPTED_SEARCH=false/' /opt/beak/.env
 
 # Restart with compatibility mode
-systemctl restart felicity-web
+systemctl restart beak-web
 
 # Investigate issues before proceeding
-tail -f /var/log/felicity/application.log
+tail -f /var/log/beak/application.log
 ```
 
 ---
@@ -398,7 +398,7 @@ tail -f /var/log/felicity/application.log
 watch -n 30 'python -m migration.run_hipaa_migration --validate-only'
 
 # Monitor database performance
-watch -n 60 'psql felicity_production -c "
+watch -n 60 'psql beak_production -c "
 SELECT 
   now() as timestamp,
   active,
@@ -410,7 +410,7 @@ FROM (
     count(*) filter (where wait_event is not null) as waiting,
     count(*) as total
   FROM pg_stat_activity 
-  WHERE datname = '\''felicity_production'\''
+  WHERE datname = '\''beak_production'\''
 ) stats;
 "'
 ```
@@ -429,7 +429,7 @@ cat > check_migration_health.sh << 'EOF'
 #!/bin/bash
 
 # Check migration failure rate
-FAILURE_RATE=$(psql felicity_production -t -c "
+FAILURE_RATE=$(psql beak_production -t -c "
 SELECT 
   ROUND(
     (COUNT(*) FILTER (WHERE migration_status = 'failed') * 100.0) / 
@@ -577,7 +577,7 @@ Subject: HIPAA Security Upgrade - Scheduled Maintenance
 
 Dear [CLIENT_NAME],
 
-We will be upgrading your Felicity LIMS system with enhanced HIPAA compliance
+We will be upgrading your Beak LIMS system with enhanced HIPAA compliance
 features including data-at-rest encryption.
 
 Maintenance Window: [DATE/TIME]
@@ -600,7 +600,7 @@ Subject: HIPAA Security Upgrade Complete
 
 Dear [CLIENT_NAME],
 
-Your Felicity LIMS system has been successfully upgraded with enhanced
+Your Beak LIMS system has been successfully upgraded with enhanced
 HIPAA compliance features.
 
 Completed:
@@ -629,7 +629,7 @@ Thank you for your patience during this important security upgrade.
 
 ```bash
 # Check database locks
-psql felicity_production -c "
+psql beak_production -c "
 SELECT 
   pid,
   usename,
@@ -651,7 +651,7 @@ free -m
 ```bash
 # Verify encryption keys
 python -c "
-from felicity.utils.encryption import encrypt_pii, decrypt_pii
+from beak.utils.encryption import encrypt_pii, decrypt_pii
 import os
 print('HIPAA_ENCRYPTION_KEY configured:', bool(os.environ.get('HIPAA_ENCRYPTION_KEY')))
 test = encrypt_pii('test')
@@ -660,27 +660,27 @@ print('Decryption test:', decrypt_pii(test))
 "
 
 # Check key consistency
-grep HIPAA_ENCRYPTION_KEY /opt/felicity/.env
+grep HIPAA_ENCRYPTION_KEY /opt/beak/.env
 ```
 
 #### Issue: Search Results Inconsistent
 
 ```bash
 # Rebuild search indices
-# python -m felicity.apps.patient.search_service rebuild_indices  # Or implement script per HIPAA docs
+# python -m beak.apps.patient.search_service rebuild_indices  # Or implement script per HIPAA docs
 
 # Validate search index consistency
-# python -m felicity.scripts.validate_search_indices  # Implement per HIPAA docs
+# python -m beak.scripts.validate_search_indices  # Implement per HIPAA docs
 
 # Compare encrypted vs plaintext search results
-# python -m felicity.scripts.compare_search_results  # Implement per HIPAA docs
+# python -m beak.scripts.compare_search_results  # Implement per HIPAA docs
 ```
 
 ---
 
 ## Conclusion
 
-This deployment guide provides a comprehensive, step-by-step approach to migrating existing Felicity LIMS clients to
+This deployment guide provides a comprehensive, step-by-step approach to migrating existing Beak LIMS clients to
 HIPAA-compliant encrypted storage. The process prioritizes data safety, minimal downtime, and thorough validation at
 each step.
 

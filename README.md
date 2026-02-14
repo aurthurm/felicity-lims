@@ -1,4 +1,4 @@
-# **Felicity LIMS**
+# **Beak LIMS**
 
 **(Enterprise-Grade Laboratory Information Management System)**
 
@@ -6,21 +6,33 @@ _The Next Generation Open Source Laboratory Information Management System (LIMS)
 
 Current release: **0.2.3**
 
-![Felicity LIMS](https://github.com/user-attachments/assets/bd6af479-e0a0-4337-9a1d-632e139741a0)
+![Beak LIMS](https://github.com/user-attachments/assets/bd6af479-e0a0-4337-9a1d-632e139741a0)
 
 ---
 
+> ### Heads up: Felicity LIMS is now **Beak LIMS**
+> This project was originally called **Felicity LIMS** (from “felicity” — the quality of being good, pleasant, or desirable).
+> As part of aligning with the broader **Beak Insights** product family (Beak LIMS, Beak POS, Beak Dash, etc.), we’ve rebranded the
+> product to **Beak LIMS**.
+>
+> The idea behind “Beak” comes from a bird’s beak: a precise tool that goes through dirt and complexity to uncover the good stuff.
+> **Beak LIMS** does the same for clinical laboratories – a toolkit that digs through workflow and data complexity to surface the
+> hidden gems: clean results, reliable operations, and better decisions, one sample at a time.
+>
+> The open‑source license, architecture, and roadmap remain the same — only the product name and branding have changed.
+
+
 ## **Overview**
 
-**Felicity LIMS** is an enterprise-grade, open-source Laboratory Information Management System designed for modern clinical, medical, and research laboratory environments. Built with production-ready architecture, it provides comprehensive sample lifecycle management, multi-tenant data isolation, and HIPAA-compliant security features.
+**Beak LIMS** is an enterprise-grade, open-source Laboratory Information Management System designed for modern clinical, medical, and research laboratory environments. Built with production-ready architecture, it provides comprehensive sample lifecycle management, multi-tenant data isolation, and HIPAA-compliant security features.
 
 This sophisticated LIMS platform empowers laboratories to accurately manage sample lifecycles, metadata, and experimental data while ensuring regulatory compliance, operational efficiency, and seamless instrument integration. The system implements a robust multi-tenant architecture that allows multiple laboratories to operate securely within a single deployment, each with complete data isolation, customized workflows, and independent instrument configurations.
 
-Felicity strives to promote an accurate flow of sample and associated experimental data to and through a laboratory to produce information that is used to make conclusions and critical decisions. The platform ensures comprehensive audit trails, field-level encryption for sensitive data, enterprise-grade security measures suitable for healthcare environments, and industry-standard protocol support (ASTM, HL7) for bi-directional instrument communication.
+Beak strives to promote an accurate flow of sample and associated experimental data to and through a laboratory to produce information that is used to make conclusions and critical decisions. The platform ensures comprehensive audit trails, field-level encryption for sensitive data, enterprise-grade security measures suitable for healthcare environments, and industry-standard protocol support (ASTM, HL7) for bi-directional instrument communication.
 
-With its modular, domain-driven architecture and modern async-first technology stack, Felicity LIMS scales from small specialty labs to large hospital networks while maintaining performance, data integrity, and non-blocking I/O for 100+ concurrent instrument connections.
+With its modular, domain-driven architecture and modern async-first technology stack, Beak LIMS scales from small specialty labs to large hospital networks while maintaining performance, data integrity, and non-blocking I/O for 100+ concurrent instrument connections.
 
-_Felicity is the quality of being good, pleasant, or desirable._
+_Beak – a focused toolkit that pecks through operational noise to uncover the value hidden in your data._
 
 ### **Key Features**
 
@@ -45,7 +57,7 @@ _Felicity is the quality of being good, pleasant, or desirable._
 
 ## **Deployment Profiles (Lightweight vs Heavyweight)**
 
-Felicity supports two practical operating profiles, aligned with `future-plans.md`.
+Beak supports two practical operating profiles, aligned with `future-plans.md`.
 
 ### **Lightweight Mode**
 
@@ -172,7 +184,7 @@ The project now includes **Tauri** (`src-tauri/`) so the webapp can be built as 
 
 ### **Multi-Tenant Data Isolation**
 
-Felicity implements strict laboratory-level data isolation ensuring complete data separation between organizations:
+Beak implements strict laboratory-level data isolation ensuring complete data separation between organizations:
 
 -   **Tenant Context**: User requests automatically include tenant context (laboratory, organization)
 -   **Automatic Filtering**: Repository and service layers filter all queries by `laboratory_uid`
@@ -229,13 +241,13 @@ docker compose -f docker-compose.dev.yml exec beak-api beak-lims db upgrade
 # Access the application
 # Frontend: http://localhost:3000
 # Backend API: http://localhost:8000
-# GraphQL Playground: http://localhost:8000/felicity-gql
+# GraphQL Playground: http://localhost:8000/beak-gql
 ```
 
 ### **Accessing the System**
 
 -   **Web UI**: http://localhost:3000 (Vue.js frontend)
--   **GraphQL API**: http://localhost:8000/felicity-gql (Strawberry GraphQL Playground)
+-   **GraphQL API**: http://localhost:8000/beak-gql (Strawberry GraphQL Playground)
 -   **REST API**: http://localhost:8000/api/v1
 -   **Database Admin**: Access PostgreSQL via DbGate or pgAdmin
 
@@ -261,7 +273,7 @@ docker compose -f docker-compose.dev.yml exec beak-api beak-lims db upgrade
 
 ### **Using Docker**
 
-Felicity LIMS can be quickly deployed using Docker Compose.
+Beak LIMS can be quickly deployed using Docker Compose.
 
 #### **Step 1**: Clone the Repository
 
@@ -289,8 +301,8 @@ For environments where Docker is not an option:
     ```
 2. **Setup Python Virtual Environment**:
     ```bash
-    conda create -n felicity python=3.11
-    conda activate felicity
+    conda create -n beak python=3.11
+    conda activate beak
     ```
 3. **Install Dependencies**:
     ```bash
@@ -323,7 +335,7 @@ For production, use **Supervisor** to demonize processes as follows:
 3. **Copy and Paste the following and edit correct accordingly**
 
     ```[program:beak_lims]
-    command=/home/<user>/miniconda3/bin/python <full path to felicity lims root folder>
+    command=/home/<user>/miniconda3/bin/python <full path to beak lims root folder>
     autostart=true
     autorestart=true
     stderr_logfile=/var/log/beak_lims.err.log
@@ -352,7 +364,7 @@ For production, use **Supervisor** to demonize processes as follows:
 
 ## **Application Monitoring**
 
-Felicity LIMS integrates **OpenTelemetry** for application performance monitoring.
+Beak LIMS integrates **OpenTelemetry** for application performance monitoring.
 
 1. **Enable Tracing**:
 
@@ -431,7 +443,7 @@ Access the SigNoz dashboard at [http://localhost:3301](http://localhost:3301).
 
 ```
 beak-lims/
-├── felicity/                    # Main application package
+├── beak/                    # Main application package
 │   ├── main.py                 # FastAPI application entry point
 │   ├── core/                   # Core utilities and middleware
 │   │   ├── tenant_context.py  # Multi-tenant context management
@@ -519,8 +531,8 @@ We welcome contributions from the community! Whether you're fixing bugs, adding 
 -   Follow the [contribution guide](CONTRIBUTING.md) in the repository
 -   Ensure 100% type hint coverage on new code
 -   Add comprehensive docstrings to public APIs
--   All code must pass linting: `bash ./felicity/scripts/lint.sh`
--   All tests must pass: `bash ./felicity/scripts/test.sh`
+-   All code must pass linting: `bash ./beak/scripts/lint.sh`
+-   All tests must pass: `bash ./beak/scripts/test.sh`
 -   Maintain consistency with existing code patterns
 -   Use async/await for all I/O operations
 
@@ -538,7 +550,7 @@ We welcome contributions from the community! Whether you're fixing bugs, adding 
 
 ## **License**
 
-Felicity LIMS is released under the [MIT License](LICENSE).
+Beak LIMS is released under the [MIT License](LICENSE).
 
 ---
 
@@ -547,9 +559,9 @@ Felicity LIMS is released under the [MIT License](LICENSE).
 ### **Documentation**
 
 -   **[Architecture Guide](CLAUDE.md)**: Detailed technical architecture for developers
--   **[IOL Analyzer Module](felicity/apps/iol/analyzer/EVALUATION.md)**: Instrument integration documentation
--   **[GraphQL Schema](felicity/api/gql/)**: Self-documenting GraphQL API reference
--   **[Database Schema](felicity/alembic/)**: Database structure and migrations
+-   **[IOL Analyzer Module](beak/apps/iol/analyzer/EVALUATION.md)**: Instrument integration documentation
+-   **[GraphQL Schema](beak/api/gql/)**: Self-documenting GraphQL API reference
+-   **[Database Schema](beak/alembic/)**: Database structure and migrations
 
 ### **External Resources**
 

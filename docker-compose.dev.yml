@@ -67,8 +67,8 @@ services:
       MINIO_ACCESS: beak # Hardcoded for dev, consider .env for consistency
       MINIO_SECRET: beak # Hardcoded for dev, consider .env for consistency
     volumes:
-      - ./felicity:/app/felicity # Mount local API code for live reloading
-      - beak_media:/app/felicity/media # Mount volume for media uploads
+      - ./beak:/app/beak # Mount local API code for live reloading
+      - beak_media:/app/beak/media # Mount volume for media uploads
     ports:
       - 8000:8000 # Expose API on host port 8000
     depends_on:
@@ -81,7 +81,7 @@ services:
       - beaknet
     # extra_hosts is not needed for inter-container communication in a fully containerized setup
     # - "host.docker.internal:host-gateway" # Removed as not needed for inter-container
-    command: bash -c "cd felicity && uvicorn main:felicity --reload --host=0.0.0.0 --port=8000" # Development command for API
+    command: bash -c "cd beak && uvicorn main:beak --reload --host=0.0.0.0 --port=8000" # Development command for API
 
   beak-minio:
     container_name: beak-minio

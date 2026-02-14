@@ -2,7 +2,7 @@
 
 ## Overview
 
-Felicity LIMS supports report generation and export. Reports include analysis results, billing summaries, and laboratory analytics.
+Beak LIMS supports report generation and export. Reports include analysis results, billing summaries, and laboratory analytics.
 
 ## Features
 
@@ -12,5 +12,5 @@ Felicity LIMS supports report generation and export. Reports include analysis re
 
 ## Architecture
 
-- Report-related queries in `felicity/api/gql/` (billing, analytics)
+- Report-related queries in `beak/api/gql/` (billing, analytics)
 - Frontend report views and components

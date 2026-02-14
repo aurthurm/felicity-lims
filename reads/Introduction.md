@@ -1,8 +1,8 @@
-# Felicity LIMS — Introduction
+# Beak LIMS — Introduction
 
 ## Overview
 
-**Felicity LIMS** is an enterprise-grade, open-source Laboratory Information Management System designed for clinical, medical, and research laboratory environments. It provides comprehensive sample lifecycle management, multi-tenant data isolation, and HIPAA-compliant security features.
+**Beak LIMS** is an enterprise-grade, open-source Laboratory Information Management System designed for clinical, medical, and research laboratory environments. It provides comprehensive sample lifecycle management, multi-tenant data isolation, and HIPAA-compliant security features.
 
 ## Architecture Summary
 
@@ -19,7 +19,7 @@
 
 - **Repository-Service pattern**: Entities → Repositories → Services → GraphQL resolvers
 - **Multi-tenancy**: Laboratory-level data isolation via `LabScopedEntity` and tenant context
-- **Domain-driven design**: Modules under `felicity/apps/` (patient, sample, analysis, inventory, etc.)
+- **Domain-driven design**: Modules under `beak/apps/` (patient, sample, analysis, inventory, etc.)
 
 ### Key Modules
 
@@ -34,7 +34,7 @@
 
 ### GraphQL API
 
-- Schema composed from domain modules in `felicity/api/gql/schema.py`
+- Schema composed from domain modules in `beak/api/gql/schema.py`
 - Types and operations organized by domain (patient, sample, analysis, etc.)
 - Frontend types generated via GraphQL Code Generator (`pnpm webapp:codegen`)
 

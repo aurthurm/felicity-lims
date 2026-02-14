@@ -10,7 +10,7 @@
 
 ## Executive Summary
 
-This document outlines the migration strategy for existing Felicity LIMS clients to transition from non-encrypted data storage to HIPAA-compliant encrypted storage. The migration involves schema changes, data encryption, and search index creation while maintaining system availability and data integrity.
+This document outlines the migration strategy for existing Beak LIMS clients to transition from non-encrypted data storage to HIPAA-compliant encrypted storage. The migration involves schema changes, data encryption, and search index creation while maintaining system availability and data integrity.
 
 ---
 
@@ -59,7 +59,7 @@ This document outlines the migration strategy for existing Felicity LIMS clients
 #### 1.1 Database Backup and Validation
 ```sql
 -- Create comprehensive backup
-pg_dump felicity_db > felicity_backup_pre_hipaa_$(date +%Y%m%d).sql
+pg_dump beak_db > beak_backup_pre_hipaa_$(date +%Y%m%d).sql
 
 -- Validate data integrity
 SELECT 
@@ -183,10 +183,10 @@ import asyncio
 import logging
 from typing import List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
-from felicity.apps.patient.entities import Patient
-from felicity.apps.analysis.entities.results import AnalysisResult
-from felicity.utils.encryption import encrypt_pii, encrypt_phi
-from felicity.apps.patient.search_service import SearchableEncryptionService
+from beak.apps.patient.entities import Patient
+from beak.apps.analysis.entities.results import AnalysisResult
+from beak.utils.encryption import encrypt_pii, encrypt_phi
+from beak.apps.patient.search_service import SearchableEncryptionService
 
 logger = logging.getLogger(__name__)
 
@@ -397,7 +397,7 @@ class HIPAAMigrationService:
 # File: migration/run_hipaa_migration.py
 import asyncio
 import sys
-from felicity.database.session import async_session
+from beak.database.session import async_session
 from migration.hipaa_migration_tools import HIPAAMigrationService
 
 async def run_migration():
@@ -474,9 +474,9 @@ if __name__ == "__main__":
 Create a compatibility layer that reads from both old and new columns during transition:
 
 ```python
-# File: felicity/apps/patient/compatibility.py
+# File: beak/apps/patient/compatibility.py
 from typing import Optional
-from felicity.utils.encryption import decrypt_pii
+from beak.utils.encryption import decrypt_pii
 
 class PatientCompatibilityMixin:
     """Mixin to handle reading from both encrypted and non-encrypted columns."""
@@ -510,8 +510,8 @@ class PatientCompatibilityMixin:
 Update the Patient entity to use the compatibility layer:
 
 ```python
-# Update: felicity/apps/patient/entities.py
-from felicity.apps.patient.compatibility import PatientCompatibilityMixin
+# Update: beak/apps/patient/entities.py
+from beak.apps.patient.compatibility import PatientCompatibilityMixin
 
 class Patient(BaseEntity, PatientCompatibilityMixin):
     __tablename__ = "patient"
@@ -548,7 +548,7 @@ class Patient(BaseEntity, PatientCompatibilityMixin):
 Update services to prioritize encrypted data:
 
 ```python
-# Update: felicity/apps/patient/services.py
+# Update: beak/apps/patient/services.py
 class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
     
     async def search_compatible(self, query_string: str = None) -> list[Patient]:
@@ -589,8 +589,8 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
 #### 3.2 Feature Flags for Migration Control
 
 ```python
-# File: felicity/core/feature_flags.py
-from felicity.core.config import settings
+# File: beak/core/feature_flags.py
+from beak.core.config import settings
 
 class FeatureFlags:
     """Feature flags for controlling migration behavior."""
@@ -876,7 +876,7 @@ Subject: Important: HIPAA Compliance Upgrade Scheduled
 
 Dear [Client Name],
 
-We are upgrading your Felicity LIMS system to include enhanced HIPAA compliance 
+We are upgrading your Beak LIMS system to include enhanced HIPAA compliance 
 features with data-at-rest encryption. This upgrade will:
 
 ✅ Encrypt all patient and analysis data for enhanced security
@@ -915,7 +915,7 @@ All data migration is proceeding normally. No action required.
 ```
 Subject: HIPAA Compliance Upgrade Complete
 
-Your Felicity LIMS system has been successfully upgraded with enhanced 
+Your Beak LIMS system has been successfully upgraded with enhanced 
 HIPAA compliance features. 
 
 ✅ All patient and analysis data is now encrypted
@@ -979,7 +979,7 @@ Thank you for your patience during this important security upgrade.
 
 ## Conclusion
 
-This migration strategy provides a comprehensive, low-risk approach to transitioning existing Felicity LIMS clients from non-encrypted to HIPAA-compliant encrypted data storage. The dual-column approach ensures data safety while the gradual rollout minimizes risk and allows for lessons learned.
+This migration strategy provides a comprehensive, low-risk approach to transitioning existing Beak LIMS clients from non-encrypted to HIPAA-compliant encrypted data storage. The dual-column approach ensures data safety while the gradual rollout minimizes risk and allows for lessons learned.
 
 Key success factors:
 1. **Thorough preparation** with comprehensive testing

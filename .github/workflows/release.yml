@@ -35,10 +35,10 @@ jobs:
     strategy:
       matrix:
         target:
-          - { name: server-aio, image: amusendame/felicity-lims:aio }
-          - { name: server-api, image: amusendame/felicity-lims:api }
-          - { name: nginx-static, image: amusendame/felicity-static-nginx }
-          - { name: caddy-static, image: amusendame/felicity-static-caddy }
+          - { name: server-aio, image: amusendame/beak-lims:aio }
+          - { name: server-api, image: amusendame/beak-lims:api }
+          - { name: nginx-static, image: amusendame/beak-static-nginx }
+          - { name: caddy-static, image: amusendame/beak-static-caddy }
 
     steps:
     - name: Checkout repository

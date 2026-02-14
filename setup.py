@@ -29,10 +29,10 @@ setup(
         "Operating System :: OS Independent",
     ],
     keywords="Beak LIMS, LIMS, Laboratory Information Management System, Sample Manager, BioBank",
-    url="https://github.com/beak-insights/felicity-lims/",
+    url="https://github.com/beak-insights/beak-lims/",
     include_package_data=True,
     zip_safe=False,
-    packages=find_packages(include=['felicity', 'felicity.*']),
+    packages=find_packages(include=['beak', 'beak.*']),
     python_requires='>=3.11',
     install_requires=parse_requirements('requirements.txt'),
     extras_require={
@@ -40,7 +40,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "beak-lims=felicity.cli:main",
+            "beak-lims=beak.cli:main",
         ],
     },
 )

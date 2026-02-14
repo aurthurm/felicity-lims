@@ -6,8 +6,8 @@ Worksheets support batch processing of samples. They group analyses for efficien
 
 ## Architecture
 
-- **Entities**: `felicity/apps/worksheet/entities.py` — WorkSheet, WorkSheetTemplate
-- **Enums**: WorkSheetState in `felicity/apps/worksheet/enum.py`
+- **Entities**: `beak/apps/worksheet/entities.py` — WorkSheet, WorkSheetTemplate
+- **Enums**: WorkSheetState in `beak/apps/worksheet/enum.py`
 - **GraphQL**: Worksheet operations in analytics and analysis modules
 
 ## Workflow

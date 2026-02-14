@@ -1,4 +1,4 @@
-# HIPAA Compliance Implementation for Felicity LIMS
+# HIPAA Compliance Implementation for Beak LIMS
 
 ## Document Overview
 
@@ -13,7 +13,7 @@
 
 ## Executive Summary
 
-This document details the implementation of HIPAA-compliant data-at-rest encryption and high-performance searchable encryption for the Felicity Laboratory Information Management System (LIMS). The implementation ensures that all Personally Identifiable Information (PII) and Protected Health Information (PHI) are encrypted when stored in the database while maintaining efficient search capabilities.
+This document details the implementation of HIPAA-compliant data-at-rest encryption and high-performance searchable encryption for the Beak Laboratory Information Management System (LIMS). The implementation ensures that all Personally Identifiable Information (PII) and Protected Health Information (PHI) are encrypted when stored in the database while maintaining efficient search capabilities.
 
 ---
 
@@ -41,22 +41,22 @@ This document details the implementation of HIPAA-compliant data-at-rest encrypt
 ### Core Components
 
 #### 1. Encryption Infrastructure
-- **File:** `felicity/utils/encryption.py`
+- **File:** `beak/utils/encryption.py`
 - **Technology:** AES-256 via Fernet (AEAD - Authenticated Encryption with Associated Data)
 - **Key Management:** PBKDF2-HMAC-SHA256 with 100,000 iterations
 - **Classes:** `HIPAAEncryption`
 - **Functions:** `encrypt_pii()`, `decrypt_pii()`, `encrypt_phi()`, `decrypt_phi()`
 
 #### 2. Database Field Types
-- **File:** `felicity/utils/hipaa_fields.py`
+- **File:** `beak/utils/hipaa_fields.py`
 - **SQLAlchemy Types:** `EncryptedPIIType`, `EncryptedPHIType`
 - **Features:** Automatic encryption/decryption, datetime support, type preservation
 - **Functions:** `EncryptedPII()`, `EncryptedPHI()`
 
 #### 3. Searchable Encryption
 - **Files:** 
-  - `felicity/apps/patient/search_indices.py` (Index entities)
-  - `felicity/apps/patient/search_service.py` (Search service)
+  - `beak/apps/patient/search_indices.py` (Index entities)
+  - `beak/apps/patient/search_service.py` (Search service)
 - **Technology:** HMAC-SHA256 cryptographic hashing
 - **Features:** Partial matching, phonetic search, phone normalization, date indexing
 
@@ -66,7 +66,7 @@ This document details the implementation of HIPAA-compliant data-at-rest encrypt
 
 ### Encrypted Fields (PII/PHI)
 
-#### Patient Entity (`felicity/apps/patient/entities.py`)
+#### Patient Entity (`beak/apps/patient/entities.py`)
 | Field | Type | Classification | Encryption Type |
 |-------|------|---------------|----------------|
 | `first_name` | EncryptedPII(500) | PII | AES-256 |
@@ -82,7 +82,7 @@ This document details the implementation of HIPAA-compliant data-at-rest encrypt
 |-------|------|---------------|----------------|
 | `value` | EncryptedPII(500) | PII | AES-256 |
 
-#### Analysis Result Entity (`felicity/apps/analysis/entities/results.py`)
+#### Analysis Result Entity (`beak/apps/analysis/entities/results.py`)
 | Field | Type | Classification | Encryption Type |
 |-------|------|---------------|----------------|
 | `result` | EncryptedPHI(1000) | PHI | AES-256 |
@@ -93,7 +93,7 @@ This document details the implementation of HIPAA-compliant data-at-rest encrypt
 | `before` | EncryptedPHI(1000) | PHI | AES-256 |
 | `after` | EncryptedPHI(1000) | PHI | AES-256 |
 
-#### Clinical Data Entity (`felicity/apps/analysis/entities/analysis.py`)
+#### Clinical Data Entity (`beak/apps/analysis/entities/analysis.py`)
 | Field | Type | Classification | Encryption Type |
 |-------|------|---------------|----------------|
 | `symptoms_raw` | EncryptedPHI(2000) | PHI | AES-256 |
@@ -211,7 +211,7 @@ CREATE INDEX idx_date_full ON date_search_index(field_name, date_hash);
 
 ### Repository Enhancements
 
-#### PatientRepository (`felicity/apps/patient/repository.py`)
+#### PatientRepository (`beak/apps/patient/repository.py`)
 **New Methods:**
 - `search_by_encrypted_fields()` - Memory-based encrypted search
 - `search_by_encrypted_indices()` - High-performance index-based search
@@ -224,14 +224,14 @@ CREATE INDEX idx_date_full ON date_search_index(field_name, date_hash);
 **New Methods:**
 - `find_by_encrypted_value()` - Search for identification by encrypted value
 
-#### AnalysisResultRepository (`felicity/apps/analysis/repository/results.py`)
+#### AnalysisResultRepository (`beak/apps/analysis/repository/results.py`)
 **New Methods:**
 - `search_by_encrypted_result()` - Search by encrypted result values
 - `find_by_exact_encrypted_result()` - Exact result value matching
 
 ### Service Enhancements
 
-#### PatientService (`felicity/apps/patient/services.py`)
+#### PatientService (`beak/apps/patient/services.py`)
 **Enhanced Methods:**
 - `search()` - Updated to handle encrypted fields
 - `create()` - Automatic index creation
@@ -245,7 +245,7 @@ CREATE INDEX idx_date_full ON date_search_index(field_name, date_hash);
 **New Methods:**
 - `find_by_identification_value()` - HIPAA-compliant identification search
 
-#### AnalysisResultService (`felicity/apps/analysis/services/result.py`)
+#### AnalysisResultService (`beak/apps/analysis/services/result.py`)
 **New Methods:**
 - `hipaa_compliant_search_by_result()` - Encrypted result searching
 - `find_by_exact_result_value()` - Exact encrypted result matching
@@ -531,7 +531,7 @@ HIPAA_ENCRYPTION_KEY = "your-hipaa-key-here"  # Optional override
 
 ## Conclusion
 
-This HIPAA compliance implementation provides comprehensive data-at-rest encryption for the Felicity LIMS system while maintaining high-performance search capabilities. The dual-approach of memory-based and index-based searching ensures compatibility with various deployment scenarios while providing enterprise-grade performance.
+This HIPAA compliance implementation provides comprehensive data-at-rest encryption for the Beak LIMS system while maintaining high-performance search capabilities. The dual-approach of memory-based and index-based searching ensures compatibility with various deployment scenarios while providing enterprise-grade performance.
 
 The implementation addresses all relevant HIPAA technical safeguards and provides a foundation for ongoing compliance and security improvements.
 

@@ -16,7 +16,7 @@ dbgate-data
 
 # General
 media/
-felicity/media/
+beak/media/
 deploy/tracing/signoz
 
 # Python

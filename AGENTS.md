@@ -1,8 +1,8 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- `felicity/` contains the FastAPI backend, domain modules under `felicity/apps/`, GraphQL in `felicity/api/gql/`, and database assets in `felicity/migrations/`.
-- `felicity/tests/` holds backend tests.
+- `beak/` contains the FastAPI backend, domain modules under `beak/apps/`, GraphQL in `beak/api/gql/`, and database assets in `beak/migrations/`.
+- `beak/tests/` holds backend tests.
 - `webapp/` is the Vue 3 + TypeScript frontend with `webapp/src/` for components, views, queries, and stores.
 - Deployment and tooling live at the repo root: `docker-compose*.yml`, `Dockerfile.*`, `Makefile`, `requirements*.txt`, `package.json`.
 
@@ -11,17 +11,17 @@
 - `docker compose -f docker-compose.dev.yml exec beak-api beak-lims db upgrade` runs DB migrations in dev.
 - `pnpm server:uv:watch` runs the API with reload for local dev.
 - `pnpm webapp:dev` runs the Vite frontend; `pnpm webapp:dev:watch` also runs GraphQL codegen.
-- `pnpm standalone:build` builds the frontend and copies assets into `felicity/templates/static`.
+- `pnpm standalone:build` builds the frontend and copies assets into `beak/templates/static`.
 
 ## Coding Style & Naming Conventions
 - Python: 100% type hints and Google-style docstrings are required; use async/await for I/O.
 - Naming: classes `PascalCase`, functions `snake_case`, constants `UPPER_SNAKE_CASE`, private methods prefixed with `_`.
-- Formatting and linting: `bash ./felicity/scripts/format.sh` (Ruff) and `bash ./felicity/scripts/lint.sh`.
+- Formatting and linting: `bash ./beak/scripts/format.sh` (Ruff) and `bash ./beak/scripts/lint.sh`.
 - Frontend: ESLint and Prettier via `pnpm webapp:lint` and `pnpm webapp:prettier:format`.
 
 ## Testing Guidelines
 - Backend tests use `pytest` with `pytest-asyncio` for async tests.
-- Run tests with `pnpm server:test` (wraps `felicity/scripts/test.sh`).
+- Run tests with `pnpm server:test` (wraps `beak/scripts/test.sh`).
 - Coverage runs are supported: `pnpm server:test --cov`.
 
 ## Commit & Pull Request Guidelines

@@ -73,7 +73,7 @@ services:
 
   beak-aio:
     container_name: beak-aio
-    image: amusendame/felicity-lims:aio-0.2.3 # Pinned image version
+    image: amusendame/beak-lims:aio-0.2.3 # Pinned image version
     restart: unless-stopped
     env_file:
       - .env # Load environment variables from .env file
@@ -201,7 +201,7 @@ services:
       LOGIN: beak # Consider using ${DBGATE_USER} from .env
       PASSWORD: beak # Consider using ${DBGATE_PASSWORD} from .env
       CONNECTIONS: pg,mg
-      LABEL_pg: Felicity Postgres
+      LABEL_pg: Beak Postgres
       SERVER_pg: beak-postgres
       USER_pg: beak # Consider using ${POSTGRES_USER} from .env
       PASSWORD_pg: beak # Consider using ${POSTGRES_PASSWORD} from .env
@@ -209,7 +209,7 @@ services:
       PORT_pg: 5432
       ENGINE_pg: postgres@dbgate-plugin-postgres
       READONLY_pg: 1
-      LABEL_mg: Felicity Mongo
+      LABEL_mg: Beak Mongo
       URL_mg: mongodb://beak:beak@beak-mongo:27017/ # Consider using ${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD} from .env
       DATABASE_mg: beak_lims
       ENGINE_mg: mongo@dbgate-plugin-mongo

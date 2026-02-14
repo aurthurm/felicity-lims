@@ -33,8 +33,8 @@ Metrics include: total samples, late vs not late, process average, avg extra day
 
 ## Architecture
 
-- **GraphQL**: `felicity/api/gql/analytics/query/dashboard.py`
-- **Analytics**: `felicity/apps/analytics/` — EntityAnalyticsInit
+- **GraphQL**: `beak/api/gql/analytics/query/dashboard.py`
+- **Analytics**: `beak/apps/analytics/` — EntityAnalyticsInit
 - **Permissions**: Requires `IsAuthenticated` and `HasPermission(FAction.READ, FObject.ANALYTICS)`
 
 ## Frontend

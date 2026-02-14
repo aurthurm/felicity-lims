@@ -22,7 +22,7 @@ services:
   # Option 1: Nginx as the primary reverse proxy
   beak-static-nginx:
     container_name: beak-static-nginx
-    image: amusendame/felicity-static-nginx:0.2.3 # Pinning image version
+    image: amusendame/beak-static-nginx:0.2.3 # Pinning image version
     restart: unless-stopped
     # Uncomment these ports if you want to use Nginx as the primary entry point
     # and comment out Caddy's ports below to avoid conflicts.
@@ -84,7 +84,7 @@ services:
     environment:
       - NODE_ENV=development
       - VITE_NODE_ENV=development
-      - VITE_APP_TITLE=Felicity Dev
+      - VITE_APP_TITLE=Beak Dev
       - VITE_BASE_URL=http://localhost:8000 # Points to the API exposed on host (via proxy)
     # No direct external port exposure if Nginx/Caddy is fronting it
     networks:
@@ -114,8 +114,8 @@ services:
       MINIO_ACCESS: beak # Consider using ${MINIO_ROOT_USER} from .env
       MINIO_SECRET: beak # Consider using ${MINIO_ROOT_PASSWORD} from .env
     volumes:
-      - ./felicity:/app/felicity # Mount local API code for live reloading/development
-      - beak_media:/app/felicity/media # Mount volume for media uploads
+      - ./beak:/app/beak # Mount local API code for live reloading/development
+      - beak_media:/app/beak/media # Mount volume for media uploads
     ports:
       - 8000:8000 # Expose API on host port 8000 for direct access (or proxy only)
     networks:
@@ -230,7 +230,7 @@ services:
       LOGIN: beak # Consider using ${DBGATE_USER} from .env
       PASSWORD: beak # Consider using ${DBGATE_PASSWORD} from .env
       CONNECTIONS: pg,mg
-      LABEL_pg: Felicity Postgres
+      LABEL_pg: Beak Postgres
       SERVER_pg: beak-postgres
       USER_pg: beak # Consider using ${POSTGRES_USER} from .env
       PASSWORD_pg: beak # Consider using ${POSTGRES_PASSWORD} from .env
@@ -238,7 +238,7 @@ services:
       PORT_pg: 5432
       ENGINE_pg: postgres@dbgate-plugin-postgres
       READONLY_pg: 1
-      LABEL_mg: Felicity Mongo
+      LABEL_mg: Beak Mongo
       URL_mg: mongodb://beak:beak@beak-mongo:27017/ # Consider using ${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD} from .env
       DATABASE_mg: beak_lims
       ENGINE_mg: mongo@dbgate-plugin-mongo

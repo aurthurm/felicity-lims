@@ -25,9 +25,9 @@ User management provides authentication, role-based access control (RBAC), and l
 
 ## Architecture
 
-- **Entities**: `felicity/apps/user/entities.py` — User, Group, Permission, UserPreference
-- **Repository**: `felicity/apps/user/repository.py` — get_users_by_laboratory, assign_user_to_laboratory
-- **Services**: `felicity/apps/user/services.py` — UserService (create, update, authenticate, has_access)
+- **Entities**: `beak/apps/user/entities.py` — User, Group, Permission, UserPreference
+- **Repository**: `beak/apps/user/repository.py` — get_users_by_laboratory, assign_user_to_laboratory
+- **Services**: `beak/apps/user/services.py` — UserService (create, update, authenticate, has_access)
 
 ## User Preferences
 
@@ -38,5 +38,5 @@ User management provides authentication, role-based access control (RBAC), and l
 ## Tenant Context
 
 - JWT carries user_uid, laboratory_uid, organization_uid
-- Middleware: `felicity/lims/middleware/tenant.py` extracts tenant context
+- Middleware: `beak/lims/middleware/tenant.py` extracts tenant context
 - All data access filtered by laboratory_uid

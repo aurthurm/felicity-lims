@@ -11,15 +11,15 @@ This document explains how to **backup** and **restore** MongoDB databases runni
 
 ### A. Backup from MongoDB running in Docker container
 
-Run the following command **from the host** where Docker is installed. Replace `felicity-mongo` with your MongoDB container name, and adjust username/password/database as needed.
+Run the following command **from the host** where Docker is installed. Replace `beak-mongo` with your MongoDB container name, and adjust username/password/database as needed.
 
 ```bash
-sudo docker compose exec -T felicity-mongo mongodump \
-  -u felicity -p felicity --authenticationDatabase admin \
-  --archive > felicity.archive
+sudo docker compose exec -T beak-mongo mongodump \
+  -u beak -p beak --authenticationDatabase admin \
+  --archive > beak.archive
 ````
 
-* This creates a full backup of **all databases** in the MongoDB instance to the `felicity.archive` file on the host.
+* This creates a full backup of **all databases** in the MongoDB instance to the `beak.archive` file on the host.
 * To backup only a specific database, add `--db <database_name>` before `--archive`.
 
 ---
@@ -29,11 +29,11 @@ sudo docker compose exec -T felicity-mongo mongodump \
 Run this command on the machine where MongoDB is installed:
 
 ```bash
-mongodump -u felicity -p felicity --authenticationDatabase admin --archive > felicity.archive
+mongodump -u beak -p beak --authenticationDatabase admin --archive > beak.archive
 ```
 
 * Again, add `--db <database_name>` to dump only a specific database.
-* This saves the dump archive to `felicity.archive`.
+* This saves the dump archive to `beak.archive`.
 
 ---
 
@@ -44,7 +44,7 @@ mongodump -u felicity -p felicity --authenticationDatabase admin --archive > fel
 Run this from the host (where the archive file resides):
 
 ```bash
-cat felicity.archive | sudo docker compose exec -i felicity-mongo mongorestore --drop --archive
+cat beak.archive | sudo docker compose exec -i beak-mongo mongorestore --drop --archive
 ```
 
 * The `cat` and pipe `|` is used to stream the backup file into the Docker container's `mongorestore` command.
@@ -58,7 +58,7 @@ cat felicity.archive | sudo docker compose exec -i felicity-mongo mongorestore -
 Run this command on the native MongoDB host:
 
 ```bash
-mongorestore --drop --archive=felicity.archive
+mongorestore --drop --archive=beak.archive
 ```
 
 * This restores all databases in the archive, dropping existing data first.
@@ -67,7 +67,7 @@ mongorestore --drop --archive=felicity.archive
 
 ## 3. Notes & Tips
 
-* **Authentication**: Replace `-u felicity -p felicity --authenticationDatabase admin` with your actual MongoDB username, password, and auth DB if different.
+* **Authentication**: Replace `-u beak -p beak --authenticationDatabase admin` with your actual MongoDB username, password, and auth DB if different.
 * **Archive format**: Using `--archive` allows easy piping and single-file backup.
 * **Specific database backup/restore**: Use `--db <database_name>` with `mongodump` and `mongorestore` to target one database.
 * For large backups, consider compressing the archive: e.g., `mongodump ... --archive | gzip > dump.archive.gz`

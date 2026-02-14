@@ -2,7 +2,7 @@
 
 ## Overview
 
-Felicity LIMS supports industry-standard protocols for instrument integration and health information exchange.
+Beak LIMS supports industry-standard protocols for instrument integration and health information exchange.
 
 ## Instrument Integration
 
@@ -14,14 +14,14 @@ Felicity LIMS supports industry-standard protocols for instrument integration an
 
 ### Instrument Interface Layer (IOL)
 
-- Located in `felicity/apps/iol/`
+- Located in `beak/apps/iol/`
 - Driver mapping and analyzer interfaces
 - Message size limits (10 MB), timeouts (60s), checksum validation
 
 ### FHIR Support
 
 - Extended FHIR resources for laboratory data
-- See `felicity/api/gql/integration_guide.md` for integration details
+- See `beak/api/gql/integration_guide.md` for integration details
 
 ## Health Information Exchange
 
@@ -31,5 +31,5 @@ Felicity LIMS supports industry-standard protocols for instrument integration an
 
 ## References
 
-- [integration_guide.md](../felicity/api/gql/integration_guide.md)
-- [DRIVER_MAPPING.md](../felicity/apps/iol/analyzer/DRIVER_MAPPING.md)
+- [integration_guide.md](../beak/api/gql/integration_guide.md)
+- [DRIVER_MAPPING.md](../beak/apps/iol/analyzer/DRIVER_MAPPING.md)

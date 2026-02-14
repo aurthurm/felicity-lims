@@ -37,7 +37,7 @@ ENV/
 
 # Python egg and packaging files
 *.egg-info
-Felicity_LIMS.egg-info
+Beak_LIMS.egg-info
 
 # Test files
 tests
@@ -47,7 +47,7 @@ tests
 
 # Media and log files that shouldn't be part of the image
 media
-felicity/media
+beak/media
 logs
 
 # IDE and editor files
@@ -90,4 +90,4 @@ htmlcov/
 *.cover
 
 # Unused Seeds files yet
-felicity/lims/seeds/data/amr-r
+beak/lims/seeds/data/amr-r

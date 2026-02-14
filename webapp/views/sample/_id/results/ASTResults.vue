@@ -268,8 +268,8 @@ function submitAntibiotics(organismUid: string) {
     uid: r.analResultUid,
     result: r.result ?? "",
     reportable: r.reportable ?? false,
-    methodUid: "felicity_ast", 
-    laboratoryInstrumentUid: "felicity_ast" 
+    methodUid: "beak_ast",
+    laboratoryInstrumentUid: "beak_ast"
   }))
   submitter_(_prepared, NotificationObjectType.Sample, sample?.uid!).then(() => {
       sampleStore.fetchAnalysisResultsForSample(sample.uid)

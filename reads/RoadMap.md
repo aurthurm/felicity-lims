@@ -2,7 +2,7 @@
 
 ## Overview
 
-The roadmap provides strategic direction for Felicity LIMS development. Due to evolving technologies and user expectations, future needs are continuously assessed.
+The roadmap provides strategic direction for Beak LIMS development. Due to evolving technologies and user expectations, future needs are continuously assessed.
 
 ## Recent Releases
 

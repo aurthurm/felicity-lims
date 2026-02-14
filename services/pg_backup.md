@@ -20,14 +20,14 @@ This guide shows how to:
 Use the command below to create a plain SQL backup file from a Dockerized PostgreSQL database:
 
 ```bash
-sudo docker compose exec -T felicity-postgres pg_dump -c -U felicity felicity_lims > felicity_lims.bak
+sudo docker compose exec -T beak-postgres pg_dump -c -U beak beak_lims > beak_lims.bak
 ```
 
 * `-T`: disables pseudo-TTY to ensure clean dump output
 * `-c`: includes `DROP` statements to avoid duplication during restore
-* `-U felicity`: database user
-* `felicity_lims`: database name
-* `> felicity_lims.bak`: save the dump to your host machine
+* `-U beak`: database user
+* `beak_lims`: database name
+* `> beak_lims.bak`: save the dump to your host machine
 
 ---
 
@@ -36,7 +36,7 @@ sudo docker compose exec -T felicity-postgres pg_dump -c -U felicity felicity_li
 If you're working with a locally installed PostgreSQL (non-Docker), use:
 
 ```bash
-sudo -u postgres pg_dump -c -U postgres felicity_lims > felicity_lims.bak
+sudo -u postgres pg_dump -c -U postgres beak_lims > beak_lims.bak
 ```
 
 You may omit `-U postgres` if `postgres` is the default user.
@@ -50,19 +50,19 @@ To safely restore the dump into a native PostgreSQL instance:
 ### Step 1: Drop existing database (⚠️ destructive)
 
 ```bash
-sudo -u postgres dropdb felicity_lims
+sudo -u postgres dropdb beak_lims
 ```
 
 ### Step 2: Create a fresh database
 
 ```bash
-sudo -u postgres createdb felicity_lims
+sudo -u postgres createdb beak_lims
 ```
 
 ### Step 3: Restore from the `.bak` file
 
 ```bash
-sudo -u postgres psql -d felicity_lims -f felicity_lims.bak
+sudo -u postgres psql -d beak_lims -f beak_lims.bak
 ```
 
 ---
@@ -72,13 +72,13 @@ sudo -u postgres psql -d felicity_lims -f felicity_lims.bak
 * You can confirm tables were restored using:
 
   ```bash
-  sudo -u postgres psql -d felicity_lims -c "\dt"
+  sudo -u postgres psql -d beak_lims -c "\dt"
   ```
 
 * If you face `permission denied` after `docker cp`, fix with:
 
   ```bash
-  sudo chown $USER:$USER felicity_lims.bak
+  sudo chown $USER:$USER beak_lims.bak
   ```
 
 * This guide assumes a **plain SQL format** (`.bak`) created with `pg_dump`.
@@ -90,6 +90,6 @@ sudo -u postgres psql -d felicity_lims -f felicity_lims.bak
 If you ever want to restore **into Docker** instead of native, use:
 
 ```bash
-sudo docker cp felicity_lims.bak felicity-postgres:/tmp/felicity_lims.bak
-sudo docker compose exec -T felicity-postgres psql -U felicity -d felicity_lims -f /tmp/felicity_lims.bak
+sudo docker cp beak_lims.bak beak-postgres:/tmp/beak_lims.bak
+sudo docker compose exec -T beak-postgres psql -U beak -d beak_lims -f /tmp/beak_lims.bak
 ```

@@ -1,6 +1,6 @@
 sudo -u postgres psql
-create database felicity_lims;
-create user felicity with encrypted password 'felicity';
-grant all privileges on database felicity_lims to felicity;
-\c felicity_lims;
-grant all on schema public to felicity;
+create database beak_lims;
+create user beak with encrypted password 'beak';
+grant all privileges on database beak_lims to beak;
+\c beak_lims;
+grant all on schema public to beak;

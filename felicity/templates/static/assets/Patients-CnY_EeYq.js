@@ -1,1 +1,0 @@
-import{_ as t,r as o,c as s,o as n,a as c}from"./index-DApeomWQ.js";const a={},i={class:"space-y-6"};function r(_,l){const e=o("router-view");return n(),s("div",i,[c(e)])}const p=t(a,[["render",r],["__file","/home/administrator/Documents/Development/beak-insights/felicity/felicity-lims/webapp/views/patient/Patients.vue"]]);export{p as default};

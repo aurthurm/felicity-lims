@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-This document outlines a comprehensive implementation plan for an AI-powered assistant integrated into the Felicity LIMS platform. The assistant will enable users to perform complex laboratory workflows through natural language conversations while maintaining strict HIPAA compliance and PII/PHI protection.
+This document outlines a comprehensive implementation plan for an AI-powered assistant integrated into the Beak LIMS platform. The assistant will enable users to perform complex laboratory workflows through natural language conversations while maintaining strict HIPAA compliance and PII/PHI protection.
 
 ---
 
@@ -77,7 +77,7 @@ Create an intelligent conversational assistant that democratizes access to compl
                      │
                      ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│              Existing Felicity LIMS Backend                      │
+│              Existing Beak LIMS Backend                      │
 │  ┌──────────────────────────────────────────────────────────┐  │
 │  │         FastAPI + Strawberry GraphQL API                 │  │
 │  │  - Tenant Context Middleware                             │  │
@@ -636,7 +636,7 @@ NO PII is involved in this interaction.
 
 #### 5.1.1 AI Assistant Service Layer
 ```
-felicity/apps/assistant/
+beak/apps/assistant/
 ├── __init__.py
 ├── entities.py              # Conversation, Message, TokenMap models
 ├── repository.py            # Database access for conversations
@@ -658,7 +658,7 @@ felicity/apps/assistant/
 
 #### 5.1.2 GraphQL Integration
 ```python
-# felicity/api/gql/assistant/
+# beak/api/gql/assistant/
 ├── __init__.py
 ├── types.py                # Strawberry types for assistant
 ├── query.py                # Query resolvers
@@ -1346,9 +1346,9 @@ class RateLimiter:
 #### Leverage Existing Patterns
 ```python
 # Assistant uses same services as GraphQL API
-from felicity.apps.patient.services import PatientService
-from felicity.apps.analysis.services import AnalysisService
-from felicity.apps.worksheet.services import WorksheetService
+from beak.apps.patient.services import PatientService
+from beak.apps.analysis.services import AnalysisService
+from beak.apps.worksheet.services import WorksheetService
 
 class CreatePatientIntent(IntentHandler):
     async def execute(self, params: dict) -> dict:
@@ -1361,7 +1361,7 @@ class CreatePatientIntent(IntentHandler):
 #### Reuse GraphQL Operations
 ```python
 # Assistant can execute GraphQL operations directly
-from felicity.api.gql.patient.mutations import PatientMutations
+from beak.api.gql.patient.mutations import PatientMutations
 
 mutations = PatientMutations()
 result = await mutations.create_patient(
@@ -1468,7 +1468,7 @@ class SendReportIntent(IntentHandler):
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  Felicity LIMS                                     [User Menu]│
+│  Beak LIMS                                     [User Menu]│
 ├───────────┬─────────────────────────────────────────────────┤
 │           │                                                   │
 │ Conversa- │  ┌─────────────────────────────────────────┐   │
@@ -1796,7 +1796,7 @@ class TestPerformance:
 ```yaml
 # docker-compose additions
 services:
-  felicity-assistant:
+  beak-assistant:
     build:
       context: .
       dockerfile: Dockerfile.assistant
@@ -1812,7 +1812,7 @@ services:
       - mongodb
       - redis
     volumes:
-      - ./felicity:/app/felicity
+      - ./beak:/app/beak
 ```
 
 #### Resource Allocation
@@ -1931,8 +1931,8 @@ on:
   push:
     branches: [main]
     paths:
-      - 'felicity/apps/assistant/**'
-      - 'felicity/api/gql/assistant/**'
+      - 'beak/apps/assistant/**'
+      - 'beak/api/gql/assistant/**'
 
 jobs:
   test:
@@ -1941,8 +1941,8 @@ jobs:
       - uses: actions/checkout@v3
       - name: Run tests
         run: |
-          pytest felicity/tests/assistant/ -v
-          pytest felicity/tests/integration/assistant/ -v
+          pytest beak/tests/assistant/ -v
+          pytest beak/tests/integration/assistant/ -v
 
   deploy:
     needs: test
@@ -1976,7 +1976,7 @@ async def backup_conversations():
     }
 
     await storage_service.upload(
-        bucket="felicity-backups",
+        bucket="beak-backups",
         key=f"assistant/conversations_{datetime.now():%Y%m%d}.json",
         data=backup_data
     )
@@ -2203,7 +2203,7 @@ ROI:
 
 ### 16.1 Summary
 
-The Felicity LIMS AI Assistant represents a transformative addition to the laboratory information management system, enabling:
+The Beak LIMS AI Assistant represents a transformative addition to the laboratory information management system, enabling:
 
 1. **Simplified Workflows**: Complex multi-step processes reduced to simple conversations
 2. **Enhanced Accessibility**: Lower barrier to entry for new users
@@ -2237,7 +2237,7 @@ Over the next 2-3 years, the AI Assistant will evolve to become:
 - An **intelligent advisor** providing proactive insights
 - A **training platform** that learns and improves continuously
 - A **collaboration hub** connecting lab staff, clinicians, and systems
-- A **competitive advantage** that sets Felicity LIMS apart
+- A **competitive advantage** that sets Beak LIMS apart
 
 ---
 

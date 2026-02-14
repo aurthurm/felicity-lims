@@ -22,9 +22,9 @@ Process performance metrics track transitions such as:
 
 ## Architecture
 
-- **Entities**: `felicity/apps/analysis/entities/` — Sample, Analysis, AnalysisResult
-- **Worksheets**: `felicity/apps/worksheet/` — WorkSheet, WorkSheetTemplate
-- **Enums**: SampleState, ResultState in `felicity/apps/analysis/enum.py`
+- **Entities**: `beak/apps/analysis/entities/` — Sample, Analysis, AnalysisResult
+- **Worksheets**: `beak/apps/worksheet/` — WorkSheet, WorkSheetTemplate
+- **Enums**: SampleState, ResultState in `beak/apps/analysis/enum.py`
 
 ## Derived Samples
 
@@ -44,4 +44,4 @@ Process performance metrics track transitions such as:
 
 ## GraphQL
 
-Sample and analysis operations are in `felicity/api/gql/analysis/` and related modules.
+Sample and analysis operations are in `beak/api/gql/analysis/` and related modules.

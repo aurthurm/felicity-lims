@@ -1,4 +1,4 @@
-# Standalone Windows Packaging for Felicity LIMS
+# Standalone Windows Packaging for Beak LIMS
 
 ## Summary
 
@@ -9,10 +9,10 @@
 
 ### Windows Backend Configuration (Lightweight Mode)
 
-Per `felicity/core/config.py`, when `REDIS_SERVER`, `MONGODB_SERVER`, and `MINIO_SERVER` are **not** specified:
+Per `beak/core/config.py`, when `REDIS_SERVER`, `MONGODB_SERVER`, and `MINIO_SERVER` are **not** specified:
 
-- **Redis**: Uses in-memory `FelicityBroadcast` (`felicity/apps/common/channel/__init__.py`) — no Redis needed
-- **MongoDB**: `DOCUMENT_STORAGE` is false — audit logs and documents use PostgreSQL via `AuditLogService` (`felicity/apps/auditlog/events.py`)
+- **Redis**: Uses in-memory `BeakBroadcast` (`beak/apps/common/channel/__init__.py`) — no Redis needed
+- **MongoDB**: `DOCUMENT_STORAGE` is false — audit logs and documents use PostgreSQL via `AuditLogService` (`beak/apps/auditlog/events.py`)
 - **MinIO**: `OBJECT_STORAGE` is false — files use local `MEDIA_DIR` (filesystem)
 
 **Result**: A Windows standalone setup needs only **PostgreSQL** plus the Python backend.
@@ -47,7 +47,7 @@ Package the Vue 3 + Vite webapp as a Windows desktop app. The app connects to a 
 
 ## Option 2: Webapp + Backend (Single Installer)
 
-For Windows standalone, the backend only requires **PostgreSQL**. Redis, MongoDB, and MinIO are optional and used only in high-availability server setups. When omitted, Felicity uses:
+For Windows standalone, the backend only requires **PostgreSQL**. Redis, MongoDB, and MinIO are optional and used only in high-availability server setups. When omitted, Beak uses:
 
 - In-memory broadcast (no Redis)
 - PostgreSQL for audit logs and documents (no MongoDB)
@@ -95,7 +95,7 @@ flowchart TB
         subgraph docker [Docker Installer]
             Installer[Installer]
             Installer --> |runs| Docker[docker-compose]
-            Docker --> API[felicity-api]
+            Docker --> API[beak-api]
             Docker --> PG2[(PostgreSQL)]
         end
     end

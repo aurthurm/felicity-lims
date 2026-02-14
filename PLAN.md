@@ -2,7 +2,7 @@
 
 ## Overview
 
-Implementation plan for enabling users to belong to multiple laboratories with laboratory context switching capabilities in Felicity LIMS.
+Implementation plan for enabling users to belong to multiple laboratories with laboratory context switching capabilities in Beak LIMS.
 
 ## Current State Analysis
 
@@ -28,7 +28,7 @@ Implementation plan for enabling users to belong to multiple laboratories with l
 
 ### 1.1 Laboratory Management Endpoints
 
-**File: `felicity/api/gql/setup/mutations.py`**
+**File: `beak/api/gql/setup/mutations.py`**
 
 ```python
 @strawberry.mutation
@@ -68,7 +68,7 @@ async def delete_laboratory(
     # Mark as inactive instead of hard delete
 ```
 
-**File: `felicity/api/gql/setup/query.py`**
+**File: `beak/api/gql/setup/query.py`**
 
 ```python
 @strawberry.field
@@ -94,7 +94,7 @@ async def laboratory_by_uid(
 
 ### 1.2 User-Laboratory Association Endpoints
 
-**File: `felicity/api/gql/user/mutations.py`**
+**File: `beak/api/gql/user/mutations.py`**
 
 ```python
 @strawberry.mutation
@@ -164,7 +164,7 @@ async def switch_active_laboratory(
 
 ### 1.3 Enhanced User Queries
 
-**File: `felicity/api/gql/user/query.py`**
+**File: `beak/api/gql/user/query.py`**
 
 ```python
 @strawberry.field
@@ -844,7 +844,7 @@ onUnmounted(() => {
 
 ### 5.1 User Service Extensions
 
-**File: `felicity/apps/user/services.py`**
+**File: `beak/apps/user/services.py`**
 
 ```python
 class UserService(BaseService):
@@ -990,7 +990,7 @@ class UserService(BaseService):
 
 ### 5.2 Laboratory Service Extensions
 
-**File: `felicity/apps/setup/services.py`**
+**File: `beak/apps/setup/services.py`**
 
 ```python
 class LaboratoryService(BaseService):
@@ -1444,4 +1444,4 @@ CREATE INDEX idx_laboratory_user_user_uid ON laboratory_user(user_uid);
 -   No cross-laboratory data leakage
 -   Proper tenant isolation maintained
 
-This comprehensive plan provides a structured approach to implementing multi-laboratory user management while maintaining the existing security and architectural patterns of the Felicity LIMS system.
+This comprehensive plan provides a structured approach to implementing multi-laboratory user management while maintaining the existing security and architectural patterns of the Beak LIMS system.
