@@ -1,1 +1,0 @@
-import{_ as o,r as t,c as s,o as n,a as r}from"./index-DCVfsbos.js";const c={},i={class:""};function a(l,_){const e=t("router-view");return n(),s("div",i,[r(e)])}const f=o(c,[["render",a],["__file","/home/administrator/Documents/Development/beak-insights/beak/beak-lims/webapp/views/qcontrol/QualityControls.vue"]]);export{f as default};
