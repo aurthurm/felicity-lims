@@ -124,8 +124,8 @@ WHERE table_name = 'patient' AND column_name LIKE '%_encrypted';
 ### 2.2 Validate Schema Changes
 
 ```bash
-# Run schema validation
-python hippaa/validate_schema.py
+# Run schema validation (migration scripts - see HIPAA_MIGRATION_STRATEGY.md for implementation)
+# python felicity/scripts/validate_hipaa_schema.py
 
 # Check migration status
 psql felicity_production -c "
@@ -151,8 +151,8 @@ FROM analysis_result;
 
 ```bash
 # Test migration on small subset (dry run)
-cd /opt/felicity
-python hippaa/run_migration.py --dry-run --batch-size 10
+# Migration scripts - implement per HIPAA_MIGRATION_STRATEGY.md
+# cd /opt/felicity && python -m migration.run_hipaa_migration --dry-run --batch-size 10
 
 # Test encryption/decryption
 python -c "
@@ -170,7 +170,7 @@ print('Encryption test passed')
 ```bash
 # Start migration with logging
 cd /opt/felicity
-nohup python hippaa/run_migration.py \
+nohup python -m migration.run_hipaa_migration \
   --batch-size 100 \
   > migration_$(date +%Y%m%d_%H%M%S).log 2>&1 &
 
@@ -178,7 +178,7 @@ nohup python hippaa/run_migration.py \
 tail -f migration_$(date +%Y%m%d_%H%M%S).log
 
 # Check migration status
-python hippaa/run_migration.py --validate-only
+python -m migration.run_hipaa_migration --validate-only
 ```
 
 ### 3.3 Migration Monitoring
@@ -270,12 +270,12 @@ asyncio.run(test_result_search())
 
 ```bash
 # Benchmark search performance
-python hippaa/benchmark_search.py \
+# python -m felicity.scripts.benchmark_search \
   --iterations 100 \
   --search-terms "John,Smith,test@example.com"
 
 # Compare with baseline metrics
-python hippaa/compare_performance.py \
+# python -m felicity.scripts.compare_performance \
   --baseline baseline_metrics.json \
   --current current_metrics.json
 ```
@@ -288,20 +288,20 @@ python hippaa/compare_performance.py \
 
 ```bash
 # Run full validation suite
-python hippaa/run_migration.py --validate-only
+python -m migration.run_hipaa_migration --validate-only
 
 # Data integrity checks
-python hippaa/validate_encryption.py
+# python -m felicity.scripts.validate_encryption  # Implement per HIPAA_MIGRATION_STRATEGY
 
 # Search accuracy validation
-python hippaa/validate_search_results.py
+# python -m felicity.scripts.validate_search_results  # Implement per HIPAA_MIGRATION_STRATEGY
 ```
 
 ### 5.2 Client User Acceptance Testing
 
 ```bash
 # Create test accounts for client validation
-python hippaa/create_test_data.py \
+# python -m felicity.scripts.create_test_data \
   --client-id CLIENT_001 \
   --test-patients 10 \
   --test-results 50
@@ -364,7 +364,7 @@ systemctl restart felicity-worker
 pkill -f run_migration.py
 
 # Check data integrity
-python hippaa/validate_data_integrity.py
+# python -m felicity.scripts.validate_data_integrity  # Implement per HIPAA_MIGRATION_STRATEGY
 
 # If data corruption detected, restore from backup
 sudo -u postgres dropdb felicity_production
@@ -395,7 +395,7 @@ tail -f /var/log/felicity/application.log
 
 ```bash
 # Monitor migration progress
-watch -n 30 'python hippaa/run_migration.py --validate-only'
+watch -n 30 'python -m migration.run_hipaa_migration --validate-only'
 
 # Monitor database performance
 watch -n 60 'psql felicity_production -c "
@@ -667,13 +667,13 @@ grep HIPAA_ENCRYPTION_KEY /opt/felicity/.env
 
 ```bash
 # Rebuild search indices
-python hippaa/rebuild_search_indices.py
+# python -m felicity.apps.patient.search_service rebuild_indices  # Or implement script per HIPAA docs
 
 # Validate search index consistency
-python hippaa/validate_search_indices.py
+# python -m felicity.scripts.validate_search_indices  # Implement per HIPAA docs
 
 # Compare encrypted vs plaintext search results
-python hippaa/compare_search_results.py
+# python -m felicity.scripts.compare_search_results  # Implement per HIPAA docs
 ```
 
 ---

@@ -7,7 +7,7 @@
 **Date:** 2025-01-27  
 **Author:** AI Assistant (Claude)  
 **Review Status:** Pending Technical Review  
-**Implementation Branch:** `data-at-rest`  
+**Implementation Branch:** Implemented in main (encryption, search indices, PatientService methods)  
 
 ---
 

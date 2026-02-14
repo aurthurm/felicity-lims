@@ -2,12 +2,12 @@
 
 ## 1. Introduction
 
-This guide explains how to effectively use the Tailwind CSS setup defined in your `tailwind.config.js` file. The configuration maps standard Tailwind utility classes (like `bg-primary`, `text-foreground`, `border-border`) to CSS custom properties (variables) defined in your themes (`:root`, `.dark`, `.theme-clinical-blue`, etc.). This enables components to adapt automatically to the currently active theme.
+Felicity LIMS uses **Tailwind CSS v4** with a CSS-first configuration. Theme variables are defined in `webapp/assets/css/style.css` using `@theme` and `@layer theme`. Utility classes like `bg-primary`, `text-foreground`, and `border-border` map to CSS custom properties, enabling components to adapt automatically to the active theme.
 
 ## 2. Core Concepts
 
 ### Applying Themes
-Activate a theme by adding its class name (found in the safelist array in your config, e.g., `theme-clinical-blue`) to the `<html>` or `<body>` tag. The `dark` class activates the dark theme.
+Activate a theme by setting `data-theme` on the `<html>` element (e.g., `data-theme="dark"`, `data-theme="clinical-blue"`). Available themes: `dark`, `black-and-white`, `sterile`, `clinical-blue`, `emergency-red`, `sterile-green`, `warm-neutral`, `cool-slate`, `corporate-navy`.
 
 ### Using Utility Classes
 Leverage the mapped utility classes in your HTML/JSX. These classes resolve to CSS variables from the active theme:
@@ -134,9 +134,9 @@ Always pair background and foreground utilities correctly to ensure readability 
 
 ## 5. Conclusion
 
-Your `tailwind.config.js` bridges your CSS theme variables with Tailwind’s utility-first workflow. Use semantic utility classes (`bg-primary`, `text-muted-foreground`, etc.) to create consistent, themeable, and accessible interfaces.
+Your `webapp/assets/css/style.css` bridges your CSS theme variables with Tailwind’s utility-first workflow. Use semantic utility classes (`bg-primary`, `text-muted-foreground`, etc.) to create consistent, themeable, and accessible interfaces.
 
 **Tip:** Always pair background utilities with their corresponding foreground utilities for proper contrast and accessibility.
 
-For advanced customization and reusability, consider abstracting frequently used combinations into reusable Vue components or utility classes.
+For advanced customization, use `@layer components` classes (e.g., `.fel-table`, `.btn-primary`) or reusable Vue components. Theme definitions: `webapp/assets/css/style.css` — `@layer theme` block.
 

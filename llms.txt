@@ -1,5 +1,6 @@
 # llms
 
+- [reads/README.md](reads/README.md) — Documentation index
 - [llms-full.txt](llms-full.txt)
 - [runtime.txt](runtime.txt)
 - [llms.txt](llms.txt)
@@ -17,9 +18,9 @@
 - [ReflexRules.md](reads/ReflexRules.md)
 - [Dashboard.md](reads/Dashboard.md)
 - [HIPAA_COMPLIANCE.md](reads/HIPAA_COMPLIANCE.md)
-- [Peformance.md](reads/Peformance.md)
+- [Performance.md](reads/Performance.md)
 - [StyleGuide.md](reads/StyleGuide.md)
-- [Introoduction.md](reads/Introoduction.md)
+- [Introduction.md](reads/Introduction.md)
 - [WorkSheets.md](reads/WorkSheets.md)
 - [Referrals.md](reads/Referrals.md)
 - [RoadMap.md](reads/RoadMap.md)
@@ -27,7 +28,7 @@
 - [Reports.md](reads/Reports.md)
 - [Deployment.md](reads/Deployment.md)
 - [Inventory.md](reads/Inventory.md)
-- [Interperability.md](reads/Interperability.md)
+- [Interoperability.md](reads/Interoperability.md)
 - [dosage.txt](felicity/lims/seeds/data/amr-r/dosage.txt)
 - [microorganisms.codes.txt](felicity/lims/seeds/data/amr-r/microorganisms.codes.txt)
 - [microorganisms.txt](felicity/lims/seeds/data/amr-r/microorganisms.txt)

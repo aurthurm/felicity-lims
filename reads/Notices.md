@@ -1,5 +1,11 @@
-Roadmap
-Roadmap provides detail understanding of intent and direction in which
-the company/tool provider plans to go, serving as a strategic
-communication tool. Due to evolving technologies and user expectations,
-determining future needs is challenging.
+# Notices
+
+## Overview
+
+System notices provide announcements and important messages to users. They can be displayed in the application UI and managed by administrators.
+
+## Architecture
+
+- Notice entities and services
+- GraphQL for notice CRUD and listing
+- Frontend notice display components

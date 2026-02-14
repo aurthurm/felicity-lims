@@ -1,5 +1,11 @@
-Roadmap
-Roadmap provides detail understanding of intent and direction in which
-the company/tool provider plans to go, serving as a strategic
-communication tool. Due to evolving technologies and user expectations,
-determining future needs is challenging.
+# Notifications
+
+## Overview
+
+User notifications and alerts keep users informed of events such as result verification, critical results, and system updates.
+
+## Architecture
+
+- Notification services and channels
+- Real-time updates via WebSocket/GraphQL subscriptions where supported
+- Frontend notification components (e.g., @kyvg/vue3-notification)

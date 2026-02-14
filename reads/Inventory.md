@@ -1,5 +1,23 @@
-Roadmap
-Roadmap provides detail understanding of intent and direction in which
-the company/tool provider plans to go, serving as a strategic
-communication tool. Due to evolving technologies and user expectations,
-determining future needs is challenging.
+# Inventory Management
+
+## Overview
+
+Inventory management handles stock, transactions, adjustments, orders, and requests. It supports automatic reordering and integrates with sample/billing workflows.
+
+## Features
+
+- Stock management and transactions
+- Inventory adjustments
+- Orders and order requests
+- Product catalog
+- Inventory KPIs and CSV export (v0.2.3+)
+
+## Architecture
+
+- **Entities**: `felicity/apps/inventory/` — Stock, Product, Transaction, Order, etc.
+- **GraphQL**: `felicity/api/gql/inventory/` — Queries and mutations
+
+## Integration
+
+- Cost display on sample registration form with billing module integration
+- Department filters applied across inventory views
