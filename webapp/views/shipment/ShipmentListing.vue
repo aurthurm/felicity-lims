@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import modal from "@/components/ui/FelModal.vue";
+import modal from "@/components/ui/BeakModal.vue";
 import { ref, reactive, computed, h, defineAsyncComponent } from "vue";
 import { storeToRefs } from "pinia";
 import { useRoute } from "vue-router";
@@ -11,7 +11,7 @@ import { useField, useForm } from "vee-validate";
 import { object, string, number } from "yup";
 
 const DataTable = defineAsyncComponent(
-  () => import("@/components/ui/datatable/FelDataTable.vue")
+  () => import("@/components/ui/datatable/BeakDataTable.vue")
 )
 
 const shipmentStore = useShipmentStore();
@@ -199,12 +199,12 @@ const countNone = computed(
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Shipments">
-      <fel-button @click="showModal = true">Create New</fel-button>
-    </fel-heading>
+    <beak-heading title="Shipments">
+      <beak-button @click="showModal = true">Create New</beak-button>
+    </beak-heading>
 
     <div class="flex items-center space-x-4 mb-4">
-      <fel-button
+      <beak-button
         @click="viewIncoming = !viewIncoming"
         :class="[viewIncoming
             ? 'bg-primary text-primary-foreground hover:bg-primary/90'
@@ -213,7 +213,7 @@ const countNone = computed(
         :aria-pressed="viewIncoming"
       >
         {{ viewIncoming ? 'Incoming' : 'Outgoing' }}
-      </fel-button>
+      </beak-button>
     </div>
 
     <div class="bg-card rounded-lg shadow-sm p-6">
@@ -248,7 +248,7 @@ const countNone = computed(
     </div>
   </div>
 
-  <fel-modal v-if="showModal" @close="showModal = false" >
+  <beak-modal v-if="showModal" @close="showModal = false" >
     <template v-slot:header>
       <h3 class="text-lg font-medium leading-6 text-foreground">Create New Shipment</h3>
     </template>
@@ -328,5 +328,5 @@ const countNone = computed(
         </div>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 </template>

@@ -86,7 +86,7 @@ onMounted(() => {
               <i class="fas fa-flask text-primary-foreground"></i>
             </div>
             <div>
-              <h1 class="text-xl font-semibold text-foreground">Felicity LIMS</h1>
+              <h1 class="text-xl font-semibold text-foreground">Beak LIMS</h1>
               <p class="text-sm text-muted-foreground">Laboratory Information Management System</p>
             </div>
           </div>
@@ -304,7 +304,7 @@ onMounted(() => {
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between text-sm text-muted-foreground">
           <div>
-            © 2024 Felicity LIMS. All rights reserved.
+            © 2024 Beak LIMS. All rights reserved.
           </div>
           <div class="flex items-center space-x-4">
             <span>Available Laboratories: {{ availableLaboratories.length }}</span>

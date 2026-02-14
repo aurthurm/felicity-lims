@@ -35,7 +35,7 @@ async def test_add_sample_type(app_gql, auth_data):
         "active": True,
     }
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={"query": add_gql, "variables": {"payload": sample_type}},
         headers=auth_data["headers"],
     )
@@ -74,7 +74,7 @@ async def test_add_instrument(app_gql, auth_data):
         "keyword": "HICAP96",
     }
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={"query": add_gql, "variables": {"payload": instrument}},
         headers=auth_data["headers"],
     )
@@ -115,7 +115,7 @@ async def test_add_lab_instrument_instrument(app_gql, auth_data, instruments):
         "serialNumber": serialNumber,
     }
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={"query": add_gql, "variables": {"payload": instrument}},
         headers=auth_data["headers"],
     )
@@ -154,7 +154,7 @@ async def test_add_method(app_gql, auth_data, instruments):
         "instruments": [instruments[0]["uid"]],
     }
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={"query": add_gql, "variables": {"payload": method}},
         headers=auth_data["headers"],
     )
@@ -235,7 +235,7 @@ async def test_add_analysis_service(app_gql, auth_data, methods, sample_types):
         "selfVerification": False,
     }
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={"query": add_gql, "variables": {"payload": analysis_service}},
         headers=auth_data["headers"],
     )
@@ -298,7 +298,7 @@ async def test_add_analysis_profile(app_gql, auth_data, sample_types, analyses):
         "active": True,
     }
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={"query": add_gql, "variables": {"payload": analysis_profile}},
         headers=auth_data["headers"],
     )

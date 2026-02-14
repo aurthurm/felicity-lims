@@ -119,7 +119,7 @@ const StockCategory = defineComponent({
 
                 <div class="rounded-md border border-border bg-card p-6">
                     <div class="relative w-full overflow-auto">
-                        <table class="w-full caption-bottom text-sm fel-table">
+                        <table class="w-full caption-bottom text-sm beak-table">
                             <thead class="[&_tr]:border-b">
                                 <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                                     <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Category Name</th>
@@ -151,7 +151,7 @@ const StockCategory = defineComponent({
                 </div>
 
                 {this.showModal && (
-                    <fel-modal onClose={() => (this.showModal = false)}>
+                    <beak-modal onClose={() => (this.showModal = false)}>
                         {{
                             header: () => <h3 class="text-lg font-semibold text-foreground">{this.formTitle}</h3>,
                             body: () => (
@@ -203,7 +203,7 @@ const StockCategory = defineComponent({
                                 </form>
                             ),
                         }}
-                    </fel-modal>
+                    </beak-modal>
                 )}
             </div>
         );

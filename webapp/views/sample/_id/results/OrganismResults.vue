@@ -180,20 +180,20 @@ const approveResults = () =>
       <div class="p-6 space-y-6">
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-foreground">Organisms</h3>
-          <fel-button 
+          <beak-button 
             v-if="analysisResult.status == 'pending'"
             @click="addOrganism()"
             :disabled="addingOrganism"
             :color="'primary'"
           >
             Add Organism
-          </fel-button>
+          </beak-button>
         </div>
 
         <div class="border-t border-border" />
 
         <div class="overflow-x-auto">
-          <table class="w-full fel-table">
+          <table class="w-full beak-table">
             <thead>
               <tr class="border-b border-border bg-muted/50">
                 <th class="px-4 py-2 text-left text-sm font-medium text-foreground">Isolate Number</th>
@@ -217,37 +217,37 @@ const approveResults = () =>
                   >
                     {{ orgResult?.organism?.name }}
                   </span>
-                  <fel-button 
+                  <beak-button 
                     v-else
                     @click="pickOrganism(idx)"
                     :color="'outline'"
                   >
                     Pick Organism
-                  </fel-button>
+                  </beak-button>
                 </td>
                 <td class="px-4 py-2 text-right">
                   <div class="flex items-center justify-end space-x-2">
                     <template v-if="orgResult?.organism && !orgResult?.organismUid">
-                      <fel-button 
+                      <beak-button 
                         @click="pickOrganism(idx)"
                         :color="'destructive'"
                       >
                         Change
-                      </fel-button>
-                      <fel-button 
+                      </beak-button>
+                      <beak-button 
                         @click="saveOrgResult(orgResult)"
                         :color="'primary'"
                       >
                         Save
-                      </fel-button>
+                      </beak-button>
                     </template>
-                    <fel-button 
+                    <beak-button 
                       v-if="analysisResult.status == 'pending' && organismResults.length > 1"
                       @click="removeOrgResult(orgResult)"
                       :color="'destructive'"
                     >
                       Delete
-                    </fel-button>
+                    </beak-button>
                   </div>
                 </td>
               </tr>
@@ -280,25 +280,25 @@ const approveResults = () =>
         <p v-else class="text-sm text-muted-foreground">{{ analysisResult.result }}</p>
 
         <div class="flex justify-end space-x-4">
-          <fel-button 
+          <beak-button 
             v-if="state.can_submit"
             @click="submitResults"
             :color="'primary'"
           >
             Submit Results
-          </fel-button>
-          <fel-button 
+          </beak-button>
+          <beak-button 
             v-if="state.can_approve"
             @click="approveResults"
             :color="'primary'"
           >
             Approve Results
-          </fel-button>
+          </beak-button>
         </div>
       </div>
     </div>
 
-    <fel-modal v-if="showModal" @close="showModal = false">
+    <beak-modal v-if="showModal" @close="showModal = false">
       <template v-slot:header>
         <h3 class="text-xl font-semibold text-foreground">Select Organism</h3>
       </template>
@@ -327,6 +327,6 @@ const approveResults = () =>
           </div>
         </div>
       </template>
-    </fel-modal>
+    </beak-modal>
   </div>
 </template>

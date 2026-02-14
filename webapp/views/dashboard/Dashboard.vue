@@ -48,7 +48,7 @@ const tabs = [
 
 <template>
   <div class="">
-    <fel-heading title="Dashboard" />
-    <fel-tabs :tabs="tabs" />
+    <beak-heading title="Dashboard" />
+    <beak-tabs :tabs="tabs" />
   </div>
 </template>

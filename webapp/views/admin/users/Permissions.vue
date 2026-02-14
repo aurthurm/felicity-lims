@@ -5,8 +5,8 @@ import  useApiUtil  from '@/composables/api_util';
 import { GroupType, PermissionType } from '@/types/gql';
 import { UpdateGroupsAndPermissionsMutation, UpdateGroupsAndPermissionsMutationVariables, UpdateGroupsAndPermissionsDocument } from '@/graphql/operations/_mutations';
 
-const FelSwitch = defineAsyncComponent(
-  () => import("@/components/ui/switch/FelSwitch.vue")
+const BeakSwitch = defineAsyncComponent(
+  () => import("@/components/ui/switch/BeakSwitch.vue")
 )
 
 let userStore = useUserStore()
@@ -48,7 +48,7 @@ function handlePermissionToggle(group: GroupType, perm: PermissionType, value: b
     <div class="bg-background rounded-lg shadow-sm overflow-hidden">
       <div class="relative">
         <!-- Fixed Header -->
-        <table class="w-full fel-table">
+        <table class="w-full beak-table">
           <thead>
             <tr>
               <th
@@ -70,7 +70,7 @@ function handlePermissionToggle(group: GroupType, perm: PermissionType, value: b
         
         <!-- Scrollable Body -->
         <div class="overflow-y-auto max-h-[700px] scrollbar-thin scrollbar-thumb-border scrollbar-track-muted">
-          <table class="w-full fel-table">
+          <table class="w-full beak-table">
             <tbody class="divide-y divide-border">
               <template v-for="category in permissions" :key="category[0]">
                 <tr class="bg-muted/50">
@@ -84,7 +84,7 @@ function handlePermissionToggle(group: GroupType, perm: PermissionType, value: b
                     {{ perm.action }}
                   </td>
                   <td v-for="group in groups" :key="group.uid" class="px-4 py-2">
-                    <FelSwitch
+                    <BeakSwitch
                       :model-value="hasPermission(group, perm)"
                       @update:model-value="handlePermissionToggle(group, perm, $event)"
                       reverse

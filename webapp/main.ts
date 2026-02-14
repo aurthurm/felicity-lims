@@ -184,7 +184,7 @@ library.add(...icons);
 const app = createApp(App);
 registerComponents(app);
 registerPlugins(app);
-app.mount('#felicityApp');
+app.mount('#beakApp');
 
 // https://enterprisevue.dev/blog/error-handling-in-vue-3/
 // https://medium.com/@dillonchanis/handling-errors-in-vue-with-error-boundaries-91f6ead0093b

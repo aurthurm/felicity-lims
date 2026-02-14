@@ -135,7 +135,7 @@ const saveForm = handleSubmit((formValues) => {
 
  <div class="rounded-md border border-border bg-card p-6">
  <div class="overflow-x-auto">
- <table class="min-w-full divide-y divide-border fel-table">
+ <table class="min-w-full divide-y divide-border beak-table">
  <thead>
  <tr>
  <th class="text-left text-sm font-semibold text-foreground">Name</th>
@@ -163,7 +163,7 @@ const saveForm = handleSubmit((formValues) => {
  </div>
 
  <!-- Phylum Edit Form Modal -->
- <fel-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
+ <beak-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
  <template v-slot:header>
  <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
  </template>
@@ -200,7 +200,7 @@ const saveForm = handleSubmit((formValues) => {
  </button>
  </form>
  </template>
- </fel-modal>
+ </beak-modal>
 </template>
 
 <style scoped>

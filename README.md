@@ -214,8 +214,8 @@ Async-first design for high concurrency and responsive performance:
 ### **5-Minute Setup (Docker)**
 
 ```bash
-git clone https://github.com/beak-insights/felicity-lims.git
-cd felicity-lims
+git clone https://github.com/beak-insights/beak-lims.git
+cd beak-lims
 
 # Configure environment
 cp env.example .env
@@ -224,7 +224,7 @@ cp env.example .env
 docker compose -f docker-compose.dev.yml up -d --build
 
 # Initialize database
-docker compose -f docker-compose.dev.yml exec felicity-api felicity-lims db upgrade
+docker compose -f docker-compose.dev.yml exec beak-api beak-lims db upgrade
 
 # Access the application
 # Frontend: http://localhost:3000
@@ -248,13 +248,13 @@ See `env.example` for default credentials. Change immediately in production!
 ## **Development setup (docker)**
 
 ```bash
-git clone https://github.com/beak-insights/felicity-lims.git
-cd felicity-lims
+git clone https://github.com/beak-insights/beak-lims.git
+cd beak-lims
 cp env.example .env
 # build and run
 docker compose -f docker-compose.dev.yml up -d --build
 # database setup
-docker compose -f docker-compose.dev.yml exec felicity-api felicity-lims db upgrade
+docker compose -f docker-compose.dev.yml exec beak-api beak-lims db upgrade
 ```
 
 ## **Production Installation**
@@ -266,8 +266,8 @@ Felicity LIMS can be quickly deployed using Docker Compose.
 #### **Step 1**: Clone the Repository
 
 ```bash
-git clone https://github.com/beak-insights/felicity-lims.git
-cd felicity-lims
+git clone https://github.com/beak-insights/beak-lims.git
+cd beak-lims
 cp env.example .env
 ```
 
@@ -275,7 +275,7 @@ cp env.example .env
 
 ```bash
 docker compose up -d
-docker compose exec bash -c "felicity-lims upgrade"
+docker compose exec bash -c "beak-lims upgrade"
 docker compose logs -f -n100
 ```
 
@@ -317,17 +317,17 @@ For production, use **Supervisor** to demonize processes as follows:
 2. **create supervisor config file**
 
     ```
-    sudo nano /etc/supervisor/conf.d/felicity_lims.conf
+    sudo nano /etc/supervisor/conf.d/beak_lims.conf
     ```
 
 3. **Copy and Paste the following and edit correct accordingly**
 
-    ```[program:felicity_lims]
+    ```[program:beak_lims]
     command=/home/<user>/miniconda3/bin/python <full path to felicity lims root folder>
     autostart=true
     autorestart=true
-    stderr_logfile=/var/log/felicity_lims.err.log
-    stdout_logfile=/var/log/felicity_lims.out.log
+    stderr_logfile=/var/log/beak_lims.err.log
+    stdout_logfile=/var/log/beak_lims.out.log
     ```
 
 4. **Inform supervisor of our new programs:**
@@ -339,13 +339,13 @@ For production, use **Supervisor** to demonize processes as follows:
 
 5. **Tail Error logs:**
 
-    ```sudo supervisorctl tail -f felicity_lims stderr  # or
-    tail -f /var/log/felicity_lims.err.log
+    ```sudo supervisorctl tail -f beak_lims stderr  # or
+    tail -f /var/log/beak_lims.err.log
     ```
 
 6. **Tail output logs:**
-    ```sudo supervisorctl tail -f felicity_lims stdout  # or
-    tail -f /var/log/felicity_lims.out.log
+    ```sudo supervisorctl tail -f beak_lims stdout  # or
+    tail -f /var/log/beak_lims.out.log
     ```
 
 ---
@@ -430,7 +430,7 @@ Access the SigNoz dashboard at [http://localhost:3301](http://localhost:3301).
 ## **Project Structure**
 
 ```
-felicity-lims/
+beak-lims/
 ├── felicity/                    # Main application package
 │   ├── main.py                 # FastAPI application entry point
 │   ├── core/                   # Core utilities and middleware
@@ -562,8 +562,8 @@ Felicity LIMS is released under the [MIT License](LICENSE).
 
 ### **Community**
 
--   GitHub Issues: [Report bugs or request features](https://github.com/beak-insights/felicity-lims/issues)
--   Discussions: [Join the community](https://github.com/beak-insights/felicity-lims/discussions)
+-   GitHub Issues: [Report bugs or request features](https://github.com/beak-insights/beak-lims/issues)
+-   Discussions: [Join the community](https://github.com/beak-insights/beak-lims/discussions)
 
 ---
 

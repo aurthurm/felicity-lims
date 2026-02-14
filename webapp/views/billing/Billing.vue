@@ -1,6 +1,6 @@
 <template>
-    <fel-heading title="Billing" />
-    <fel-tabs :tabs="tabs" />
+    <beak-heading title="Billing" />
+    <beak-tabs :tabs="tabs" />
 </template>
 
 <script setup lang="ts">

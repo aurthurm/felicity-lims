@@ -154,7 +154,7 @@ function goBack() {
     <board v-if="selectedBoard" :board="selectedBoard" />
 
     <!-- Create/Edit Board Modal -->
-    <fel-modal v-if="showBoardModal" @close="showBoardModal = false" content-width="w-full max-w-2xl">
+    <beak-modal v-if="showBoardModal" @close="showBoardModal = false" content-width="w-full max-w-2xl">
       <template v-slot:header>
         <h3 class="text-lg font-semibold text-foreground">{{ boardFormTitle }}</h3>
       </template>
@@ -208,7 +208,7 @@ function goBack() {
           </div>
         </form>
       </template>
-    </fel-modal>
+    </beak-modal>
   </div>
 </template>
 

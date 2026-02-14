@@ -50,7 +50,7 @@ onMounted(() => {
 <template>
   <div class="h-screen bg-background pb-6 overflow-y-scroll">
     <div v-if="isFetching" class="flex items-center justify-center h-full">
-      <fel-loader message="Loading Document..."/>
+      <beak-loader message="Loading Document..."/>
     </div>
     <div v-else-if="!document" class="text-center text-muted-foreground">
       <p>No document found</p>

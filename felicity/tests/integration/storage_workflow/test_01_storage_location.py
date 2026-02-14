@@ -31,7 +31,7 @@ async def test_add_storage_location(app_gql, auth_data):
         "description": "Storage location one",
     }
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={
             "query": add_storage_location_query,
             "variables": {"payload": storage_location},
@@ -81,7 +81,7 @@ async def test_add_storage_location(app_gql, auth_data):
         "description": "Storage location one",
     }
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={
             "query": add_storage_location_query,
             "variables": {"payload": storage_location},

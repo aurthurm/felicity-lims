@@ -16,7 +16,7 @@ import { useField, useForm } from "vee-validate";
 import { object, string, number } from "yup";
 
 const DataTable = defineAsyncComponent(
-  () => import("@/components/ui/datatable/FelDataTable.vue")
+  () => import("@/components/ui/datatable/BeakDataTable.vue")
 )
 const props = defineProps({
   customerUid: {
@@ -335,7 +335,7 @@ const invoice = async (bill: TestBillType) => await downloadInvoice(bill.uid);
   </div>
 
   <!-- New Transaction Form Modal -->
-  <fel-modal v-if="showTransactionModal" @close="showTransactionModal = false" :contentWidth="'w-3/6'" class="bg-background">
+  <beak-modal v-if="showTransactionModal" @close="showTransactionModal = false" :contentWidth="'w-3/6'" class="bg-background">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">Transaction Form</h3>
     </template>
@@ -376,16 +376,16 @@ const invoice = async (bill: TestBillType) => await downloadInvoice(bill.uid);
         </label>
 
         <div class="flex justify-end">
-          <fel-button :color="'primary'" type="submit" :loading="processing" @click.prevent="submitTransactionForm">
+          <beak-button :color="'primary'" type="submit" :loading="processing" @click.prevent="submitTransactionForm">
             Save Transaction
-          </fel-button>
+          </beak-button>
         </div>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 
   <!-- Confirm Transaction Form Modal -->
-  <fel-modal v-if="showConfirmTransactionModal" @close="showConfirmTransactionModal = false" :contentWidth="'w-3/6'" class="bg-background">
+  <beak-modal v-if="showConfirmTransactionModal" @close="showConfirmTransactionModal = false" :contentWidth="'w-3/6'" class="bg-background">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">Confirm Transaction</h3>
     </template>
@@ -403,16 +403,16 @@ const invoice = async (bill: TestBillType) => await downloadInvoice(bill.uid);
         </label>
 
         <div class="flex justify-end">
-          <fel-button :color="'primary'" type="submit" :loading="processing" @click.prevent="submitConfirmTransaction">
+          <beak-button :color="'primary'" type="submit" :loading="processing" @click.prevent="submitConfirmTransaction">
             Confirm Transaction
-          </fel-button>
+          </beak-button>
         </div>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 
   <!-- Voucher Code Form Modal -->
-  <fel-modal v-if="showVoucherModal" @close="showVoucherModal = false" :contentWidth="'w-1/5'" class="bg-background">
+  <beak-modal v-if="showVoucherModal" @close="showVoucherModal = false" :contentWidth="'w-1/5'" class="bg-background">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">Apply Voucher Code</h3>
     </template>
@@ -430,11 +430,11 @@ const invoice = async (bill: TestBillType) => await downloadInvoice(bill.uid);
         </label>
 
         <div class="flex justify-end">
-          <fel-button :color="'primary'" type="submit" :loading="processing" @click.prevent="submitVoucherCodeForm">
+          <beak-button :color="'primary'" type="submit" :loading="processing" @click.prevent="submitVoucherCodeForm">
             Apply Voucher
-          </fel-button>
+          </beak-button>
         </div>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 </template>

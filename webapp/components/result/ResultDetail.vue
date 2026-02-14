@@ -4,11 +4,11 @@ import useApiUtil  from "@/composables/api_util";
 import { ResultMutationType } from "@/types/gql";
 import { GetAnalysisResultMutationDocument, GetAnalysisResultMutationQuery, GetAnalysisResultMutationQueryVariables } from "@/graphql/operations/analyses.queries";
 
-const FelAuditLog = defineAsyncComponent(
-  () => import("@/components/audit/FelAuditLog.vue")
+const BeakAuditLog = defineAsyncComponent(
+  () => import("@/components/audit/BeakAuditLog.vue")
 )
-const FelDataTable = defineAsyncComponent(
-  () => import("@/components/ui/datatable/FelDataTable.vue")
+const BeakDataTable = defineAsyncComponent(
+  () => import("@/components/ui/datatable/BeakDataTable.vue")
 )
 const props = defineProps(["analysisResultesultUid"]);
 
@@ -57,7 +57,7 @@ const columns = [
             <div class="h-px bg-border" />
         </div>
         
-        <FelDataTable 
+        <BeakDataTable 
             v-if="(mutations?.length ?? 0) > 0"
             :columns="columns"
             :data="mutations || []"
@@ -70,7 +70,7 @@ const columns = [
             <div class="h-px bg-border" />
         </div>
         
-        <FelAuditLog 
+        <BeakAuditLog 
             targetType="analysis_result" 
             :targetUid="analysisResultesultUid" 
         />

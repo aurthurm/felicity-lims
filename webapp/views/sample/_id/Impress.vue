@@ -6,7 +6,7 @@ import useSampleComposable from "@/composables/samples";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { ImpressSamplesMetaQuery, ImpressSamplesMetaQueryVariables, ImpressSamplesMetaDocument } from "@/graphql/operations/analyses.queries";
 const JsonPreViewer = defineAsyncComponent(
-  () => import("@/components/ui/FelJsonPreViewer.vue")
+  () => import("@/components/ui/BeakJsonPreViewer.vue")
 )
 
 const { withClientQuery } = useApiUtil();
@@ -39,7 +39,7 @@ const impressDownloader = async (report_uid) => await downloadImpress(report_uid
 
 <template>
   <div class="space-y-6">
-    <fel-loader v-if="loadingMeta" :message="'Loading your reports ...'" />
+    <beak-loader v-if="loadingMeta" :message="'Loading your reports ...'" />
     
     <section v-else class="space-y-6">
       <div v-if="impressMeta.length > 0" class="grid grid-cols-12 gap-6">

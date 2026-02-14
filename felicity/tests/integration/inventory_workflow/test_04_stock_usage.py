@@ -47,7 +47,7 @@ async def test_stock_adjustments(app_gql, auth_data):
         "remarks": "These items were lost",
     }
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={
             "query": add_stock_adjustment_mutation,
             "variables": {"payload": stock_adjustment},
@@ -64,7 +64,7 @@ async def test_stock_adjustments(app_gql, auth_data):
     assert data["adjustmentType"] == stock_adjustment["adjustmentType"]
 
     stocks_response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={
             "query": get_all_stocks_product_query,
         },
@@ -89,7 +89,7 @@ async def test_stock_adjustments(app_gql, auth_data):
         "remarks": "Recovered property",
     }
     new_response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={
             "query": add_stock_adjustment_mutation,
             "variables": {"payload": new_stock_adjustment},
@@ -108,7 +108,7 @@ async def test_stock_adjustments(app_gql, auth_data):
     assert new_data["adjustmentType"] == new_stock_adjustment["adjustmentType"]
 
     new_stocks_response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={
             "query": get_all_stocks_product_query,
         },
@@ -147,7 +147,7 @@ async def test_stock_transaction(app_gql, auth_data):
         "issued": 5,
     }
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={
             "query": add_stock_transaction_mutation,
             "variables": {"payload": stock_transaction},
@@ -163,7 +163,7 @@ async def test_stock_transaction(app_gql, auth_data):
     assert data["issued"] == stock_transaction["issued"]
 
     stocks_response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={
             "query": get_all_stocks_product_query,
         },

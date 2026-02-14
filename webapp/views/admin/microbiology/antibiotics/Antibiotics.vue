@@ -9,7 +9,7 @@ import { GetAbxAntibioticAllDocument, GetAbxAntibioticAllQuery, GetAbxAntibiotic
 import { AddAbxAntibioticMutation, AddAbxAntibioticMutationVariables, AddAbxAntibioticDocument, EditAbxAntibioticMutation, EditAbxAntibioticMutationVariables, EditAbxAntibioticDocument, UseAbxAntibioticMutation, UseAbxAntibioticMutationVariables, UseAbxAntibioticDocument } from '@/graphql/operations/microbiology.mutations';
 
 const DataTable = defineAsyncComponent(
-  () => import('@/components/ui/datatable/FelDataTable.vue')
+  () => import('@/components/ui/datatable/BeakDataTable.vue')
 )
 const VueMultiselect = defineAsyncComponent(
   () => import('vue-multiselect')
@@ -629,9 +629,9 @@ const saveForm = handleSubmit((formValues) => {
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Antibiotics">
-      <fel-button @click="FormManager(true)">Add Antibiotic</fel-button>
-    </fel-heading>
+    <beak-heading title="Antibiotics">
+      <beak-button @click="FormManager(true)">Add Antibiotic</beak-button>
+    </beak-heading>
 
     <div class="shadow-sm rounded-lg bg-card p-6">
       <DataTable 
@@ -657,7 +657,7 @@ const saveForm = handleSubmit((formValues) => {
   </div>
 
   <!-- Antibiotic Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
+  <beak-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
     <template v-slot:header>
       <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -950,7 +950,7 @@ const saveForm = handleSubmit((formValues) => {
         </button>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 </template>
 
 <style lang="postcss" scoped>

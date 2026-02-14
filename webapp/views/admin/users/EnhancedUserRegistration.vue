@@ -111,7 +111,7 @@ const laboratories = ref<LaboratoryType[]>([
 ]);
 
 const organizations = ref<OrganizationType[]>([
-  { uid: "org1", name: "Main Organization", setupName: "felicity" }
+  { uid: "org1", name: "Main Organization", setupName: "beak" }
 ]);
 
 const departments = ref([

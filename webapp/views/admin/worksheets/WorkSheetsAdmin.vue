@@ -16,7 +16,7 @@ import {
 import { InstrumentType } from "@/types/gql";
 import { AddWorkSheetTemplateDocument, AddWorkSheetTemplateMutation, AddWorkSheetTemplateMutationVariables, EditWorkSheetTemplateDocument, EditWorkSheetTemplateMutation, EditWorkSheetTemplateMutationVariables } from "@/graphql/operations/worksheet.mutations";
 const modal = defineAsyncComponent(
-  () => import("@/components/ui/FelModal.vue")
+  () => import("@/components/ui/BeakModal.vue")
 )
 
 const worksheetStore = useWorksheetStore();
@@ -206,9 +206,9 @@ const sampleTypes = computed<SampleTypeTyp[]>(() => sampleStore.getSampleTypes);
 
 <template>
   <div>
-    <fel-heading title="WorkSheet Templates">
-      <fel-button @click="FormManager(true)">Add Template</fel-button>
-    </fel-heading>
+    <beak-heading title="WorkSheet Templates">
+      <beak-button @click="FormManager(true)">Add Template</beak-button>
+    </beak-heading>
 
     <hr class="my-4 border-t border-border" />
 

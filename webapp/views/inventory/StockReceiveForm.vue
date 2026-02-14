@@ -306,7 +306,7 @@ const updateQuantityReceived = () => {
       >
         Save
       </button>
-      <fel-loader message="Adding Inventory ..." v-show="addingProduct" />
+      <beak-loader message="Adding Inventory ..." v-show="addingProduct" />
     </div>
   </form>
 </template>

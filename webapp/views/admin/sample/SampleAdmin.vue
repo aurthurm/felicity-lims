@@ -14,5 +14,5 @@
  </script>
 
 <template>
-  <fel-tabs :tabs="tabs" />
+  <beak-tabs :tabs="tabs" />
 </template>

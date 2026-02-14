@@ -70,17 +70,17 @@ const notices = computed<NoticeType[]>(() => noticeStore.getMyNotices(user.value
 
 <template>
  <div class="space-y-4">
- <fel-heading title="Notice Manager">
+ <beak-heading title="Notice Manager">
  <button  @click.prevent="FormManager(true)"
  class="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary border border-transparent rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors duration-200"
  >
  New Notice
  </button>
- </fel-heading>
+ </beak-heading>
 
  <!-- Notice Table View -->
  <div class="overflow-hidden shadow ring-1 ring-border ring-opacity/5 rounded-lg">
- <table class="min-w-full divide-y divide-border fel-table">
+ <table class="min-w-full divide-y divide-border beak-table">
  <thead class="bg-muted">
  <tr>
  <th class="text-left text-sm font-medium text-foreground">Notice Title</th>
@@ -116,13 +116,13 @@ const notices = computed<NoticeType[]>(() => noticeStore.getMyNotices(user.value
  </tbody>
  </table>
  <div v-if="fetchingNotices" class="py-4 text-center">
- <fel-loader message="Fetching notices ..." />
+ <beak-loader message="Fetching notices ..." />
  </div>
  </div>
  </div>
 
  <!-- Notice Form Modal -->
- <fel-modal v-if="modalState.showModal" @close="modalState.showModal = false" :content-width="'w-1/2'">
+ <beak-modal v-if="modalState.showModal" @close="modalState.showModal = false" :content-width="'w-1/2'">
  <template v-slot:header>
  <h3 class="text-lg font-medium text-foreground">{{ modalState.title }}</h3>
  </template>
@@ -130,5 +130,5 @@ const notices = computed<NoticeType[]>(() => noticeStore.getMyNotices(user.value
  <template v-slot:body>
  <NoticeForm :notice="modalState.notice" @close="modalState.showModal = false" />
  </template>
- </fel-modal>
+ </beak-modal>
 </template>

@@ -40,7 +40,7 @@ async def test_install(app_api, app_gql):
 
     # First authenticate to get user uid
     auth_response = await app_gql.post(
-        "felicity-gql",
+        "beak-gql",
         json={
             "query": """
                 mutation Auth($username: String!, $password: String!){
@@ -69,7 +69,7 @@ async def test_install(app_api, app_gql):
 
     # Set active laboratory
     set_lab_response = await app_gql.post(
-        "felicity-gql",
+        "beak-gql",
         json={
             "query": """
                 mutation SetActiveLab($userUid: String!, $laboratoryUid: String!){

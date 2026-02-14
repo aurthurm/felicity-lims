@@ -165,9 +165,9 @@ const saveForm = handleSubmit(async (values) => {
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Analyses Templates">
-      <fel-button @click="FormManager(true)">Add Analyses Template</fel-button>
-    </fel-heading>
+    <beak-heading title="Analyses Templates">
+      <beak-button @click="FormManager(true)">Add Analyses Template</beak-button>
+    </beak-heading>
 
     <div class="grid grid-cols-12 gap-6">
       <!-- Templates List -->
@@ -234,7 +234,7 @@ const saveForm = handleSubmit(async (values) => {
             <!-- Sticky header + action bar -->
             <div class="flex items-center justify-between gap-4 px-4 py-3 border-b border-border bg-muted/30 shrink-0">
               <h3 class="text-sm font-medium text-foreground">Analyses in template</h3>
-              <fel-button
+              <beak-button
                 type="button"
                 :loading="templateUpdating"
                 @click="updateTemplate()"
@@ -245,7 +245,7 @@ const saveForm = handleSubmit(async (values) => {
                   </svg>
                   Update Template
                 </span>
-              </fel-button>
+              </beak-button>
             </div>
 
             <!-- Scrollable category grid -->
@@ -256,7 +256,7 @@ const saveForm = handleSubmit(async (values) => {
                   :key="category[0]"
                   class="min-w-0"
                 >
-                  <fel-accordion compact>
+                  <beak-accordion compact>
                     <template v-slot:title>
                       <span class="text-sm truncate">{{ category[0] }}</span>
                     </template>
@@ -285,7 +285,7 @@ const saveForm = handleSubmit(async (values) => {
                         </li>
                       </ul>
                     </template>
-                  </fel-accordion>
+                  </beak-accordion>
                 </div>
               </div>
             </div>
@@ -305,7 +305,7 @@ const saveForm = handleSubmit(async (values) => {
   </div>
 
   <!-- Template Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false">
+  <beak-modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -351,15 +351,15 @@ const saveForm = handleSubmit(async (values) => {
         </div>
 
         <div class="pt-4">
-          <fel-button
+          <beak-button
             type="submit"
             class="w-full"
             :loading="formSaving"
           >
             Save Changes
-          </fel-button>
+          </beak-button>
         </div>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 </template>

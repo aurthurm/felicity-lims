@@ -8,7 +8,7 @@
   import { useField, useForm } from "vee-validate";
   import { object, string } from "yup";
   const modal = defineAsyncComponent(
-  () => import("@/components/ui/FelModal.vue")
+  () => import("@/components/ui/BeakModal.vue")
 )
 
   const analyisStore = useAnalysisStore()
@@ -82,13 +82,13 @@
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Coding Standards">
-      <fel-button @click="FormManager(true)">Add Coding Standard</fel-button>
-    </fel-heading>
+    <beak-heading title="Coding Standards">
+      <beak-button @click="FormManager(true)">Add Coding Standard</beak-button>
+    </beak-heading>
 
     <div class="rounded-lg border border-border bg-card p-6">
       <div class="overflow-x-auto">
-        <table class="w-full fel-table">
+        <table class="w-full beak-table">
           <thead>
             <tr class="border-b border-border">
               <th class="px-4 py-3 text-left text-sm font-medium text-foreground">Standard</th>
@@ -118,7 +118,7 @@
     </div>
 
     <!-- Form Modal -->
-    <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/6'">
+    <beak-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/6'">
       <template v-slot:header>
         <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
       </template>
@@ -155,6 +155,6 @@
           </div>
         </form>
       </template>
-    </fel-modal>
+    </beak-modal>
   </div>
 </template>

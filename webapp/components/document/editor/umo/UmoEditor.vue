@@ -98,7 +98,7 @@ const goBack = () => router.back();
         role="status"
         aria-label="Saving document"
       >
-        <fel-loader message="Saving..." />
+        <beak-loader message="Saving..." />
       </div>
     </header>
     

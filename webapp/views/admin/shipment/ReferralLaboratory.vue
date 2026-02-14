@@ -8,7 +8,7 @@
  import { useShipmentStore } from '@/stores/shipment';
  import useApiUtil from '@/composables/api_util';
  const modal = defineAsyncComponent(
- () => import("@/components/ui/FelModal.vue")
+ () => import("@/components/ui/BeakModal.vue")
  )
 
  const shipmentStore = useShipmentStore();
@@ -111,13 +111,13 @@
 
 <template>
  <div>
- <fel-heading title="Referral Labs">
- <fel-button @click="FormManager(true)">Add Referral Laboratory</fel-button>
- </fel-heading>
+ <beak-heading title="Referral Labs">
+ <beak-button @click="FormManager(true)">Add Referral Laboratory</beak-button>
+ </beak-heading>
 
  <div class="overflow-x-auto mt-4">
  <div class="align-middle inline-block min-w-full rounded-lg shadow-md bg-card p-6">
- <table class="min-w-full fel-table">
+ <table class="min-w-full beak-table">
  <thead class="bg-muted">
  <tr>
  <th class="px-3 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider">Name</th>

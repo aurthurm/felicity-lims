@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import FButton from "@/components/ui/buttons/FelButton.vue";
+import FButton from "@/components/ui/buttons/BeakButton.vue";
 import { ref, computed, reactive, defineAsyncComponent } from "vue";
 import { useSampleStore } from "@/stores/sample";
 import { useShipmentStore } from "@/stores/shipment";
@@ -127,9 +127,9 @@ function areAllChecked(): boolean {
     <div class="rounded-md border border-border">
       <div class="overflow-x-auto">
         <div v-if="shipmentStore.fetchingSamples" class="p-4 text-center">
-          <fel-loader message="Fetching samples ..." />
+          <beak-loader message="Fetching samples ..." />
         </div>
-        <table class="w-full fel-table" v-else>
+        <table class="w-full beak-table" v-else>
           <thead>
             <tr class="border-b border-border bg-muted/50">
               <th class="h-10 px-4 text-left align-middle font-medium text-muted-foreground">

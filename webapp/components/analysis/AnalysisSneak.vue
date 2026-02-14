@@ -4,8 +4,8 @@ import useApiUtil from "@/composables/api_util";
 import { AnalysisType } from "@/types/gql";
 import { GetAnalysesServicesByUidDocument, GetAnalysesServicesByUidQuery, GetAnalysesServicesByUidQueryVariables } from "@/graphql/operations/analyses.queries";
 
-const FelLabelValueList = defineAsyncComponent(
-  () => import("@/components/ui/label/FelLabelValueList.vue")
+const BeakLabelValueList = defineAsyncComponent(
+  () => import("@/components/ui/label/BeakLabelValueList.vue")
 );
 
 interface Props {
@@ -75,14 +75,14 @@ const items = computed<AnalysisItem[]>(() => {
 <template>
   <div class="w-full" role="region" aria-label="Analysis details">
     <div v-if="isLoading" class="flex justify-center items-center py-4">
-      <fel-loader message="Loading analysis data..." variant="muted" size="sm" />
+      <beak-loader message="Loading analysis data..." variant="muted" size="sm" />
     </div>
     
     <div v-else-if="error" class="text-destructive text-sm py-2" role="alert">
       {{ error }}
     </div>
     
-    <FelLabelValueList 
+    <BeakLabelValueList 
       v-else-if="analysis?.uid" 
       :items="items" 
       class="bg-card rounded-md border border-border p-4 shadow-sm"

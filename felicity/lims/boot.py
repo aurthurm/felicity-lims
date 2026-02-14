@@ -113,8 +113,8 @@ def register_graphql(app: FastAPI) -> None:
         context_getter=get_gql_context,
         subscription_protocols=[GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL],
     )
-    app.include_router(graphql_app, prefix="/felicity-gql")
-    # app.add_websocket_route("/felicity-gql", graphql_app)
+    app.include_router(graphql_app, prefix="/beak-gql")
+    # app.add_websocket_route("/beak-gql", graphql_app)
 
 
 def init_sentry(app: FastAPI):

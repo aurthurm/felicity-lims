@@ -28,7 +28,7 @@ settings = get_settings()
 
 # oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="felicity-gql", scheme_name="JWT")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="beak-gql", scheme_name="JWT")
 
 
 async def _get_user(token: str):

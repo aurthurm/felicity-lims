@@ -14,12 +14,12 @@ FROM python:3.12.3-slim-bookworm AS server-base
 RUN apt-get update && apt-get install -y \
     git gcc libpq-dev libcairo2-dev python3-git poppler-utils \
     && rm -rf /var/lib/apt/lists/*
-RUN useradd -m -s /bin/bash felicity
+RUN useradd -m -s /bin/bash beak
 COPY ./requirements.txt /tmp/requirements.txt
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install -r /tmp/requirements.txt
 WORKDIR /app
-RUN chown felicity:felicity /app
+RUN chown beak:beak /app
 
 FROM server-base AS server-aio
 WORKDIR /app
@@ -28,7 +28,7 @@ COPY --chown=felicity:felicity requirements.txt requirements-dev.txt setup.py al
 COPY --from=webapp-build --chown=felicity:felicity /app/dist /app/felicity/templates/static
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install -e .
-USER felicity
+USER beak
 ENV PYTHONPATH=/app
 CMD ["gunicorn", "felicity.main:felicity", "--bind", "0.0.0.0:8000", "--workers", "1", "--worker-class", "uvicorn.workers.UvicornWorker"]
 
@@ -36,10 +36,10 @@ FROM server-base AS server-api
 WORKDIR /app
 COPY --chown=felicity:felicity felicity ./felicity
 COPY --chown=felicity:felicity requirements.txt requirements-dev.txt setup.py alembic.ini .
-RUN rm -rf /app/felicity/templates/static/* && \
-    --mount=type=cache,target=/root/.cache/pip \
+RUN --mount=type=cache,target=/root/.cache/pip \
+    rm -rf /app/felicity/templates/static/* && \
     pip install -e .
-USER felicity
+USER beak
 ENV PYTHONPATH=/app
 CMD ["gunicorn", "felicity.main:felicity", "--bind", "0.0.0.0:8000", "--workers", "1", "--worker-class", "uvicorn.workers.UvicornWorker"]
 

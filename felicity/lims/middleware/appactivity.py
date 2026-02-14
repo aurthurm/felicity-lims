@@ -17,7 +17,7 @@ class APIActivityLogMiddleware(BaseHTTPMiddleware):
         self,
         app: ASGIApp,
         auth_header: str = "Authorization",
-        graphql_path: str = "/felicity-gql",
+        graphql_path: str = "/beak-gql",
     ):
         super().__init__(app)
         self.auth_header = auth_header

@@ -144,7 +144,7 @@ const resetAPGraphs = () => {
 
     <div class="p-4">
       <div v-if="dashboard.fetchingSampePeformanceStats" class="text-start my-4">
-        <fel-loader message="Fetching updated sample performance stats..." />
+        <beak-loader message="Fetching updated sample performance stats..." />
       </div>
       
       <div class="flex flex-wrap justify-start gap-4">
@@ -198,7 +198,7 @@ const resetAPGraphs = () => {
 
     <div class="p-2">
       <div v-if="dashboard.fetchingAnalysisPeformanceStats" class="text-start my-4 w-100">
-        <fel-loader message="fetching analysis peformance stats ..." />
+        <beak-loader message="fetching analysis peformance stats ..." />
       </div>
       <div id="ap-graphs">
         <div id="process-service" class="mt-3"></div>

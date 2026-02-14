@@ -13,7 +13,7 @@ import { object, number, string } from "yup";
 import * as shield from "@/guards";
 
 const DataTable = defineAsyncComponent(
-  () => import("@/components/ui/datatable/FelDataTable.vue")
+  () => import("@/components/ui/datatable/BeakDataTable.vue")
 )
 
 const worksheetStore = useWorksheetStore();
@@ -199,7 +199,7 @@ const countNone = computed(
 </script>
 
 <template>
-  <fel-heading title="Worksheets">
+  <beak-heading title="Worksheets">
     <button 
       v-show="shield.hasRights(shield.actions.CREATE, shield.objects.WORKSHEET)" 
       @click.prevent="showModal = true"
@@ -207,7 +207,7 @@ const countNone = computed(
     >
       Add WorkSheet
     </button>
-  </fel-heading>
+  </beak-heading>
   
   <div class="space-y-6">
     <div class="rounded-lg border border-border bg-card shadow-sm p-6">
@@ -238,7 +238,7 @@ const countNone = computed(
     </div>
 
     <!-- Location Edit Form Modal -->
-    <fel-modal v-if="showModal" @close="showModal = false" contentWidth="w-1/2">
+    <beak-modal v-if="showModal" @close="showModal = false" contentWidth="w-1/2">
       <template v-slot:header>
         <div class="space-y-4">
           <h3 class="text-lg font-medium">Create Worksheet</h3>
@@ -300,6 +300,6 @@ const countNone = computed(
           </div>
         </form>
       </template>
-    </fel-modal>
+    </beak-modal>
   </div>
 </template>

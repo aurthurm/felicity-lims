@@ -57,7 +57,7 @@ const tabs = computed(() => [
     id: "samples",
     label: "Samples",
     component: defineAsyncComponent(() => 
-      import("@/components/sample/FelAnalyisRequestListing.vue")
+      import("@/components/sample/BeakAnalyisRequestListing.vue")
     ),
     props: {
       target: "patient-samples",
@@ -78,7 +78,7 @@ const tabs = computed(() => [
     id: "logs",
     label: "Logs",
     component: defineAsyncComponent(() => 
-      import("@/components/audit/FelAuditLog.vue")
+      import("@/components/audit/BeakAuditLog.vue")
     ),
     props: {
       targetType: "patient",
@@ -132,7 +132,7 @@ onMounted(() => {
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Patients Quick View" />
+    <beak-heading title="Patients Quick View" />
     <!-- Header Actions -->
     <div class="flex justify-between items-center">
       <div class="flex items-center space-x-4">
@@ -172,7 +172,7 @@ onMounted(() => {
         :delay="400"
         class="col-span-3 max-h-[calc(100vh-14rem)] overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
       >
-        <fel-loader 
+        <beak-loader 
           v-if="fetchingPatients"
           message="Fetching patients..." 
         />
@@ -219,12 +219,12 @@ onMounted(() => {
         class="col-span-9 space-y-6"
       >
         <components.PatientInfo @editPatient="showModal = true" />
-        <fel-tabs :tabs="tabs" initial-tab="samples" :keep-alive="false" class="rounded-lg" />
+        <beak-tabs :tabs="tabs" initial-tab="samples" :keep-alive="false" class="rounded-lg" />
       </section>
     </div>
 
     <!-- Edit Modal -->
-    <fel-modal
+    <beak-modal
       v-if="showModal"
       @close="showModal = false"
       content-width="w-3/6"
@@ -241,7 +241,7 @@ onMounted(() => {
             @close="handlePatientUpdate"
           />
       </template>
-    </fel-modal>
+    </beak-modal>
   </div>
 </template>
 

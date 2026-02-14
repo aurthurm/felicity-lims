@@ -11,7 +11,7 @@ export const getOptions = (title, content) => {
 
 
 const defaultoptions = {
-    "editorKey": "Felicity DMS",
+    "editorKey": "Beak DMS",
     "locale": "en-US",
     "theme": "auto",
     "height": "100%",

@@ -31,7 +31,7 @@ const tabs = computed(() => [
     id: "samples",
     label: "samples",
     component: defineAsyncComponent(() =>
-      import("@/components/sample/FelAnalyisRequestListing.vue")
+      import("@/components/sample/BeakAnalyisRequestListing.vue")
     ),
     props: {
       target: "patient-samples",
@@ -60,7 +60,7 @@ const tabs = computed(() => [
     id: "logs",
     label: "logs",
     component: defineAsyncComponent(() =>
-      import("@/components/audit/FelAuditLog.vue")
+      import("@/components/audit/BeakAuditLog.vue")
     ),
     props: {
       targetType: "patient",
@@ -85,13 +85,13 @@ const tabs = computed(() => [
     </section>
 
     <!-- Render tabs only after patient is loaded -->
-    <fel-tabs
+    <beak-tabs
       v-if="!fetchingPatient && patientUid"
       :tabs="tabs"
       :initial-tab="activeTab"
       class="rounded-lg"
     />
 
-    <fel-loader v-else message="Loading patient…" />
+    <beak-loader v-else message="Loading patient…" />
   </section>
 </template>

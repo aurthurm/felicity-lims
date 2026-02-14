@@ -283,9 +283,9 @@ const saveMappingForm = handleMappingSubmit((values) => {
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Analyses Profiles">
-      <fel-button @click="FormManager(true)">Add Analyses Profile</fel-button>
-    </fel-heading>
+    <beak-heading title="Analyses Profiles">
+      <beak-button @click="FormManager(true)">Add Analyses Profile</beak-button>
+    </beak-heading>
 
     <div class="grid grid-cols-12 gap-6">
       <!-- Profiles List -->
@@ -381,7 +381,7 @@ const saveMappingForm = handleMappingSubmit((values) => {
                 <!-- Sticky header + action bar -->
                 <div class="flex items-center justify-between gap-4 px-4 py-3 mb-4 border-b border-border bg-muted/30 shrink-0">
                   <h3 class="text-sm font-medium text-foreground">Analyses in profile</h3>
-                  <fel-button
+                  <beak-button
                     type="button"
                     :loading="profileUpdating"
                     @click="updateProfile()"
@@ -392,14 +392,14 @@ const saveMappingForm = handleMappingSubmit((values) => {
                       </svg>
                       Update Profile
                     </span>
-                  </fel-button>
+                  </beak-button>
                 </div>
 
                 <!-- Scrollable category grid -->
                 <div class="overflow-y-auto overscroll-contain flex-1 min-h-[200px] max-h-[420px]">
                   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     <div v-for="category in analysesServices" :key="category[0]" class="min-w-0">
-                      <fel-accordion compact>
+                      <beak-accordion compact>
                         <template v-slot:title>
                           <span class="text-sm truncate">{{ category[0] }}</span>
                         </template>
@@ -428,7 +428,7 @@ const saveMappingForm = handleMappingSubmit((values) => {
                             </li>
                           </ul>
                         </template>
-                      </fel-accordion>
+                      </beak-accordion>
                     </div>
                   </div>
                 </div>
@@ -447,7 +447,7 @@ const saveMappingForm = handleMappingSubmit((values) => {
                 </div>
 
                 <div class="overflow-hidden rounded-lg border border-border">
-                  <table class="w-full fel-table">
+                  <table class="w-full beak-table">
                     <thead>
                       <tr class="border-b border-border bg-muted/50">
                         <th class="text-left">Name</th>
@@ -503,7 +503,7 @@ const saveMappingForm = handleMappingSubmit((values) => {
   </div>
 
   <!-- Profile Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false">
+  <beak-modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
       <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -584,20 +584,20 @@ const saveMappingForm = handleMappingSubmit((values) => {
         </div>
 
         <div class="pt-4">
-          <fel-button
+          <beak-button
             type="submit"
             class="w-full"
             :loading="formSaving"
           >
             Save Changes
-          </fel-button>
+          </beak-button>
         </div>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 
   <!-- Mapping Form Modal -->
-  <fel-modal v-if="showMappingModal" @close="showMappingModal = false">
+  <beak-modal v-if="showMappingModal" @close="showMappingModal = false">
     <template v-slot:header>
       <h3 class="text-lg font-semibold text-foreground">{{ mappingFormTitle }}</h3>
     </template>
@@ -663,7 +663,7 @@ const saveMappingForm = handleMappingSubmit((values) => {
         </div>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 
 </template>
 

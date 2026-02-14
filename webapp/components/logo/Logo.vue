@@ -2,9 +2,9 @@
   <img
     src="/webapp/assets/logo-white.svg"
     :class="styling"
-    alt="Felicity LIMS LOGO"
+    alt="Beak LIMS LOGO"
     role="img"
-    aria-label="Felicity LIMS Logo"
+    aria-label="Beak LIMS Logo"
   />
 </template>
 

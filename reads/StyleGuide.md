@@ -138,5 +138,5 @@ Your `webapp/assets/css/style.css` bridges your CSS theme variables with Tailwin
 
 **Tip:** Always pair background utilities with their corresponding foreground utilities for proper contrast and accessibility.
 
-For advanced customization, use `@layer components` classes (e.g., `.fel-table`, `.btn-primary`) or reusable Vue components. Theme definitions: `webapp/assets/css/style.css` — `@layer theme` block.
+For advanced customization, use `@layer components` classes (e.g., `.beak-table`, `.btn-primary`) or reusable Vue components. Theme definitions: `webapp/assets/css/style.css` — `@layer theme` block.
 

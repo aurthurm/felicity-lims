@@ -257,7 +257,7 @@ function setupNavigationGuards(
         if (authStore.auth.laboratoryContext.activeLaboratory) {
             const labName = authStore.auth.laboratoryContext.activeLaboratory.name;
             const pageTitle = (to.meta?.title as string) || (to.name as string) || 'Page';
-            document.title = `${pageTitle} - ${labName} - Felicity LIMS`;
+            document.title = `${pageTitle} - ${labName} - Beak LIMS`;
         }
 
         // Update session activity

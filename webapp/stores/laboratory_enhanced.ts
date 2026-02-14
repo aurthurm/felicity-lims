@@ -204,9 +204,9 @@ interface IEnhancedLaboratoryStore {
     };
 }
 
-const STORAGE_LABORATORY_KEY = 'felicity_laboratory_store';
-const STORAGE_SETTINGS_KEY = 'felicity_laboratory_settings';
-const STORAGE_ANALYTICS_KEY = 'felicity_laboratory_analytics';
+const STORAGE_LABORATORY_KEY = 'beak_laboratory_store';
+const STORAGE_SETTINGS_KEY = 'beak_laboratory_settings';
+const STORAGE_ANALYTICS_KEY = 'beak_laboratory_analytics';
 const CACHE_EXPIRY_TIME = 5 * 60 * 1000; // 5 minutes
 
 export const useEnhancedLaboratoryStore = defineStore('enhancedLaboratory', () => {

@@ -55,7 +55,7 @@ async def test_add_stock_item(app_gql, auth_data):
 
     stock_category = {"name": "Consumables", "description": "Consumables"}
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={
             "query": add_stock_category_mutation,
             "variables": {"payload": stock_category},
@@ -69,7 +69,7 @@ async def test_add_stock_item(app_gql, auth_data):
     data = response.json()["data"]["createStockCategory"]
     if "uid" not in data:
         lookup = await app_gql.post(
-            "/felicity-gql",
+            "/beak-gql",
             json={"query": stock_category_all_query},
             headers=auth_data["headers"],
         )
@@ -104,7 +104,7 @@ async def test_add_hazar(app_gql, auth_data):
 
     hazard = {"name": "Caution", "description": "Caution hazard"}
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={"query": add_hazard_mutation, "variables": {"payload": hazard}},
         headers=auth_data["headers"],
     )
@@ -115,7 +115,7 @@ async def test_add_hazar(app_gql, auth_data):
     data = response.json()["data"]["createHazard"]
     if "uid" not in data:
         lookup = await app_gql.post(
-            "/felicity-gql",
+            "/beak-gql",
             json={"query": hazard_all_query},
             headers=auth_data["headers"],
         )
@@ -151,7 +151,7 @@ async def test_add_stock_unit(app_gql, auth_data):
         "name": "ml",
     }
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={"query": add_stock_unit_mutation, "variables": {"payload": stock_unit}},
         headers=auth_data["headers"],
     )
@@ -162,7 +162,7 @@ async def test_add_stock_unit(app_gql, auth_data):
     data = response.json()["data"]["createStockUnit"]
     if "uid" not in data:
         lookup = await app_gql.post(
-            "/felicity-gql",
+            "/beak-gql",
             json={"query": stock_unit_all_query},
             headers=auth_data["headers"],
         )
@@ -198,7 +198,7 @@ async def test_add_stock_packaging(app_gql, auth_data):
         "name": "container",
     }
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={
             "query": add_stock_packaging_mutation,
             "variables": {"payload": stock_packaging},

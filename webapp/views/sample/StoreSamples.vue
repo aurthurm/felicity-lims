@@ -9,7 +9,7 @@ import { storgeSlotMapper } from "@/utils";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { ExtStorageContainerType } from "@/types/storage";
 const TreeItem = defineAsyncComponent(
-  () => import("@/components/storage/FelTreeItem.vue")
+  () => import("@/components/storage/BeakTreeItem.vue")
 )
 
 interface ISampleData {

@@ -13,7 +13,7 @@ import { SwitchActiveLaboratoryMutation, SwitchActiveLaboratoryMutationVariables
 
 // Lazily load components for better performance
 const Logo = defineAsyncComponent(() => import("@/components/logo/Logo.vue"));
-const FelBadge = defineAsyncComponent(() => import("@/components/ui/FelBadge.vue"));
+const BeakBadge = defineAsyncComponent(() => import("@/components/ui/BeakBadge.vue"));
 const UserPreferences = defineAsyncComponent(() => import("@/components/user/UserPreferences.vue"));
 
 const {isFullscreen, toggle} = useFullscreen()
@@ -249,11 +249,11 @@ const switchLabNow = () => {
             to="/"
             id="brand"
             class="flex items-center md:w-auto text-primary-foreground/80 hover:text-primary-foreground transition-colors"
-            aria-label="Felicity LIMS Home"
+            aria-label="Beak LIMS Home"
         >
           <Logo />
           <h1 class="text-left text-2xl font-medium ml-2">
-            {{ activeLaboratory?.name ?? "Felicity LIMS" }}
+            {{ activeLaboratory?.name ?? "Beak LIMS" }}
           </h1>
         </router-link>
 
@@ -458,7 +458,7 @@ const switchLabNow = () => {
   </nav>
 
   <!-- Error drawer -->
-  <fel-drawer :show="showErrors" @close="showErrors = false">
+  <beak-drawer :show="showErrors" @close="showErrors = false">
     <template v-slot:header>
       <div class="flex items-center justify-between">
         <h3 class="font-semibold text-lg">Errors List</h3>
@@ -484,14 +484,14 @@ const switchLabNow = () => {
             class="mb-2 p-3 bg-background rounded text-sm border-l-4 border-destructive flex items-start gap-2"
         >
           <code class="flex-1 whitespace-pre-wrap">{{ item.message }}</code>
-          <fel-badge v-if="item.count > 1" variant="destructive" size="sm" class="shrink-0">{{ item.count }}</fel-badge>
+          <beak-badge v-if="item.count > 1" variant="destructive" size="sm" class="shrink-0">{{ item.count }}</beak-badge>
         </li>
       </ul>
     </template>
-  </fel-drawer>
+  </beak-drawer>
 
   <!-- User Preferences Drawer -->
-  <fel-drawer :show="showPreferences" @close="showPreferences = false">
+  <beak-drawer :show="showPreferences" @close="showPreferences = false">
     <template v-slot:header>
       <div class="flex items-center justify-between">
         <h3 class="font-semibold text-lg">Your Preferences</h3>
@@ -500,10 +500,10 @@ const switchLabNow = () => {
     <template v-slot:body>
       <user-preferences v-if="showPreferences" />
     </template>
-  </fel-drawer>
+  </beak-drawer>
 
     <!-- Lab Switcher -->
-  <fel-modal v-if="showModal" @close="showModal = false">
+  <beak-modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
       <h3 class="text-lg font-bold text-foreground">Current Laboratory Switcher</h3>
     </template>
@@ -528,7 +528,7 @@ const switchLabNow = () => {
           </div>
         </div>
 
-        <fel-button
+        <beak-button
           type="button"
           @click.prevent="switchLabNow()"
           :loading="switching"
@@ -536,9 +536,9 @@ const switchLabNow = () => {
           class="w-full"
         >
           Switch Laboratory
-        </fel-button>
+        </beak-button>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 
 </template>

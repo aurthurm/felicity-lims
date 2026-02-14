@@ -41,7 +41,7 @@ async def test_submit_results(
     results = [r["analysisResults"][0] for r in samples]
 
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={
             "query": add_gql,
             "variables": {
@@ -170,7 +170,7 @@ async def test_retract_result(app_gql, auth_data, samples):
     logger.info(f"resulted, results: {resulted} {results}")
 
     response = await app_gql.post(
-        "felicity-gql",
+        "beak-gql",
         json={"query": add_gql, "variables": {"analyses": [resulted[0]["uid"]]}},
         headers=auth_data["headers"],
     )
@@ -257,7 +257,7 @@ async def test_retest_result(app_gql, auth_data, samples):
 
     results = [r["analysisResults"][0] for r in samples]
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={"query": add_gql, "variables": {"analyses": [results[3]["uid"]]}},
         headers=auth_data["headers"],
     )
@@ -308,7 +308,7 @@ async def test_verify_ws_results(app_gql, app_api, samples, users, worksheets):
     """
 
     auth_resp = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={
             "query": auth_user_mutation,
             "variables": {
@@ -322,7 +322,7 @@ async def test_verify_ws_results(app_gql, app_api, samples, users, worksheets):
     results = [r["analysisResults"][0] for r in samples]
     results = list(filter(lambda r: r["status"] == "resulted", results))
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={
             "query": add_gql,
             "variables": {
@@ -381,7 +381,7 @@ async def test_verify_sample_results(app_gql, users, samples):
     """
 
     u_resp = await app_gql.post(
-        "felicity-gql",
+        "beak-gql",
         json={
             "query": auth_user_mutation,
             "variables": {
@@ -408,7 +408,7 @@ async def test_verify_sample_results(app_gql, users, samples):
             break
 
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={
             "query": add_gql,
             "variables": {
@@ -500,7 +500,7 @@ async def test_check_results(app_gql, auth_data, samples):
     """
     samples = list(filter(lambda r: r["status"] == "approved", samples))
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={"query": add_gql, "variables": {"uid": samples[0]["uid"]}},
         headers=auth_data["headers"],
     )

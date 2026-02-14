@@ -161,14 +161,14 @@ onMounted(() => {
     </div>
 
     <div v-if="loading" class="text-start my-4">
-      <fel-loader message="Fetching inventory KPIs..." />
+      <beak-loader message="Fetching inventory KPIs..." />
     </div>
     <div v-else-if="error" class="text-sm text-destructive">
       {{ error }}
     </div>
 
     <div v-else class="overflow-x-auto border border-border rounded-lg">
-      <table class="min-w-full divide-y divide-border fel-table">
+      <table class="min-w-full divide-y divide-border beak-table">
         <thead class="bg-muted">
           <tr>
             <th class="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">Product</th>

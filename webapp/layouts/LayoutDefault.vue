@@ -2,7 +2,7 @@
 import { defineAsyncComponent } from 'vue'
 
 const HeaderMain = defineAsyncComponent(() => import('@/components/layout/HeaderMain.vue'))
-const FelNotification = defineAsyncComponent(() => import('@/components/notification/FelNotification.vue'))
+const BeakNotification = defineAsyncComponent(() => import('@/components/notification/BeakNotification.vue'))
 </script>
 
 <template>
@@ -11,6 +11,6 @@ const FelNotification = defineAsyncComponent(() => import('@/components/notifica
     <main class="container mx-auto px-4 py-8">
       <slot />
     </main>
-    <fel-notification />
+    <beak-notification />
   </div>
 </template> 

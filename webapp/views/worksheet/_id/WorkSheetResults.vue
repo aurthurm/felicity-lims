@@ -10,13 +10,13 @@ import { useUserStore } from "@/stores/user";
 import { useSetupStore } from "@/stores/setup";
 import * as shield from "@/guards";
 const FButton = defineAsyncComponent(
-  () => import("@/components/ui/buttons/FelButton.vue")
+  () => import("@/components/ui/buttons/BeakButton.vue")
 )
-const FelSelect = defineAsyncComponent(
-  () => import("@/components/ui/select/FelSelect.vue")
+const BeakSelect = defineAsyncComponent(
+  () => import("@/components/ui/select/BeakSelect.vue")
 )
-const FelSwitch = defineAsyncComponent(
-  () => import("@/components/ui/switch/FelSwitch.vue")
+const BeakSwitch = defineAsyncComponent(
+  () => import("@/components/ui/switch/BeakSwitch.vue")
 )
 
 const worksheetStore = useWorksheetStore();
@@ -300,8 +300,8 @@ const printBarCodes = async () => {
         </FButton>
       </div>
       <div class="flex items-center space-x-4">
-        <FelSwitch v-model="viewDetail" label="View Detail" />
-        <FelSwitch v-model="barcodes" label="Print Barcodes" />
+        <BeakSwitch v-model="viewDetail" label="View Detail" />
+        <BeakSwitch v-model="barcodes" label="Print Barcodes" />
       </div>
     </div>
 
@@ -311,7 +311,7 @@ const printBarCodes = async () => {
         <div class="grid grid-cols-3 gap-4">
           <label class="block space-y-2">
             <span class="text-sm font-medium text-foreground">Analyst</span>
-            <FelSelect 
+            <BeakSelect 
               v-model="form.analystUid"
               :options="userStore.getUsers"
               option-label="firstName"
@@ -322,7 +322,7 @@ const printBarCodes = async () => {
           </label>
           <label class="block space-y-2">
             <span class="text-sm font-medium text-foreground">Instrument</span>
-            <FelSelect 
+            <BeakSelect 
               v-model="form.instrumentUid"
               :options="setupStore.getLaboratoryInstruments"
               option-label="name"
@@ -333,7 +333,7 @@ const printBarCodes = async () => {
           </label>
           <label class="block space-y-2">
             <span class="text-sm font-medium text-foreground">Method</span>
-            <FelSelect 
+            <BeakSelect 
               v-model="form.methodUid"
               :options="setupStore.getMethods"
               option-label="name"
@@ -356,7 +356,7 @@ const printBarCodes = async () => {
       </div>
 
       <div class="overflow-x-auto">
-        <table class="w-full fel-table">
+        <table class="w-full beak-table">
           <thead class="bg-muted">
             <tr>
               <th class="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">

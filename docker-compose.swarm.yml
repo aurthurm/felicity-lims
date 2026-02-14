@@ -1,38 +1,38 @@
 version: '3.13'
 
 networks:
-  felicitynet:
+  beaknet:
     driver: overlay
     attachable: true
 
 services:
-  felicity-static-nginx:
+  beak-static-nginx:
     deploy:
       replicas: 1
       placement:
         constraints: [ node.role == manager ]
     networks:
-      - felicitynet
+      - beaknet
 
-  felicity-api:
+  beak-api:
     deploy:
       replicas: 3
       restart_policy:
         condition: on-failure
     ports: [ ] # Remove ports because Swarm manages published ports differently
     networks:
-      - felicitynet
+      - beaknet
 
-  felicity-dragonfly:
+  beak-dragonfly:
     deploy:
       replicas: 1
     ports: [ ]
     networks:
-      - felicitynet
+      - beaknet
 
-  felicity-dbgate:
+  beak-dbgate:
     deploy:
       replicas: 1
     ports: [ ]
     networks:
-      - felicitynet
+      - beaknet

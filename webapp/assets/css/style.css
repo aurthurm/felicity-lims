@@ -70,27 +70,27 @@ html[theme-mode='dark']{
 }
 
 @layer components {
-    .fel-table {
+    .beak-table {
         @apply min-w-full border-collapse;
     }
 
-    .fel-table thead {
+    .beak-table thead {
         @apply bg-muted;
     }
 
-    .fel-table th {
+    .beak-table th {
         @apply px-4 py-3 border-b border-border text-left text-sm font-medium text-muted-foreground tracking-wider;
     }
 
-    .fel-table tbody {
+    .beak-table tbody {
         @apply bg-background divide-y divide-border;
     }
 
-    .fel-table td {
+    .beak-table td {
         @apply px-4 py-3 text-sm text-foreground;
     }
 
-    .fel-table tbody tr {
+    .beak-table tbody tr {
         @apply hover:bg-muted transition-colors duration-150;
     }
 
@@ -579,19 +579,19 @@ html[theme-mode='dark']{
     }
 
     /* Form primitives */
-    .fel-label {
+    .beak-label {
         @apply block text-sm font-medium text-foreground;
     }
 
-    .fel-input,
-    .fel-select,
-    .fel-textarea {
+    .beak-input,
+    .beak-select,
+    .beak-textarea {
         @apply mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground transition-colors duration-200;
         @apply focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring;
         @apply disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted;
     }
 
-    .fel-input-error {
+    .beak-input-error {
         @apply border-destructive;
     }
 

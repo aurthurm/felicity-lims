@@ -9,10 +9,10 @@ import { GetAbxQcRangeAllDocument, GetAbxQcRangeAllQuery, GetAbxQcRangeAllQueryV
 import { AddAbxQcRangeMutation, AddAbxQcRangeMutationVariables, AddAbxQcRangeDocument, EditAbxQcRangeMutation, EditAbxQcRangeMutationVariables, EditAbxQcRangeDocument } from '@/graphql/operations/microbiology.mutations';
 
 const modal = defineAsyncComponent(
-  () => import("@/components/ui/FelModal.vue")
+  () => import("@/components/ui/BeakModal.vue")
 )
 const DataTable = defineAsyncComponent(
-  () => import('@/components/ui/datatable/FelDataTable.vue')
+  () => import('@/components/ui/datatable/BeakDataTable.vue')
 )
 const VueMultiselect = defineAsyncComponent(
   () => import('vue-multiselect')
@@ -347,9 +347,9 @@ const saveForm = handleSubmit((formValues) => {
 
 <template>
 
-  <fel-heading title="Quality Control range">
-    <!-- <fel-button @click="FormManager(true)">Add Medium</fel-button> -->
-  </fel-heading>
+  <beak-heading title="Quality Control range">
+    <!-- <beak-button @click="FormManager(true)">Add Medium</beak-button> -->
+  </beak-heading>
 
   <div class="rounded-lg shadow-sm bg-card p-6">
     <DataTable 
@@ -374,7 +374,7 @@ const saveForm = handleSubmit((formValues) => {
   </div>
 
   <!-- QcRange Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
+  <beak-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -530,7 +530,7 @@ const saveForm = handleSubmit((formValues) => {
         </button>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 
 </template>
 

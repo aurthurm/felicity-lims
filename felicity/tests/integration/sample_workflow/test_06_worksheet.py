@@ -82,7 +82,7 @@ async def test_add_worksheet_template(
         "reserved": [],
     }
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={"query": add_gql, "variables": {"payload": ws_template}},
         headers=auth_data["headers"],
     )
@@ -153,7 +153,7 @@ async def test_add_worksheet_using_template(app_gql, app_api, auth_data, users_d
         "count": 1,
     }
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={"query": add_gql, "variables": {**worksheet}},
         headers=auth_data["headers"],
     )
@@ -273,7 +273,7 @@ async def test_get_worksheet_by_uid(app_gql, auth_data, worksheets):
     """
 
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={"query": add_gql, "variables": {"worksheetUid": worksheets[0]["uid"]}},
         headers=auth_data["headers"],
     )

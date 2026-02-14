@@ -182,12 +182,12 @@ function filterOrganisms() {
 </script>
 
 <template>
- <fel-heading title="AST Panels">
- <fel-button @click="FormManager(true)">Add Panel</fel-button>  </fel-heading>
+ <beak-heading title="AST Panels">
+ <beak-button @click="FormManager(true)">Add Panel</beak-button>  </beak-heading>
 
  <div class="overflow-x-auto">
  <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard rounded-lg">
- <table class="min-w-full divide-y divide-border fel-table">
+ <table class="min-w-full divide-y divide-border beak-table">
  <thead>
  <tr>
  <th class="text-left text-sm font-semibold text-foreground">Name</th>
@@ -220,7 +220,7 @@ function filterOrganisms() {
  </div>
 
  <!-- Panel Form Modal -->
- <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
+ <beak-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
  <template v-slot:header>
  <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
  </template>
@@ -346,7 +346,7 @@ function filterOrganisms() {
  </div>
  </form>
  </template>
- </fel-modal>
+ </beak-modal>
 </template>
 
 <style scoped>

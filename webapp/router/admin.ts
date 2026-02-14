@@ -1,7 +1,7 @@
 const adminRoutes = [
     {
         path: '',
-        name: 'felicity-configs',
+        name: 'beak-configs',
         component: () => import('@/views/admin/AdminLinks.vue'),
         meta: {
             requiresAuth: true,

@@ -8,7 +8,7 @@
   import { useField, useForm } from "vee-validate";
   import { boolean, object, string } from "yup";
   const modal = defineAsyncComponent(
-  () => import("@/components/ui/FelModal.vue")
+  () => import("@/components/ui/BeakModal.vue")
 )
 
   const sampleStore = useSampleStore();
@@ -97,14 +97,14 @@
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Sample Types">
-      <fel-button @click="FormManager(true)">Add Sample Type</fel-button>
-    </fel-heading>
+    <beak-heading title="Sample Types">
+      <beak-button @click="FormManager(true)">Add Sample Type</beak-button>
+    </beak-heading>
 
     <div class="overflow-x-auto">
       <div class="inline-block min-w-full align-middle">
         <div class="overflow-hidden shadow-md rounded-lg bg-background p-6">
-          <table class="min-w-full divide-y divide-border fel-table">
+          <table class="min-w-full divide-y divide-border beak-table">
             <thead class="bg-muted">
               <tr>
                 <th scope="col" class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Sample Type</th>
@@ -141,7 +141,7 @@
   </div>
 
   <!-- Sample Type Edit Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false">
+  <beak-modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -201,7 +201,7 @@
         </div>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 </template>
 
 

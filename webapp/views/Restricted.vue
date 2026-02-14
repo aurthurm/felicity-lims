@@ -28,7 +28,7 @@ const goHome = () => router.push({ name: pages.DASHBOARD })
             fill="white"
           />
         </svg>
-        <span class="text-2xl font-semibold text-foreground">FelicityLIMS</span>
+        <span class="text-2xl font-semibold text-foreground">BeakLIMS</span>
       </div>
       <hr class="border-border" />
       <!-- Error Message Section -->

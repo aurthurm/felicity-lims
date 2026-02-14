@@ -52,7 +52,7 @@ const tabs = computed(() => [
     
     <div class="border-t border-border my-4"></div>
 
-    <fel-tabs 
+    <beak-tabs 
       :tabs="tabs" 
       initial-tab="board-view"
       class="mt-4"

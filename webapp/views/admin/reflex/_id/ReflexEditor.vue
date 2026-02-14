@@ -1103,7 +1103,7 @@ onBeforeUnmount(() => {
  <div class="reflex-editor">
  <!-- Loading State -->
  <div v-if="isLoading" class="loading-overlay">
- <fel-loader message="Loading rule..." variant="muted" size="lg" />
+ <beak-loader message="Loading rule..." variant="muted" size="lg" />
  </div>
 
  <!-- Main Editor -->

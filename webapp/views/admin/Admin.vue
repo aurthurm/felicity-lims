@@ -15,7 +15,7 @@ const breadcrumbLabel = computed(() => getAdminBreadcrumbLabel(route.path));
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Settings">
+    <beak-heading title="Settings">
       <template #subtitle>
         <nav class="flex items-center" aria-label="Breadcrumb">
           <router-link to="/admin" class="no-underline text-muted-foreground hover:text-primary transition-colors">
@@ -26,7 +26,7 @@ const breadcrumbLabel = computed(() => getAdminBreadcrumbLabel(route.path));
         </nav>
       </template>
       <VersionDisplay />
-    </fel-heading>
+    </beak-heading>
 
     <router-view />
   </div>

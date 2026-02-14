@@ -181,7 +181,7 @@ watch(() => authStore.auth.isAuthenticated, (isAuthenticated) => {
   <div class="laboratory-context-guard">
     <!-- Loading State -->
     <div v-if="isValidating" class="flex items-center justify-center py-12">
-      <fel-loader message="Validating laboratory context..." variant="muted" />
+      <beak-loader message="Validating laboratory context..." variant="muted" />
     </div>
 
     <!-- Content (when context is valid) -->

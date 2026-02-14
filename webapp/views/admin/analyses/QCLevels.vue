@@ -66,13 +66,13 @@
 
 <template>
  <div>
- <fel-heading title="QC Levels">
- <fel-button @click="FormManager(true)">Add QC Level</fel-button>
- </fel-heading>
+ <beak-heading title="QC Levels">
+ <beak-button @click="FormManager(true)">Add QC Level</beak-button>
+ </beak-heading>
 
  <div class="shadow-sm rounded-lg bg-card p-6">
  <div class="overflow-x-auto">
- <table class="min-w-full divide-y divide-border fel-table">
+ <table class="min-w-full divide-y divide-border beak-table">
  <thead>
  <tr>
  <th class="text-left text-sm font-semibold text-foreground">Level</th>
@@ -98,7 +98,7 @@
  </div>
 
  <!-- QC Level Edit Form Modal -->
- <fel-modal v-if="showModal" @close="showModal = false">
+ <beak-modal v-if="showModal" @close="showModal = false">
  <template v-slot:header>
  <h3 class="text-lg font-semibold leading-none tracking-tight">{{ formTitle }}</h3>
  </template>
@@ -125,7 +125,7 @@
  </button>
  </form>
  </template>
- </fel-modal>
+ </beak-modal>
 </template>
 
 <style scoped>

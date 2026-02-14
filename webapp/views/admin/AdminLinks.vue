@@ -3,7 +3,7 @@ import { defineAsyncComponent } from "vue";
 import { ADMIN_CONFIGS } from "@/config/admin";
 
 const ItemSetting = defineAsyncComponent(
-  () => import("@/components/nav/FelAdminBreadCrumb.vue")
+  () => import("@/components/nav/BeakAdminBreadCrumb.vue")
 );
 </script>
 

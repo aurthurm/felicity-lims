@@ -40,7 +40,7 @@ const selectTestBill = (tb: TestBillType) => {
         :variants="{ custom: { scale: 2 } }" :delay="400"
         class="col-span-3 overflow-y-auto overscroll-contain billing-scroll">
         <div v-if="fetchingBills" class="py-4 text-center bg-background w-full mb-2 rounded-lg shadow-sm border border-border">
-          <fel-loader message="Fetching bills ..." />
+          <beak-loader message="Fetching bills ..." />
         </div>
         <div v-else>
           <ul class="space-y-2" v-if="bills?.length > 0">

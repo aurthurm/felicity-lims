@@ -4,13 +4,13 @@ import { useRoute } from "vue-router"
 
 // Lazy load components
 const tabSamples = defineAsyncComponent(
-    () => import('@/components/sample/FelSampleListing.vue')
+    () => import('@/components/sample/BeakSampleListing.vue')
 )
 const tabContacts = defineAsyncComponent(
     () => import('./ContactTable.vue')
 )
 const tabLogs = defineAsyncComponent(
-    () => import('@/components/audit/FelAuditLog.vue')
+    () => import('@/components/audit/BeakAuditLog.vue')
 )
 const tabBills = defineAsyncComponent(
     () => import("./ClientBill.vue")
@@ -52,7 +52,7 @@ const tabs = [
 </script>
 
 <template>
-  <fel-tabs :tabs="tabs" initial-tab="samples" />
+  <beak-tabs :tabs="tabs" initial-tab="samples" />
 </template>
 
 <style lang="postcss"></style>

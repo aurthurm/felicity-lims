@@ -30,7 +30,7 @@ const installSchema = object({
 const { handleSubmit, errors } = useForm({
   validationSchema: installSchema,
   initialValues: {
-    organisation_name: "Felicity Diagnostics",
+    organisation_name: "Beak Diagnostics",
     laboratory_name: "My First Laboratory",
   },
 });
@@ -74,7 +74,7 @@ const initInstall = handleSubmit((values) => {
             fill="white"
           />
         </svg>
-        <span class="text-foreground font-semibold text-2xl">Install Felicity LIMS</span>
+        <span class="text-foreground font-semibold text-2xl">Install Beak LIMS</span>
       </div>
 
       <form class="mt-6 space-y-4" @submit.prevent="initInstall">
@@ -111,7 +111,7 @@ const initInstall = handleSubmit((values) => {
             Install
           </button>
           <div v-else class="text-center">
-            <fel-loader message="Installing felicity lims ..." />
+            <beak-loader message="Installing Beak LIMS ..." />
           </div>
         </div>
       </form>

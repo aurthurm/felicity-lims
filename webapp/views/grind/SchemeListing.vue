@@ -179,7 +179,7 @@ function saveForm() {
 </script>
 
 <template>
-  <fel-heading title="Projects" />
+  <beak-heading title="Projects" />
 
   <div class="pb-8">
     <div class="flex justify-between items-center mb-6">
@@ -347,7 +347,7 @@ function saveForm() {
   </div>
   
   <!-- Create/Edit Scheme Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" content-width="w-full max-w-2xl">
+  <beak-modal v-if="showModal" @close="showModal = false" content-width="w-full max-w-2xl">
     <template v-slot:header>
       <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -460,7 +460,7 @@ function saveForm() {
         </div>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 </template>
 
 <style scoped>

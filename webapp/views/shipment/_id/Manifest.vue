@@ -13,7 +13,7 @@ const manifestDownloader = async (report_uid) => await downloadManifest(report_u
 
 <template>
   <div class="space-y-6">
-    <fel-loader v-if="loadongMeta" :message="'Loading your manifest report ...'" />
+    <beak-loader v-if="loadongMeta" :message="'Loading your manifest report ...'" />
     <section v-else class="space-y-4">
       <div v-if="shipment?.jsonContent" class="flex justify-start">
         <div class="bg-background rounded-lg border border-border p-4 w-full max-w-md shadow-sm">

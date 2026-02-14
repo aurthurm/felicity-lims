@@ -41,7 +41,7 @@ update_store_room_query = """
 async def test_add_store_room(app_gql, auth_data):
     store_room = {"name": "Store Room 1", "description": "Storage area one"}
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={"query": add_store_room_query, "variables": {"payload": store_room}},
         headers=auth_data["headers"],
     )
@@ -63,7 +63,7 @@ async def test_update_store_room(app_gql, auth_data):
         "description": "Storage area one Updated",
     }
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={
             "query": update_store_room_query,
             "variables": {"uid": 1, "payload": store_room},

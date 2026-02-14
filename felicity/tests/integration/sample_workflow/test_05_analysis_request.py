@@ -132,7 +132,7 @@ async def test_add_analysis_request(
         ],
     }
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={"query": add_gql, "variables": {"payload": analysis_request}},
         headers=auth_data["headers"],
     )

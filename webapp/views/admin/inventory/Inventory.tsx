@@ -28,8 +28,8 @@ const InventoryHome = defineComponent({
         const { tabs } = this.exposed;
         return (
             <div class="space-y-6">
-                <fel-heading title="Inventory Management" />
-                <fel-tabs tabs={tabs} />
+                <beak-heading title="Inventory Management" />
+                <beak-tabs tabs={tabs} />
             </div>
         );
     },

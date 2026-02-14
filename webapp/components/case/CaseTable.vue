@@ -23,7 +23,7 @@ const emit = defineEmits<{
 <template>
   <div class="overflow-x-auto mt-4" role="region" aria-label="Cases table">
     <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card border border-border rounded-lg">
-      <table class="min-w-full divide-y divide-border fel-table">
+      <table class="min-w-full divide-y divide-border beak-table">
         <thead class="bg-muted/50">
           <tr>
             <th scope="col" class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">ID</th>

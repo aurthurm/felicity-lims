@@ -11,8 +11,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 -   **Run tests**: `pnpm server:test` or `bash ./felicity/scripts/test.sh` (supports "unit" or "integration" args)
 -   **Lint code**: `pnpm server:lint` or `bash ./felicity/scripts/lint.sh` (uses ruff)
 -   **Format code**: `pnpm server:format` or `bash ./felicity/scripts/format.sh` (uses ruff format)
--   **Database migration**: `pnpm db:upgrade` or `felicity-lims db upgrade`
--   **Create migration**: `pnpm db:revision` or `felicity-lims revision`
+-   **Database migration**: `pnpm db:upgrade` or `beak-lims db upgrade`
+-   **Create migration**: `pnpm db:revision` or `beak-lims revision`
 
 ### Frontend Development
 
@@ -26,7 +26,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Docker Development
 
 -   **Start dev environment**: `docker compose -f docker-compose.dev.yml up -d --build`
--   **Database setup**: `docker compose -f docker-compose.dev.yml exec felicity-api felicity-lims db upgrade`
+-   **Database setup**: `docker compose -f docker-compose.dev.yml exec beak-api beak-lims db upgrade`
 
 ## High-Level Architecture
 

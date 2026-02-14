@@ -64,7 +64,7 @@ const getTooltip = (group: string, meta: Record<string, string>) =>
 <template>
   <div class="mt-4">
     <div v-if="dashboard.fetchingOverViewStats" class="text-start my-4">
-      <fel-loader message="Fetching updated overview stats..." />
+      <beak-loader message="Fetching updated overview stats..." />
     </div>
 
     <section v-else class="space-y-6">

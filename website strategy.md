@@ -1,0 +1,1 @@
+stratetegic framework

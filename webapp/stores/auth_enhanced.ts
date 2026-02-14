@@ -177,9 +177,9 @@ interface IEnhancedAuth {
     };
 }
 
-const STORAGE_PREFERENCES_KEY = 'felicity_user_preferences';
-const STORAGE_SECURITY_KEY = 'felicity_security_settings';
-const STORAGE_ANALYTICS_KEY = 'felicity_auth_analytics';
+const STORAGE_PREFERENCES_KEY = 'beak_user_preferences';
+const STORAGE_SECURITY_KEY = 'beak_security_settings';
+const STORAGE_ANALYTICS_KEY = 'beak_auth_analytics';
 
 export const useEnhancedAuthStore = defineStore('enhancedAuth', () => {
     const router = useRouter();

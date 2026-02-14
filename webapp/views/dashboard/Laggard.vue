@@ -31,7 +31,7 @@ const aadData = computed(() => {
 <template>
   <div class="mt-4">
     <div v-if="dashboard.fetchingLaggards" class="text-start my-4">
-      <fel-loader message="Fetching laggard stats..." />
+      <beak-loader message="Fetching laggard stats..." />
     </div>
 
     <section v-else>

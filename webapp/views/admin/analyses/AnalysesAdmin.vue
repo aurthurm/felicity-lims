@@ -70,9 +70,9 @@
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Analyses Administration"></fel-heading>
+    <beak-heading title="Analyses Administration"></beak-heading>
 
-    <fel-tabs :tabs="tabs" :initial-tab="currentTab" class="rounded-lg" />
+    <beak-tabs :tabs="tabs" :initial-tab="currentTab" class="rounded-lg" />
   </div>
 </template>
 

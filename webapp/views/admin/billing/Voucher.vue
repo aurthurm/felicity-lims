@@ -111,9 +111,9 @@ const updateVoucher = (vocher: VoucherType) => {
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Vouchers">
-      <fel-button @click="newVoucher">Add Voucher</fel-button>
-    </fel-heading>
+    <beak-heading title="Vouchers">
+      <beak-button @click="newVoucher">Add Voucher</beak-button>
+    </beak-heading>
 
     <div class="rounded-lg border border-border bg-card p-6">
       <div class="grid grid-cols-12 gap-6">
@@ -121,7 +121,7 @@ const updateVoucher = (vocher: VoucherType) => {
           :variants="{ custom: { scale: 2 } }" :delay="400"
           class="col-span-3 overflow-y-auto overscroll-contain voucher-scroll">
           <div v-if="fetchingVouchers" class="rounded-lg border border-border bg-card p-4">
-            <fel-loader message="Fetching vouchers ..." />
+            <beak-loader message="Fetching vouchers ..." />
           </div>
           <div v-else class="space-y-2">
             <button v-for="voucher in vouchers" :key="voucher.uid" @click="selectVoucher(voucher)" 
@@ -193,7 +193,7 @@ const updateVoucher = (vocher: VoucherType) => {
     </div>
 
     <!-- Voucher Form Modal -->
-    <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/6'">
+    <beak-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/6'">
       <template v-slot:header>
         <h3 class="text-lg font-semibold text-foreground">Voucher Form</h3>
       </template>
@@ -268,6 +268,6 @@ const updateVoucher = (vocher: VoucherType) => {
           </div>
         </form>
       </template>
-    </fel-modal>
+    </beak-modal>
   </div>
 </template>

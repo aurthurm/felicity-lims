@@ -9,7 +9,7 @@
   import { useSetupStore } from '@/stores/setup';
   import  useApiUtil  from '@/composables/api_util';
   const modal = defineAsyncComponent(
-    () => import('@/components/ui/FelModal.vue')
+    () => import('@/components/ui/BeakModal.vue')
   )
 
   const analysisStore = useAnalysisStore()
@@ -120,13 +120,13 @@
 </script>
 
 <template>
-    <fel-heading title="Interim Fields">
-      <fel-button @click="FormManager(true)">Add Interim Field</fel-button>
-    </fel-heading>
+    <beak-heading title="Interim Fields">
+      <beak-button @click="FormManager(true)">Add Interim Field</beak-button>
+    </beak-heading>
 
     <div class="overflow-x-auto mt-4">
         <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card text-card-foreground rounded-lg border border-border">
-        <table class="min-w-full fel-table">
+        <table class="min-w-full beak-table">
             <thead>
             <tr>
                 <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Interim Key</th>

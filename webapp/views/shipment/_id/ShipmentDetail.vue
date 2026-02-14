@@ -12,7 +12,7 @@
     () => import('./Manifest.vue')
   )
   const tabLogs = defineAsyncComponent(
-    () => import('@/components/audit/FelAuditLog.vue')
+    () => import('@/components/audit/BeakAuditLog.vue')
   )
 
   let shipmentStore = useShipmentStore();

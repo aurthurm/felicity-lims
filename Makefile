@@ -1,11 +1,11 @@
-# Makefile for Felicity LIMS
+# Makefile for Beak LIMS
 # Quick commands for development and deployment
 
 .PHONY: help build up down restart logs clean test
 
 # Default target
 help:
-	@echo "Felicity LIMS - Apple Silicon Development Commands"
+	@echo "Beak LIMS - Apple Silicon Development Commands"
 	@echo ""
 	@echo "Available targets:"
 	@echo "  make build         - Build all containers with BuildKit optimization"
@@ -53,11 +53,11 @@ logs:
 
 # View API logs only
 logs-api:
-	docker compose -f docker-compose.dev.yml logs -f felicity-api
+	docker compose -f docker-compose.dev.yml logs -f beak-api
 
 # View webapp logs only
 logs-webapp:
-	docker compose -f docker-compose.dev.yml logs -f felicity-webapp
+	docker compose -f docker-compose.dev.yml logs -f beak-webapp
 
 # Clean everything
 clean:
@@ -75,19 +75,19 @@ clean-cache:
 
 # Database migrations
 db-migrate:
-	docker compose -f docker-compose.dev.yml exec felicity-api alembic upgrade head
+	docker compose -f docker-compose.dev.yml exec beak-api alembic upgrade head
 
 # Database shell
 db-shell:
-	docker exec -it felicity-postgres psql -U felicity -d felicity_lims
+	docker exec -it beak-postgres psql -U beak -d beak_lims
 
 # MongoDB shell
 mongo-shell:
-	docker exec -it felicity-mongo mongosh -u felicity -p felicity
+	docker exec -it beak-mongo mongosh -u beak -p beak
 
 # Run tests
 test:
-	docker compose -f docker-compose.dev.yml exec felicity-api pytest
+	docker compose -f docker-compose.dev.yml exec beak-api pytest
 
 # Show resource usage
 stats:

@@ -8,7 +8,7 @@
   import { useField, useForm } from "vee-validate";
   import { object, string } from "yup";
   const modal = defineAsyncComponent(
-    () => import('@/components/ui/FelModal.vue')
+    () => import('@/components/ui/BeakModal.vue')
   )
 
   const setupStore = useSetupStore()
@@ -112,13 +112,13 @@
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Laboratory Instruments">
-      <fel-button @click="FormManager(true)"> Add Laboratory Instrument</fel-button>
-    </fel-heading>
+    <beak-heading title="Laboratory Instruments">
+      <beak-button @click="FormManager(true)"> Add Laboratory Instrument</beak-button>
+    </beak-heading>
 
     <div class="border border-border bg-background rounded-lg shadow-sm p-6 overflow-hidden">
       <div class="relative w-full overflow-auto">
-        <table class="w-full caption-bottom text-sm fel-table">
+        <table class="w-full caption-bottom text-sm beak-table">
           <thead class="[&_tr]:border-b">
             <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
               <th class="px-4 py-2 text-left align-middle font-medium text-muted-foreground">Instrument</th>
@@ -152,7 +152,7 @@
   </div>
 
   <!-- Laboratory Instrument Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false">
+  <beak-modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
       <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -232,5 +232,5 @@
         </div>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 </template>

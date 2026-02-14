@@ -9,7 +9,7 @@
   import { useField, useForm } from "vee-validate";
   import { object, string } from "yup";
   const modal = defineAsyncComponent(
-    () => import('@/components/ui/FelModal.vue')
+    () => import('@/components/ui/BeakModal.vue')
   )
 
   const userStore = useUserStore()
@@ -132,12 +132,12 @@
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Instruments">
-      <fel-button @click="FormManager(true)"> Add Instrument</fel-button>
-    </fel-heading>
+    <beak-heading title="Instruments">
+      <beak-button @click="FormManager(true)"> Add Instrument</beak-button>
+    </beak-heading>
 
     <div class="border border-border bg-background rounded-lg shadow-sm p-6 overflow-hidden">
-      <table class="min-w-full divide-y divide-border fel-table">
+      <table class="min-w-full divide-y divide-border beak-table">
         <thead>
           <tr>
             <th class="px-4 py-2 text-left text-sm font-medium text-muted-foreground tracking-wider">Name</th>
@@ -169,7 +169,7 @@
   </div>
 
   <!-- Instrument Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" :title="formTitle">
+  <beak-modal v-if="showModal" @close="showModal = false" :title="formTitle">
     <template v-slot:body>
       <form @submit.prevent="saveForm" class="space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -285,5 +285,5 @@
         </div>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 </template>

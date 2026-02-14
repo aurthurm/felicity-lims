@@ -41,7 +41,7 @@ def setup_webapp(app: FastAPI, serve_webapp: bool, schema: Schema) -> None:
                 <div class="btn-group">
                     <a href="/docs"><button>SwaggerUI</button></a>
                     <a href="/redoc"><button>Redoc</button></a>
-                    <a href="/felicity-gql"><button>GraphQL Playground</button></a>
+                    <a href="/beak-gql"><button>GraphQL Playground</button></a>
                     <a href="/graphql-docs"><button>GraphQL Documentation</button></a>
                 </div>
             </body>

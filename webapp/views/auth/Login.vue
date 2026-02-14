@@ -50,7 +50,7 @@ const login = handleSubmit((values) => {
       <div class="space-y-6 rounded-xl bg-background/95 p-8 shadow-2xl backdrop-blur-sm">
         <!-- Logo Section -->
         <div class="flex flex-col items-center space-y-2">
-          <h2 class="mt-4 text-2xl font-bold text-foreground">Felicity LIMS</h2>
+          <h2 class="mt-4 text-2xl font-bold text-foreground">Beak LIMS</h2>
           <p class="text-sm text-muted-foreground">Laboratory Information Management System</p>
         </div>
 
@@ -58,14 +58,14 @@ const login = handleSubmit((values) => {
         <form v-if="!auth.isAuthenticated" class="space-y-5" @submit.prevent="login">
           <!-- Username Field -->
           <div class="space-y-1">
-            <label class="fel-label" for="username">
+            <label class="beak-label" for="username">
               Username
             </label>
             <div class="relative">
               <input
                 id="username"
                 v-model="username"
-                :class="['fel-input', errors?.username ? 'border-destructive' : '']"
+                :class="['beak-input', errors?.username ? 'border-destructive' : '']"
                 :disabled="auth.processing"
                 placeholder="Enter your username"
                 type="text"
@@ -89,14 +89,14 @@ const login = handleSubmit((values) => {
 
           <!-- Password Field -->
           <div class="space-y-1">
-            <label class="fel-label" for="password">
+            <label class="beak-label" for="password">
               Password
             </label>
             <div class="relative">
               <input
                 id="password"
                 v-model="password"
-                :class="['fel-input', errors?.password ? 'border-destructive' : '']"
+                :class="['beak-input', errors?.password ? 'border-destructive' : '']"
                 :disabled="auth.processing"
                 placeholder="Enter your password"
                 type="password"
@@ -145,13 +145,13 @@ const login = handleSubmit((values) => {
               Sign In
             </button>
             <div v-else class="flex justify-center">
-              <fel-loader message="Signing you in..." />
+              <beak-loader message="Signing you in..." />
             </div>
           </div>
         </form>
 
         <!-- Loading State -->
-        <fel-loader v-else message="Redirecting, please wait..." />
+        <beak-loader v-else message="Redirecting, please wait..." />
       </div>
 
       <!-- Footer -->

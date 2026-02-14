@@ -6,7 +6,7 @@ import { usePatientStore } from "@/stores/patient";
 import { PatientType } from "@/types/gql";
 
 const DataTable = defineAsyncComponent(
-  () => import("@/components/ui/datatable/FelDataTable.vue")
+  () => import("@/components/ui/datatable/BeakDataTable.vue")
 )
 let patientStore = usePatientStore();
 
@@ -163,7 +163,7 @@ let getPatientFullName = (pt: PatientType) => {
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Patients" />
+    <beak-heading title="Patients" />
     <div class="rounded-lg border border-border bg-card shadow-sm p-6">
       <DataTable 
         :columns="tableColumns" 

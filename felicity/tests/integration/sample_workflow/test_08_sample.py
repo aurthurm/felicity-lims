@@ -40,7 +40,7 @@ async def test_sample_publish(app_gql, auth_data):
     """
 
     approved_response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={
             "query": approved_samples_query,
             "variables": {"status": "approved", "text": "", "clientUid": ""},
@@ -51,7 +51,7 @@ async def test_sample_publish(app_gql, auth_data):
     _samples = approved_response.json()["data"]["sampleSearch"]
 
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={
             "query": publish_mutation,
             "variables": {
@@ -111,7 +111,7 @@ async def test_sample_invalidate(app_gql, auth_data):
       }
     """
     published_response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={
             "query": published_samples_query,
             "variables": {"status": "published", "text": "", "clientUid": ""},
@@ -122,7 +122,7 @@ async def test_sample_invalidate(app_gql, auth_data):
     _samples = published_response.json()["data"]["sampleSearch"]
 
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={
             "query": invalidation_mutation,
             "variables": {

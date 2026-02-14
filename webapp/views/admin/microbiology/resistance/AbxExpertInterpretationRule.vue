@@ -9,7 +9,7 @@ import { GetAbxExpertInterpretationRuleAllDocument, GetAbxExpertInterpretationRu
 import { AddAbxExpertInterpretationRuleMutation, AddAbxExpertInterpretationRuleMutationVariables, AddAbxExpertInterpretationRuleDocument, EditAbxExpertInterpretationRuleMutation, EditAbxExpertInterpretationRuleMutationVariables, EditAbxExpertInterpretationRuleDocument } from '@/graphql/operations/microbiology.mutations';
 
 const DataTable = defineAsyncComponent(
-  () => import('@/components/ui/datatable/FelDataTable.vue')
+  () => import('@/components/ui/datatable/BeakDataTable.vue')
 )
 
 const {withClientMutation, withClientQuery} = useApiUtil()
@@ -258,9 +258,9 @@ const saveForm = handleSubmit((formValues) => {
 </script>
 
 <template>
-  <fel-heading title="Expert Interpretation Rules">
-    <fel-button @click="FormManager(true)">Add Expert Interpretation Rule</fel-button>
-  </fel-heading>
+  <beak-heading title="Expert Interpretation Rules">
+    <beak-button @click="FormManager(true)">Add Expert Interpretation Rule</beak-button>
+  </beak-heading>
 
   <div class="rounded-lg bg-card p-6 shadow-sm">
     <DataTable 
@@ -285,7 +285,7 @@ const saveForm = handleSubmit((formValues) => {
   </div>
 
   <!-- Expert Interpretation Rule Edit Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false">
+  <beak-modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
       <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -367,7 +367,7 @@ const saveForm = handleSubmit((formValues) => {
         </button>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 </template>
 
 

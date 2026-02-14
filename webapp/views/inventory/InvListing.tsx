@@ -10,7 +10,7 @@ import {
 import { GetAllStockLotsDocument, GetAllStockLotsQuery, GetAllStockLotsQueryVariables } from '@/graphql/operations/inventory.queries';
 import { parseDate } from '@/utils';
 
-const DataTable = defineAsyncComponent(() => import('@/components/ui/datatable/FelDataTable.vue'));
+const DataTable = defineAsyncComponent(() => import('@/components/ui/datatable/BeakDataTable.vue'));
 const StockReceiveForm = defineAsyncComponent(() => import('./StockReceiveForm.vue'));
 const ProductDetail = defineAsyncComponent(() => import('./ProductDetail'));
 
@@ -251,23 +251,23 @@ const InventoryListing = defineComponent({
                 ></DataTable>
 
                 {/* Drawer */}
-                <fel-drawer show={this.openDrawer} onClose={() => (this.openDrawer = false)}>
+                <beak-drawer show={this.openDrawer} onClose={() => (this.openDrawer = false)}>
                     {{
                         header: () => 'Receive Stock',
                         body: () => [<StockReceiveForm onClose={() => (this.openDrawer = false)} />],
                     }}
-                </fel-drawer>
+                </beak-drawer>
 
                 {/* Drawer */}
-                <fel-drawer show={this.openProductDetail} onClose={() => (this.openProductDetail = false)}>
+                <beak-drawer show={this.openProductDetail} onClose={() => (this.openProductDetail = false)}>
                     {{
                         header: () => 'Product Details',
                         body: () => [<ProductDetail product={this.productDetailItem} onClose={() => (this.openProductDetail = false)} />],
                     }}
-                </fel-drawer>
+                </beak-drawer>
 
                 {this.openAddProduct && (
-                    <fel-modal onClose={() => (this.openAddProduct = false)} contentWidth="w-1/4">
+                    <beak-modal onClose={() => (this.openAddProduct = false)} contentWidth="w-1/4">
                         {{
                             header: () => (
                                 <h3 class="text-lg font-medium text-foreground">
@@ -322,11 +322,11 @@ const InventoryListing = defineComponent({
                                 );
                             },
                         }}
-                    </fel-modal>
+                    </beak-modal>
                 )}
 
                 {this.openAdjustProduct && (
-                    <fel-modal onClose={() => (this.openAdjustProduct = false)} contentWidth="w-1/4">
+                    <beak-modal onClose={() => (this.openAdjustProduct = false)} contentWidth="w-1/4">
                         {{
                             header: () => (
                                 <h3 class="text-lg font-medium text-foreground">
@@ -398,7 +398,7 @@ const InventoryListing = defineComponent({
                                 );
                             },
                         }}
-                    </fel-modal>
+                    </beak-modal>
                 )}
             </>
         );

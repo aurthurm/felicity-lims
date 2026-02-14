@@ -12,7 +12,7 @@
     </div>
 
     <div class="bg-card rounded-lg shadow-sm">
-      <table class="min-w-full divide-y divide-border fel-table">
+      <table class="min-w-full divide-y divide-border beak-table">
         <thead>
           <tr>
             <th
@@ -67,55 +67,55 @@
     </div>
   </div>
 
-  <fel-modal v-if="showUserModal" @close="showUserModal = false" :title="userUid ? 'Edit User' : 'Add User'">
+  <beak-modal v-if="showUserModal" @close="showUserModal = false" :title="userUid ? 'Edit User' : 'Add User'">
     <template v-slot:body>
       <form @submit.prevent="saveUserForm" class="space-y-6">
         <div class="grid grid-cols-2 gap-6">
           <!-- OPTION 1: Enhanced visibility with explicit colors -->
           <div class="space-y-2">
-            <label for="firstName" class="fel-label">
+            <label for="firstName" class="beak-label">
               First Name
             </label>
             <input
               id="firstName"
               v-model="firstName"
               type="text"
-              class="fel-input"
+              class="beak-input"
               placeholder="Enter first name"
             />
             <p v-if="firstNameError" class="text-sm text-destructive">{{ firstNameError }}</p>
           </div>
 
           <div class="space-y-2">
-            <label for="lastName" class="fel-label">
+            <label for="lastName" class="beak-label">
               Last Name
             </label>
             <input
               id="lastName"
               v-model="lastName"
               type="text"
-              class="fel-input"
+              class="beak-input"
               placeholder="Enter last name"
             />
             <p v-if="lastNameError" class="text-sm text-destructive">{{ lastNameError }}</p>
           </div>
 
           <div class="space-y-2">
-            <label for="email" class="fel-label">
+            <label for="email" class="beak-label">
               Email
             </label>
             <input
               id="email"
               v-model="email"
               type="email"
-              class="fel-input"
+              class="beak-input"
               placeholder="Enter email address"
             />
             <p v-if="emailError" class="text-sm text-destructive">{{ emailError }}</p>
           </div>
 
           <div class="space-y-2">
-            <label for="userName" class="fel-label">
+            <label for="userName" class="beak-label">
               Username
             </label>
             <!-- <input
@@ -123,10 +123,10 @@
               v-model="form.userName"
               type="text"
               :disabled="form.userUid != ''"
-              class="fel-input"
+              class="beak-input"
               placeholder="Enter username"
             /> -->
-            <FelProtectedInput
+            <BeakProtectedInput
               id="userName"
               v-model="userName"
               type="text"
@@ -137,41 +137,41 @@
           </div>
 
           <div class="space-y-2">
-            <label for="password" class="fel-label">
+            <label for="password" class="beak-label">
               Password
             </label>
             <input
               id="password"
               v-model="password"
               type="password"
-              class="fel-input"
+              class="beak-input"
               placeholder="Enter password"
             />
             <p v-if="passwordError" class="text-sm text-destructive">{{ passwordError }}</p>
           </div>
 
           <div class="space-y-2">
-            <label for="passwordc" class="fel-label">
+            <label for="passwordc" class="beak-label">
               Confirm Password
             </label>
             <input
               id="passwordc"
               v-model="passwordc"
               type="password"
-              class="fel-input"
+              class="beak-input"
               placeholder="Confirm password"
             />
             <p v-if="passwordcError" class="text-sm text-destructive">{{ passwordcError }}</p>
           </div>
 
           <div class="col-span-2 space-y-2">
-            <label for="groupUid" class="fel-label">
+            <label for="groupUid" class="beak-label">
               Group
             </label>
             <select
               id="groupUid"
               v-model="groupUid"
-              class="fel-select"
+              class="beak-select"
             >
               <option value="" class="text-muted-foreground">Select a group</option>
               <option
@@ -192,7 +192,7 @@
             
             <!-- Laboratory Multi-Select -->
             <div class="space-y-2">
-              <label class="fel-label">Assigned Laboratories</label>
+              <label class="beak-label">Assigned Laboratories</label>
               <VueMultiselect
                 v-model="selectedLaboratories"
                 :options="laboratoriesForSelect"
@@ -208,10 +208,10 @@
 
             <!-- Active Laboratory Selection -->
             <div v-if="laboratoryUids && laboratoryUids.length > 0" class="space-y-2">
-              <label class="fel-label">Default Active Laboratory</label>
+              <label class="beak-label">Default Active Laboratory</label>
               <select
                 v-model="activeLaboratoryUid"
-                class="fel-select"
+                class="beak-select"
               >
                 <option value="">Select default laboratory...</option>
                 <option
@@ -278,7 +278,7 @@
         </div>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 </template>
 
 <script setup lang="ts">
@@ -293,7 +293,7 @@ import { UserType } from "@/types/gql";
 import { useUserStore } from "@/stores/user";
 import { useSetupStore } from "@/stores/setup";
 import useApiUtil  from "@/composables/api_util";
-import FelProtectedInput from "@/components/ui/form/FelProtectedInput.vue";
+import BeakProtectedInput from "@/components/ui/form/BeakProtectedInput.vue";
 
 const VueMultiselect = defineAsyncComponent(
   () => import("vue-multiselect")

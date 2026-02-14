@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed, defineAsyncComponent} from 'vue';
 
-const FelTabs = defineAsyncComponent(() => import("@/components/ui/tabs/FelTabs.vue"));
+const BeakTabs = defineAsyncComponent(() => import("@/components/ui/tabs/BeakTabs.vue"));
 
 const tabs = computed(() => [
   {
@@ -21,7 +21,7 @@ const tabs = computed(() => [
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Antibiotics Management"></fel-heading>
-    <fel-tabs :tabs="tabs" initial-tab="abx-lab-antibiotics"/>
+    <beak-heading title="Antibiotics Management"></beak-heading>
+    <beak-tabs :tabs="tabs" initial-tab="abx-lab-antibiotics"/>
   </div>
 </template>

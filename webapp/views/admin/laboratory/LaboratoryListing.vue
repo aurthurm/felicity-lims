@@ -106,13 +106,13 @@ function FormManager(create: boolean, obj: any):void {
 
 <template>
  <div class="space-y-6">
- <fel-heading title="Laboratories" description="Manage your laboratories and their details.">
- <fel-button @click="FormManager(true, null)">Add Laboratory</fel-button>
- </fel-heading>
+ <beak-heading title="Laboratories" description="Manage your laboratories and their details.">
+ <beak-button @click="FormManager(true, null)">Add Laboratory</beak-button>
+ </beak-heading>
 
  <div class="shadow-sm rounded-lg bg-card p-6">
  <div class="overflow-x-auto">
- <table class="min-w-full divide-y divide-border fel-table">
+ <table class="min-w-full divide-y divide-border beak-table">
  <thead>
  <tr>
  <th class="text-left text-sm font-semibold text-foreground">Name</th>
@@ -144,7 +144,7 @@ function FormManager(create: boolean, obj: any):void {
  </div>
 
  <!-- Location Edit Form Modal -->
- <fel-modal v-if="showModal" @close="showModal = false">
+ <beak-modal v-if="showModal" @close="showModal = false">
  <template v-slot:header>
  <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
  </template>
@@ -194,5 +194,5 @@ function FormManager(create: boolean, obj: any):void {
  </button>
  </form>
  </template>
- </fel-modal>
+ </beak-modal>
 </template>

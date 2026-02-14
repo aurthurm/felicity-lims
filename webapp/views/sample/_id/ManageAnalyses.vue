@@ -9,7 +9,7 @@ import {
   EditSampleApplyTemplateDocument, EditSampleApplyTemplateMutation, EditSampleApplyTemplateMutationVariables, SampleManageAnalysisDocument, SampleManageAnalysisMutation, SampleManageAnalysisMutationVariables
 } from "@/graphql/operations/analyses.mutations";
 const accordion = defineAsyncComponent(
-    () => import('@/components/ui/FelAccordion.vue')
+    () => import('@/components/ui/BeakAccordion.vue')
   )
 const { withClientMutation } = useApiUtil();
 const route = useRoute();
@@ -155,7 +155,7 @@ const applyChanges = async () => {
               <template v-slot:title>{{ category[0] }}</template>
               <template v-slot:body>
                 <div class="overflow-x-auto">
-                  <table class="w-full fel-table">
+                  <table class="w-full beak-table">
                     <thead>
                       <tr class="border-b border-border bg-muted/50">
                         <th class="px-4 py-2 text-left">

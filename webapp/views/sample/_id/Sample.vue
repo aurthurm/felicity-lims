@@ -307,7 +307,7 @@ function formatStatusLabel(status?: string | null): string {
 
     <div class="bg-background rounded-lg shadow-sm p-6 space-y-6" v-motion-slide-right>
       <div v-if="fetchingSample" class="py-4 text-center">
-        <fel-loader message="Fetching sample details ..." />
+        <beak-loader message="Fetching sample details ..." />
       </div>
       <div class="space-y-6" v-else>
         <!-- Summary Column -->
@@ -546,7 +546,7 @@ function formatStatusLabel(status?: string | null): string {
       </ul>
     </div>
 
-    <fel-modal
+    <beak-modal
       v-if="showGenealogyModal"
       @close="showGenealogyModal = false"
       :content-width="'w-3/4'"
@@ -557,7 +557,7 @@ function formatStatusLabel(status?: string | null): string {
       <template #body>
         <div class="space-y-4">
           <div v-if="genealogyLoading" class="py-6 text-center">
-            <fel-loader message="Fetching genealogy ..." />
+            <beak-loader message="Fetching genealogy ..." />
           </div>
           <div v-else-if="genealogyError" class="text-destructive">
             {{ genealogyError }}
@@ -582,7 +582,7 @@ function formatStatusLabel(status?: string | null): string {
           </div>
         </div>
       </template>
-    </fel-modal>
+    </beak-modal>
 
     <derive-samples-modal
       :show="showDeriveModal"

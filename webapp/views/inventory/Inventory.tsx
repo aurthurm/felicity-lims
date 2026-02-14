@@ -86,11 +86,11 @@ const InventoryHome = defineComponent({
  render() {
  return (
  <div class="space-y-4">
- <fel-heading title="Inventory Management" />
+ <beak-heading title="Inventory Management" />
 
- <fel-tabs tabs={this.tabs} initial-tab="listing" class="rounded-lg" />
+ <beak-tabs tabs={this.tabs} initial-tab="listing" class="rounded-lg" />
 
- <fel-drawer
+ <beak-drawer
  show={this.viewBasket}
  onClose={() => (this.viewBasket.value = false)}
  contentWidth="w-96"
@@ -112,7 +112,7 @@ const InventoryHome = defineComponent({
  </div>
 
  <div class="overflow-hidden shadow ring-1 ring-border ring-opacity/5 rounded-lg">
- <table class="min-w-full divide-y divide-border fel-table">
+ <table class="min-w-full divide-y divide-border beak-table">
  <thead class="bg-muted">
  <tr>
  <th class="text-left text-sm font-medium text-foreground">Product</th>
@@ -141,7 +141,7 @@ const InventoryHome = defineComponent({
  </div>
  ),
  }}
- </fel-drawer>
+ </beak-drawer>
  </div>
  );
  },

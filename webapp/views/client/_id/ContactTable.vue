@@ -98,7 +98,7 @@ const deleteClientContact = (contact: ClientContactType) => {
 
     <div
       class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
-      <table class="min-w-full fel-table">
+      <table class="min-w-full beak-table">
         <thead>
           <tr>
             <th class="px-1 py-1 border-b-2 border-border text-left text-sm leading-4 text-foreground tracking-wider">
@@ -145,13 +145,13 @@ const deleteClientContact = (contact: ClientContactType) => {
         </tbody>
       </table>
       <div v-if="fetchingClientContacts" class="py-4 text-center">
-        <fel-loader message="Fetching client contacts ..." />
+        <beak-loader message="Fetching client contacts ..." />
       </div>
     </div>
   </div>
 
   <!-- Contact Edit Form Modal -->
-  <fel-modal v-if="showContactModal" @close="showContactModal = false">
+  <beak-modal v-if="showContactModal" @close="showContactModal = false">
     <template v-slot:header>
       <h3>{{ formTitle }}</h3>
     </template>
@@ -183,5 +183,5 @@ const deleteClientContact = (contact: ClientContactType) => {
         </button>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 </template>

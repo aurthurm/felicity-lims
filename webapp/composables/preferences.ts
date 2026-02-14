@@ -5,7 +5,7 @@ import { useAuthStore } from '@/stores/auth';
 import { DepartmentType, UserPreferenceType } from '@/types/gql';
 import { GetUserPreferencesDocument, GetUserPreferencesQuery, GetUserPreferencesQueryVariables } from '@/graphql/operations/_queries';
 
-const UI_PREFERENCES_STORAGE_KEY = 'felicity_ui_preferences';
+const UI_PREFERENCES_STORAGE_KEY = 'beak_ui_preferences';
 
 export type ThemeVariant =
   | 'light'

@@ -5,7 +5,7 @@ import userPreferenceComposable from '@/composables/preferences'
 
 const HeaderMain = defineAsyncComponent(() => import('@/components/nav/NavigationMain.vue'))
 const SideBar = defineAsyncComponent(() => import('@/components/nav/NavigationSidebar.vue'))
-const FelNotification = defineAsyncComponent(() => import('@/components/notification/FelNotification.vue'))
+const BeakNotification = defineAsyncComponent(() => import('@/components/notification/BeakNotification.vue'))
 
 const {toggle} = useFullscreen()
 const { megaMenu } = userPreferenceComposable()
@@ -41,5 +41,5 @@ onMounted(() => {
       </main>
     </div>
   </div>
-  <fel-notification/>
+  <beak-notification/>
 </template>

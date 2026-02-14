@@ -215,7 +215,7 @@ function setupLaboratoryRouteGuards(
 
         if (activeLab) {
             const pageTitle = (to.meta?.title as string) || (to.name as string) || 'Page';
-            document.title = `${pageTitle} - ${activeLab.name} - Felicity LIMS`;
+            document.title = `${pageTitle} - ${activeLab.name} - Beak LIMS`;
         }
     });
 }

@@ -7,7 +7,7 @@
 
 {$SERVER_HOST} {
 
-	handle /felicity-gql {
+	handle /beak-gql {
 		reverse_proxy {$PROXY_BACKEND}:{$PROXY_PORT}
 	}
 

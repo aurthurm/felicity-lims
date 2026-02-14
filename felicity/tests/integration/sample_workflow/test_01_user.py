@@ -36,7 +36,7 @@ async def test_user_login(app_gql):
     """
 
     response = await app_gql.post(
-        "felicity-gql",
+        "beak-gql",
         json={
             "query": authe,
             "variables": {
@@ -56,7 +56,7 @@ async def test_user_login(app_gql):
 @pytest.mark.order(14)
 async def test_register_users(app_gql, users, auth_data):
     response = await app_gql.post(
-        "felicity-gql",
+        "beak-gql",
         json={
             "query": """query GetGroups {
                 groupAll {
@@ -94,7 +94,7 @@ async def test_register_users(app_gql, users, auth_data):
             "laboratoryUids": [_lab_uid]
         }
         response = await app_gql.post(
-            "felicity-gql",
+            "beak-gql",
             json={"query": add_user_mutation, "variables": user},
             headers=auth_data["headers"],
         )
@@ -110,7 +110,7 @@ async def test_register_users(app_gql, users, auth_data):
 
         # Set active laboratory
         set_lab_response = await app_gql.post(
-            "felicity-gql",
+            "beak-gql",
             json={
                 "query": """
                     mutation SetActiveLab($userUid: String!, $laboratoryUid: String!){

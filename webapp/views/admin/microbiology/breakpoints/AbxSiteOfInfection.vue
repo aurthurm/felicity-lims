@@ -104,11 +104,11 @@ const saveForm = handleSubmit((formValues) => {
 
 <template>
  <div class="space-y-6">
- <fel-heading title="Site of Infection"></fel-heading>
+ <beak-heading title="Site of Infection"></beak-heading>
 
  <div class="overflow-x-auto">
  <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card shadow-dashboard rounded-lg p-6">
- <table class="min-w-full divide-y divide-border fel-table">
+ <table class="min-w-full divide-y divide-border beak-table">
  <thead>
  <tr>
  <th class="text-left text-sm font-semibold text-foreground">Name</th>
@@ -134,7 +134,7 @@ const saveForm = handleSubmit((formValues) => {
  </div>
 
  <!-- Location Edit Form Modal -->
- <fel-modal v-if="showModal" @close="showModal = false">
+ <beak-modal v-if="showModal" @close="showModal = false">
  <template v-slot:header>
  <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
  </template>
@@ -169,7 +169,7 @@ const saveForm = handleSubmit((formValues) => {
  </button>
  </form>
  </template>
- </fel-modal>
+ </beak-modal>
 </template>
 
 <style scoped>

@@ -63,7 +63,7 @@ const downloadReport = (report: any) => {
     </div>
 
     <div v-if="isLoading" class="text-center py-4">
-      <fel-loader message="Loading reports..." />
+      <beak-loader message="Loading reports..." />
     </div>
 
     <div v-else-if="!reports?.length" class="text-center py-4 text-muted-foreground">
@@ -75,7 +75,7 @@ const downloadReport = (report: any) => {
     </div>
 
     <div v-else class="overflow-x-auto">
-      <table class="min-w-full bg-background shadow rounded-sm border border-foreground fel-table">
+      <table class="min-w-full bg-background shadow rounded-sm border border-foreground beak-table">
         <thead>
           <tr>
             <th class="px-4 py-2 border-b border-foreground text-left text-foreground">
@@ -156,7 +156,7 @@ const downloadReport = (report: any) => {
       </table>
     </div>
 
-    <fel-modal v-if="showForm" @close="showForm = false" :content-width="'w-3/4'">
+    <beak-modal v-if="showForm" @close="showForm = false" :content-width="'w-3/4'">
       <template v-slot:header>
         <h3 class="text-lg font-semibold text-foreground">Generate Line Listing Report</h3>
       </template>
@@ -260,6 +260,6 @@ const downloadReport = (report: any) => {
           </div>
         </form>
       </template>
-    </fel-modal>
+    </beak-modal>
   </div>
 </template>

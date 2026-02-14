@@ -43,7 +43,7 @@ async def test_register_client(app_gql, auth_data):
         "active": True,
     }
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={"query": add_client_query, "variables": {"payload": client}},
         headers=auth_data["headers"],
     )

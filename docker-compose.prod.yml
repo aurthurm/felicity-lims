@@ -1,9 +1,9 @@
-# This Docker Compose file defines the services for the Felicity LIMS application.
+# This Docker Compose file defines the services for the Beak LIMS application.
 # All services, including PostgreSQL, MinIO, and MongoDB, are containerized
 # with persistent data volumes for production readiness.
 
 networks:
-  felicitynet:
+  beaknet:
     driver: bridge # Defines a bridge network for inter-service communication
 
 # Named volumes for persistent data storage for all stateful Docker services.
@@ -11,35 +11,35 @@ networks:
 volumes:
   dragonfly_data: # Volume for DragonflyDB data
   dbgate_data: # Volume for DbGate configuration and data
-  felicity_media: # Volume for application media files (e.g., uploads)
+  beak_media: # Volume for application media files (e.g., uploads)
   minio_data: # Volume for MinIO object storage data
   postgres_data: # Volume for PostgreSQL database data
   mongo_data: # Volume for MongoDB database data
 
 services:
-  felicity-static-nginx:
-    container_name: felicity-static-nginx
-    image: amusendame/felicity-static-nginx:0.2.3 # Pinning image version for stability
+  beak-static-nginx:
+    container_name: beak-static-nginx
+    image: amusendame/beak-static-nginx:0.2.3 # Pinning image version for stability
     restart: unless-stopped # Always restart unless explicitly stopped
     ports:
       - '80:80' # Expose Nginx on host port 80
     env_file:
       - .env # Load PostgreSQL credentials from .env file
     environment:
-      PROXY_BACKEND: felicity-api # Backend service name for Nginx proxy
+      PROXY_BACKEND: beak-api # Backend service name for Nginx proxy
       PROXY_PORT: 8000 # Port of the backend service
       SERVER_HOST: ${SERVER_HOST} # Hostname for Nginx (from .env)
     depends_on:
-      - felicity-api # Ensure API is up before Nginx starts
+      - beak-api # Ensure API is up before Nginx starts
     networks:
-      - felicitynet # Connect to the custom network
+      - beaknet # Connect to the custom network
     logging:
       options:
         max-size: 10m # Limit log file size
         max-file: 5 # Keep up to 5 log files
 
-  felicity-api:
-    container_name: felicity-api
+  beak-api:
+    container_name: beak-api
     image: amusendame/felicity-lims:api-0.2.3 # Pinning image version for stability
     restart: unless-stopped
     env_file:
@@ -47,41 +47,41 @@ services:
     environment:
       # Database and service connection details for containerized services.
       # Services communicate using their service names within the Docker network.
-      POSTGRES_SERVER: felicity-postgres
+      POSTGRES_SERVER: beak-postgres
       SERVE_WEBAPP: False # Indicates the API will not serve the web app (Nginx does)
-      REDIS_SERVER: redis://felicity-dragonfly:6379
-      MONGODB_SERVER: felicity-mongo:27017
+      REDIS_SERVER: redis://beak-dragonfly:6379
+      MONGODB_SERVER: beak-mongo:27017
       MONGODB_USER: ${MONGO_INITDB_ROOT_USERNAME} # Sourced from .env
       MONGODB_PASS: ${MONGO_INITDB_ROOT_PASSWORD} # Sourced from .env
-      MINIO_SERVER: felicity-minio:9000
+      MINIO_SERVER: beak-minio:9000
       MINIO_ACCESS: ${MINIO_ROOT_USER} # Sourced from .env
       MINIO_SECRET: ${MINIO_ROOT_PASSWORD} # Sourced from .env
     ports:
       - '127.0.0.1:9991:8000' # Expose API on localhost port 9991
     networks:
-      - felicitynet
+      - beaknet
     volumes:
-      - felicity_media:/app/felicity/media # Mount volume for media uploads
+      - beak_media:/app/felicity/media # Mount volume for media uploads
     depends_on:
       # Ensure all backend services are running before the API starts
-      - felicity-postgres
-      - felicity-dragonfly
-      - felicity-minio
-      - felicity-mongo
+      - beak-postgres
+      - beak-dragonfly
+      - beak-minio
+      - beak-mongo
     logging:
       options:
         max-size: 10m
         max-file: 5
 
-  felicity-minio:
-    container_name: felicity-minio
+  beak-minio:
+    container_name: beak-minio
     image: bitnami/minio:2025-debian-12 # Pinning a specific, stable image version
     restart: unless-stopped # Ensure MinIO restarts if it crashes
     ports:
       - '127.0.0.1:9992:9000' # Expose MinIO API on localhost port 9992
       - '127.0.0.1:9993:9001' # Expose MinIO Console on localhost port 9993
     networks:
-      - felicitynet
+      - beaknet
     volumes:
       - minio_data:/data # Persist MinIO data to a named volume
     env_file:
@@ -98,8 +98,8 @@ services:
       timeout: 20s
       retries: 3
 
-  felicity-dragonfly:
-    container_name: felicity-dragonfly
+  beak-dragonfly:
+    container_name: beak-dragonfly
     image: 'docker.dragonflydb.io/dragonflydb/dragonfly:latest' # Pinning image version
     restart: unless-stopped
     env_file:
@@ -114,10 +114,10 @@ services:
     volumes:
       - dragonfly_data:/data # Persist DragonflyDB data to a named volume
     networks:
-      - felicitynet
+      - beaknet
 
-  felicity-postgres:
-    container_name: felicity-postgres
+  beak-postgres:
+    container_name: beak-postgres
     image: postgres:12.18 # Pinning a specific PostgreSQL 12 version for stability
     restart: unless-stopped
     env_file:
@@ -136,15 +136,15 @@ services:
     ports:
       - '127.0.0.1:9995:5432' # Expose PostgreSQL on localhost port 9995 (internal 5432)
     networks:
-      - felicitynet
+      - beaknet
     healthcheck: # Health check to ensure PostgreSQL is ready
       test: [ 'CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}' ]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  felicity-mongo:
-    container_name: felicity-mongo
+  beak-mongo:
+    container_name: beak-mongo
     image: mongo:7.0.9 # Pinning a specific MongoDB version for stability
     restart: unless-stopped # Ensure MongoDB restarts if it crashes
     env_file:
@@ -158,10 +158,10 @@ services:
     ports:
       - '127.0.0.1:9996:27017' # Expose MongoDB on localhost port 9996 (internal 27017)
     networks:
-      - felicitynet
+      - beaknet
 
-  felicity-dbgate:
-    container_name: felicity-dbgate
+  beak-dbgate:
+    container_name: beak-dbgate
     image: dbgate/dbgate:latest # Pinning image version
     restart: always
     ports:
@@ -176,22 +176,22 @@ services:
       PASSWORD: ${DBGATE_PASSWORD} # Sourced from .env
       # Connection details for PostgreSQL (pg) and MongoDB (mg)
       CONNECTIONS: pg,mg
-      LABEL_pg: Felicity Postgres
-      SERVER_pg: felicity-postgres # Connects to the containerized PostgreSQL service by name
+      LABEL_pg: Beak Postgres
+      SERVER_pg: beak-postgres # Connects to the containerized PostgreSQL service by name
       USER_pg: ${POSTGRES_USER} # Sourced from .env
       PASSWORD_pg: ${POSTGRES_PASSWORD} # Sourced from .env
       DATABASE_pg: ${POSTGRES_DB} # Sourced from .env
       PORT_pg: 5432 # Default PostgreSQL port
       ENGINE_pg: postgres@dbgate-plugin-postgres
       READONLY_pg: 1 # Set PostgreSQL connection as read-only in DbGate
-      LABEL_mg: Felicity Mongo
-      URL_mg: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@felicity-mongo:27017/ # Connects to containerized Mongo service by name
-      DATABASE_mg: felicity_lims
+      LABEL_mg: Beak Mongo
+      URL_mg: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@beak-mongo:27017/ # Connects to containerized Mongo service by name
+      DATABASE_mg: beak_lims
       ENGINE_mg: mongo@dbgate-plugin-mongo
       READONLY_mg: 1 # Set MongoDB connection as read-only in DbGate
     networks:
-      - felicitynet
+      - beaknet
     depends_on:
       # Ensure databases are up before DbGate tries to connect
-      - felicity-postgres
-      - felicity-mongo
+      - beak-postgres
+      - beak-mongo

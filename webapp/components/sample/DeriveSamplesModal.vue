@@ -208,7 +208,7 @@ const submitDeriveRequest = async () => {
 </script>
 
 <template>
-  <fel-modal v-if="show" @close="emit('close')" :content-width="'w-4/5'">
+  <beak-modal v-if="show" @close="emit('close')" :content-width="'w-4/5'">
     <template #header>
       Derive Samples
     </template>
@@ -416,7 +416,7 @@ const submitDeriveRequest = async () => {
         </button>
       </div>
     </template>
-  </fel-modal>
+  </beak-modal>
 </template>
 
 <style scoped>

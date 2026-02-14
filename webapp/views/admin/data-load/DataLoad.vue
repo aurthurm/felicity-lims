@@ -47,7 +47,7 @@ const loadDefault = (_) => {
           Load Setup Data
         </button>
         <div v-else class="rounded-lg border border-border bg-card p-4">
-          <fel-loader message="Loading default setup data ..." />
+          <beak-loader message="Loading default setup data ..." />
         </div>
       </div>
     </div>

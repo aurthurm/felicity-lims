@@ -15,7 +15,7 @@
     () => import('vue-multiselect')
   )
   const DataTable = defineAsyncComponent(
-    () => import('@/components/ui/datatable/FelDataTable.vue')
+    () => import('@/components/ui/datatable/BeakDataTable.vue')
   )
 
  type QCRequestType = {
@@ -228,19 +228,19 @@
 </script>
 
 <template>
-  <fel-heading title="Reference Runs (QC)">
+  <beak-heading title="Reference Runs (QC)">
     <div class="flex justify-start items-start gap-x-4">
-      <fel-button
+      <beak-button
         v-show="shield.hasRights(shield.actions.CREATE, shield.objects.SAMPLE)"
         @click.prevent="showModal = !showModal">
         Add Reference Runs
-      </fel-button>
+      </beak-button>
       <router-link to="/quality-control/charts" id="control-charts"
       class="px-4 py-2 bg-accent text-accent-foreground rounded-md hover:bg-accent/90 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent/50">
         View Run Charts
       </router-link>
     </div>
-  </fel-heading>
+  </beak-heading>
 
   <div class="rounded-lg border border-border bg-card shadow-sm p-6">
     <DataTable 
@@ -267,7 +267,7 @@
     </DataTable>
   </div>
 
-  <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-4/5'">
+  <beak-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-4/5'">
     <template v-slot:header>
       <h3>Create QC Analyses Requests</h3>
     </template>
@@ -373,7 +373,7 @@
         </button>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 
 
 </template>

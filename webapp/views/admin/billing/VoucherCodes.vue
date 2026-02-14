@@ -105,7 +105,7 @@ const updateVoucherCode = (vocher: VoucherCodeType) => {
 <template>
   <div class="space-y-6">
     <div v-if="fetchingVoucherCodes" class="rounded-lg border border-border bg-card p-4">
-      <fel-loader message="Fetching voucher codes ..." />
+      <beak-loader message="Fetching voucher codes ..." />
     </div>
     <section v-else class="space-y-6">
       <div class="flex justify-between items-center">
@@ -138,7 +138,7 @@ const updateVoucherCode = (vocher: VoucherCodeType) => {
     </section>
 
     <!-- Voucher Code Form Modal -->
-    <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/6'">
+    <beak-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/6'">
       <template v-slot:header>
         <h3 class="text-lg font-semibold text-foreground">Voucher Code Form</h3>
       </template>
@@ -185,6 +185,6 @@ const updateVoucherCode = (vocher: VoucherCodeType) => {
           </div>
         </form>
       </template>
-    </fel-modal>
+    </beak-modal>
   </div>
 </template>

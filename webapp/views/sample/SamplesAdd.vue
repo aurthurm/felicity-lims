@@ -397,7 +397,7 @@ const contactLabel = (contact: ClientContactType) => {
         aria-live="polite"
       >
         <div class="flex flex-col items-center gap-4">
-          <fel-loader message="Adding Samples..." variant="primary" size="lg" />
+          <beak-loader message="Adding Samples..." variant="primary" size="lg" />
         </div>
       </div>
 
@@ -667,7 +667,7 @@ const contactLabel = (contact: ClientContactType) => {
         <div class="relative border border-border rounded-lg bg-background/50 overflow-visible">
           <!-- Fixed field labels column -->
           <div class="absolute left-0 top-0 bottom-0 w-48 bg-muted/30 border-r border-border z-10">
-            <table class="w-full h-full fel-table">
+            <table class="w-full h-full beak-table">
               <thead>
               <tr class="border-b border-border bg-muted/30">
                 <th class="p-4 text-left text-sm font-medium text-foreground h-16">
@@ -717,7 +717,7 @@ const contactLabel = (contact: ClientContactType) => {
 
           <!-- Scrollable samples content -->
           <div class="overflow-x-auto overflow-y-visible pl-48">
-            <table class="w-80 min-w-80 fel-table">
+            <table class="w-80 min-w-80 beak-table">
               <thead>
               <tr class="border-b border-border bg-muted/30">
                 <th v-for="(sample, index) in samples" :key="index"

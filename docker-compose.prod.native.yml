@@ -1,40 +1,40 @@
 # docker-compose.yml
-# This Docker Compose file defines the services for the Felicity LIMS application.
+# This Docker Compose file defines the services for the Beak LIMS application.
 # PostgreSQL, MinIO, and MongoDB are assumed to be installed natively on the host
 # or accessible via the host's network.
 
 networks:
-  felicitynet:
+  beaknet:
     driver: bridge # Defines a bridge network for inter-service communication
 
 # Named volumes for persistent data storage for services still running in Docker.
 volumes:
   dragonfly_data: # Volume for DragonflyDB data
   dbgate_data: # Volume for DbGate configuration and data
-  felicity_media: # Volume for application media files (e.g., uploads)
+  beak_media: # Volume for application media files (e.g., uploads)
 
 services:
-  felicity-static-nginx:
-    container_name: felicity-static-nginx
-    image: amusendame/felicity-static-nginx:0.2.3 # Pinning image version for stability
+  beak-static-nginx:
+    container_name: beak-static-nginx
+    image: amusendame/beak-static-nginx:0.2.3 # Pinning image version for stability
     restart: unless-stopped # Always restart unless explicitly stopped
     ports:
       - '80:80' # Expose Nginx on host port 80
     environment:
-      PROXY_BACKEND: felicity-api # Backend service name for Nginx proxy
+      PROXY_BACKEND: beak-api # Backend service name for Nginx proxy
       PROXY_PORT: 8000 # Port of the backend service
       SERVER_HOST: ${SERVER_HOST} # Hostname for Nginx (from .env)
     depends_on:
-      - felicity-api # Ensure API is up before Nginx starts
+      - beak-api # Ensure API is up before Nginx starts
     networks:
-      - felicitynet # Connect to the custom network
+      - beaknet # Connect to the custom network
     logging:
       options:
         max-size: 10m # Limit log file size
         max-file: 5 # Keep up to 5 log files
 
-  felicity-api:
-    container_name: felicity-api
+  beak-api:
+    container_name: beak-api
     image: amusendame/felicity-lims:api-0.2.3 # Pinning image version for stability
     restart: unless-stopped
     env_file:
@@ -46,7 +46,7 @@ services:
       # on the Docker bridge network (e.g., 172.17.0.1) or configure a custom network.
       POSTGRES_SERVER: host.docker.internal
       SERVE_WEBAPP: 0 # Indicates the API will not serve the web app (Nginx does)
-      REDIS_SERVER: redis://felicity-dragonfly:6379 # Dragonfly (Redis) is still containerized
+      REDIS_SERVER: redis://beak-dragonfly:6379 # Dragonfly (Redis) is still containerized
       # MongoDB server address and using standard environment variables for credentials
       MONGODB_SERVER: host.docker.internal:27017
       MONGODB_USER: ${MONGO_INITDB_ROOT_USERNAME} # Sourced from .env
@@ -58,21 +58,21 @@ services:
     ports:
       - '127.0.0.1:9991:8000' # Expose API on localhost port 9991
     volumes:
-      - felicity_media:/app/felicity/media # Mount volume for media uploads
+      - beak_media:/app/felicity/media # Mount volume for media uploads
     depends_on:
       # Only depend on Dragonfly as other databases are native
-      - felicity-dragonfly
+      - beak-dragonfly
     logging:
       options:
         max-size: 10m
         max-file: 5
     networks:
-      - felicitynet
+      - beaknet
     extra_hosts:
       - 'host.docker.internal:host-gateway'
 
-  felicity-dragonfly:
-    container_name: felicity-dragonfly
+  beak-dragonfly:
+    container_name: beak-dragonfly
     image: 'docker.dragonflydb.io/dragonflydb/dragonfly:latest' # Pinning image version
     restart: unless-stopped
     environment:
@@ -85,10 +85,10 @@ services:
     volumes:
       - dragonfly_data:/data # Persist DragonflyDB data to a named volume
     networks:
-      - felicitynet
+      - beaknet
 
-  felicity-dbgate:
-    container_name: felicity-dbgate
+  beak-dbgate:
+    container_name: beak-dbgate
     image: dbgate/dbgate:latest # Pinning image version
     restart: always
     ports:
@@ -101,7 +101,7 @@ services:
       PASSWORD: ${DBGATE_PASSWORD} # Sourced from .env
       # Connection details for PostgreSQL (pg) and MongoDB (mg)
       CONNECTIONS: pg,mg
-      LABEL_pg: Felicity Postgres
+      LABEL_pg: Beak Postgres
       # Connects to the native PostgreSQL installation on the host
       SERVER_pg: host.docker.internal
       USER_pg: ${POSTGRES_USER} # Sourced from .env
@@ -110,13 +110,13 @@ services:
       PORT_pg: 5432 # Default PostgreSQL port
       ENGINE_pg: postgres@dbgate-plugin-postgres
       READONLY_pg: 1 # Set PostgreSQL connection as read-only in DbGate
-      LABEL_mg: Felicity Mongo
+      LABEL_mg: Beak Mongo
       # Connects to the native MongoDB installation on the host, using env vars for credentials
       URL_mg: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@host.docker.internal:27017/
-      DATABASE_mg: felicity_lims
+      DATABASE_mg: beak_lims
       ENGINE_mg: mongo@dbgate-plugin-mongo
       READONLY_mg: 1 # Set MongoDB connection as read-only in DbGate
     networks:
-      - felicitynet
+      - beaknet
     extra_hosts:
       - 'host.docker.internal:host-gateway'

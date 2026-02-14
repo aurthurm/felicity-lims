@@ -239,9 +239,9 @@ export const setupNavigationGuards = (router: any) => {
         const navItem = navigationStore.findNavigationItem(to.path);
 
         if (navItem) {
-            document.title = `${navItem.label} - Felicity LIMS`;
+            document.title = `${navItem.label} - Beak LIMS`;
         } else {
-            document.title = 'Felicity LIMS';
+            document.title = 'Beak LIMS';
         }
 
         // Emit navigation event for analytics or other tracking

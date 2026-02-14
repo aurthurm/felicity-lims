@@ -183,7 +183,7 @@ const saveErrandForm = () => {
     </VueDraggable>
 
     <!-- Create/Edit Errand Modal -->
-    <fel-modal 
+    <beak-modal 
       v-if="showErrandModal" 
       @close="showErrandModal = false" 
       content-width="w-full max-w-2xl"
@@ -267,7 +267,7 @@ const saveErrandForm = () => {
           </div>
         </form>
       </template>
-    </fel-modal>
+    </beak-modal>
   </div>
 </template>
 

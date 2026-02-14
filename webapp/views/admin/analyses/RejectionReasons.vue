@@ -66,13 +66,13 @@
 
 <template>
  <div class="space-y-6">
- <fel-heading title="Rejection Reasons">
- <fel-button @click="FormManager(true)">Add Rejection Reason</fel-button>
- </fel-heading>
+ <beak-heading title="Rejection Reasons">
+ <beak-button @click="FormManager(true)">Add Rejection Reason</beak-button>
+ </beak-heading>
 
  <div class="shadow-sm rounded-lg bg-card p-6">
  <div class="overflow-x-auto">
- <table class="min-w-full divide-y divide-border fel-table">
+ <table class="min-w-full divide-y divide-border beak-table">
  <thead>
  <tr>
  <th class="text-left text-sm font-semibold text-foreground">Reason</th>
@@ -100,7 +100,7 @@
  </div>
 
  <!-- Rejection Reason Form Modal -->
- <fel-modal v-if="showModal" @close="showModal = false">
+ <beak-modal v-if="showModal" @close="showModal = false">
  <template v-slot:header>
  <h3 class="text-lg font-bold text-foreground">{{ formTitle }}</h3>
  </template>
@@ -129,6 +129,6 @@
  </div>
  </form>
  </template>
- </fel-modal>
+ </beak-modal>
 
 </template>

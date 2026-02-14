@@ -52,7 +52,7 @@ async def test_add_stock_product(app_gql, auth_data):
     ):
         stock_product["name"] = item
         response = await app_gql.post(
-            "/felicity-gql",
+            "/beak-gql",
             json={
                 "query": add_stock_product_mutation,
                 "variables": {"payload": stock_product},

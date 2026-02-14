@@ -158,7 +158,7 @@ function getUsers() {
     </div>
 
     <!-- Create/Edit Milestone Modal -->
-    <fel-modal 
+    <beak-modal 
       v-if="showForm" 
       @close="showForm = false" 
       content-width="w-full max-w-2xl"
@@ -246,7 +246,7 @@ function getUsers() {
           </div>
         </form>
       </template>
-    </fel-modal>
+    </beak-modal>
   </div>
 </template>
 

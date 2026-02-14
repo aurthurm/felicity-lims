@@ -43,25 +43,25 @@ We are committed to providing a welcoming and inclusive environment for all cont
 
 ### Fork the Repository
 
-1. Visit [Felicity LIMS Repository](https://github.com/beak-insights/felicity-lims)
+1. Visit [Felicity LIMS Repository](https://github.com/beak-insights/beak-lims)
 2. Click the **Fork** button in the top-right corner
 3. This creates a copy of the repository under your GitHub account
 
 ```bash
 # Clone your fork locally
-git clone https://github.com/YOUR_USERNAME/felicity-lims.git
-cd felicity-lims
+git clone https://github.com/YOUR_USERNAME/beak-lims.git
+cd beak-lims
 
 # Add upstream remote to keep in sync
-git remote add upstream https://github.com/beak-insights/felicity-lims.git
+git remote add upstream https://github.com/beak-insights/beak-lims.git
 
 # Verify remotes
 git remote -v
 # Output should show:
-# origin    https://github.com/YOUR_USERNAME/felicity-lims.git (fetch)
-# origin    https://github.com/YOUR_USERNAME/felicity-lims.git (push)
-# upstream  https://github.com/beak-insights/felicity-lims.git (fetch)
-# upstream  https://github.com/beak-insights/felicity-lims.git (push)
+# origin    https://github.com/YOUR_USERNAME/beak-lims.git (fetch)
+# origin    https://github.com/YOUR_USERNAME/beak-lims.git (push)
+# upstream  https://github.com/beak-insights/beak-lims.git (fetch)
+# upstream  https://github.com/beak-insights/beak-lims.git (push)
 ```
 
 ---
@@ -72,8 +72,8 @@ git remote -v
 
 ```bash
 # Clone your fork
-git clone https://github.com/YOUR_USERNAME/felicity-lims.git
-cd felicity-lims
+git clone https://github.com/YOUR_USERNAME/beak-lims.git
+cd beak-lims
 
 # Create virtual environment
 conda create -n felicity python=3.11
@@ -100,7 +100,7 @@ nano .env
 
 ```bash
 docker compose -f docker-compose.dev.yml up -d --build
-docker compose -f docker-compose.dev.yml exec felicity-api felicity-lims db upgrade
+docker compose -f docker-compose.dev.yml exec beak-api beak-lims db upgrade
 ```
 
 **Option B: Local Development**
@@ -875,8 +875,8 @@ Before submitting your PR, verify:
 
 ### Questions?
 
--   **GitHub Discussions**: [Ask a question](https://github.com/beak-insights/felicity-lims/discussions)
--   **Issues**: [Create an issue](https://github.com/beak-insights/felicity-lims/issues)
+-   **GitHub Discussions**: [Ask a question](https://github.com/beak-insights/beak-lims/discussions)
+-   **Issues**: [Create an issue](https://github.com/beak-insights/beak-lims/issues)
 -   **Email**: [aurthurmusendame@gmail.com](mailto:aurthurmusendame@gmail.com)
 
 ### Resources

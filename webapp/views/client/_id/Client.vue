@@ -84,7 +84,7 @@ function saveForm() {
         <!-- Listing Item Card -->
         <div class="bg-background rounded-sm shadow-sm hover:shadow-lg duration-500 px-4 sm:px-6 md:px-2 py-4">
           <div v-if="clientStore.fetchingClient" class="py-4 text-center">
-            <fel-loader message="Fetching client metadata ..." />
+            <beak-loader message="Fetching client metadata ..." />
           </div>
           <div class="grid grid-cols-12 gap-3" v-else>
             <!-- Summary Column -->
@@ -139,7 +139,7 @@ function saveForm() {
   </div>
 
   <!-- Location Edit Form Modal -->
-  <fel-modal v-if="showClientModal" @close="showClientModal = false">
+  <beak-modal v-if="showClientModal" @close="showClientModal = false">
     <template v-slot:header>
       <h3>{{ formTitle }}</h3>
     </template>
@@ -228,5 +228,5 @@ function saveForm() {
         </button>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 </template>

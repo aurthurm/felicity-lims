@@ -2,8 +2,8 @@
 import { computed, defineAsyncComponent } from "vue";
 import { useSampleStore } from "@/stores/sample";
 
-const FelTabs =  defineAsyncComponent(
-  () => import("@/components/ui/tabs/FelTabs.vue")
+const BeakTabs =  defineAsyncComponent(
+  () => import("@/components/ui/tabs/BeakTabs.vue")
 )
 
 const sampleStore = useSampleStore();
@@ -26,7 +26,7 @@ const tabs = [
   {
     id: 'logs',
     label: 'Logs',
-    component: defineAsyncComponent(() => import('@/components/audit/FelAuditLog.vue')),
+    component: defineAsyncComponent(() => import('@/components/audit/BeakAuditLog.vue')),
     props: { targetType: 'sample', targetUid: targetUid.value}
   },
   {
@@ -51,7 +51,7 @@ const handleTabChange = (tabId: string) => {
 
 <template>
   <div class="space-y-6">
-    <FelTabs
+    <BeakTabs
       :tabs="tabs"
       initial-tab="analysis-results"
       :hide-tab="hideTab"

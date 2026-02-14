@@ -189,7 +189,7 @@ const resetUserMatrix = () => {
 
     <!-- Loading State -->
     <div v-if="dashboard.fetchingResourceStats" class="text-start my-4">
-      <fel-loader message="Fetching resource stats..." />
+      <beak-loader message="Fetching resource stats..." />
     </div>
 
     <!-- Content Section -->
@@ -235,7 +235,7 @@ const resetUserMatrix = () => {
     </section>
 
     <!-- Custom Date Range Modal -->
-    <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/4'">
+    <beak-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/4'">
       <template v-slot:header>
         <h3>Custom Filter Date Range</h3>
       </template>
@@ -275,7 +275,7 @@ const resetUserMatrix = () => {
           </button>
         </form>
       </template>
-    </fel-modal>
+    </beak-modal>
   </div>
 </template>
 

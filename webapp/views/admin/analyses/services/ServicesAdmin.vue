@@ -15,7 +15,7 @@ import { mutateForm, resetForm } from '@/utils';
     () => import('vue-multiselect')
   )
   const accordion = defineAsyncComponent(
-    () => import('@/components/ui/FelAccordion.vue')
+    () => import('@/components/ui/BeakAccordion.vue')
   )
   const ResultOptions = defineAsyncComponent(
     () => import('./ResultOptions.vue')
@@ -216,9 +216,9 @@ function saveMappingForm(): void {
 
 <template>
   <div>
-    <fel-heading title="Analyses Services">
-      <fel-button @click="FormManager(true)">Add Analyses Service</fel-button>
-    </fel-heading>
+    <beak-heading title="Analyses Services">
+      <beak-button @click="FormManager(true)">Add Analyses Service</beak-button>
+    </beak-heading>
 
     <div class="grid grid-cols-12 gap-4 mt-2">
       <section class="col-span-3 overflow-y-scroll overscroll-contain max-h-[540px] bg-card text-card-foreground rounded-lg border border-border p-4">
@@ -406,7 +406,7 @@ function saveMappingForm(): void {
             <hr class="border-border my-2" />
             <div class="overflow-x-auto mt-4">
               <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card text-card-foreground rounded-lg border border-border">
-                <table class="min-w-full fel-table">
+                <table class="min-w-full beak-table">
                     <thead>
                     <tr>
                         <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Coding Standard</th>
@@ -455,7 +455,7 @@ function saveMappingForm(): void {
 
 
   <!-- AnaltsisService Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
+  <beak-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
     <template v-slot:header>
       <h3 class="text-lg font-bold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -465,7 +465,7 @@ function saveMappingForm(): void {
         <div class="grid grid-cols-6 gap-x-4 mb-4">
           <label class="block col-span-4 mb-2">
             <span class="text-muted-foreground">Analysis Service Name</span>
-            <input v-if="!analysisService.keyword?.includes('felicity')"
+            <input v-if="!analysisService.keyword?.includes('beak')"
               class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring mt-1"
               v-model="analysisService.name"
               placeholder="Name ..."
@@ -474,14 +474,14 @@ function saveMappingForm(): void {
           </label>
           <label class="block col-span-1 mb-2">
             <span class="text-muted-foreground">keyword</span>
-            <input v-if="!analysisService.keyword?.includes('felicity')"
+            <input v-if="!analysisService.keyword?.includes('beak')"
               class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring mt-1"
               v-model="analysisService.keyword"
               placeholder="Keyword ..."
             />
             <span class="block mt-2 mb-4 italic font-semibold text-foreground" v-else>{{ analysisService.keyword }}</span>
           </label>
-          <label class="block col-span-1 mb-2" v-show="!analysisService.keyword?.includes('felicity')">
+          <label class="block col-span-1 mb-2" v-show="!analysisService.keyword?.includes('beak')">
             <span class="text-muted-foreground">Unit</span>
             <select class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring mt-1" v-model="analysisService.unitUid">
                <option></option>
@@ -517,7 +517,7 @@ function saveMappingForm(): void {
           </label>
           <label class="block col-span-6 mb-2">
             <span class="text-muted-foreground">Description</span>
-            <textarea v-if="!analysisService.keyword?.includes('felicity')"
+            <textarea v-if="!analysisService.keyword?.includes('beak')"
             cols="2"
               class="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus:outline-none focus:ring-2 focus:ring-ring mt-1"
               v-model="analysisService.description"
@@ -612,12 +612,12 @@ function saveMappingForm(): void {
         </button>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 
 
 
     <!-- MappingForm Modal -->
-    <fel-modal v-if="showMappingModal" @close="showMappingModal = false">
+    <beak-modal v-if="showMappingModal" @close="showMappingModal = false">
     <template v-slot:header>
       <h3 class="text-lg font-bold text-foreground">{{ mappingFormTitle }}</h3>
     </template>
@@ -677,7 +677,7 @@ function saveMappingForm(): void {
         </button>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 
 
 </template>

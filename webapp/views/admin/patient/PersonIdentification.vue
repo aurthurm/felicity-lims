@@ -8,7 +8,7 @@ import { IdentificationType } from '@/types/gql'
 import { AddIdentificationDocument, AddIdentificationMutation, AddIdentificationMutationVariables,
  EditIdentificationDocument, EditIdentificationMutation, EditIdentificationMutationVariables } from '@/graphql/operations/patient.mutations';
 const modal = defineAsyncComponent(
- () => import('@/components/ui/FelModal.vue')
+ () => import('@/components/ui/BeakModal.vue')
 )
 
 const patientStore = usePatientStore();
@@ -73,13 +73,13 @@ const identifications = computed(() => patientStore.getIdentifications)
 
 <template>
  <div class="space-y-6">
- <fel-heading title="Person Identifications">
- <fel-button @click="FormManager(true)">Add Person Identification</fel-button>
- </fel-heading>
+ <beak-heading title="Person Identifications">
+ <beak-button @click="FormManager(true)">Add Person Identification</beak-button>
+ </beak-heading>
 
  <div class="rounded-md border border-border p-6 bg-card">
  <div class="overflow-x-auto">
- <table class="min-w-full divide-y divide-border fel-table">
+ <table class="min-w-full divide-y divide-border beak-table">
  <thead>
  <tr>
  <th class="text-left text-sm font-semibold text-foreground">Name</th>
@@ -105,7 +105,7 @@ const identifications = computed(() => patientStore.getIdentifications)
  </div>
 
  <!-- Identification Edit Form Modal -->
- <fel-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
+ <beak-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
  <template v-slot:header>
  <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
  </template>
@@ -130,5 +130,5 @@ const identifications = computed(() => patientStore.getIdentifications)
  </button>
  </form>
  </template>
- </fel-modal>
+ </beak-modal>
 </template>

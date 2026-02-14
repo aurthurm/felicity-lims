@@ -253,9 +253,9 @@ function areAllChecked(): boolean {
       class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg"
     >
       <div v-if="worksheetStore.fetchingAnalysisResults" class="py-4 text-center">
-        <fel-loader message="Fetching analytes ..." />
+        <beak-loader message="Fetching analytes ..." />
       </div>
-      <table class="min-w-full fel-table" v-else>
+      <table class="min-w-full beak-table" v-else>
         <thead>
           <tr>
             <th

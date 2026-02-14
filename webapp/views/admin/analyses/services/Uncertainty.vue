@@ -135,13 +135,13 @@
 </script>
 
 <template>
-    <fel-heading title="Uncertainty">
-      <fel-button @click="FormManager(true)">Add Uncertainty</fel-button>
-    </fel-heading>
+    <beak-heading title="Uncertainty">
+      <beak-button @click="FormManager(true)">Add Uncertainty</beak-button>
+    </beak-heading>
     
     <div class="overflow-x-auto mt-4">
         <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-card text-card-foreground rounded-lg border border-border">
-        <table class="min-w-full fel-table">
+        <table class="min-w-full beak-table">
             <thead>
             <tr>
                 <th class="px-4 py-2 border-b border-border text-left text-sm font-medium text-muted-foreground">Instrument</th>
@@ -179,7 +179,7 @@
     </div>
 
   <!-- Uncertainty Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/4'">
+  <beak-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-2/4'">
     <template v-slot:header>
       <h3 class="text-lg font-bold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -257,6 +257,6 @@
         </div>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 
 </template>

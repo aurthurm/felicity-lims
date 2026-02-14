@@ -77,7 +77,7 @@ async def test_add_sample_to_storage(app_gql, auth_data):
         ],
     }
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={"query": add_ar_gql, "variables": {"payload": analysis_request}},
         headers=auth_data["headers"],
     )
@@ -123,7 +123,7 @@ async def test_add_sample_to_storage(app_gql, auth_data):
         )
 
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={
             "query": store_samples_query,
             "variables": {"payload": store_samples_data},

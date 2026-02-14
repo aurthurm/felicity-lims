@@ -81,8 +81,8 @@ interface RefreshUserLaboratoriesQueryVariables {
     userUid: string;
 }
 
-const CONTEXT_STORAGE_KEY = 'felicity_laboratory_context';
-const CONTEXT_HISTORY_KEY = 'felicity_context_history';
+const CONTEXT_STORAGE_KEY = 'beak_laboratory_context';
+const CONTEXT_HISTORY_KEY = 'beak_context_history';
 const MAX_HISTORY_ITEMS = 10;
 
 export const useLaboratoryContextStore = defineStore('laboratoryContext', () => {

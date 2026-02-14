@@ -18,8 +18,8 @@ import {
 
 import { useLocationStore } from '@/stores/location';
 import useApiUtil from '@/composables/api_util';
-import FelButton from '@/components/ui/buttons/FelButton.vue';
-import FelSelect from '@/components/ui/select/FelSelect.vue';
+import BeakButton from '@/components/ui/buttons/BeakButton.vue';
+import BeakSelect from '@/components/ui/select/BeakSelect.vue';
 
 const locationStore = useLocationStore();
 const { withClientMutation } = useApiUtil();
@@ -255,15 +255,15 @@ const inputClass = "flex h-10 w-full rounded-md border border-input bg-backgroun
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Country, Provinces & Districts">
+    <beak-heading title="Country, Provinces & Districts">
       <template #subtitle>
         <span class="text-muted-foreground">Manage geographic hierarchy for patient and client addresses.</span>
       </template>
-      <FelButton @click="FormManager(true, 'country')">
+      <BeakButton @click="FormManager(true, 'country')">
         <font-awesome-icon icon="plus" class="mr-2" />
         Add Country
-      </FelButton>
-    </fel-heading>
+      </BeakButton>
+    </beak-heading>
 
     <!-- Breadcrumb trail -->
     <div v-if="breadcrumbTrail.length" class="flex items-center gap-2 text-sm">
@@ -331,9 +331,9 @@ const inputClass = "flex h-10 w-full rounded-md border border-input bg-backgroun
           <div v-else class="flex flex-col items-center justify-center py-12 px-4 text-center text-muted-foreground">
             <font-awesome-icon icon="flag" class="w-10 h-10 mb-3 opacity-40" />
             <p class="text-sm">{{ countrySearch ? 'No matches found' : 'No countries yet' }}</p>
-            <FelButton v-if="!countrySearch" variant="outline" class="mt-3" @click="FormManager(true, 'country')">
+            <BeakButton v-if="!countrySearch" variant="outline" class="mt-3" @click="FormManager(true, 'country')">
               Add first country
-            </FelButton>
+            </BeakButton>
           </div>
         </div>
       </section>
@@ -399,17 +399,17 @@ const inputClass = "flex h-10 w-full rounded-md border border-input bg-backgroun
             <div class="flex flex-col items-center justify-center py-12 px-4 text-center text-muted-foreground">
               <font-awesome-icon icon="map" class="w-10 h-10 mb-3 opacity-40" />
               <p class="text-sm">{{ provinceSearch ? 'No matches found' : 'No provinces yet' }}</p>
-              <FelButton v-if="!provinceSearch" variant="outline" class="mt-3" @click="FormManager(true, 'province')">
+              <BeakButton v-if="!provinceSearch" variant="outline" class="mt-3" @click="FormManager(true, 'province')">
                 Add first province
-              </FelButton>
+              </BeakButton>
             </div>
           </template>
         </div>
         <div v-if="isCountrySelected()" class="shrink-0 p-3 border-t border-border">
-          <FelButton variant="outline" class="w-full" @click="FormManager(true, 'province')">
+          <BeakButton variant="outline" class="w-full" @click="FormManager(true, 'province')">
             <font-awesome-icon icon="plus" class="mr-2" />
             Add Province
-          </FelButton>
+          </BeakButton>
         </div>
       </section>
 
@@ -474,24 +474,24 @@ const inputClass = "flex h-10 w-full rounded-md border border-input bg-backgroun
             <div class="flex flex-col items-center justify-center py-12 px-4 text-center text-muted-foreground">
               <font-awesome-icon icon="location-dot" class="w-10 h-10 mb-3 opacity-40" />
               <p class="text-sm">{{ districtSearch ? 'No matches found' : 'No districts yet' }}</p>
-              <FelButton v-if="!districtSearch" variant="outline" class="mt-3" @click="FormManager(true, 'district')">
+              <BeakButton v-if="!districtSearch" variant="outline" class="mt-3" @click="FormManager(true, 'district')">
                 Add first district
-              </FelButton>
+              </BeakButton>
             </div>
           </template>
         </div>
         <div v-if="isProvinceSelected()" class="shrink-0 p-3 border-t border-border">
-          <FelButton variant="outline" class="w-full" @click="FormManager(true, 'district')">
+          <BeakButton variant="outline" class="w-full" @click="FormManager(true, 'district')">
             <font-awesome-icon icon="plus" class="mr-2" />
             Add District
-          </FelButton>
+          </BeakButton>
         </div>
       </section>
     </div>
   </div>
 
   <!-- Location Edit Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false">
+  <beak-modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
       <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -523,7 +523,7 @@ const inputClass = "flex h-10 w-full rounded-md border border-input bg-backgroun
 
         <!-- Country selector when editing province -->
         <div v-if="targetLocation === 'province'" class="space-y-2">
-          <FelSelect
+          <BeakSelect
             label="Country"
             name="countryUid"
             :model-value="countryUid"
@@ -534,7 +534,7 @@ const inputClass = "flex h-10 w-full rounded-md border border-input bg-backgroun
 
         <!-- Province selector when editing district -->
         <div v-if="targetLocation === 'district'" class="space-y-2">
-          <FelSelect
+          <BeakSelect
             label="Province"
             name="provinceUid"
             :model-value="provinceUid"
@@ -544,14 +544,14 @@ const inputClass = "flex h-10 w-full rounded-md border border-input bg-backgroun
         </div>
 
         <div class="flex gap-3 pt-2">
-          <FelButton type="submit" class="flex-1">
+          <BeakButton type="submit" class="flex-1">
             Save
-          </FelButton>
-          <FelButton variant="outline" type="button" @click="showModal = false">
+          </BeakButton>
+          <BeakButton variant="outline" type="button" @click="showModal = false">
             Cancel
-          </FelButton>
+          </BeakButton>
         </div>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 </template>

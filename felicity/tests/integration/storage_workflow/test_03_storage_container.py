@@ -35,7 +35,7 @@ async def test_add_storage_container(app_gql, auth_data):
         "slots": 100,
     }
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={
             "query": add_storage_container_query,
             "variables": {"payload": storage_container},

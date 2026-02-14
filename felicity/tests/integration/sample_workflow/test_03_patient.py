@@ -53,7 +53,7 @@ async def test_register_patient(app_gql, auth_data, clients):
     }
 
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={"query": add_patient_query, "variables": {"payload": patient}},
         headers=auth_data["headers"],
     )

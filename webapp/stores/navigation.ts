@@ -49,7 +49,7 @@ export interface QuickAction {
     contextDependent?: boolean;
 }
 
-const NAVIGATION_STORAGE_KEY = 'felicity_navigation_preferences';
+const NAVIGATION_STORAGE_KEY = 'beak_navigation_preferences';
 
 export const useNavigationStore = defineStore('navigation', () => {
     const route = useRoute();

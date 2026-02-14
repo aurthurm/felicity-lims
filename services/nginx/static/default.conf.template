@@ -18,7 +18,7 @@ server {
     }
 
     # GraphQL and API proxying
-    location ~ ^/(api|felicity-gql)(/|$) {
+    location ~ ^/(api|beak-gql)(/|$) {
         proxy_pass http://api;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;

@@ -4,8 +4,8 @@ import { useAuthStore } from '@/stores/auth'
 import { computed, onMounted, defineAsyncComponent } from 'vue'
 
 // Lazy load components
-const FelInbox = defineAsyncComponent(
-  () => import("@/components/ui/inbox/FelInbox.vue")
+const BeakInbox = defineAsyncComponent(
+  () => import("@/components/ui/inbox/BeakInbox.vue")
 )
 
 // Initialize stores
@@ -38,7 +38,7 @@ const handleNoticeSelect = (notice: any) => {
       You have no notices.
     </div>
     
-    <FelInbox 
+    <BeakInbox 
       v-else
       :items="notices"
       title="Notice Board"

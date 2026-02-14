@@ -465,7 +465,7 @@ watch(() => props.isOpen, (newVal) => {
 </script>
 
 <template>
-  <fel-modal v-if="isOpen" @close="emit('close')" contentWidth="w-full max-w-7xl">
+  <beak-modal v-if="isOpen" @close="emit('close')" contentWidth="w-full max-w-7xl">
     <template v-slot:header>
       <h3 class="text-lg font-semibold text-foreground">
         Driver Mapper - {{ instrumentInterface?.laboratoryInstrument?.labName || 'Instrument' }}
@@ -700,7 +700,7 @@ watch(() => props.isOpen, (newVal) => {
         </button>
       </div>
     </template>
-  </fel-modal>
+  </beak-modal>
 
   <!-- Mapping Modal -->
   <div

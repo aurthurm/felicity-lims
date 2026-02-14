@@ -5,7 +5,7 @@ import { useBillingStore } from "@/stores/billing";
 import { TestBillType } from "@/types/gql";
 
 const DataTable = defineAsyncComponent(
-  () => import("@/components/ui/datatable/FelDataTable.vue")
+  () => import("@/components/ui/datatable/BeakDataTable.vue")
 );
 
 const BillDetail = defineAsyncComponent(
@@ -342,7 +342,7 @@ const countNone = computed(
   </div>
 
   <!-- Bill Detail Drawer -->
-  <fel-drawer :show="showBillDetail" @close="closeBillDetail" :content-width="'w-2/4'">
+  <beak-drawer :show="showBillDetail" @close="closeBillDetail" :content-width="'w-2/4'">
     <template v-slot:header>
       <span>Bill Details</span>
     </template>
@@ -353,5 +353,5 @@ const countNone = computed(
         :testBill="selectedBill as TestBillType"
       />
     </template>
-  </fel-drawer>
+  </beak-drawer>
 </template>

@@ -31,7 +31,7 @@ async def test_add_storage_section(app_gql, auth_data):
         "description": "Storage section one",
     }
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={
             "query": add_storage_section_query,
             "variables": {"payload": storage_section},

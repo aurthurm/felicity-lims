@@ -104,7 +104,7 @@ async function savePreferences() {
   <div class="w-full space-y-6">
     <!-- Loading state -->
     <div v-if="loading" class="flex justify-center items-center h-32">
-      <fel-loader message="Loading preferences..." variant="muted" />
+      <beak-loader message="Loading preferences..." variant="muted" />
     </div>
 
     <!-- Main content -->
@@ -255,7 +255,7 @@ async function savePreferences() {
         >
           Cancel
         </button>
-        <fel-button
+        <beak-button
           type="button"
           @click="savePreferences"
           :disabled="saving || loading"
@@ -263,7 +263,7 @@ async function savePreferences() {
           class="px-4 py-2"
         >
           Save Preferences
-        </fel-button>
+        </beak-button>
       </div>
     </div>
   </div>

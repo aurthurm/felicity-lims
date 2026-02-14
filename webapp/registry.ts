@@ -3,12 +3,12 @@ import {VueDatePicker} from '@vuepic/vue-datepicker';
 import LayoutDashboard from '@/layouts/LayoutDashboard.vue';
 import LayoutEmpty from '@/layouts/LayoutEmpty.vue';
 import LayoutMobile from '@/layouts/LayoutMobile.vue';
-import FelPageHeading from '@/components/common/FelPageHeading.vue';
-import FelModal from '@/components/ui/FelModal.vue';
-import FelButton from '@/components/ui/buttons/FelButton.vue';
-import FelLoader from '@/components/ui/spinners/FelLoader.vue';
-import FelTabs from '@/components/ui/tabs/FelTabs.vue';
-import FelAccordion from '@/components/ui/FelAccordion.vue';
+import BeakPageHeading from '@/components/common/BeakPageHeading.vue';
+import BeakModal from '@/components/ui/BeakModal.vue';
+import BeakButton from '@/components/ui/buttons/BeakButton.vue';
+import BeakLoader from '@/components/ui/spinners/BeakLoader.vue';
+import BeakTabs from '@/components/ui/tabs/BeakTabs.vue';
+import BeakAccordion from '@/components/ui/BeakAccordion.vue';
 
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {MotionPlugin} from '@vueuse/motion';
@@ -20,7 +20,7 @@ import urql from '@urql/vue';
 import {CkeditorPlugin} from '@ckeditor/ckeditor5-vue';
 import router from './router';
 import {createPinia} from 'pinia';
-import FelDrawer from './components/ui/FelDrawer.vue';
+import BeakDrawer from './components/ui/BeakDrawer.vue';
 
 // Register global components
 export const registerComponents = (app: App) => {
@@ -29,13 +29,13 @@ export const registerComponents = (app: App) => {
     app.component('default-layout', LayoutDashboard);
     app.component('empty-layout', LayoutEmpty);
     app.component('mobile-layout', LayoutMobile);
-    app.component('fel-heading', FelPageHeading);
-    app.component('fel-modal', FelModal);
-    app.component('fel-button', FelButton);
-    app.component('fel-loader', FelLoader);
-    app.component('fel-tabs', FelTabs);
-    app.component('fel-accordion', FelAccordion);
-    app.component('fel-drawer', FelDrawer);
+    app.component('beak-heading', BeakPageHeading);
+    app.component('beak-modal', BeakModal);
+    app.component('beak-button', BeakButton);
+    app.component('beak-loader', BeakLoader);
+    app.component('beak-tabs', BeakTabs);
+    app.component('beak-accordion', BeakAccordion);
+    app.component('beak-drawer', BeakDrawer);
 };
 
 // Register plugins and global state

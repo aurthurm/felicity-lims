@@ -8,7 +8,7 @@
 
 ## Build, Test, and Development Commands
 - `make build` / `make up` / `make down` manage the Docker dev stack (`docker-compose.dev.yml`).
-- `docker compose -f docker-compose.dev.yml exec felicity-api felicity-lims db upgrade` runs DB migrations in dev.
+- `docker compose -f docker-compose.dev.yml exec beak-api beak-lims db upgrade` runs DB migrations in dev.
 - `pnpm server:uv:watch` runs the API with reload for local dev.
 - `pnpm webapp:dev` runs the Vite frontend; `pnpm webapp:dev:watch` also runs GraphQL codegen.
 - `pnpm standalone:build` builds the frontend and copies assets into `felicity/templates/static`.

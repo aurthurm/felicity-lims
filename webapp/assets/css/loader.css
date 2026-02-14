@@ -1,4 +1,4 @@
-#fel-load {
+#beak-load {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -7,14 +7,14 @@
     width: 100%;
 }
 
-#fel-load > p {
+#beak-load > p {
     color: var(--color-loader-primary);
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 16px;
 }
 
-.fel-loader {
+.beak-loader {
     width: 10px;
     height: 10px;
     border-radius: 50%;

@@ -1,1 +1,0 @@
-import{_ as o,r as t,c as s,o as c,a as n}from"./index-Daoe3XS9.js";const r={},i={class:""};function a(_,m){const e=t("router-view");return c(),s("div",i,[n(e)])}const f=o(r,[["render",a],["__file","/home/administrator/Documents/Development/beak-insights/felicity/felicity-lims/webapp/views/grind/Schemes.vue"]]);export{f as default};

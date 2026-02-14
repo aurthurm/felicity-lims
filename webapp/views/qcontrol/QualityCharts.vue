@@ -121,7 +121,7 @@
 <template>
   <div class="min-h-[500px]">
     <div class="flex justify-between" >
-      <fel-heading title="Analyses Service Control Charts" />
+      <beak-heading title="Analyses Service Control Charts" />
       <div class="flex justify-start items-center gap-x-2">
         <VueDatePicker 
           class="z-60 disabled:bg-muted" 

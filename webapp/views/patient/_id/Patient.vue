@@ -33,7 +33,7 @@ const updatePatient = (res: PatientType) => {
   </div>
 
   <!-- Patient Edit Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
+  <beak-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">Patient Form</h3>
     </template>
@@ -41,6 +41,6 @@ const updatePatient = (res: PatientType) => {
     <template v-slot:body>
       <PatientForm :patient="patientStore.patient" :navigate="false" @close="updatePatient" />
     </template>
-  </fel-modal>
+  </beak-modal>
 </template>
 

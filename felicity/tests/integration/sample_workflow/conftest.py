@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 @pytest_asyncio.fixture(scope="function")
 async def clients(app_gql, auth_data):
     response = await app_gql.post(
-        "felicity-gql",
+        "beak-gql",
         json={
             "query": """
             query GetClients{
@@ -32,7 +32,7 @@ async def clients(app_gql, auth_data):
 @pytest_asyncio.fixture(scope="function")
 async def client_contacts(app_gql, auth_data, clients):
     response = await app_gql.post(
-        "felicity-gql",
+        "beak-gql",
         json={
             "query": """
                 query getClientContactsByClientUid($clientUid: String!) {
@@ -53,7 +53,7 @@ async def client_contacts(app_gql, auth_data, clients):
 @pytest_asyncio.fixture(scope="function")
 async def sample_types(app_gql, auth_data):
     response = await app_gql.post(
-        "felicity-gql",
+        "beak-gql",
         json={
             "query": """
             query GetSampleTypes {
@@ -71,7 +71,7 @@ async def sample_types(app_gql, auth_data):
 @pytest_asyncio.fixture(scope="function")
 async def methods(app_gql, auth_data):
     response = await app_gql.post(
-        "felicity-gql",
+        "beak-gql",
         json={
             "query": """
             query GetMethods {
@@ -91,7 +91,7 @@ async def methods(app_gql, auth_data):
 @pytest_asyncio.fixture(scope="function")
 async def instruments(app_gql, auth_data):
     response = await app_gql.post(
-        "felicity-gql",
+        "beak-gql",
         json={
             "query": """
             query GetInstruments {
@@ -112,7 +112,7 @@ async def instruments(app_gql, auth_data):
 @pytest_asyncio.fixture(scope="function")
 async def laboratory_instruments(app_gql, auth_data):
     response = await app_gql.post(
-        "felicity-gql",
+        "beak-gql",
         json={
             "query": """
             query GetLabInstruments {
@@ -132,7 +132,7 @@ async def laboratory_instruments(app_gql, auth_data):
 @pytest_asyncio.fixture(scope="function")
 async def analyses(app_gql, auth_data):
     response = await app_gql.post(
-        "felicity-gql",
+        "beak-gql",
         json={
             "query": """
             query GetAnalyses {
@@ -152,7 +152,7 @@ async def analyses(app_gql, auth_data):
 @pytest_asyncio.fixture(scope="function")
 async def profiles(app_gql, auth_data):
     response = await app_gql.post(
-        "felicity-gql",
+        "beak-gql",
         json={
             "query": """
             query GetProfiles {
@@ -170,7 +170,7 @@ async def profiles(app_gql, auth_data):
 @pytest_asyncio.fixture(scope="function")
 async def patients(app_gql, auth_data):
     response = await app_gql.post(
-        "felicity-gql",
+        "beak-gql",
         json={
             "query": """
             query GetPatients {
@@ -194,7 +194,7 @@ async def patients(app_gql, auth_data):
 @pytest_asyncio.fixture(scope="function")
 async def users_db(app_gql, auth_data):
     response = await app_gql.post(
-        "felicity-gql",
+        "beak-gql",
         json={
             "query": """
             query GetUsers {
@@ -214,7 +214,7 @@ async def users_db(app_gql, auth_data):
 @pytest_asyncio.fixture(scope="function")
 async def ws_templates(app_gql, auth_data):
     response = await app_gql.post(
-        "felicity-gql",
+        "beak-gql",
         json={
             "query": """
             query GetWSTemplates {
@@ -232,7 +232,7 @@ async def ws_templates(app_gql, auth_data):
 @pytest_asyncio.fixture(scope="function")
 async def worksheets(app_gql, auth_data):
     response = await app_gql.post(
-        "felicity-gql",
+        "beak-gql",
         json={
             "query": """
             query GetWS {
@@ -252,7 +252,7 @@ async def worksheets(app_gql, auth_data):
 @pytest_asyncio.fixture(scope="function")
 async def jobs(app_gql, auth_data):
     response = await app_gql.post(
-        "felicity-gql",
+        "beak-gql",
         json={
             "query": """
             query GeJobs {
@@ -272,7 +272,7 @@ async def jobs(app_gql, auth_data):
 @pytest_asyncio.fixture(scope="function")
 async def samples(app_gql, auth_data):
     response = await app_gql.post(
-        "felicity-gql",
+        "beak-gql",
         json={
             "query": """
             query GetResults {

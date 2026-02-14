@@ -12,7 +12,7 @@ import { useField, useForm } from "vee-validate";
 import { boolean, number, object, string } from "yup";
 
 const FelAsideTabs = defineAsyncComponent(
-    () => import("@/components/ui/tabs/FelTabsAside.vue")
+    () => import("@/components/ui/tabs/BeakTabsAside.vue")
 )
 
 const { toastSuccess } = useNotifyToast();

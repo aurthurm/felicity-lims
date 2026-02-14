@@ -17,9 +17,9 @@ except FileNotFoundError:
     long_description = ""
 
 setup(
-    name="Felicity-LIMS",
+    name="Beak-LIMS",
     version=__version__,
-    description="Felicity Laboratory Information Management System",
+    description="Beak Laboratory Information Management System",
     long_description=long_description,
     long_description_content_type="text/markdown",
     license="MIT",
@@ -28,7 +28,7 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    keywords="Felicity LIMS, LIMS, Laboratory Information Management System, Sample Manager, BioBank",
+    keywords="Beak LIMS, LIMS, Laboratory Information Management System, Sample Manager, BioBank",
     url="https://github.com/beak-insights/felicity-lims/",
     include_package_data=True,
     zip_safe=False,
@@ -40,7 +40,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "felicity-lims=felicity.cli:main",
+            "beak-lims=felicity.cli:main",
         ],
     },
 )

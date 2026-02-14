@@ -120,7 +120,7 @@ function handleCommentAdded() {
 
         <div v-if="showReplies" class="mt-4 ml-8">
             <div v-if="isLoading" class="flex items-center justify-center py-4">
-                <fel-loader message="Loading replies..." variant="muted" size="sm" />
+                <beak-loader message="Loading replies..." variant="muted" size="sm" />
             </div>
             <template v-else>
                 <div v-if="replies.length === 0" class="text-sm text-muted-foreground py-2">

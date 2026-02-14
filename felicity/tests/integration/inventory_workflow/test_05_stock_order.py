@@ -57,7 +57,7 @@ async def test_create_stock_order(app_gql, auth_data):
         ]
     }
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={"query": add_stock_order_mutation, "variables": {"payload": stock_order}},
         headers=auth_data["headers"],
     )
@@ -112,7 +112,7 @@ async def test_update_stock_order(app_gql, auth_data):
         {"productUid": 4, "quantity": 5},
     ]
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={
             "query": add_stock_order_mutation,
             "variables": {"uid": 1, "payload": stock_mods},

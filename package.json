@@ -1,5 +1,5 @@
 {
-  "name": "felicity-lims",
+  "name": "beak-lims",
   "version": "0.2.3",
   "main": "webapp/main.ts",
   "license": "Public",
@@ -17,8 +17,8 @@
     "server:install": "pip install -e .",
     "server:uv": "uvicorn felicity.main:felicity",
     "server:uv:watch": "uvicorn felicity.main:felicity --reload",
-    "server:gu": "gunicorn felicity.main:felicity --workers 5 --worker-class uvicorn.workers.UvicornH11Worker --bind 0.0.0.0:8000 --name felicity --access-logfile - --error-logfile - --log-level info --timeout 600",
-    "server:gu:watch": "gunicorn felicity.main:felicity --workers 1 --worker-class uvicorn.workers.UvicornH11Worker --bind 0.0.0.0:8000 --name felicity --reload --access-logfile - --error-logfile - --log-level info --timeout 600",
+    "server:gu": "gunicorn felicity.main:felicity --workers 5 --worker-class uvicorn.workers.UvicornH11Worker --bind 0.0.0.0:8000 --name beak --access-logfile - --error-logfile - --log-level info --timeout 600",
+    "server:gu:watch": "gunicorn felicity.main:felicity --workers 1 --worker-class uvicorn.workers.UvicornH11Worker --bind 0.0.0.0:8000 --name beak --reload --access-logfile - --error-logfile - --log-level info --timeout 600",
     "server:test": "bash ./felicity/scripts/test.sh",
     "server:lint": "bash ./felicity/scripts/lint.sh",
     "server:format": "bash ./felicity//scripts/format.sh",
@@ -28,9 +28,9 @@
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
-    "db:upgrade": "felicity-lims upgrade",
-    "db:revision": "felicity-lims revision",
-    "db:updates": "felicity-lims updates"
+    "db:upgrade": "beak-lims upgrade",
+    "db:revision": "beak-lims revision",
+    "db:updates": "beak-lims updates"
   },
   "dependencies": {
     "@antv/g2": "^5.4.5",

@@ -84,8 +84,8 @@ interface ILaboratoryStore {
     }>;
 }
 
-const STORAGE_LABORATORY_KEY = 'felicity_laboratory_store';
-const STORAGE_CONTEXT_KEY = 'felicity_laboratory_context';
+const STORAGE_LABORATORY_KEY = 'beak_laboratory_store';
+const STORAGE_CONTEXT_KEY = 'beak_laboratory_context';
 const MAX_HISTORY_ITEMS = 20;
 
 export const useLaboratoryStore = defineStore('laboratory', () => {

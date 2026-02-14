@@ -14,7 +14,7 @@ import useApiUtil  from "@/composables/api_util";
 
 import * as shield from "@/guards";
 const DataTable = defineAsyncComponent(
-    () => import('@/components/ui/datatable/FelDataTable.vue')
+    () => import('@/components/ui/datatable/BeakDataTable.vue')
 )
 
 const clientStore = useClientStore();
@@ -184,14 +184,14 @@ const countNone = computed(
 </script>
 
 <template>
-  <fel-heading title="Clients">
-    <fel-button 
+  <beak-heading title="Clients">
+    <beak-button 
       v-show="shield.hasRights(shield.actions.CREATE, shield.objects.CLIENT)"
       @click="FormManager(true, 'client')"
     >
       Add client
-    </fel-button>
-  </fel-heading>
+    </beak-button>
+  </beak-heading>
 
   <div class="rounded-lg border border-border bg-card shadow-sm p-6">
     <DataTable 
@@ -216,7 +216,7 @@ const countNone = computed(
     </DataTable>
   </div>
   <!-- Location Edit Form Modal -->
-  <fel-modal v-if="showClientModal" @close="showClientModal = false">
+  <beak-modal v-if="showClientModal" @close="showClientModal = false">
     <template v-slot:header>
       <h3>{{ formTitle }}</h3>
     </template>
@@ -305,7 +305,7 @@ const countNone = computed(
         </button>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 </template>
 
 <style lang="postcss"></style>

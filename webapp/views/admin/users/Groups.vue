@@ -11,14 +11,14 @@
   const VueMultiselect = defineAsyncComponent(
     () => import('vue-multiselect')
   )
-  const FelSwitch = defineAsyncComponent(
-    () => import("@/components/ui/switch/FelSwitch.vue")
+  const BeakSwitch = defineAsyncComponent(
+    () => import("@/components/ui/switch/BeakSwitch.vue")
   )
   const modal = defineAsyncComponent(
-    () =>import('@/components/ui/FelModal.vue')
+    () =>import('@/components/ui/BeakModal.vue')
   )
   const accordion = defineAsyncComponent(
-    () =>import('@/components/ui/FelAccordion.vue')
+    () =>import('@/components/ui/BeakAccordion.vue')
   )
 
   const pages = [
@@ -168,7 +168,7 @@
 
     <div class="border border-border bg-card rounded-lg shadow-sm">
       <div class="relative w-full overflow-auto">
-        <table class="w-full caption-bottom text-sm fel-table">
+        <table class="w-full caption-bottom text-sm beak-table">
           <thead class="[&_tr]:border-b">
             <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
               <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Group Name</th>
@@ -196,7 +196,7 @@
   </div>
 
   <!-- Group Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false">
+  <beak-modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
       <h2 class="text-xl font-semibold text-foreground">{{ formTitle }}</h2>
     </template>
@@ -241,5 +241,5 @@
         </div>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 </template>

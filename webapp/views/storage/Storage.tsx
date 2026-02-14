@@ -41,7 +41,7 @@ import useApiUtil from '@/composables/api_util';
 import { useRouter } from 'vue-router';
 
 const ContainerView = defineAsyncComponent(() => import('./ContainerView'));
-const TreeItem = defineAsyncComponent(() => import('@/components/storage/FelTreeItem.vue'));
+const TreeItem = defineAsyncComponent(() => import('@/components/storage/BeakTreeItem.vue'));
 
 const StorageHome = defineComponent({
     name: 'storage-home',
@@ -320,14 +320,14 @@ const StorageHome = defineComponent({
     render() {
         return (
             <>
-                <fel-heading title="Storage">
+                <beak-heading title="Storage">
                     <button
                         onClick={() => this.roomFormManager(true, null)}
                         class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-md transition-colors duration-200 hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                     >
                         Add Store Room
                     </button>
-                </fel-heading>
+                </beak-heading>
 
                 <div class="grid grid-cols-12 gap-6 min-h-full bg-background p-6">
                     <div class="col-span-2 space-y-4">
@@ -375,7 +375,7 @@ const StorageHome = defineComponent({
 
                 {/* Store Room Form Modal */}
                 {this.roomModalShow ? (
-                    <fel-modal onClose={() => (this.roomModalShow = false)} contentWidth="w-1/3">
+                    <beak-modal onClose={() => (this.roomModalShow = false)} contentWidth="w-1/3">
                         {{
                             header: () => <h3 class="text-lg font-medium">{this.roomFormTitle}</h3>,
                             body: () => {
@@ -412,12 +412,12 @@ const StorageHome = defineComponent({
                                 );
                             },
                         }}
-                    </fel-modal>
+                    </beak-modal>
                 ) : null}
 
                 {/* Storage Location Form Modal */}
                 {this.locationModalShow ? (
-                    <fel-modal onClose={() => (this.locationModalShow = false)} contentWidth="w-1/3">
+                    <beak-modal onClose={() => (this.locationModalShow = false)} contentWidth="w-1/3">
                         {{
                             header: () => <h3 class="text-lg font-medium">{this.locationFormTitle}</h3>,
                             body: () => {
@@ -454,12 +454,12 @@ const StorageHome = defineComponent({
                                 );
                             },
                         }}
-                    </fel-modal>
+                    </beak-modal>
                 ) : null}
 
                 {/* Storage Section Form Modal */}
                 {this.sectionModalShow ? (
-                    <fel-modal onClose={() => (this.sectionModalShow = false)} contentWidth="w-1/3">
+                    <beak-modal onClose={() => (this.sectionModalShow = false)} contentWidth="w-1/3">
                         {{
                             header: () => <h3 class="text-lg font-medium">{this.sectionFormTitle}</h3>,
                             body: () => {
@@ -496,12 +496,12 @@ const StorageHome = defineComponent({
                                 );
                             },
                         }}
-                    </fel-modal>
+                    </beak-modal>
                 ) : null}
 
                 {/* Storage Container Form Modal */}
                 {this.containerModalShow ? (
-                    <fel-modal onClose={() => (this.containerModalShow = false)} contentWidth="w-1/2">
+                    <beak-modal onClose={() => (this.containerModalShow = false)} contentWidth="w-1/2">
                         {{
                             header: () => <h3 class="text-lg font-medium">{this.containerFormTitle}</h3>,
                             body: () => {
@@ -590,7 +590,7 @@ const StorageHome = defineComponent({
                                 );
                             },
                         }}
-                    </fel-modal>
+                    </beak-modal>
                 ) : null}
             </>
         );

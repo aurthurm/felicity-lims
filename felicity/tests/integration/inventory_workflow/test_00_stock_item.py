@@ -58,7 +58,7 @@ async def test_add_stock_item(app_gql, auth_data):
         "description": "Chemistry testing cuvette for BS500",
     }
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={"query": add_stock_item_query, "variables": {"payload": stock_item}},
         headers=auth_data["headers"],
     )
@@ -70,7 +70,7 @@ async def test_add_stock_item(app_gql, auth_data):
     global STOCK_ITEM_UID
     if "uid" not in _st:
         lookup = await app_gql.post(
-            "/felicity-gql",
+            "/beak-gql",
             json={
                 "query": stock_item_all_query,
                 "variables": {"text": stock_item["name"]},
@@ -97,7 +97,7 @@ async def test_update_stock_item(app_gql, auth_data):
         "description": "Chemistry testing cuvette for Mindray BS500",
     }
     response = await app_gql.post(
-        "/felicity-gql",
+        "/beak-gql",
         json={
             "query": update_stock_item_query,
             "variables": {"uid": STOCK_ITEM_UID, "payload": stock_item},

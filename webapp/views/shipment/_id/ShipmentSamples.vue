@@ -5,7 +5,7 @@ import { SampleType } from "@/types/gql";
 import useShipmentComposable from "@/composables/shipment";
 import { useShipmentStore } from "@/stores/shipment";
 const FButton = defineAsyncComponent(
-  () => import("@/components/ui/buttons/FelButton.vue")
+  () => import("@/components/ui/buttons/BeakButton.vue")
 )
 
 const shipmentStore = useShipmentStore();
@@ -175,7 +175,7 @@ const sampleManager = (action: string) => {
     <!-- Sample Table View -->
     <div class="rounded-md border border-border">
       <div class="overflow-x-auto">
-        <table class="w-full fel-table">
+        <table class="w-full beak-table">
           <thead>
             <tr class="border-b border-border bg-muted/50">
               <th

@@ -67,7 +67,7 @@ const changePassword = () => {
               </svg>
             </div>
           </div>
-          <h2 class="text-2xl font-bold text-foreground">Felicity LIMS</h2>
+          <h2 class="text-2xl font-bold text-foreground">Beak LIMS</h2>
           <p class="text-sm text-muted-foreground">Password Recovery</p>
         </div>
 
@@ -87,11 +87,11 @@ const changePassword = () => {
 
             <!-- Email Input -->
             <div class="space-y-1">
-              <label class="fel-label" for="email">Email</label>
+              <label class="beak-label" for="email">Email</label>
               <input
                 id="email"
                 v-model="email"
-                class="fel-input"
+                class="beak-input"
                 :disabled="auth.processing"
                 placeholder="Enter your email"
                 type="email"
@@ -122,7 +122,7 @@ const changePassword = () => {
               Request Password Reset
             </button>
             <div v-else class="flex justify-center">
-              <fel-loader message="Requesting..." />
+              <beak-loader message="Requesting..." />
             </div>
           </div>
 
@@ -139,11 +139,11 @@ const changePassword = () => {
             </div>
 
             <div class="space-y-1">
-              <label class="fel-label" for="token">Reset Token</label>
+              <label class="beak-label" for="token">Reset Token</label>
               <input
                 id="token"
                 v-model="token"
-                class="fel-input"
+                class="beak-input"
                 :disabled="auth.processing"
                 placeholder="Enter your reset token"
                 type="text"
@@ -162,7 +162,7 @@ const changePassword = () => {
               Submit Token
             </button>
             <div v-else class="flex justify-center">
-              <fel-loader message="Validating password reset token..." />
+              <beak-loader message="Validating password reset token..." />
             </div>
           </div>
         </form>
@@ -178,11 +178,11 @@ const changePassword = () => {
 
           <div class="space-y-4">
             <div class="space-y-1">
-              <label class="fel-label" for="password">New Password</label>
+              <label class="beak-label" for="password">New Password</label>
               <input
                 id="password"
                 v-model="resetForm.password"
-                :class="['fel-input', !formIsValid ? 'border-destructive' : '']"
+                :class="['beak-input', !formIsValid ? 'border-destructive' : '']"
                 :disabled="auth.processing"
                 placeholder="Enter new password"
                 type="password"
@@ -190,11 +190,11 @@ const changePassword = () => {
             </div>
 
             <div class="space-y-1">
-              <label class="fel-label" for="passwordc">Confirm Password</label>
+              <label class="beak-label" for="passwordc">Confirm Password</label>
               <input
                 id="passwordc"
                 v-model="resetForm.passwordc"
-                :class="['fel-input', !formIsValid ? 'border-destructive' : '']"
+                :class="['beak-input', !formIsValid ? 'border-destructive' : '']"
                 :disabled="auth.processing"
                 placeholder="Confirm new password"
                 type="password"
@@ -214,7 +214,7 @@ const changePassword = () => {
             Reset Password
           </button>
           <div v-else class="flex justify-center">
-            <fel-loader message="Resetting password..." />
+            <beak-loader message="Resetting password..." />
           </div>
         </form>
       </div>

@@ -274,10 +274,10 @@ const retestResults = () =>
 
     <div class="rounded-lg border border-border bg-background shadow-sm">
       <div v-if="fetchingResults" class="p-6 text-center">
-        <fel-loader message="Fetching analytes ..." />
+        <beak-loader message="Fetching analytes ..." />
       </div>
       <div v-else class="overflow-x-auto">
-        <table class="w-full fel-table">
+        <table class="w-full beak-table">
           <thead>
             <tr class="border-b border-border bg-muted/50">
               <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
@@ -506,58 +506,58 @@ const retestResults = () =>
     </div>
 
     <div class="flex items-center space-x-4 pt-4">
-      <fel-button 
+      <beak-button 
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_cancel"
         key="cancel" 
         @click.prevent="cancelResults" 
         :color="'destructive'"
       >
         Cancel
-      </fel-button>
-      <fel-button 
+      </beak-button>
+      <beak-button 
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_reinstate"
         key="reinstate" 
         @click.prevent="reInstateResults" 
         :color="'warning'"
       >
         Re-Instate
-      </fel-button>
-      <fel-button 
+      </beak-button>
+      <beak-button 
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_submit"
         key="submit" 
         @click.prevent="submitResults" 
         :color="'primary'"
       >
         Submit
-      </fel-button>
-      <fel-button 
+      </beak-button>
+      <beak-button 
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_retract"
         key="retract" 
         @click.prevent="retractResults" 
         :color="'warning'"
       >
         Retract
-      </fel-button>
-      <fel-button 
+      </beak-button>
+      <beak-button 
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_approve"
         key="verify" 
         @click.prevent="approveResults" 
         :color="'success'"
       >
         Verify
-      </fel-button>
-      <fel-button 
+      </beak-button>
+      <beak-button 
         v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && state.can_retest"
         key="retest" 
         @click.prevent="retestResults" 
         :color="'warning'"
       >
         Retest
-      </fel-button>
+      </beak-button>
     </div>
   </div>
 
-  <fel-drawer :show="viewInfo" @close="viewInfo = false" :content-width="'w-2/4'">
+  <beak-drawer :show="viewInfo" @close="viewInfo = false" :content-width="'w-2/4'">
     <template v-slot:header>
       <h3 class="text-lg font-semibold text-foreground">Result Information</h3>
     </template>
@@ -567,5 +567,5 @@ const retestResults = () =>
         <ResultDetail v-if="viewResultInfo?.uid" :analysisResultesultUid="viewResultInfo?.uid" />
       </div>
     </template>
-  </fel-drawer>
+  </beak-drawer>
 </template>

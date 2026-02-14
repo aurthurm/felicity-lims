@@ -9,7 +9,7 @@ import { GetAbxExpResPhenotypeAllDocument, GetAbxExpResPhenotypeAllQuery, GetAbx
 import { AddAbxExpResPhenotypeMutation, AddAbxExpResPhenotypeMutationVariables, AddAbxExpResPhenotypeDocument, EditAbxExpResPhenotypeMutation, EditAbxExpResPhenotypeMutationVariables, EditAbxExpResPhenotypeDocument } from '@/graphql/operations/microbiology.mutations';
 
 const DataTable = defineAsyncComponent(
-  () => import('@/components/ui/datatable/FelDataTable.vue')
+  () => import('@/components/ui/datatable/BeakDataTable.vue')
 )
 const VueMultiselect = defineAsyncComponent(
   () => import('vue-multiselect')
@@ -306,9 +306,9 @@ const saveForm = handleSubmit((formValues) => {
 </script>
 
 <template>
-  <fel-heading title="Expected Resistance Phenotypes">
-    <fel-button @click="FormManager(true)">Add Expected Resistance Phenotype</fel-button>
-  </fel-heading>
+  <beak-heading title="Expected Resistance Phenotypes">
+    <beak-button @click="FormManager(true)">Add Expected Resistance Phenotype</beak-button>
+  </beak-heading>
 
   <div class="rounded-lg bg-card p-6 shadow-sm">
     <DataTable 
@@ -333,7 +333,7 @@ const saveForm = handleSubmit((formValues) => {
   </div>
 
   <!-- Expected Resistance Phenotype Edit Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false">
+  <beak-modal v-if="showModal" @close="showModal = false">
     <template v-slot:header>
       <h3 class="text-lg font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -448,7 +448,7 @@ const saveForm = handleSubmit((formValues) => {
         </button>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 </template>
 
 <style lang="postcss" scoped>

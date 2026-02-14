@@ -74,7 +74,7 @@ async def app_gql() -> AsyncGenerator[AsyncClient, Any]:
 @pytest_asyncio.fixture(autouse=True)
 async def auth_data(app_gql):
     response = await app_gql.post(
-        "felicity-gql",
+        "beak-gql",
         json={
             "query": auth_user_mutation,
             "variables": {

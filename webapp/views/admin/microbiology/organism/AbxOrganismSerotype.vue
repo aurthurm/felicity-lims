@@ -9,7 +9,7 @@ import { GetAbxOrganismAllDocument, GetAbxOrganismAllQuery, GetAbxOrganismAllQue
 import { AddAbxOrganismSerotypeMutation, AddAbxOrganismSerotypeMutationVariables, AddAbxOrganismSerotypeDocument, EditAbxOrganismSerotypeMutation, EditAbxOrganismSerotypeMutationVariables, EditAbxOrganismSerotypeDocument } from '@/graphql/operations/microbiology.mutations';
 
 const DataTable = defineAsyncComponent(
-  () => import('@/components/ui/datatable/FelDataTable.vue')
+  () => import('@/components/ui/datatable/BeakDataTable.vue')
 )
 const VueMultiselect = defineAsyncComponent(
   () => import('vue-multiselect')
@@ -296,9 +296,9 @@ const saveForm = handleSubmit((formValues) => {
 
 <template>
   <div class="space-y-6">
-    <fel-heading title="Organism Serotypes">
-      <fel-button @click="FormManager(true)">Add Organism Serotype</fel-button>
-    </fel-heading>
+    <beak-heading title="Organism Serotypes">
+      <beak-button @click="FormManager(true)">Add Organism Serotype</beak-button>
+    </beak-heading>
 
     <div class="bg-card p-6 shadow-sm rounded-lg">
       <DataTable 
@@ -325,7 +325,7 @@ const saveForm = handleSubmit((formValues) => {
   </div>
 
   <!-- Organism Serotype Edit Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
+  <beak-modal v-if="showModal" @close="showModal = false" :content-width="'w-1/2'">
     <template v-slot:header>
       <h3 class="text-xl font-semibold text-foreground">{{ formTitle }}</h3>
     </template>
@@ -427,7 +427,7 @@ const saveForm = handleSubmit((formValues) => {
         </button>
       </form>
     </template>
-  </fel-modal>
+  </beak-modal>
 </template>
 
 <style scoped>

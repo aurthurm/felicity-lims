@@ -339,7 +339,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
 
         <div class="rounded-lg border border-border bg-background">
           <div class="overflow-x-auto">
-            <table class="w-full fel-table">
+            <table class="w-full beak-table">
               <thead>
                 <tr class="border-b border-border bg-muted/50">
                   <th class="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Parameter</th>
@@ -477,7 +477,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
         </div>
 
         <div class="flex items-center space-x-4">
-          <fel-button 
+          <beak-button 
             v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && canSave(pickedOrg.uid)" 
             key="save" 
             @click.prevent="saveAntibiotics(pickedOrg.uid)" 
@@ -485,32 +485,32 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
             :disabled="savingAntibiotics"
           >
             Save Antibiotics
-          </fel-button>
+          </beak-button>
 
-          <fel-button 
+          <beak-button 
             v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && canSubmit(pickedOrg.uid)" 
             key="submit" 
             @click.prevent="submitAntibiotics(pickedOrg.uid)" 
             :color="'warning'"
           >
             Submit Antibiotics
-          </fel-button>
+          </beak-button>
 
-          <fel-button 
+          <beak-button 
             v-show="shield.hasRights(shield.actions.UPDATE, shield.objects.RESULT) && canApprove(pickedOrg.uid)" 
             key="approve" 
             @click.prevent="approveAntibiotics(pickedOrg.uid)" 
             :color="'success'"
           >
             Approve Antibiotics
-          </fel-button>
+          </beak-button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Panel Form Modal -->
-  <fel-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
+  <beak-modal v-if="showModal" @close="showModal = false" :contentWidth="'w-1/2'">
     <template v-slot:header>
       <h3 class="text-lg font-semibold text-foreground">
         Search Panel for <span class="italic">{{ choiceOrganism?.organism?.name }}</span>
@@ -529,7 +529,7 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
 
           <div class="rounded-lg border border-border">
             <div class="overflow-y-auto max-h-64">
-              <table class="w-full fel-table">
+              <table class="w-full beak-table">
                 <tbody>
                   <tr 
                     v-for="panel in panels" 
@@ -558,5 +558,5 @@ async function handleCellEdit(organismUid: string, antibiotic: string, field: st
         </div>
       </div>
     </template>
-  </fel-modal>
+  </beak-modal>
 </template>

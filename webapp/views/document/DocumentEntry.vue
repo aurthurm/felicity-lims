@@ -36,7 +36,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <fel-heading title="Documents" />
+    <beak-heading title="Documents" />
 
     <div class="flex overflow-hidden">
       <!-- Sidebar -->

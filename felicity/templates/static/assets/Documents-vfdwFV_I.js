@@ -1,0 +1,1 @@
+import{_ as o,r as t,c as n,o as c,a as s}from"./index-DApeomWQ.js";const r={};function i(a,m){const e=t("router-view");return c(),n("div",null,[s(e)])}const l=o(r,[["render",i],["__file","/home/administrator/Documents/Development/beak-insights/felicity/felicity-lims/webapp/views/document/Documents.vue"]]);export{l as default};

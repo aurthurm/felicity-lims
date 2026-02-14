@@ -22,8 +22,8 @@ import {
 } from '@/graphql/operations/inventory.mutations';
 import * as shield from '@/guards';
 
-const Drawer = defineAsyncComponent(() => import('@/components/ui/FelDrawer.vue'));
-const DataTable = defineAsyncComponent(() => import('@/components/ui/datatable/FelDataTable.vue'));
+const Drawer = defineAsyncComponent(() => import('@/components/ui/BeakDrawer.vue'));
+const DataTable = defineAsyncComponent(() => import('@/components/ui/datatable/BeakDataTable.vue'));
 
 const InventoryOrders = defineComponent({
     name: 'stock-orders',
@@ -263,7 +263,7 @@ const InventoryOrders = defineComponent({
                     onOnPaginate={x => this.showMoreStockOrders(x)}
                 ></DataTable>
                 {/* Drawer */}
-                <fel-drawer contentWidth="w-1/2" show={this.openDrawer} onClose={() => (this.openDrawer = false)}>
+                <beak-drawer contentWidth="w-1/2" show={this.openDrawer} onClose={() => (this.openDrawer = false)}>
                     {{
                         header: () => `Order: ${this.slectedStockOrder?.order.orderNumber}`,
                         body: () => (
@@ -283,7 +283,7 @@ const InventoryOrders = defineComponent({
                                         <hr />
                                         <div class="overflow-x-auto mt-2 mb-4">
                                             <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
-                                                <table class="min-w-full fel-table">
+                                                <table class="min-w-full beak-table">
                                                     <thead>
                                                         <tr>
                                                             <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">
@@ -366,7 +366,7 @@ const InventoryOrders = defineComponent({
                                         <hr />
                                         <div class="overflow-x-auto mt-4 mb-4">
                                             <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
-                                                <table class="min-w-full fel-table">
+                                                <table class="min-w-full beak-table">
                                                     <thead>
                                                         <tr>
                                                             <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">
@@ -437,7 +437,7 @@ const InventoryOrders = defineComponent({
                                         <hr />
                                         <div class="overflow-x-auto mt-4 mb-4">
                                             <div class="align-middle inline-block min-w-full shadow overflow-hidden bg-background shadow-dashboard px-2 pt-1 rounded-bl-lg rounded-br-lg">
-                                                <table class="min-w-full fel-table">
+                                                <table class="min-w-full beak-table">
                                                     <thead>
                                                         <tr>
                                                             <th class="px-1 py-1 border-b-2 border-border text-left leading-4 text-foreground tracking-wider">
@@ -475,7 +475,7 @@ const InventoryOrders = defineComponent({
                         ),
                         footer: () => [],
                     }}
-                </fel-drawer>
+                </beak-drawer>
             </div>
         );
     },
