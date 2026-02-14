@@ -3,11 +3,13 @@ import os
 
 from dotenv import load_dotenv
 
+from beak.utils.dirs import get_log_dir
+
 load_dotenv()
 
 name = "gunicorn config for Beak LiMS systemd daemon"
-accesslog = "/var/logs/beak-gunicorn-access.log"
-errorlog = "/var/logs/beak-gunicorn-error.log"
+accesslog = os.path.join(get_log_dir(), "beak-gunicorn-access.log")
+errorlog = os.path.join(get_log_dir(), "beak-gunicorn-error.log")
 
 bind = "0.0.0.0:8000"
 

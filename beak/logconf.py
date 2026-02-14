@@ -1,5 +1,7 @@
 from typing import Any
 
+from beak.utils.dirs import get_error_log_file_path, get_log_file_path
+
 LOGGING_CONFIG: dict[str, Any] = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -20,12 +22,25 @@ LOGGING_CONFIG: dict[str, Any] = {
             # noqa: E501
             "use_colors": True,
         },
+        "error_file": {
+            "()": "uvicorn.logging.DefaultFormatter",
+            "fmt": "%(asctime)s - %(name)s - %(levelprefix)s %(message)s",
+            "use_colors": True,
+        },
     },
     "handlers": {
         "file_handler": {
             "formatter": "access_file",
             "class": "logging.handlers.RotatingFileHandler",
-            "filename": "/var/log/beak-app.log",
+            "filename": get_log_file_path(),
+            "mode": "a+",
+            "maxBytes": 10 * 1024 * 1024,
+            "backupCount": 5,
+        },
+        "error_file_handler": {
+            "formatter": "error_file",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": get_error_log_file_path(),
             "mode": "a+",
             "maxBytes": 10 * 1024 * 1024,
             "backupCount": 5,
@@ -42,8 +57,16 @@ LOGGING_CONFIG: dict[str, Any] = {
         },
     },
     "loggers": {
-        "uvicorn": {"handlers": ["default"], "level": "INFO", "propagate": False},
-        "uvicorn.error": {"level": "INFO"},
+        "uvicorn": {
+            "handlers": ["default", "error_file_handler"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "uvicorn.error": {
+            "handlers": ["default", "error_file_handler"],
+            "level": "INFO",
+            "propagate": False,
+        },
         "uvicorn.access": {
             "handlers": ["access", "file_handler"],
             "level": "INFO",

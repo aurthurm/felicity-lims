@@ -2,8 +2,8 @@ import logging
 import os
 from pathlib import Path
 
-from beak.core.dtz import timenow_dt
 from beak.core.config import settings
+from beak.core.dtz import timenow_dt
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -63,3 +63,21 @@ def resolve_root_dirs() -> None:
     _dirs = [settings.MEDIA_DIR]
     for _dir in _dirs:
         create_dir(_dir)
+
+
+def get_log_dir() -> str:
+    """Get the log directory path in user-accessible location."""
+    home_dir = os.path.expanduser("~")
+    log_dir = Path(home_dir) / ".beak-lims" / "logs"
+    log_dir.mkdir(parents=True, exist_ok=True)
+    return str(log_dir)
+
+
+def get_log_file_path() -> str:
+    """Get the log file path in user-accessible directory."""
+    return get_log_dir() + "/beak-app.log"
+
+
+def get_error_log_file_path() -> str:
+    """Get the error log file path in user-accessible directory."""
+    return get_log_dir() + "/beak-error.log"

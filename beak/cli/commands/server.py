@@ -3,18 +3,18 @@ import subprocess
 import typer
 from uvicorn import Config, Server
 
-from beak.logcong import LOGGING_CONFIG
+from beak.logconf import LOGGING_CONFIG
 
 app = typer.Typer()
 
 
 @app.command()
 def runserver(
-    host: str = "0.0.0.0",
-    port: int = 8000,
-    workers: int = 1,
-    reload: bool = False,
-    colors: bool = True,
+        host: str = "0.0.0.0",
+        port: int = 8000,
+        workers: int = 1,
+        reload: bool = False,
+        colors: bool = True,
 ) -> None:
     """Beak LIMS Server"""
     config = Config(
@@ -31,11 +31,11 @@ def runserver(
 
 @app.command()
 def gunicorn(
-    host: str = "0.0.0.0",
-    port: int = 8000,
-    workers: int = 1,
-    reload: bool = False,
-    colors: bool = True,
+        host: str = "0.0.0.0",
+        port: int = 8000,
+        workers: int = 1,
+        reload: bool = False,
+        colors: bool = True,
 ) -> None:
     """Beak LIMS Server"""
     command = [

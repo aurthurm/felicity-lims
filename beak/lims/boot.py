@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+import logging.config
 from typing import Any, AsyncGenerator
 
 import sentry_sdk
@@ -32,6 +33,7 @@ from beak.lims.middleware import TenantContextMiddleware
 from beak.lims.middleware.appactivity import APIActivityLogMiddleware
 from beak.lims.middleware.ratelimit import RateLimitMiddleware
 from beak.lims.seeds import initialize_beak
+from beak.logconf import LOGGING_CONFIG
 from beak.views import setup_webapp
 
 redis_client = None
@@ -158,6 +160,9 @@ def register_tracer(app: FastAPI) -> None:
 
 
 def factory(config: dict) -> FastAPI:
+    # Configure logging early so it works regardless of how the server is started
+    logging.config.dictConfig(LOGGING_CONFIG)
+
     config["lifespan"] = lifespan
     app = FastAPI(**config)
     register_rate_limit(app)

@@ -16,7 +16,7 @@
     "webapp:codegen": "graphql-codegen --config codegen.yml --watch --verbose",
     "server:install": "pip install -e .",
     "server:uv": "uvicorn beak.main:beak",
-    "server:uv:watch": "uvicorn beak.main:beak --reload",
+    "server:uv:watch": "uvicorn beak.main:beak",
     "server:gu": "gunicorn beak.main:beak --workers 5 --worker-class uvicorn.workers.UvicornH11Worker --bind 0.0.0.0:8000 --name beak --access-logfile - --error-logfile - --log-level info --timeout 600",
     "server:gu:watch": "gunicorn beak.main:beak --workers 1 --worker-class uvicorn.workers.UvicornH11Worker --bind 0.0.0.0:8000 --name beak --reload --access-logfile - --error-logfile - --log-level info --timeout 600",
     "server:test": "bash ./beak/scripts/test.sh",
