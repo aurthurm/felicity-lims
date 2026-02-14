@@ -1,10 +1,10 @@
 [package]
 name = "app"
-version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
-license = ""
-repository = ""
+version = "0.2.3"
+description = "Felicity LIMS Desktop App"
+authors = ["Felicity LIMS Contributors"]
+license = "Public"
+repository = "https://github.com/beak-insights/felicity-lims"
 edition = "2021"
 rust-version = "1.77.2"
 
