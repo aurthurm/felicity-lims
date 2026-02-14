@@ -1,0 +1,83 @@
+BEAK LIMS
+=========
+
+Copyright (c) 2024-2026 Beak Insights and Contributors
+
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this
+file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+HEALTHCARE SOFTWARE DISCLAIMER
+==============================
+
+This software is provided WITHOUT WARRANTY of any kind. It is NOT a
+certified medical device and should NOT be used as the sole basis for
+critical medical, diagnostic, or treatment decisions.
+
+Users are solely responsible for:
+- Validating the software for their specific use case
+- Ensuring compliance with applicable healthcare regulations
+- Implementing appropriate quality control procedures
+- Maintaining proper backup and disaster recovery systems
+
+See the LICENSE file for complete warranty disclaimer and liability
+limitations.
+
+THIRD-PARTY COMPONENTS
+======================
+
+This software includes components from third-party open source projects.
+See the respective package.json, pyproject.toml, and requirements.txt
+files for complete dependency information and their licenses.
+
+Major dependencies include:
+
+Backend (Python):
+- FastAPI (MIT License)
+- Strawberry GraphQL (MIT License)
+- SQLAlchemy (MIT License)
+- Uvicorn (BSD License)
+
+Frontend (JavaScript):
+- Vue.js (MIT License)
+- Vite (MIT License)
+- Tailwind CSS (MIT License)
+- Pinia (MIT License)
+
+All third-party licenses are compatible with MPL-2.0.
+
+CONTRIBUTIONS
+=============
+
+Contributions to this project are welcome and must be provided under
+the terms of the Mozilla Public License 2.0.
+
+By contributing to Beak LIMS, you certify that:
+
+1. The contribution was created in whole or in part by you and you
+   have the right to submit it under the MPL-2.0 license.
+
+2. The contribution is based upon previous work that, to the best
+   of your knowledge, is covered under an appropriate open source
+   license and you have the right under that license to submit that
+   work with modifications under the MPL-2.0 license.
+
+3. You understand and agree that this project and your contributions
+   are public and that a record of the contribution is maintained
+   indefinitely and may be redistributed consistent with this project
+   and the MPL-2.0 license.
+
+TRADEMARKS
+==========
+
+"Beak LIMS" and "Beak Insights" are trademarks. Use of these trademarks
+requires permission from the trademark holders.
+
+The MPL-2.0 license does not grant any rights to use trademarks, service
+marks, or logos associated with this project.
+
+CONTACT
+=======
+
+Project: https://github.com/aurthurm/beak-lims
+Issues: https://github.com/aurthurm/beak-lims/issues

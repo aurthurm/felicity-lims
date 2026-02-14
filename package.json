@@ -2,7 +2,7 @@
   "name": "beak-lims",
   "version": "0.2.3",
   "main": "webapp/main.ts",
-  "license": "Public",
+  "license": "MPL-2.0",
   "scripts": {
     "webapp:dev": "vite",
     "webapp:dev:watch": "concurrently \"pnpm run webapp:codegen\" \"pnpm run webapp:dev\"",

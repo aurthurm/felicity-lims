@@ -4,6 +4,10 @@
 
 _Modern LIMS for clinical, medical, and research laboratories_
 
+[![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
+[![Version](https://img.shields.io/badge/version-0.2.3-blue.svg)](https://github.com/aurthurm/beak-lims)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+
 Current release: **0.2.3**
 
 ![Beak LIMS](https://github.com/user-attachments/assets/f97c969e-57c4-43ab-be9e-f4bb27bf95ac)
@@ -542,7 +546,29 @@ We welcome contributions from the community! Whether you're fixing bugs, adding 
 
 ## **License**
 
-Beak LIMS is released under the [MIT License](LICENSE).
+Beak LIMS is released under the [Mozilla Public License 2.0 (MPL-2.0)](LICENSE).
+
+### **Important Healthcare Disclaimer**
+
+⚠️ **This software is provided WITHOUT WARRANTY of any kind.**
+
+Beak LIMS is NOT a certified medical device and should NOT be used as the sole basis for critical medical decisions. Users are responsible for:
+
+- Validating the software for their specific use case
+- Ensuring compliance with applicable regulations (HIPAA, GDPR, etc.)
+- Implementing appropriate quality control procedures
+- Maintaining proper backup and disaster recovery systems
+
+See the [LICENSE](LICENSE) file for complete warranty disclaimer and liability limitations.
+
+### **Why MPL-2.0?**
+
+We chose MPL-2.0 because it:
+- ✅ Keeps improvements to core files open source
+- ✅ Allows integration with proprietary systems (critical for healthcare IT)
+- ✅ Proven track record in healthcare (OpenMRS, OpenELIS use MPL)
+- ✅ Balances open source principles with enterprise adoption needs
+- ✅ Enables vendor ecosystem while protecting core platform
 
 ---
 
