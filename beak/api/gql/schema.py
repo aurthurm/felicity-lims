@@ -46,6 +46,7 @@ from beak.api.gql.notification.subscription import StreamSubscription
 from beak.api.gql.patient import patient_types
 from beak.api.gql.patient.mutations import PatientMutations
 from beak.api.gql.patient.query import PatientQuery
+from beak.api.gql.platform.mutations import PlatformMutations
 from beak.api.gql.reflex import reflex_types
 from beak.api.gql.reflex.mutations import ReflexRuleMutations
 from beak.api.gql.reflex.query import ReflexRuleQuery
@@ -125,6 +126,7 @@ class Query(
 @strawberry.type
 class Mutation(
     UserMutations,
+    PlatformMutations,
     SetupMutations,
     ClientMutations,
     PatientMutations,

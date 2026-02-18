@@ -1,3 +1,3 @@
-from . import server, db, snapshot
+from . import server, db, snapshot, tenant
 
-__all__ = ["server", "db", "snapshot"]
+__all__ = ["server", "db", "snapshot", "tenant"]

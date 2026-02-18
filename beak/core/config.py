@@ -61,6 +61,19 @@ class Settings(BaseSettings):
     POSTGRES_USER: str = getenv_value("POSTGRES_USER", "beak")
     POSTGRES_PASSWORD: str = getenv_value("POSTGRES_PASSWORD", "beak")
     POSTGRES_DB: str = getenv_value("POSTGRES_DB", "beak_lims")
+    PLATFORM_SCHEMA: str = getenv_value("PLATFORM_SCHEMA", "platform")
+    TENANT_SCHEMA_PREFIX: str = getenv_value("TENANT_SCHEMA_PREFIX", "org_")
+    TENANT_HEADER_NAME: str = getenv_value("TENANT_HEADER_NAME", "X-Org-Slug")
+    TENANT_REQUIRED_PATH_PREFIXES: list[str] = ["/beak-gql", "/api/v1"]
+    TENANT_PUBLIC_PATHS: list[str] = [
+        "/api/v1/setup/installation",
+        "/api/v1/health/status",
+        "/api/v1/health/system",
+        "/api/v1/version",
+        "/api/v1/version/updates",
+        "/api/v1/platform",
+    ]
+    PROVISION_TENANT_SCHEMA: str | None = getenv_value("TENANT_SCHEMA", None)
     SQLALCHEMY_DATABASE_URI: str | None = None
     TESTING: bool = getenv_boolean("TESTING", False)
     RETAIN_TESTING_DB_DATA: bool = getenv_boolean("RETAIN_TESTING_DB_DATA", False)
@@ -121,6 +134,15 @@ class Settings(BaseSettings):
     FIRST_SUPERUSER_USERNAME: str = getenv_value("FIRST_SUPERUSER_USERNAME", "admin")
     FIRST_SUPERUSER_PASSWORD: str = getenv_value(
         "FIRST_SUPERUSER_PASSWORD", "!Beak#100"
+    )
+    PLATFORM_SUPERUSER_EMAIL: EmailStr = getenv_value(
+        "PLATFORM_SUPERUSER_EMAIL", "platform.admin@beaklims.com"
+    )
+    PLATFORM_SUPERUSER_USERNAME: str = getenv_value(
+        "PLATFORM_SUPERUSER_USERNAME", "platform_admin"
+    )
+    PLATFORM_SUPERUSER_PASSWORD: str = getenv_value(
+        "PLATFORM_SUPERUSER_PASSWORD", "!Platform#100"
     )
     SYSTEM_DAEMON_EMAIL: EmailStr = "system_daemon@beaklims.com"
     SYSTEM_DAEMON_USERNAME: str = "system_daemon"

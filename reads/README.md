@@ -44,6 +44,7 @@ This folder contains documentation for the Beak LIMS application covering archit
 | [Interoperability.md](Interoperability.md) | ASTM, HL7, FHIR integration |
 | [SystemSettings.md](SystemSettings.md) | System configuration and settings |
 | [TechSupport.md](TechSupport.md) | Technical support and troubleshooting |
+| [TenantProvisioningAndCLI.md](TenantProvisioningAndCLI.md) | Tenant provisioning, tenant migration, and tenant-scoped CLI usage |
 
 ### Reflex Rules (Microbiology)
 

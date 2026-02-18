@@ -29,7 +29,10 @@ def get_password_hash(password: str) -> str:
 
 #  JWTokens
 def create_access_token(
-        subject: Union[str, Any], expires_delta: timedelta | None = None
+        subject: Union[str, Any],
+        expires_delta: timedelta | None = None,
+        organization_uid: str | None = None,
+        tenant_slug: str | None = None,
 ) -> str:
     if expires_delta:
         expire = timenow_dt() + expires_delta
@@ -38,6 +41,10 @@ def create_access_token(
 
     expires = expire.timestamp() * 1000  # convert to milliseconds
     to_encode = {"exp": expires, "sub": str(subject)}
+    if organization_uid:
+        to_encode["organization_uid"] = organization_uid
+    if tenant_slug:
+        to_encode["tenant_slug"] = tenant_slug
     encoded_jwt = jwt.encode(
         to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM
     )

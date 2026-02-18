@@ -1,9 +1,11 @@
 import asyncio
+import os
 from logging.config import fileConfig
 
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 from sqlalchemy.ext.asyncio import AsyncEngine
+from sqlalchemy import text
 
 from beak.core.config import settings
 from beak.database.base import BaseEntity
@@ -21,6 +23,7 @@ fileConfig(config.config_file_name)
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 target_metadata = BaseEntity.metadata
+TENANT_SCHEMA = os.environ.get("TENANT_SCHEMA")
 
 
 # other values from the config, defined by the needs of env.py,
@@ -62,10 +65,68 @@ def get_async_url():
 
 
 def do_run_migrations(connection):
-    context.configure(connection=connection, target_metadata=target_metadata)
+    if TENANT_SCHEMA:
+        connection.execute(text(f'SET search_path TO "{TENANT_SCHEMA}", public'))
+        connection.commit()
+        connection.dialect.default_schema_name = TENANT_SCHEMA
+
+    configure_kwargs = {
+        "connection": connection,
+        "target_metadata": target_metadata,
+    }
+    if TENANT_SCHEMA:
+        # Prevent Alembic from resolving to public.alembic_version and skipping tenant DDL.
+        configure_kwargs["include_schemas"] = True
+        configure_kwargs["version_table"] = "alembic_version"
+        configure_kwargs["version_table_schema"] = TENANT_SCHEMA
+
+    context.configure(**configure_kwargs)
 
     with context.begin_transaction():
         context.run_migrations()
+
+
+async def bootstrap_platform_schema(connection) -> None:
+    """Default migration path: ensure platform schema + tenant registry exist."""
+    platform_schema = settings.PLATFORM_SCHEMA
+
+    await connection.execute(text(f'CREATE SCHEMA IF NOT EXISTS "{platform_schema}"'))
+    await connection.execute(
+        text(
+            f"""
+            CREATE TABLE IF NOT EXISTS "{platform_schema}".tenant (
+                uid VARCHAR(64) PRIMARY KEY,
+                name VARCHAR(255) NOT NULL,
+                slug VARCHAR(128) NOT NULL UNIQUE,
+                schema_name VARCHAR(128) NOT NULL UNIQUE,
+                status VARCHAR(32) NOT NULL,
+                admin_email VARCHAR(255),
+                provisioned_at TIMESTAMP NULL,
+                created_at TIMESTAMP NULL,
+                updated_at TIMESTAMP NULL
+            )
+            """
+        )
+    )
+    await connection.execute(
+        text(
+            f"""
+            CREATE TABLE IF NOT EXISTS "{platform_schema}".alembic_version_platform (
+                version_num VARCHAR(32) NOT NULL PRIMARY KEY
+            )
+            """
+        )
+    )
+    await connection.execute(
+        text(
+            f"""
+            INSERT INTO "{platform_schema}".alembic_version_platform(version_num)
+            VALUES ('platform_bootstrap')
+            ON CONFLICT (version_num) DO NOTHING
+            """
+        )
+    )
+    await connection.commit()
 
 
 async def run_migrations_online():
@@ -77,13 +138,31 @@ async def run_migrations_online():
     """
     configuration = config.get_section(config.config_ini_section)
     configuration["sqlalchemy.url"] = get_async_url()
+    connect_args = {}
+    if TENANT_SCHEMA:
+        connect_args["server_settings"] = {"search_path": f'"{TENANT_SCHEMA}",public'}
+
     connectable = AsyncEngine(
         engine_from_config(
-            configuration, prefix="sqlalchemy.", poolclass=pool.NullPool, future=True
+            configuration,
+            prefix="sqlalchemy.",
+            poolclass=pool.NullPool,
+            future=True,
+            connect_args=connect_args,
         )
     )
 
     async with connectable.connect() as connection:
+        if not TENANT_SCHEMA:
+            # Default behavior: migrate/bootstrap platform metadata only.
+            await bootstrap_platform_schema(connection)
+            return
+
+        if TENANT_SCHEMA:
+            await connection.execute(
+                text(f'SET search_path TO "{TENANT_SCHEMA}", public')
+            )
+            await connection.commit()
         await connection.run_sync(do_run_migrations)
 
 

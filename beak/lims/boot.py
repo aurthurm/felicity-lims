@@ -26,8 +26,10 @@ from beak.apps.common.channel import broadcast
 from beak.apps.events import observe_events
 from beak.apps.iol.redis.client import create_redis_client
 from beak.apps.job.sched import beak_workforce_init
+from beak.apps.platform.services import TenantRegistryService
 from beak.core.config import settings
 from beak.database.session import async_engine
+from beak.database.tenant_engine_registry import get_tenant_session_factory
 from beak.lims.gql_router import FelGraphQLRouter
 from beak.lims.middleware import TenantContextMiddleware
 from beak.lims.middleware.appactivity import APIActivityLogMiddleware
@@ -46,6 +48,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
         redis_client = await create_redis_client()
     if settings.LOAD_SETUP_DATA:
         await initialize_beak()
+    await _prewarm_tenant_engines()
     await beak_workforce_init()
     observe_events()
     await broadcast.connect()
@@ -60,6 +63,19 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
         await (
             redis_client.connection_pool.disconnect()
         )  # ensures the pool is cleaned up
+
+
+async def _prewarm_tenant_engines() -> None:
+    """Warm tenant session factories for active tenants (best effort)."""
+    try:
+        tenants = await TenantRegistryService().list_active()
+        for tenant in tenants:
+            schema_name = tenant.get("schema_name")
+            if schema_name:
+                get_tenant_session_factory(schema_name)
+    except Exception as exc:
+        logger = logging.getLogger(__name__)
+        logger.warning("Tenant engine pre-warm failed: %s", exc)
 
 
 def register_middlewares(app: FastAPI) -> None:

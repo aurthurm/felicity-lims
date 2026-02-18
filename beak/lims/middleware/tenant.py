@@ -6,6 +6,7 @@ then sets the context for the current request.
 """
 
 import logging
+import time
 import uuid
 
 from fastapi import Request
@@ -15,11 +16,15 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 from beak.apps.setup.services import LaboratoryService
 from beak.apps.user.services import UserService
+from beak.apps.platform.services import TenantRegistryService
 from beak.core.config import get_settings
 from beak.core.tenant_context import TenantContext, set_tenant_context
+from beak.database.tenant_engine_registry import get_tenant_session_factory
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
+_TENANT_CACHE: dict[str, tuple[str, float]] = {}
+_TENANT_CACHE_TTL_SECONDS = 300
 
 
 class TenantContextMiddleware(BaseHTTPMiddleware):
@@ -43,6 +48,7 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
         try:
             # Extract tenant info from JWT token
             await self._extract_from_jwt(request, context)
+            await self._resolve_tenant_schema(request, context)
             if context.laboratory_uid:
                 await self._validate_lab_membership(
                     context, context.laboratory_uid
@@ -94,6 +100,8 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
         # Extract user info
         context.user_uid = payload.get("sub")
         context.organization_uid = payload.get("organization_uid")
+        if "tenant_slug" in payload and not context.tenant_slug:
+            context.tenant_slug = payload.get("tenant_slug")
 
         # If lab context is in token (for single-lab users)
         if "laboratory_uid" in payload:
@@ -113,6 +121,48 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
         if org_header:
             await self._validate_org_override(context, org_header)
             context.organization_uid = org_header
+
+    async def _resolve_tenant_schema(
+            self, request: Request, context: TenantContext
+    ) -> None:
+        path = request.url.path
+        if not any(path.startswith(prefix) for prefix in settings.TENANT_REQUIRED_PATH_PREFIXES):
+            return
+        if any(path.startswith(public_path) for public_path in settings.TENANT_PUBLIC_PATHS):
+            return
+
+        tenant_slug = request.headers.get(settings.TENANT_HEADER_NAME) or context.tenant_slug
+        if not tenant_slug:
+            return
+
+        context.tenant_slug = tenant_slug
+        schema_name = await self._cached_schema_lookup(tenant_slug)
+        if not schema_name:
+            tenant = await TenantRegistryService().get_by_slug(tenant_slug)
+            if not tenant or tenant.get("status") != "active":
+                raise PermissionError(f"Tenant '{tenant_slug}' not active")
+            schema_name = tenant["schema_name"]
+            self._cache_schema(tenant_slug, schema_name)
+
+        context.schema_name = schema_name
+        # Warm session factory lazily for this tenant.
+        get_tenant_session_factory(schema_name)
+
+    async def _cached_schema_lookup(self, tenant_slug: str) -> str | None:
+        record = _TENANT_CACHE.get(tenant_slug)
+        if not record:
+            return None
+        schema_name, expires_at = record
+        if expires_at <= time.time():
+            _TENANT_CACHE.pop(tenant_slug, None)
+            return None
+        return schema_name
+
+    def _cache_schema(self, tenant_slug: str, schema_name: str) -> None:
+        _TENANT_CACHE[tenant_slug] = (
+            schema_name,
+            time.time() + _TENANT_CACHE_TTL_SECONDS,
+        )
 
     async def _validate_lab_membership(
             self, context: TenantContext, laboratory_uid: str

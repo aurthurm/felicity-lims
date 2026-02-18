@@ -33,6 +33,7 @@ from beak.core.security import (
     generate_password_reset_token,
     verify_password_reset_token,
 )
+from beak.core.tenant_context import get_tenant_context
 
 settings = get_settings()
 
@@ -427,7 +428,14 @@ class UserMutations:
             active_laboratory = laboratories[0]
             await user_service.set_active_laboratory(user.uid, active_laboratory.uid)
 
-        access_token = security.create_access_token(user.uid)
+        tenant_context = get_tenant_context()
+        access_token = security.create_access_token(
+            user.uid,
+            organization_uid=(
+                active_laboratory.organization_uid if active_laboratory else None
+            ),
+            tenant_slug=(tenant_context.tenant_slug if tenant_context else None),
+        )
         refresh_token = security.create_refresh_token(user.uid)
         return StrawberryMapper[AuthenticatedData]().map(
             token=access_token,

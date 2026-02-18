@@ -20,6 +20,8 @@ class TenantContext:
     user_uid: Optional[str] = None
     organization_uid: Optional[str] = None
     laboratory_uid: Optional[str] = None
+    tenant_slug: Optional[str] = None
+    schema_name: Optional[str] = None
 
     # Additional context for audit trails
     request_id: Optional[str] = None
@@ -47,6 +49,8 @@ class TenantContext:
             "user_uid": self.user_uid,
             "organization_uid": self.organization_uid,
             "laboratory_uid": self.laboratory_uid,
+            "tenant_slug": self.tenant_slug,
+            "schema_name": self.schema_name,
             "request_id": self.request_id,
             "ip_address": self.ip_address,
         }
@@ -89,6 +93,12 @@ def get_current_org_uid() -> Optional[str]:
     """Get current organization UID from context"""
     context = get_tenant_context()
     return context.organization_uid if context else None
+
+
+def get_current_schema_name() -> Optional[str]:
+    """Get current tenant schema from context"""
+    context = get_tenant_context()
+    return context.schema_name if context else None
 
 
 def require_lab_context() -> str:

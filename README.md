@@ -31,6 +31,14 @@ Our goal is to provide accurate tracking of samples and experimental data throug
 
 The system provides comprehensive audit trails, field-level encryption for sensitive patient data, and industry-standard protocol support (ASTM, HL7) for bi-directional instrument communication. We use a modular, domain-driven architecture with an async-first technology stack designed for scalability and performance.
 
+## **Kotlin Port Status (`beak-next`)**
+
+The Kotlin/Spring migration workspace lives in `beak-next/`.
+
+- Current implementation status, evidence, and rollout gates: `beak-next/README.md`
+- Detailed execution tracker: `beak-next/porting-checklist.md`
+- Migration plan: `beak-next/porting-plan.md`
+
 ### **Key Features**
 
 -   **Multi-Tenant Architecture**: Laboratory-level data isolation with tenant context management for secure multi-lab operations
@@ -412,6 +420,23 @@ Access the SigNoz dashboard at [http://localhost:3301](http://localhost:3301).
 -   **Transactions**: Wrap related operations in transactions for consistency
 -   **Migrations**: Use Alembic for all schema changes
 -   **ORM First**: Use SQLAlchemy ORM instead of raw SQL when possible
+
+### **Tenant Provisioning & CLI**
+
+For tenant schema provisioning and tenant-specific maintenance commands, see:
+
+-   [`reads/TenantProvisioningAndCLI.md`](reads/TenantProvisioningAndCLI.md)
+
+Key commands:
+
+-   `beak-lims seed platform-superuser`
+-   `beak-lims tenant provision --name "<org>" --slug <slug> --admin-email <email> --initial-lab-name "<lab>"`
+-   `beak-lims tenant migrate --slug <slug>`
+-   `beak-lims tenant activate --slug <slug>`
+-   `beak-lims tenant add-lab --slug <slug> --name "<lab>"`
+-   `beak-lims tenant cleanup --drop-schema`
+-   `beak-lims seed all --tenant-slug <slug>`
+-   `beak-lims snapshot refresh-all --tenant-slug <slug>`
 
 ### **Testing Strategy**
 
