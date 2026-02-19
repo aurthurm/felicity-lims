@@ -9,11 +9,11 @@ from beak.api.gql.auth import auth_from_info
 from beak.api.gql.permissions import IsAuthenticated, HasPermission
 from beak.api.gql.storage import types
 from beak.api.gql.types import OperationError
-from beak.apps.analysis.enum import SampleState
-from beak.apps.analysis.services.analysis import SampleService
-from beak.apps.guard import FAction, FObject
-from beak.apps.storage import schemas
-from beak.apps.storage.services import (
+from beak.modules.core.analysis.enum import SampleState
+from beak.modules.core.analysis.services.analysis import SampleService
+from beak.modules.core.guard import FAction, FObject
+from beak.modules.core.storage import schemas
+from beak.modules.core.storage.services import (
     StorageContainerService,
     StorageLocationService,
     StorageSectionService,

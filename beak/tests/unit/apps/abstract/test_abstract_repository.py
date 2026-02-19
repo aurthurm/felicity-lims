@@ -6,7 +6,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, relationship
 from sqlalchemy_mixins import ReprMixin, SerializeMixin, SessionMixin, SmartQueryMixin  # noqa
 from sqlalchemy_mixins.utils import classproperty
 
-from beak.apps.abstract.repository import BaseRepository
+from beak.modules.core.abstract.repository import BaseRepository
 from beak.core.uid_gen import get_flake_uid
 from beak.database.session import async_engine
 

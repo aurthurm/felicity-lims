@@ -7,14 +7,14 @@ from beak.api.gql.analysis.types import analysis as a_types
 from beak.api.gql.auth import auth_from_info
 from beak.api.gql.permissions import IsAuthenticated
 from beak.api.gql.types import OperationError
-from beak.apps.analysis import schemas, utils
-from beak.apps.analysis.entities import analysis as analysis_entities
-from beak.apps.analysis.entities.analysis import (
+from beak.modules.core.analysis import schemas, utils
+from beak.modules.core.analysis.entities import analysis as analysis_entities
+from beak.modules.core.analysis.entities.analysis import (
     analysis_analysis_template,
     analysis_profile,
     profile_sample_type,
 )
-from beak.apps.analysis.services.analysis import (
+from beak.modules.core.analysis.services.analysis import (
     AnalysisService,
     AnalysisTemplateService,
     ProfileCodingService,

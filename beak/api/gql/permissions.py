@@ -4,8 +4,8 @@ import typing
 from strawberry.permission import BasePermission
 
 from beak.api.deps import Info
-from beak.apps.guard import FAction, FObject, has_perm, FGroup, has_group
-from beak.apps.user.services import UserService
+from beak.modules.core.guard import FAction, FObject, has_perm, FGroup, has_group
+from beak.modules.core.identity.services import UserService
 from beak.core.tenant_context import get_current_user_uid
 
 logging.basicConfig(level=logging.INFO)

@@ -7,7 +7,7 @@ from beak.api.gql.setup.types import SupplierType, LaboratoryType
 from beak.api.gql.setup.types.department import DepartmentType
 from beak.api.gql.types import PageInfo
 from beak.api.gql.user.types import UserType
-from beak.apps.inventory.services import (
+from beak.modules.core.inventory.services import (
     StockItemVariantService,
     StockProductInventoryService,
 )

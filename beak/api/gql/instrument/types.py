@@ -7,7 +7,7 @@ import strawberry  # noqa
 from beak.api.gql.setup.types import ManufacturerType, SupplierType, LaboratoryType
 from beak.api.gql.types import BytesScalar, PageInfo, JSONScalar
 from beak.api.gql.user.types import UserType
-from beak.apps.instrument.services import LaboratoryInstrumentService, MethodService
+from beak.modules.core.instrument.services import LaboratoryInstrumentService, MethodService
 
 
 @strawberry.type

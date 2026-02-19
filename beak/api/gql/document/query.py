@@ -7,8 +7,8 @@ from strawberry.permission import PermissionExtension
 from beak.api.gql.document import types
 from beak.api.gql.permissions import IsAuthenticated, HasPermission
 from beak.api.gql.types import PageInfo
-from beak.apps.user.caches import get_current_user_preferences
-from beak.apps.document.services import (
+from beak.modules.core.identity.caches import get_current_user_preferences
+from beak.modules.core.document.services import (
     DocumentCategoryService,
     DocumentTagService,
     DocumentService,
@@ -21,7 +21,7 @@ from beak.apps.document.services import (
     DocumentSubscriptionService,
     DocumentAuditService,
 )
-from beak.apps.guard import FAction, FObject
+from beak.modules.core.guard import FAction, FObject
 from beak.utils import has_value_or_is_truthy
 
 

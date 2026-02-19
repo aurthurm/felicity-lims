@@ -19,7 +19,7 @@
 
 - **Repository-Service pattern**: Entities → Repositories → Services → GraphQL resolvers
 - **Multi-tenancy**: Laboratory-level data isolation via `LabScopedEntity` and tenant context
-- **Domain-driven design**: Modules under `beak/apps/` (patient, sample, analysis, inventory, etc.)
+- **Domain-driven design**: Modules under `beak/modules/` (core and industry modules)
 
 ### Key Modules
 

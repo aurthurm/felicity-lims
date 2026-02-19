@@ -6,10 +6,10 @@ from fastapi import APIRouter, Depends, UploadFile, File
 from pydantic import BaseModel
 
 from beak.api.deps import get_current_user
-from beak.apps.common.utils.serializer import marshaller
-from beak.apps.setup import schemas
-from beak.apps.setup.services import LaboratoryService, OrganizationService
-from beak.apps.user.schemas import User
+from beak.modules.core.common.utils.serializer import marshaller
+from beak.modules.core.setup import schemas
+from beak.modules.core.setup.services import LaboratoryService, OrganizationService
+from beak.modules.core.identity.schemas import User
 from beak.core.config import settings
 from beak.lims.seeds import default_setup, requisite_setup
 

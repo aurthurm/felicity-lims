@@ -19,8 +19,8 @@ from beak.api.gql.setup.types import UnitType
 from beak.api.gql.types import PageInfo, JSONScalar
 from beak.api.gql.types.generic import StrawberryMapper
 from beak.api.gql.user.types import UserType
-from beak.apps.instrument.services import MethodService, InstrumentService
-from beak.apps.worksheet.services import WorkSheetService
+from beak.modules.core.instrument.services import MethodService, InstrumentService
+from beak.modules.core.worksheet.services import WorkSheetService
 
 
 @strawberry.type

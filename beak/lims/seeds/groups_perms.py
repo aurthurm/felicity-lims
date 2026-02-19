@@ -1,4 +1,4 @@
-from beak.apps.guard.utils import (
+from beak.modules.core.guard.utils import (
     create_groups,
     create_permissions,
     create_group_permissions_defaults,

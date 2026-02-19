@@ -5,15 +5,15 @@ from uuid import uuid4
 from fastapi import APIRouter, Depends
 
 from beak.api.deps import get_current_user
-from beak.apps.analysis.services.analysis import AnalysisService
-from beak.apps.analytics import schemas as an_schema
-from beak.apps.analytics.entities import analysis_reports
-from beak.apps.analytics.enum import ReportState
-from beak.apps.analytics.services import ReportMetaService
-from beak.apps.job import schemas as job_schemas
-from beak.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
-from beak.apps.job.services import JobService
-from beak.apps.user.schemas import User
+from beak.modules.core.analysis.services.analysis import AnalysisService
+from beak.modules.core.analytics import schemas as an_schema
+from beak.modules.core.analytics.entities import analysis_reports
+from beak.modules.core.analytics.enum import ReportState
+from beak.modules.core.analytics.services import ReportMetaService
+from beak.modules.core.job import schemas as job_schemas
+from beak.modules.core.job.enum import JobAction, JobCategory, JobPriority, JobState
+from beak.modules.core.job.services import JobService
+from beak.modules.core.identity.schemas import User
 from beak.utils.dirs import (
     delete_file,
     get_download_path,

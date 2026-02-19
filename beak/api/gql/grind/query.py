@@ -10,8 +10,8 @@ from strawberry.permission import PermissionExtension
 from beak.api.gql.grind import types
 from beak.api.gql.permissions import IsAuthenticated, HasPermission
 from beak.api.gql.types import PageInfo
-from beak.apps.grind.enum import StampCategory
-from beak.apps.grind.services import (
+from beak.modules.core.grind.enum import StampCategory
+from beak.modules.core.grind.services import (
     GrindSchemeService,
     GrindBoardService,
     GrindPosterService,
@@ -23,9 +23,9 @@ from beak.apps.grind.services import (
     GrindStampService,
     GrindErrandDiscussionService,
 )
-from beak.apps.guard import FAction, FObject
-from beak.apps.iol.minio import MinioClient
-from beak.apps.iol.minio.enum import MinioBucket
+from beak.modules.core.guard import FAction, FObject
+from beak.modules.core.iol.minio import MinioClient
+from beak.modules.core.iol.minio.enum import MinioBucket
 from beak.utils import has_value_or_is_truthy
 
 

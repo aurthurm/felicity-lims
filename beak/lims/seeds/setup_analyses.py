@@ -1,8 +1,8 @@
 import logging
 
-from beak.apps.analysis import utils
-from beak.apps.analysis.entities.analysis import analysis_profile
-from beak.apps.analysis.schemas import (
+from beak.modules.core.analysis import utils
+from beak.modules.core.analysis.entities.analysis import analysis_profile
+from beak.modules.core.analysis.schemas import (
     AnalysisCategoryCreate,
     AnalysisCreate,
     ProfileCreate,
@@ -10,7 +10,7 @@ from beak.apps.analysis.schemas import (
     RejectionReasonCreate,
     SampleTypeCreate,
 )
-from beak.apps.analysis.services.analysis import (
+from beak.modules.core.analysis.services.analysis import (
     AnalysisCategoryService,
     AnalysisService,
     CodingStandardService,
@@ -18,11 +18,11 @@ from beak.apps.analysis.services.analysis import (
     RejectionReasonService,
     SampleTypeService,
 )
-from beak.apps.analysis.services.quality_control import QCLevelService
-from beak.apps.idsequencer.service import IdSequenceService
-from beak.apps.setup.entities.setup import Unit
-from beak.apps.setup.schemas import UnitCreate
-from beak.apps.setup.services import DepartmentService, UnitService
+from beak.modules.core.analysis.services.quality_control import QCLevelService
+from beak.modules.core.idsequencer.service import IdSequenceService
+from beak.modules.core.setup.entities.setup import Unit
+from beak.modules.core.setup.schemas import UnitCreate
+from beak.modules.core.setup.services import DepartmentService, UnitService
 from beak.core.config import get_settings
 from .data import get_seeds
 from ...core.dtz import timenow_dt

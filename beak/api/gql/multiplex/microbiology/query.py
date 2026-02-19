@@ -42,8 +42,8 @@ from beak.api.gql.multiplex.microbiology.types import (
 )
 from beak.api.gql.permissions import IsAuthenticated
 from beak.api.gql.types.generic import PageInfo
-from beak.apps.multiplex.microbiology.entities import laboratory_antibiotics
-from beak.apps.multiplex.microbiology.services import (
+from beak.modules.clinical.microbiology.entities import laboratory_antibiotics
+from beak.modules.clinical.microbiology.services import (
     AbxAntibioticService,
     AbxBreakpointService,
     AbxBreakpointTypeService,
@@ -68,7 +68,7 @@ from beak.apps.multiplex.microbiology.services import (
     AbxSiteOfInfectionService,
     AbxTestMethodService,
 )
-from beak.apps.setup.services import LaboratoryService
+from beak.modules.core.setup.services import LaboratoryService
 from beak.core.tenant_context import get_current_lab_uid
 from beak.utils import has_value_or_is_truthy
 

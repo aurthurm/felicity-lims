@@ -9,10 +9,10 @@ from beak.api.gql.auth import auth_from_info
 from beak.api.gql.inventory import types
 from beak.api.gql.permissions import IsAuthenticated, HasPermission
 from beak.api.gql.types import OperationError
-from beak.apps.guard import FAction, FObject
-from beak.apps.inventory import schemas
-from beak.apps.inventory.enum import AdjustType, OrderState
-from beak.apps.inventory.services import (
+from beak.modules.core.guard import FAction, FObject
+from beak.modules.core.inventory import schemas
+from beak.modules.core.inventory.enum import AdjustType, OrderState
+from beak.modules.core.inventory.services import (
     HazardService,
     StockAdjustmentService,
     StockCategoryService,

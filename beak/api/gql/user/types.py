@@ -4,7 +4,7 @@ import strawberry  # noqa
 
 from beak.api.gql.setup.types.department import DepartmentType
 from beak.api.gql.types import PageInfo
-from beak.apps.user.services import UserService
+from beak.modules.core.identity.services import UserService
 
 
 @strawberry.type

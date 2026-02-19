@@ -11,9 +11,9 @@ from beak.api.gql.auth import auth_from_info
 from beak.api.gql.grind import inputs, responses, types
 from beak.api.gql.permissions import IsAuthenticated, HasPermission
 from beak.api.gql.types import OperationError, DeletedItem, DeleteResponse
-from beak.apps.grind import schema
-from beak.apps.grind.enum import OccurrenceTarget
-from beak.apps.grind.services import (
+from beak.modules.core.grind import schema
+from beak.modules.core.grind.enum import OccurrenceTarget
+from beak.modules.core.grind.services import (
     GrindSchemeService,
     GrindBoardService,
     GrindPosterService,
@@ -25,9 +25,9 @@ from beak.apps.grind.services import (
     GrindStampService,
     GrindErrandDiscussionService,
 )
-from beak.apps.guard import FAction, FObject
-from beak.apps.iol.minio import MinioClient
-from beak.apps.iol.minio.enum import MinioBucket
+from beak.modules.core.guard import FAction, FObject
+from beak.modules.core.iol.minio import MinioClient
+from beak.modules.core.iol.minio.enum import MinioBucket
 from beak.core.config import settings
 from beak.utils.dirs import resolve_media_dirs_for, delete_file
 

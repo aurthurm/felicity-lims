@@ -10,19 +10,19 @@ from beak.api.gql.auth import auth_from_info
 from beak.api.gql.decorators import require_tenant_context
 from beak.api.gql.permissions import IsAuthenticated, HasPermission
 from beak.api.gql.types import OperationError
-from beak.apps.analysis.services.analysis import SampleService
-from beak.apps.analysis.services.result import AnalysisResultService
-from beak.apps.analysis.tasks import verify_results, submit_results
-from beak.apps.analysis.utils import retest_from_result_uids
-from beak.apps.analysis.workflow.analysis_result import AnalysisResultWorkFlow
-from beak.apps.guard import FAction, FObject
-from beak.apps.iol.redis import task_guard
-from beak.apps.iol.redis.enum import TrackableObject
-from beak.apps.job import schemas as job_schemas
-from beak.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
-from beak.apps.job.services import JobService
-from beak.apps.notification.enum import NotificationObject
-from beak.apps.notification.services import ActivityStreamService
+from beak.modules.core.analysis.services.analysis import SampleService
+from beak.modules.core.analysis.services.result import AnalysisResultService
+from beak.modules.core.analysis.tasks import verify_results, submit_results
+from beak.modules.core.analysis.utils import retest_from_result_uids
+from beak.modules.core.analysis.workflow.analysis_result import AnalysisResultWorkFlow
+from beak.modules.core.guard import FAction, FObject
+from beak.modules.core.iol.redis import task_guard
+from beak.modules.core.iol.redis.enum import TrackableObject
+from beak.modules.core.job import schemas as job_schemas
+from beak.modules.core.job.enum import JobAction, JobCategory, JobPriority, JobState
+from beak.modules.core.job.services import JobService
+from beak.modules.core.notification.enum import NotificationObject
+from beak.modules.core.notification.services import ActivityStreamService
 from beak.core.config import settings
 
 logging.basicConfig(level=logging.INFO)

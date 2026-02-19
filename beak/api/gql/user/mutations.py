@@ -15,12 +15,12 @@ from beak.api.gql.user.types import (
     UserLaboratoryAssignmentType,
     UserType,
 )
-from beak.apps.guard import FGroup
-from beak.apps.setup.services import LaboratoryService
-from beak.apps.user import schemas as user_schemas
-from beak.apps.user.caches import invalidate_user_preferences_cache
-from beak.apps.user.entities import laboratory_user, department_preference
-from beak.apps.user.services import (
+from beak.modules.core.guard import FGroup
+from beak.modules.core.setup.services import LaboratoryService
+from beak.modules.core.identity import schemas as user_schemas
+from beak.modules.core.identity.caches import invalidate_user_preferences_cache
+from beak.modules.core.identity.entities import laboratory_user, department_preference
+from beak.modules.core.identity.services import (
     GroupService,
     PermissionService,
     UserPreferenceService,

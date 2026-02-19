@@ -24,7 +24,7 @@ from beak.api.gql.instrument.types import (
 )
 from beak.api.gql.permissions import IsAuthenticated
 from beak.api.gql.types import PageInfo
-from beak.apps.instrument.services import (
+from beak.modules.core.instrument.services import (
     InstrumentService,
     InstrumentTypeService,
     LaboratoryInstrumentService,
@@ -281,7 +281,7 @@ class InstrumentQuery:
             )
 
         try:
-            from beak.apps.iol.analyzer.services.transformer import (
+            from beak.modules.core.iol.analyzer.services.transformer import (
                 MessageTransformer,
             )
 

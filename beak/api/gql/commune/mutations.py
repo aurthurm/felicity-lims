@@ -7,9 +7,9 @@ from beak.api.gql.commune.types import SmsTemplateType
 from beak.api.gql.permissions import IsAuthenticated
 from beak.api.gql.types import OperationError
 from beak.api.gql.types.generic import DeletedItem
-from beak.apps.commune.sms.enum import SmsAudience, SmsTrigger
-from beak.apps.commune.sms.schemas import SmsTemplateCreate, SmsTemplateUpdate
-from beak.apps.commune.sms.services import SmsTemplateService
+from beak.modules.core.commune.sms.enum import SmsAudience, SmsTrigger
+from beak.modules.core.commune.sms.schemas import SmsTemplateCreate, SmsTemplateUpdate
+from beak.modules.core.commune.sms.services import SmsTemplateService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

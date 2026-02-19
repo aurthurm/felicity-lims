@@ -5,15 +5,15 @@ from strawberry.permission import PermissionExtension
 
 from beak.api.gql.analytics import types
 from beak.api.gql.permissions import IsAuthenticated, HasPermission
-from beak.apps.analysis.entities.analysis import Sample
-from beak.apps.analysis.entities.results import AnalysisResult
-from beak.apps.analysis.enum import ResultState, SampleState
-from beak.apps.analytics import EntityAnalyticsInit
-from beak.apps.guard import FAction, FObject
-from beak.apps.instrument.services import LaboratoryInstrumentService
-from beak.apps.user.services import UserService
-from beak.apps.worksheet.entities import WorkSheet
-from beak.apps.worksheet.enum import WorkSheetState
+from beak.modules.core.analysis.entities.analysis import Sample
+from beak.modules.core.analysis.entities.results import AnalysisResult
+from beak.modules.core.analysis.enum import ResultState, SampleState
+from beak.modules.core.analytics import EntityAnalyticsInit
+from beak.modules.core.guard import FAction, FObject
+from beak.modules.core.instrument.services import LaboratoryInstrumentService
+from beak.modules.core.identity.services import UserService
+from beak.modules.core.worksheet.entities import WorkSheet
+from beak.modules.core.worksheet.enum import WorkSheetState
 from beak.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)

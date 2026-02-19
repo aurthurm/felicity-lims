@@ -7,7 +7,7 @@ from beak.api.gql.iol.types import AnalyzerParsedMessageType
 from beak.api.gql.permissions import IsAuthenticated
 from beak.api.gql.types import JSONScalar
 from beak.api.gql.types import OperationError
-from beak.apps.iol.analyzer.services.transformer import MessageTransformer
+from beak.modules.core.iol.analyzer.services.transformer import MessageTransformer
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

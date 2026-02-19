@@ -9,28 +9,28 @@ from beak.api.gql.multiplex.microbiology import AbxASTPanelType
 from beak.api.gql.multiplex.microbiology.types import AbxASTResultType
 from beak.api.gql.permissions import IsAuthenticated
 from beak.api.gql.types import OperationError
-from beak.apps.analysis.enum import SampleState, ResultState
-from beak.apps.analysis.schemas import AnalysisResultCreate
-from beak.apps.analysis.services.analysis import SampleService, AnalysisService
-from beak.apps.analysis.services.result import AnalysisResultService
-from beak.apps.multiplex.microbiology.entities import (
+from beak.modules.core.analysis.enum import SampleState, ResultState
+from beak.modules.core.analysis.schemas import AnalysisResultCreate
+from beak.modules.core.analysis.services.analysis import SampleService, AnalysisService
+from beak.modules.core.analysis.services.result import AnalysisResultService
+from beak.modules.clinical.microbiology.entities import (
     panel_organism,
     panel_antibiotic,
 )
-from beak.apps.multiplex.microbiology.schemas import (
+from beak.modules.clinical.microbiology.schemas import (
     AbxASTPanelCreate,
     AbxASTPanelUpdate,
     AbxASTResultCreate,
     AbxASTResultUpdate,
 )
-from beak.apps.multiplex.microbiology.services import (
+from beak.modules.clinical.microbiology.services import (
     AbxASTPanelService,
     AbxBreakpointService,
     AbxASTResultService,
     AbxBreakpointTypeService,
     AbxHostService,
 )
-from beak.apps.multiplex.microbiology.utils import (
+from beak.modules.clinical.microbiology.utils import (
     interpret_ast,
     handle_ast_user_interpreted,
 )

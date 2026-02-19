@@ -14,9 +14,9 @@ from fastapi.responses import JSONResponse
 from jose import jwt, JWTError
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from beak.apps.setup.services import LaboratoryService
-from beak.apps.user.services import UserService
-from beak.apps.platform.services import TenantRegistryService
+from beak.modules.core.setup.services import LaboratoryService
+from beak.modules.core.identity.services import UserService
+from beak.modules.platform.services import TenantRegistryService
 from beak.core.config import get_settings
 from beak.core.tenant_context import TenantContext, set_tenant_context
 from beak.database.tenant_engine_registry import get_tenant_session_factory

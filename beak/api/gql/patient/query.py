@@ -11,8 +11,8 @@ from beak.api.gql.patient.types import (
 )
 from beak.api.gql.permissions import IsAuthenticated, HasPermission
 from beak.api.gql.types import PageInfo
-from beak.apps.guard import FAction, FObject
-from beak.apps.patient.services import IdentificationService, PatientService
+from beak.modules.core.guard import FAction, FObject
+from beak.modules.clinical.patient.services import IdentificationService, PatientService
 
 
 @strawberry.type

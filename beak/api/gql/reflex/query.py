@@ -12,7 +12,7 @@ from beak.api.gql.reflex.types import (
     ReflexDecisionType,
 )
 from beak.api.gql.types import PageInfo
-from beak.apps.reflex.services import (
+from beak.modules.core.reflex.services import (
     ReflexRuleService,
     ReflexTriggerService,
     ReflexDecisionService,

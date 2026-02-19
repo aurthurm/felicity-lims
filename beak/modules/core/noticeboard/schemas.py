@@ -1,0 +1,35 @@
+from dataclasses import field
+from datetime import datetime
+from typing import List, Optional
+
+from pydantic import ConfigDict
+
+from beak.modules.core.common.schemas import BaseAuditModel
+from beak.modules.core.setup.schemas import Department
+from beak.modules.core.identity.schemas import Group, User
+
+
+#
+# Notice Schemas
+#
+class NoticeBase(BaseAuditModel):
+    departments: Optional[List[Department]] = field(default_factory=list)
+    groups: Optional[List[Group]] = field(default_factory=list)
+    title: str | None = ""
+    body: str | None = ""
+    viewers: Optional[List[User]] = field(default_factory=list)
+    expiry: datetime | None = None
+
+
+class Notice(NoticeBase):
+    uid: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class NoticeCreate(NoticeBase):
+    pass
+
+
+class NoticeUpdate(NoticeBase):
+    pass

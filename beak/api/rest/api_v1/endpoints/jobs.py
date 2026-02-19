@@ -3,7 +3,7 @@ from typing import Any
 
 from fastapi import APIRouter, Depends
 
-from beak.apps.job.services import JobService
+from beak.modules.core.job.services import JobService
 
 jobs = APIRouter(tags=["job"], prefix="/jobs")
 

@@ -24,7 +24,7 @@ from beak.api.gql.setup.types import (
 )
 from beak.api.gql.setup.types.department import DepartmentType
 from beak.api.gql.types import PageInfo
-from beak.apps.setup.services import (
+from beak.modules.core.setup.services import (
     CountryService,
     DepartmentService,
     DistrictService,
@@ -36,7 +36,7 @@ from beak.apps.setup.services import (
     LaboratorySettingService,
     OrganizationService,
 )
-from beak.apps.user.entities import User
+from beak.modules.core.identity.entities import User
 from beak.utils import has_value_or_is_truthy
 
 

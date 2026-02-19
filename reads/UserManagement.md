@@ -25,9 +25,9 @@ User management provides authentication, role-based access control (RBAC), and l
 
 ## Architecture
 
-- **Entities**: `beak/apps/user/entities.py` — User, Group, Permission, UserPreference
-- **Repository**: `beak/apps/user/repository.py` — get_users_by_laboratory, assign_user_to_laboratory
-- **Services**: `beak/apps/user/services.py` — UserService (create, update, authenticate, has_access)
+- **Entities**: `beak/modules/core/identity/entities.py` — User, Group, Permission, UserPreference
+- **Repository**: `beak/modules/core/identity/repository.py` — get_users_by_laboratory, assign_user_to_laboratory
+- **Services**: `beak/modules/core/identity/services.py` — UserService (create, update, authenticate, has_access)
 
 ## User Preferences
 

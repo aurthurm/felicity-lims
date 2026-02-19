@@ -8,17 +8,17 @@ from fhir.resources.patient import Patient
 from fhir.resources.servicerequest import ServiceRequest
 
 from beak.api.deps import get_current_user
-from beak.apps.analysis.services.analysis import AnalysisRequestService, SampleService
-from beak.apps.iol.fhir.utils import (
+from beak.modules.core.analysis.services.analysis import AnalysisRequestService, SampleService
+from beak.modules.core.iol.fhir.utils import (
     create_resource,
     get_diagnostic_report_resource,
     get_patient_resource,
 )
-from beak.apps.iol.fhir.services.read import FhirReadService
-from beak.apps.patient.services import PatientService
+from beak.modules.core.iol.fhir.services.read import FhirReadService
+from beak.modules.clinical.patient.services import PatientService
 from beak.core.dtz import to_datetime
-from beak.apps.user.schemas import User
-from beak.apps.user.services import UserService
+from beak.modules.core.identity.schemas import User
+from beak.modules.core.identity.services import UserService
 
 fhir_v4 = APIRouter(tags=["fhir-v4"], prefix="/fhir")
 

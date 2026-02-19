@@ -1,7 +1,7 @@
 import typer
 
 from beak.cli.libs import AsyncTyper
-from beak.apps.platform.services import TenantProvisioningService, TenantRegistryService
+from beak.modules.platform.services import TenantProvisioningService, TenantRegistryService
 
 app = AsyncTyper()
 
@@ -12,6 +12,16 @@ async def provision(
         slug: str = typer.Option(..., help="Tenant slug (lowercase, underscore allowed)"),
         admin_email: str | None = typer.Option(None, help="Tenant admin email"),
         initial_lab_name: str | None = typer.Option(None, help="Initial laboratory name"),
+        primary_industry: str = typer.Option(
+            "clinical",
+            "--industry",
+            help="Primary industry: clinical|pharma|environment|industrial",
+        ),
+        enable_module: list[str] = typer.Option(
+            None,
+            "--enable-module",
+            help="Extra modules to enable (repeat flag as needed)",
+        ),
 ) -> None:
     """Provision a tenant schema and run tenant migration + baseline setup."""
     tenant = await TenantProvisioningService().provision(
@@ -19,6 +29,8 @@ async def provision(
         slug=slug,
         admin_email=admin_email,
         initial_lab_name=initial_lab_name,
+        primary_industry=primary_industry,
+        enabled_modules=enable_module or None,
     )
     typer.echo(f"Provisioned tenant: {tenant['slug']} -> {tenant['schema_name']}")
 
@@ -39,9 +51,14 @@ async def list_tenants(
 @app.command()
 async def migrate(
         slug: str = typer.Option(..., help="Tenant slug"),
+        module: str | None = typer.Option(
+            None,
+            "--module",
+            help="Limit migration intent to an enabled module id",
+        ),
 ) -> None:
     """Run latest Alembic migrations for a single tenant schema and activate it."""
-    tenant = await TenantProvisioningService().migrate(slug=slug)
+    tenant = await TenantProvisioningService().migrate(slug=slug, module_scope=module)
     typer.echo(f"Migrated tenant: {tenant['slug']} -> {tenant['schema_name']}")
 
 
@@ -101,3 +118,38 @@ async def cleanup_failed(
         typer.echo(
             f"Removed failed tenant: {tenant['slug']} -> {tenant['schema_name']}"
         )
+
+
+@app.command("modules")
+async def modules(
+        slug: str = typer.Option(..., help="Tenant slug"),
+) -> None:
+    """List modules enabled for a tenant."""
+    result = await TenantProvisioningService().list_modules(slug=slug)
+    typer.echo(
+        f"{result['tenant_slug']}\tindustry={result['primary_industry']}\tmodules={','.join(result['enabled_modules'])}"
+    )
+
+
+@app.command("module-enable")
+async def module_enable(
+        slug: str = typer.Option(..., help="Tenant slug"),
+        module: str = typer.Option(..., "--module", help="Module id"),
+) -> None:
+    """Enable a module for a tenant."""
+    tenant = await TenantProvisioningService().enable_module(slug=slug, module_id=module)
+    typer.echo(
+        f"Enabled module '{module}' for {tenant['slug']}: {','.join(tenant['enabled_modules'])}"
+    )
+
+
+@app.command("module-disable")
+async def module_disable(
+        slug: str = typer.Option(..., help="Tenant slug"),
+        module: str = typer.Option(..., "--module", help="Module id"),
+) -> None:
+    """Disable a module for a tenant."""
+    tenant = await TenantProvisioningService().disable_module(slug=slug, module_id=module)
+    typer.echo(
+        f"Disabled module '{module}' for {tenant['slug']}: {','.join(tenant['enabled_modules'])}"
+    )

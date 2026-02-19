@@ -2,7 +2,7 @@ import strawberry
 
 from beak.api.gql.auth import auth_from_info
 from beak.api.gql.types import OperationError
-from beak.apps.platform.services import TenantProvisioningService
+from beak.modules.platform.services import TenantProvisioningService
 
 
 @strawberry.type
@@ -29,6 +29,8 @@ class PlatformMutations:
             slug: str,
             admin_email: str | None = None,
             initial_lab_name: str | None = None,
+            primary_industry: str = "clinical",
+            enabled_modules: list[str] | None = None,
     ) -> TenantProvisionResponse:
         user = await auth_from_info(info)
         if not user:
@@ -42,6 +44,8 @@ class PlatformMutations:
                 slug=slug,
                 admin_email=admin_email,
                 initial_lab_name=initial_lab_name,
+                primary_industry=primary_industry,
+                enabled_modules=enabled_modules,
             )
             return TenantProvisionType(
                 uid=tenant["uid"],

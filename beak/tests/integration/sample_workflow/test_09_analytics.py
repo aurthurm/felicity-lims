@@ -5,7 +5,7 @@ from datetime import timedelta
 import pandas as pd
 import pytest
 
-from beak.apps.analytics.tasks import generate_report
+from beak.modules.core.analytics.tasks import generate_report
 from beak.core.dtz import timenow_dt
 
 logging.basicConfig(level=logging.INFO)

@@ -1,12 +1,12 @@
 import typer
 
-from beak.apps.analysis.enum import SampleState
-from beak.apps.analysis.services.analysis import (
+from beak.modules.core.analysis.enum import SampleState
+from beak.modules.core.analysis.services.analysis import (
     SampleService,
     AnalysisRequestService,
 )
-from beak.apps.analysis.services.result import AnalysisResultService
-from beak.apps.patient.services import PatientService
+from beak.modules.core.analysis.services.result import AnalysisResultService
+from beak.modules.clinical.patient.services import PatientService
 from beak.cli.libs import AsyncTyper
 from beak.cli.commands._tenant import tenant_context_from_slug
 

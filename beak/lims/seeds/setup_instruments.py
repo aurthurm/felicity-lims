@@ -1,7 +1,7 @@
 import logging
 
-from beak.apps.instrument import schemas
-from beak.apps.instrument.services import (
+from beak.modules.core.instrument import schemas
+from beak.modules.core.instrument.services import (
     InstrumentService,
     InstrumentTypeService,
     LaboratoryInstrumentService,

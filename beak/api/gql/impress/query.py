@@ -11,14 +11,14 @@ from pypdf import PdfWriter
 from beak.api.gql.impress.types import ReportImpressType
 from beak.api.gql.permissions import IsAuthenticated
 from beak.api.gql.types import BytesScalar
-from beak.apps.analysis.services.analysis import SampleService
-from beak.apps.analysis.utils import QC_SAMPLE
-from beak.apps.client.services import ClientService
-from beak.apps.impress.barcode.schema import BarCode, BarCodeMeta
-from beak.apps.impress.barcode.utils import impress_barcodes
-from beak.apps.impress.services import ReportImpressService
-from beak.apps.iol.minio import MinioClient
-from beak.apps.iol.minio.enum import MinioBucket
+from beak.modules.core.analysis.services.analysis import SampleService
+from beak.modules.core.analysis.utils import QC_SAMPLE
+from beak.modules.core.client.services import ClientService
+from beak.modules.core.impress.barcode.schema import BarCode, BarCodeMeta
+from beak.modules.core.impress.barcode.utils import impress_barcodes
+from beak.modules.core.impress.services import ReportImpressService
+from beak.modules.core.iol.minio import MinioClient
+from beak.modules.core.iol.minio.enum import MinioBucket
 from beak.core.config import settings
 
 logging.basicConfig(level=logging.INFO)

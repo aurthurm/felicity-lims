@@ -2,7 +2,7 @@ import logging
 
 import pytest
 
-from beak.apps.impress.sample.tasks import impress_results
+from beak.modules.core.impress.sample.tasks import impress_results
 from beak.core.config import settings
 
 logging.basicConfig(level=logging.INFO)

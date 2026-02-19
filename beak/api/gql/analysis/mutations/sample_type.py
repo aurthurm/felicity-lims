@@ -6,8 +6,8 @@ from beak.api.gql.analysis.types import analysis as a_types
 from beak.api.gql.auth import auth_from_info
 from beak.api.gql.permissions import IsAuthenticated
 from beak.api.gql.types import OperationError
-from beak.apps.analysis import schemas
-from beak.apps.analysis.services.analysis import (
+from beak.modules.core.analysis import schemas
+from beak.modules.core.analysis.services.analysis import (
     SampleTypeCodingService,
     SampleTypeService,
 )

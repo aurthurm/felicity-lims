@@ -9,28 +9,28 @@ from beak.api.gql.permissions import IsAuthenticated, HasPermission
 from beak.api.gql.types import OperationError
 from beak.api.gql.worksheet.permissions import CanActionWorksheet
 from beak.api.gql.worksheet.types import WorkSheetTemplateType, WorkSheetType
-from beak.apps.analysis.services.analysis import SampleTypeService
-from beak.apps.analysis.services.quality_control import (
+from beak.modules.core.analysis.services.analysis import SampleTypeService
+from beak.modules.core.analysis.services.quality_control import (
     QCLevelService,
     QCTemplateService,
 )
-from beak.apps.analysis.services.result import AnalysisResultService
-from beak.apps.guard import FAction, FObject
-from beak.apps.idsequencer.service import IdSequenceService
-from beak.apps.instrument.services import LaboratoryInstrumentService, MethodService
-from beak.apps.job import schemas as job_schemas
-from beak.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
-from beak.apps.job.services import JobService
-from beak.apps.user.services import UserService
-from beak.apps.worksheet import schemas
-from beak.apps.worksheet.entities import worksheet_template_qc_level
-from beak.apps.worksheet.enum import WorkSheetState
-from beak.apps.worksheet.services import WorkSheetService, WorkSheetTemplateService
-from beak.apps.worksheet.tasks import (
+from beak.modules.core.analysis.services.result import AnalysisResultService
+from beak.modules.core.guard import FAction, FObject
+from beak.modules.core.idsequencer.service import IdSequenceService
+from beak.modules.core.instrument.services import LaboratoryInstrumentService, MethodService
+from beak.modules.core.job import schemas as job_schemas
+from beak.modules.core.job.enum import JobAction, JobCategory, JobPriority, JobState
+from beak.modules.core.job.services import JobService
+from beak.modules.core.identity.services import UserService
+from beak.modules.core.worksheet import schemas
+from beak.modules.core.worksheet.entities import worksheet_template_qc_level
+from beak.modules.core.worksheet.enum import WorkSheetState
+from beak.modules.core.worksheet.services import WorkSheetService, WorkSheetTemplateService
+from beak.modules.core.worksheet.tasks import (
     populate_worksheet_plate_manually,
     populate_worksheet_plate,
 )
-from beak.apps.worksheet.workflow import WorkSheetWorkFlow
+from beak.modules.core.worksheet.workflow import WorkSheetWorkFlow
 from beak.core.config import settings
 from beak.utils import has_value_or_is_truthy
 

@@ -33,6 +33,9 @@ Platform management routes mirror CLI tenant operations:
 - `POST /api/v1/platform/tenants/{slug}/migrate`
 - `POST /api/v1/platform/tenants/{slug}/activate`
 - `POST /api/v1/platform/tenants/{slug}/laboratories`
+- `GET /api/v1/platform/tenants/{slug}/modules`
+- `POST /api/v1/platform/tenants/{slug}/modules/{module_id}:enable`
+- `POST /api/v1/platform/tenants/{slug}/modules/{module_id}:disable`
 - `DELETE /api/v1/platform/tenants/failed`
 
 ## Tenant Provisioning
@@ -44,15 +47,18 @@ beak-lims tenant provision \
   --name "Ultralytics Damegio" \
   --slug ultral12 \
   --admin-email ultralytics@gmail.com \
-  --initial-lab-name "Dato Laboratory 1"
+  --initial-lab-name "Dato Laboratory 1" \
+  --industry clinical \
+  --enable-module clinical
 ```
 
 What it does:
 
 - Creates a platform tenant registry record.
+- Stores tenant module profile (`primary_industry`, `enabled_modules`).
 - Creates schema `org_<slug>` (based on `TENANT_SCHEMA_PREFIX`).
 - Runs all Alembic migrations for that tenant schema.
-- Seeds initial organization + initial laboratory setup.
+- Seeds core module + primary industry module setup.
 
 ## Manage Existing Tenants
 
@@ -69,6 +75,7 @@ Run latest migrations for one tenant:
 
 ```bash
 beak-lims tenant migrate --slug ultral12
+beak-lims tenant migrate --slug ultral12 --module clinical
 ```
 
 `tenant migrate` will create the tenant schema first if it is missing, run migrations, and mark the tenant `active` when successful.
@@ -107,12 +114,22 @@ Optional organization selector:
 beak-lims tenant add-lab --slug ultral12 --name "Dato Laboratory 2" --setup-name beak
 ```
 
+Inspect and manage tenant modules:
+
+```bash
+beak-lims tenant modules --slug ultral12
+beak-lims tenant module-enable --slug ultral12 --module pharma
+beak-lims tenant module-disable --slug ultral12 --module pharma
+```
+
 ## Tenant-Scoped Seed Commands
 
 Seed commands support `--tenant-slug`:
 
 ```bash
 beak-lims seed all --tenant-slug ultral12
+beak-lims seed core --tenant-slug ultral12
+beak-lims seed industry --module clinical --tenant-slug ultral12
 beak-lims seed microbiology --tenant-slug ultral12
 ```
 

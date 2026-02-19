@@ -13,8 +13,8 @@ from beak.api.gql.shipment.types import (
     ShipmentType,
 )
 from beak.api.gql.types import BytesScalar, PageInfo
-from beak.apps.guard import FAction, FObject
-from beak.apps.shipment.services import ReferralLaboratoryService, ShipmentService
+from beak.modules.core.guard import FAction, FObject
+from beak.modules.core.shipment.services import ReferralLaboratoryService, ShipmentService
 from beak.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)

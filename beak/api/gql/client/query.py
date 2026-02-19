@@ -14,8 +14,8 @@ from beak.api.gql.client.types import (
 )
 from beak.api.gql.permissions import IsAuthenticated, HasPermission
 from beak.api.gql.types import PageInfo
-from beak.apps.client.services import ClientContactService, ClientService
-from beak.apps.guard import FAction, FObject
+from beak.modules.core.client.services import ClientContactService, ClientService
+from beak.modules.core.guard import FAction, FObject
 from beak.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)

@@ -22,6 +22,10 @@ const setCustomRange = () => {
   showModal.value = false;
 };
 
+const toggleFilters = (): void => {
+  dashBoardStore.setShowFilters(!dashboard.value.showFilters);
+};
+
 // Load initial data
 onMounted(async () => {
   resetUserMatrix();
@@ -154,37 +158,66 @@ const resetUserMatrix = () => {
 <template>
   <div class="mt-4">
     <!-- Filters Section -->
-    <section class="flex justify-between mb-8">
-      <div
-        class="flex justify-end items-center"
-        v-show="dashboard.showFilters"
-      >
-        <VTooltip
-          v-for="(filter, index) in dashboard.filters"
-          :key="index"
-          v-show="filter !== dashboard.filters[dashboard.filters.length]"
-          :placements="['right-start']"
-        >
-          <button
-            @click="dashBoardStore.setCurrentFilter(filter)"
-            type="button"
-            :class="[
-              'px-2 py-1 mr-2 border border-foreground text-foreground rounded-sm transition duration-300 hover:bg-primary hover:text-primary-foreground focus:outline-none',
-              { 'bg-primary text-primary-foreground': dashboard.currentFilter === filter },
-            ]"
-          >
-            {{ filter }}
-          </button>
-          <template #popper>{{ dashBoardStore.filterToolTip(filter) }}</template>
-        </VTooltip>
-
+    <section class="mb-8">
+      <div class="mb-3 flex items-center justify-between">
+        <h2 class="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          Resource Filters
+        </h2>
         <button
-          @click="showModal = true"
-          class="ml-4 mr-1 px-2 py-1 border border-border text-muted-foreground rounded-sm transition duration-300 hover:bg-muted hover:text-primary-foreground focus:outline-none"
+          type="button"
+          class="inline-flex items-center gap-2 rounded-md border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground transition hover:border-primary/50 hover:text-primary"
+          @click="toggleFilters"
         >
-          {{ dashboard.filterRange.from }} - {{ dashboard.filterRange.to }}
+          <span>{{ dashboard.showFilters ? "Hide Filters" : "Show Filters" }}</span>
+          <svg
+            class="h-3.5 w-3.5 transition-transform duration-300"
+            :class="{ 'rotate-180': dashboard.showFilters }"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+              clip-rule="evenodd"
+            />
+          </svg>
         </button>
       </div>
+
+      <Transition name="filters-slide">
+        <div
+          v-if="dashboard.showFilters"
+          class="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card/60 p-3"
+        >
+          <VTooltip
+            v-for="(filter, index) in dashboard.filters"
+            :key="index"
+            v-show="filter !== dashboard.filters[dashboard.filters.length]"
+            :placements="['right-start']"
+          >
+            <button
+              @click="dashBoardStore.setCurrentFilter(filter)"
+              type="button"
+              :class="[
+                'rounded-sm border px-2 py-1 text-foreground transition duration-300 focus:outline-none',
+                dashboard.currentFilter === filter
+                  ? 'border-primary bg-primary text-primary-foreground'
+                  : 'border-foreground hover:bg-primary hover:text-primary-foreground',
+              ]"
+            >
+              {{ filter }}
+            </button>
+            <template #popper>{{ dashBoardStore.filterToolTip(filter) }}</template>
+          </VTooltip>
+
+          <button
+            @click="showModal = true"
+            class="ml-auto rounded-sm border border-border px-2 py-1 text-muted-foreground transition duration-300 hover:bg-muted hover:text-primary-foreground focus:outline-none"
+          >
+            {{ dashboard.filterRange.from }} - {{ dashboard.filterRange.to }}
+          </button>
+        </div>
+      </Transition>
     </section>
 
     <!-- Loading State -->
@@ -280,5 +313,15 @@ const resetUserMatrix = () => {
 </template>
 
 <style lang="postcss">
-/* Component-specific styles can be added here */
+.filters-slide-enter-active,
+.filters-slide-leave-active {
+  transition: all 0.28s ease;
+  transform-origin: top;
+}
+
+.filters-slide-enter-from,
+.filters-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-10px) scaleY(0.96);
+}
 </style>

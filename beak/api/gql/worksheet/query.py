@@ -13,9 +13,9 @@ from beak.api.gql.worksheet.types import (
     WorkSheetTemplateType,
     WorkSheetType,
 )
-from beak.apps.guard import FAction, FObject
-from beak.apps.user.caches import get_current_user_preferences
-from beak.apps.worksheet.services import WorkSheetService, WorkSheetTemplateService
+from beak.modules.core.guard import FAction, FObject
+from beak.modules.core.identity.caches import get_current_user_preferences
+from beak.modules.core.worksheet.services import WorkSheetService, WorkSheetTemplateService
 from beak.utils import has_value_or_is_truthy
 
 logging.basicConfig(level=logging.INFO)

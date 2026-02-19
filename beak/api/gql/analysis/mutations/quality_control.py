@@ -9,23 +9,23 @@ from beak.api.gql.analysis.types import results as r_types
 from beak.api.gql.auth import auth_from_info
 from beak.api.gql.permissions import IsAuthenticated
 from beak.api.gql.types import OperationError
-from beak.apps.analysis import schemas
-from beak.apps.analysis.entities.analysis import Sample
-from beak.apps.analysis.entities.qc import QCSet
-from beak.apps.analysis.enum import ResultState, SampleState
-from beak.apps.analysis.services.analysis import (
+from beak.modules.core.analysis import schemas
+from beak.modules.core.analysis.entities.analysis import Sample
+from beak.modules.core.analysis.entities.qc import QCSet
+from beak.modules.core.analysis.enum import ResultState, SampleState
+from beak.modules.core.analysis.services.analysis import (
     AnalysisService,
     ProfileService,
     SampleService,
 )
-from beak.apps.analysis.services.quality_control import (
+from beak.modules.core.analysis.services.quality_control import (
     QCLevelService,
     QCSetService,
     QCTemplateService,
 )
-from beak.apps.analysis.services.result import AnalysisResultService
-from beak.apps.analysis.utils import get_qc_sample_type
-from beak.apps.setup.services import DepartmentService
+from beak.modules.core.analysis.services.result import AnalysisResultService
+from beak.modules.core.analysis.utils import get_qc_sample_type
+from beak.modules.core.setup.services import DepartmentService
 from beak.utils import get_passed_args
 
 logging.basicConfig(level=logging.INFO)

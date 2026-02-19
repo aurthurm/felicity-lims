@@ -14,8 +14,8 @@ from beak.api.gql.reflex.types import (
 )
 from beak.api.gql.types import OperationError
 from beak.api.gql.types.generic import DeletedItem, DeleteResponse
-from beak.apps.reflex import schemas
-from beak.apps.reflex.services import (
+from beak.modules.core.reflex import schemas
+from beak.modules.core.reflex.services import (
     ReflexRuleService,
     ReflexTriggerService,
     ReflexDecisionService,
@@ -25,7 +25,7 @@ from beak.apps.reflex.services import (
     ReflexFinalizeAnalysisService,
     ReflexDecisionExecutionService,
 )
-from beak.apps.reflex.entities import ReflexDecision, ReflexTrigger
+from beak.modules.core.reflex.entities import ReflexDecision, ReflexTrigger
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -199,7 +199,7 @@ class ReflexRuleMutations:
             trigger_uid: str, analyses: list[str], session=None
     ) -> None:
         """Ensure reflex trigger analysis links match the provided list."""
-        from beak.apps.reflex.entities import reflex_trigger_analysis
+        from beak.modules.core.reflex.entities import reflex_trigger_analysis
 
         await ReflexTriggerService().table_delete(
             table=reflex_trigger_analysis,
@@ -362,7 +362,7 @@ class ReflexRuleMutations:
         analyses = [uid for uid in payload.analyses if uid] if payload.analyses else []
 
         if analyses:
-            from beak.apps.reflex.entities import reflex_trigger_analysis
+            from beak.modules.core.reflex.entities import reflex_trigger_analysis
 
             await ReflexTriggerService().repository.table_insert(
                 table=reflex_trigger_analysis,
@@ -584,7 +584,7 @@ class ReflexRuleMutations:
         trigger = await ReflexTriggerService().update(trigger.uid, obj_in)
 
         if payload.analyses is not None:
-            from beak.apps.reflex.entities import reflex_trigger_analysis
+            from beak.modules.core.reflex.entities import reflex_trigger_analysis
 
             await ReflexTriggerService().table_delete(
                 table=reflex_trigger_analysis, reflex_trigger_uid=trigger.uid
@@ -623,7 +623,7 @@ class ReflexRuleMutations:
                     decision.uid, session=session
                 )
 
-            from beak.apps.reflex.entities import reflex_trigger_analysis
+            from beak.modules.core.reflex.entities import reflex_trigger_analysis
 
             await ReflexTriggerService().table_delete(
                 table=reflex_trigger_analysis,
@@ -890,7 +890,7 @@ class ReflexRuleMutations:
                         await ReflexRuleMutations._delete_reflex_decision_tree(
                             decision_uid, session=session
                         )
-                    from beak.apps.reflex.entities import reflex_trigger_analysis
+                    from beak.modules.core.reflex.entities import reflex_trigger_analysis
 
                     await ReflexTriggerService().table_delete(
                         table=reflex_trigger_analysis,

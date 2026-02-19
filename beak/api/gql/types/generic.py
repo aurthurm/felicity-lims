@@ -5,7 +5,7 @@ from typing import Any, Generic, NewType, TypeVar
 
 import strawberry
 
-from beak.apps.common.utils.serializer import marshaller
+from beak.modules.core.common.utils.serializer import marshaller
 
 T = TypeVar("T")
 

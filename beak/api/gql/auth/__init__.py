@@ -1,6 +1,6 @@
 import logging
 
-from beak.apps.user.entities import User
+from beak.modules.core.identity.entities import User
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

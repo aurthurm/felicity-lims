@@ -2,11 +2,11 @@ from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.security import OAuth2PasswordBearer
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
-from beak.apps.platform.enum import PlatformRole
-from beak.apps.platform.iam_service import PlatformIAMService
-from beak.apps.platform.services import TenantRegistryService, TenantProvisioningService
+from beak.modules.platform.enum import PlatformRole
+from beak.modules.platform.iam_service import PlatformIAMService
+from beak.modules.platform.services import TenantRegistryService, TenantProvisioningService
 
 platform = APIRouter(tags=["platform"], prefix="/platform")
 platform_oauth2 = OAuth2PasswordBearer(
@@ -30,6 +30,8 @@ class ProvisionTenantPayload(BaseModel):
     slug: str
     admin_email: EmailStr | None = None
     initial_lab_name: str | None = None
+    primary_industry: str = "clinical"
+    enabled_modules: list[str] | None = None
 
 
 class AddLaboratoryPayload(BaseModel):
@@ -43,6 +45,14 @@ class TenantSummary(BaseModel):
     slug: str
     schema_name: str
     status: str
+    primary_industry: str = "clinical"
+    enabled_modules: list[str] = Field(default_factory=list)
+
+
+class TenantModulesResponse(BaseModel):
+    tenant_slug: str
+    primary_industry: str
+    enabled_modules: list[str]
 
 
 async def get_current_platform_user(
@@ -108,6 +118,8 @@ async def provision_tenant(
             slug=payload.slug,
             admin_email=payload.admin_email,
             initial_lab_name=payload.initial_lab_name,
+            primary_industry=payload.primary_industry,
+            enabled_modules=payload.enabled_modules,
         )
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
@@ -138,12 +150,19 @@ async def list_tenants(
 async def migrate_tenant(
     slug: str,
     current_user: Annotated[dict, Depends(get_current_platform_user)],
+    module_scope: str | None = Query(None, alias="module"),
 ) -> dict[str, Any]:
     _require_platform_roles(
         current_user,
         allowed={PlatformRole.ADMINISTRATOR, PlatformRole.PROVISIONER},
     )
-    return await TenantProvisioningService().migrate(slug=slug)
+    try:
+        return await TenantProvisioningService().migrate(
+            slug=slug,
+            module_scope=module_scope,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
 
 
 @platform.post("/tenants/{slug}/activate")
@@ -187,3 +206,61 @@ async def cleanup_failed_tenants(
         allowed={PlatformRole.ADMINISTRATOR, PlatformRole.PROVISIONER},
     )
     return await TenantProvisioningService().cleanup_failed(slug=slug, drop_schema=drop_schema)
+
+
+@platform.get("/tenants/{slug}/modules", response_model=TenantModulesResponse)
+async def tenant_modules(
+    slug: str,
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+) -> dict[str, Any]:
+    _require_platform_roles(
+        current_user,
+        allowed={
+            PlatformRole.ADMINISTRATOR,
+            PlatformRole.PROVISIONER,
+            PlatformRole.SUPPORT,
+            PlatformRole.BILLING,
+        },
+    )
+    try:
+        return await TenantProvisioningService().list_modules(slug=slug)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+
+@platform.post("/tenants/{slug}/modules/{module_id}:enable")
+async def enable_module(
+    slug: str,
+    module_id: str,
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+) -> dict[str, Any]:
+    _require_platform_roles(
+        current_user,
+        allowed={PlatformRole.ADMINISTRATOR, PlatformRole.PROVISIONER},
+    )
+    try:
+        return await TenantProvisioningService().enable_module(
+            slug=slug,
+            module_id=module_id,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+
+@platform.post("/tenants/{slug}/modules/{module_id}:disable")
+async def disable_module(
+    slug: str,
+    module_id: str,
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+) -> dict[str, Any]:
+    _require_platform_roles(
+        current_user,
+        allowed={PlatformRole.ADMINISTRATOR, PlatformRole.PROVISIONER},
+    )
+    try:
+        return await TenantProvisioningService().disable_module(
+            slug=slug,
+            module_id=module_id,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))

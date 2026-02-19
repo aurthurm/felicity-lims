@@ -6,7 +6,7 @@ from beak.api.gql.analysis.types.analysis import SampleType
 from beak.api.gql.setup.types import LaboratoryType
 from beak.api.gql.types import BytesScalar, JSONScalar, PageInfo
 from beak.api.gql.user.types import UserType
-from beak.apps.shipment.services import ShippedSampleService
+from beak.modules.core.shipment.services import ShippedSampleService
 
 
 @strawberry.type

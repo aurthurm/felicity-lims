@@ -5,9 +5,9 @@ from strawberry.permission import PermissionExtension
 
 from beak.api.gql.noticeboard.types import NoticeType
 from beak.api.gql.permissions import IsAuthenticated, HasPermission
-from beak.apps.guard import FAction, FObject
-from beak.apps.noticeboard.services import NoticeService
-from beak.apps.user.caches import get_current_user_preferences
+from beak.modules.core.guard import FAction, FObject
+from beak.modules.core.noticeboard.services import NoticeService
+from beak.modules.core.identity.caches import get_current_user_preferences
 from beak.core.dtz import timenow_dt
 
 

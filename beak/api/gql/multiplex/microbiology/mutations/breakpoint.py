@@ -12,7 +12,7 @@ from beak.api.gql.multiplex.microbiology import (
 )
 from beak.api.gql.permissions import IsAuthenticated
 from beak.api.gql.types import OperationError
-from beak.apps.multiplex.microbiology.schemas import (
+from beak.modules.clinical.microbiology.schemas import (
     AbxTestMethodCreate,
     AbxTestMethodUpdate,
     AbxBreakpointTypeCreate,
@@ -24,7 +24,7 @@ from beak.apps.multiplex.microbiology.schemas import (
     AbxBreakpointCreate,
     AbxBreakpointUpdate,
 )
-from beak.apps.multiplex.microbiology.services import (
+from beak.modules.clinical.microbiology.services import (
     AbxTestMethodService,
     AbxBreakpointTypeService,
     AbxHostService,

@@ -13,9 +13,9 @@ from beak.api.gql.patient.types import PatientType
 from beak.api.gql.setup.types import LaboratoryType
 from beak.api.gql.types import BytesScalar, JSONScalar, PageInfo
 from beak.api.gql.user.types import UserType
-from beak.apps.analysis.services.analysis import AnalysisRequestService
-from beak.apps.billing.entities import test_bill_item
-from beak.apps.billing.services import TestBillService, VoucherCodeService
+from beak.modules.core.analysis.services.analysis import AnalysisRequestService
+from beak.modules.core.billing.entities import test_bill_item
+from beak.modules.core.billing.services import TestBillService, VoucherCodeService
 
 
 @strawberry.type

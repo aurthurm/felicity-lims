@@ -14,7 +14,7 @@ Inventory management handles stock, transactions, adjustments, orders, and reque
 
 ## Architecture
 
-- **Entities**: `beak/apps/inventory/` — Stock, Product, Transaction, Order, etc.
+- **Entities**: `beak/modules/core/inventory/` — Stock, Product, Transaction, Order, etc.
 - **GraphQL**: `beak/api/gql/inventory/` — Queries and mutations
 
 ## Integration

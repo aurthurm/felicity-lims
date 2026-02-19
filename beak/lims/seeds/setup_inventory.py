@@ -1,7 +1,7 @@
 import logging
 
-from beak.apps.inventory import schemas
-from beak.apps.inventory.services import (
+from beak.modules.core.inventory import schemas
+from beak.modules.core.inventory.services import (
     HazardService,
     StockCategoryService,
     StockUnitService,

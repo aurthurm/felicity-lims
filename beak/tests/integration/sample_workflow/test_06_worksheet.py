@@ -2,7 +2,7 @@ import logging
 
 import pytest
 
-from beak.apps.worksheet.tasks import populate_worksheet_plate
+from beak.modules.core.worksheet.tasks import populate_worksheet_plate
 from beak.core.config import settings
 
 logging.basicConfig(level=logging.INFO)

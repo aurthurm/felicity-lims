@@ -17,20 +17,20 @@ from beak.api.gql.types import (
     OperationError,
     OperationSuccess,
 )
-from beak.apps.analysis import schemas
-from beak.apps.analysis.entities.analysis import (
+from beak.modules.core.analysis import schemas
+from beak.modules.core.analysis.entities.analysis import (
     sample_analysis,
     sample_profile,
     sample_rejection_reason,
 )
-from beak.apps.analysis.enum import (
+from beak.modules.core.analysis.enum import (
     ResultState,
     SamplePriority,
     SampleRelationshipType,
     SampleState,
 )
-from beak.apps.analysis.schemas import ClinicalDataCreate
-from beak.apps.analysis.services.analysis import (
+from beak.modules.core.analysis.schemas import ClinicalDataCreate
+from beak.modules.core.analysis.services.analysis import (
     AnalysisRequestService,
     AnalysisService,
     AnalysisTemplateService,
@@ -41,25 +41,25 @@ from beak.apps.analysis.services.analysis import (
     SampleTypeService,
     ClinicalDataService,
 )
-from beak.apps.analysis.services.result import AnalysisResultService
-from beak.apps.analysis.workflow.analysis_result import AnalysisResultWorkFlow
-from beak.apps.analysis.workflow.sample import SampleWorkFlow
-from beak.apps.billing.utils import bill_order
-from beak.apps.client.services import ClientService
-from beak.apps.guard import FAction, FObject
-from beak.apps.impress.sample.tasks import impress_results
-from beak.apps.iol.redis import task_guard
-from beak.apps.iol.redis.enum import TrackableObject
-from beak.apps.job import schemas as job_schemas
-from beak.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
-from beak.apps.job.services import JobService
-from beak.apps.multiplex.microbiology.schemas import AbxOrganismResultCreate
-from beak.apps.multiplex.microbiology.services import AbxOrganismResultService
-from beak.apps.notification.enum import NotificationObject
-from beak.apps.notification.services import ActivityStreamService
-from beak.apps.patient.services import PatientService
-from beak.apps.reflex.services import ReflexEngineService
-from beak.apps.setup.caches import get_laboratory_setting
+from beak.modules.core.analysis.services.result import AnalysisResultService
+from beak.modules.core.analysis.workflow.analysis_result import AnalysisResultWorkFlow
+from beak.modules.core.analysis.workflow.sample import SampleWorkFlow
+from beak.modules.core.billing.utils import bill_order
+from beak.modules.core.client.services import ClientService
+from beak.modules.core.guard import FAction, FObject
+from beak.modules.core.impress.sample.tasks import impress_results
+from beak.modules.core.iol.redis import task_guard
+from beak.modules.core.iol.redis.enum import TrackableObject
+from beak.modules.core.job import schemas as job_schemas
+from beak.modules.core.job.enum import JobAction, JobCategory, JobPriority, JobState
+from beak.modules.core.job.services import JobService
+from beak.modules.clinical.microbiology.schemas import AbxOrganismResultCreate
+from beak.modules.clinical.microbiology.services import AbxOrganismResultService
+from beak.modules.core.notification.enum import NotificationObject
+from beak.modules.core.notification.services import ActivityStreamService
+from beak.modules.clinical.patient.services import PatientService
+from beak.modules.core.reflex.services import ReflexEngineService
+from beak.modules.core.setup.caches import get_laboratory_setting
 from beak.core.config import settings
 from beak.core.dtz import timenow_dt
 

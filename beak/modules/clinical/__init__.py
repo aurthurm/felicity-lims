@@ -1,0 +1,1 @@
+"""Clinical industry module package."""

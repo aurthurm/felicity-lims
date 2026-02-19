@@ -1,8 +1,8 @@
 import logging
 
-from beak.apps.guard.definitions import FGroup
-from beak.apps.user import schemas
-from beak.apps.user.services import GroupService, UserPreferenceService, UserService
+from beak.modules.core.guard.definitions import FGroup
+from beak.modules.core.identity import schemas
+from beak.modules.core.identity.services import GroupService, UserPreferenceService, UserService
 from beak.core.config import get_settings
 
 settings = get_settings()

@@ -8,9 +8,9 @@ from beak.api.gql.auth import auth_from_info
 from beak.api.gql.messaging.types import MessageType
 from beak.api.gql.permissions import IsAuthenticated
 from beak.api.gql.types import DeletedItem, DeleteResponse, OperationError
-from beak.apps.messaging import schemas
-from beak.apps.messaging.services import MessageService, MessageThreadService
-from beak.apps.user.services import UserService
+from beak.modules.core.messaging import schemas
+from beak.modules.core.messaging.services import MessageService, MessageThreadService
+from beak.modules.core.identity.services import UserService
 from beak.utils import get_passed_args
 
 logging.basicConfig(level=logging.INFO)

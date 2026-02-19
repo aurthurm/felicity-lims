@@ -7,9 +7,9 @@ from beak.api.gql.auth import auth_from_info
 from beak.api.gql.document import types, inputs, responses
 from beak.api.gql.permissions import IsAuthenticated, HasPermission
 from beak.api.gql.types import OperationError
-from beak.apps.document import schemas
-from beak.apps.document.enum import DocumentState
-from beak.apps.document.services import (
+from beak.modules.core.document import schemas
+from beak.modules.core.document.enum import DocumentState
+from beak.modules.core.document.services import (
     DocumentCategoryService,
     DocumentTagService,
     DocumentService,
@@ -22,9 +22,9 @@ from beak.apps.document.services import (
     DocumentSubscriptionService,
     DocumentAuditService,
 )
-from beak.apps.document.utils import get_thumbnail
-from beak.apps.guard import FAction, FObject
-from beak.apps.setup.services import DepartmentService
+from beak.modules.core.document.utils import get_thumbnail
+from beak.modules.core.guard import FAction, FObject
+from beak.modules.core.setup.services import DepartmentService
 from beak.core.dtz import timenow_dt
 
 logging.basicConfig(level=logging.INFO)
@@ -1275,7 +1275,7 @@ class DocumentMutations:
             )
 
         # Check if user exists
-        from beak.apps.user.services import UserService
+        from beak.modules.core.identity.services import UserService
 
         user = await UserService().get(uid=payload.user)
         if not user:
@@ -1330,7 +1330,7 @@ class DocumentMutations:
                 )
 
         if payload.user and payload.user != subscription.user_uid:
-            from beak.apps.user.services import UserService
+            from beak.modules.core.identity.services import UserService
 
             user = await UserService().get(uid=payload.user)
             if not user:

@@ -2,10 +2,10 @@ from unittest import mock
 
 import pytest
 
-from beak.apps.exceptions import AlreadyExistsError, ValidationError
-from beak.apps.user.repository import UserRepository
-from beak.apps.user.schemas import User, UserCreate
-from beak.apps.user.services import UserService
+from beak.modules.core.exceptions import AlreadyExistsError, ValidationError
+from beak.modules.core.identity.repository import UserRepository
+from beak.modules.core.identity.schemas import User, UserCreate
+from beak.modules.core.identity.services import UserService
 
 
 @pytest.fixture

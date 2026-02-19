@@ -7,8 +7,8 @@ from starlette.datastructures import Headers
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.types import ASGIApp
 
-from beak.apps.app.schemas import APPActivityLogCreate
-from beak.apps.app.services import APPActivityLogService
+from beak.modules.core.app.schemas import APPActivityLogCreate
+from beak.modules.core.app.services import APPActivityLogService
 from beak.core.tenant_context import get_tenant_context
 
 

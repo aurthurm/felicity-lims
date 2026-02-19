@@ -55,8 +55,8 @@ This document details the implementation of HIPAA-compliant data-at-rest encrypt
 
 #### 3. Searchable Encryption
 - **Files:** 
-  - `beak/apps/patient/search_indices.py` (Index entities)
-  - `beak/apps/patient/search_service.py` (Search service)
+  - `beak/modules/clinical/patient/search_indices.py` (Index entities)
+  - `beak/modules/clinical/patient/search_service.py` (Search service)
 - **Technology:** HMAC-SHA256 cryptographic hashing
 - **Features:** Partial matching, phonetic search, phone normalization, date indexing
 
@@ -66,7 +66,7 @@ This document details the implementation of HIPAA-compliant data-at-rest encrypt
 
 ### Encrypted Fields (PII/PHI)
 
-#### Patient Entity (`beak/apps/patient/entities.py`)
+#### Patient Entity (`beak/modules/clinical/patient/entities.py`)
 | Field | Type | Classification | Encryption Type |
 |-------|------|---------------|----------------|
 | `first_name` | EncryptedPII(500) | PII | AES-256 |
@@ -82,7 +82,7 @@ This document details the implementation of HIPAA-compliant data-at-rest encrypt
 |-------|------|---------------|----------------|
 | `value` | EncryptedPII(500) | PII | AES-256 |
 
-#### Analysis Result Entity (`beak/apps/analysis/entities/results.py`)
+#### Analysis Result Entity (`beak/modules/core/analysis/entities/results.py`)
 | Field | Type | Classification | Encryption Type |
 |-------|------|---------------|----------------|
 | `result` | EncryptedPHI(1000) | PHI | AES-256 |
@@ -93,7 +93,7 @@ This document details the implementation of HIPAA-compliant data-at-rest encrypt
 | `before` | EncryptedPHI(1000) | PHI | AES-256 |
 | `after` | EncryptedPHI(1000) | PHI | AES-256 |
 
-#### Clinical Data Entity (`beak/apps/analysis/entities/analysis.py`)
+#### Clinical Data Entity (`beak/modules/core/analysis/entities/analysis.py`)
 | Field | Type | Classification | Encryption Type |
 |-------|------|---------------|----------------|
 | `symptoms_raw` | EncryptedPHI(2000) | PHI | AES-256 |
@@ -211,7 +211,7 @@ CREATE INDEX idx_date_full ON date_search_index(field_name, date_hash);
 
 ### Repository Enhancements
 
-#### PatientRepository (`beak/apps/patient/repository.py`)
+#### PatientRepository (`beak/modules/clinical/patient/repository.py`)
 **New Methods:**
 - `search_by_encrypted_fields()` - Memory-based encrypted search
 - `search_by_encrypted_indices()` - High-performance index-based search
@@ -224,14 +224,14 @@ CREATE INDEX idx_date_full ON date_search_index(field_name, date_hash);
 **New Methods:**
 - `find_by_encrypted_value()` - Search for identification by encrypted value
 
-#### AnalysisResultRepository (`beak/apps/analysis/repository/results.py`)
+#### AnalysisResultRepository (`beak/modules/core/analysis/repository/results.py`)
 **New Methods:**
 - `search_by_encrypted_result()` - Search by encrypted result values
 - `find_by_exact_encrypted_result()` - Exact result value matching
 
 ### Service Enhancements
 
-#### PatientService (`beak/apps/patient/services.py`)
+#### PatientService (`beak/modules/clinical/patient/services.py`)
 **Enhanced Methods:**
 - `search()` - Updated to handle encrypted fields
 - `create()` - Automatic index creation
@@ -245,7 +245,7 @@ CREATE INDEX idx_date_full ON date_search_index(field_name, date_hash);
 **New Methods:**
 - `find_by_identification_value()` - HIPAA-compliant identification search
 
-#### AnalysisResultService (`beak/apps/analysis/services/result.py`)
+#### AnalysisResultService (`beak/modules/core/analysis/services/result.py`)
 **New Methods:**
 - `hipaa_compliant_search_by_result()` - Encrypted result searching
 - `find_by_exact_result_value()` - Exact encrypted result matching

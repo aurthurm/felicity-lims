@@ -5,8 +5,8 @@ from strawberry.permission import PermissionExtension
 
 from beak.api.gql.permissions import IsAuthenticated, HasPermission
 from beak.api.gql.storage import types
-from beak.apps.guard import FAction, FObject
-from beak.apps.storage.services import (
+from beak.modules.core.guard import FAction, FObject
+from beak.modules.core.storage.services import (
     StorageContainerService,
     StorageLocationService,
     StorageSectionService,

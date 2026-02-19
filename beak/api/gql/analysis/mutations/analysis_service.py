@@ -7,18 +7,18 @@ from beak.api.gql.analysis.types import analysis as a_types
 from beak.api.gql.auth import auth_from_info
 from beak.api.gql.permissions import IsAuthenticated
 from beak.api.gql.types import OperationError
-from beak.apps.analysis import schemas, utils
-from beak.apps.analysis.entities.analysis import (
+from beak.modules.core.analysis import schemas, utils
+from beak.modules.core.analysis.entities.analysis import (
     analysis_method,
     analysis_sample_type,
 )
-from beak.apps.analysis.services.analysis import (
+from beak.modules.core.analysis.services.analysis import (
     AnalysisCodingService,
     AnalysisService,
     ProfileService,
     SampleTypeService,
 )
-from beak.apps.instrument.services import MethodService
+from beak.modules.core.instrument.services import MethodService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

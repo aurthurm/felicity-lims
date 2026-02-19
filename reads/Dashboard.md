@@ -34,7 +34,7 @@ Metrics include: total samples, late vs not late, process average, avg extra day
 ## Architecture
 
 - **GraphQL**: `beak/api/gql/analytics/query/dashboard.py`
-- **Analytics**: `beak/apps/analytics/` — EntityAnalyticsInit
+- **Analytics**: `beak/modules/core/analytics/` — EntityAnalyticsInit
 - **Permissions**: Requires `IsAuthenticated` and `HasPermission(FAction.READ, FObject.ANALYTICS)`
 
 ## Frontend

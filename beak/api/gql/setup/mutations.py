@@ -17,9 +17,9 @@ from beak.api.gql.setup.types import (
 from beak.api.gql.setup.types.department import DepartmentType
 from beak.api.gql.setup.types.setup import OrganizationType, OrganizationSettingType
 from beak.api.gql.types import OperationError
-from beak.apps.setup import schemas
-from beak.apps.setup.schemas import LaboratorySettingCreate
-from beak.apps.setup.services import (
+from beak.modules.core.setup import schemas
+from beak.modules.core.setup.schemas import LaboratorySettingCreate
+from beak.modules.core.setup.services import (
     CountryService,
     DepartmentService,
     DistrictService,
@@ -32,7 +32,7 @@ from beak.apps.setup.services import (
     OrganizationService,
     OrganizationSettingService,
 )
-from beak.apps.billing.enum import PaymentStatus
+from beak.modules.core.billing.enum import PaymentStatus
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

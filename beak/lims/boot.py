@@ -22,17 +22,18 @@ from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_P
 from beak.api.deps import get_gql_context
 from beak.api.gql.schema import schema
 from beak.api.rest.api_v1 import api
-from beak.apps.common.channel import broadcast
-from beak.apps.events import observe_events
-from beak.apps.iol.redis.client import create_redis_client
-from beak.apps.job.sched import beak_workforce_init
-from beak.apps.platform.services import TenantRegistryService
+from beak.modules.core.common.channel import broadcast
+from beak.modules.events import observe_events
+from beak.modules.core.iol.redis.client import create_redis_client
+from beak.modules.core.job.sched import beak_workforce_init
+from beak.modules.platform.services import TenantRegistryService
 from beak.core.config import settings
 from beak.database.session import async_engine
 from beak.database.tenant_engine_registry import get_tenant_session_factory
 from beak.lims.gql_router import FelGraphQLRouter
 from beak.lims.middleware import TenantContextMiddleware
 from beak.lims.middleware.appactivity import APIActivityLogMiddleware
+from beak.lims.middleware.module_guard import GraphQLModuleGuardMiddleware
 from beak.lims.middleware.ratelimit import RateLimitMiddleware
 from beak.lims.seeds import initialize_beak
 from beak.logconf import LOGGING_CONFIG
@@ -88,6 +89,7 @@ def register_middlewares(app: FastAPI) -> None:
     )
     # Add tenant context middleware - should be early in the chain
     app.add_middleware(TenantContextMiddleware)  # noqa
+    app.add_middleware(GraphQLModuleGuardMiddleware)  # noqa
     # app.add_middleware(RequireTenantMiddleware)  # noqa
     app.add_middleware(APIActivityLogMiddleware)  # noqa
     if redis_client and settings.RATE_LIMIT:

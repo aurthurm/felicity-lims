@@ -4,11 +4,11 @@ import typing
 from strawberry.permission import BasePermission
 
 from beak.api.deps import Info
-from beak.apps.analysis.permissions import (
+from beak.modules.core.analysis.permissions import (
     check_result_verification,
     check_sample_verification,
 )
-from beak.apps.guard import has_perm, FAction, FObject
+from beak.modules.core.guard import has_perm, FAction, FObject
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -9,7 +9,7 @@ from beak.api.gql.analysis.types import AnalysisRequestType
 from beak.api.gql.billing import types
 from beak.api.gql.permissions import IsAuthenticated, HasPermission
 from beak.api.gql.types import BytesScalar, PageInfo
-from beak.apps.billing.services import (
+from beak.modules.core.billing.services import (
     AnalysisDiscountService,
     AnalysisPriceService,
     ProfileDiscountService,
@@ -20,8 +20,8 @@ from beak.apps.billing.services import (
     VoucherCodeService,
     VoucherService,
 )
-from beak.apps.guard import FAction, FObject
-from beak.apps.impress.invoicing.utils import impress_invoice
+from beak.modules.core.guard import FAction, FObject
+from beak.modules.core.impress.invoicing.utils import impress_invoice
 from beak.utils import has_value_or_is_truthy
 
 

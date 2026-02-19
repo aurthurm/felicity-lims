@@ -2,13 +2,13 @@ import logging
 
 import pandas as pd
 
-from beak.apps.analysis import utils
-from beak.apps.analysis.schemas import AnalysisCreate, AnalysisCategoryCreate
-from beak.apps.analysis.services.analysis import (
+from beak.modules.core.analysis import utils
+from beak.modules.core.analysis.schemas import AnalysisCreate, AnalysisCategoryCreate
+from beak.modules.core.analysis.services.analysis import (
     AnalysisService,
     AnalysisCategoryService,
 )
-from beak.apps.multiplex.microbiology.schemas import (
+from beak.modules.clinical.microbiology.schemas import (
     AbxGuidelineCreate,
     AbxAntibioticCreate,
     AbxAntibioticGuidelineCreate,
@@ -31,7 +31,7 @@ from beak.apps.multiplex.microbiology.schemas import (
     AbxOrganismSerotypeCreate,
     AbxGuidelineYearCreate,
 )
-from beak.apps.multiplex.microbiology.services import (
+from beak.modules.clinical.microbiology.services import (
     AbxGuidelineService,
     AbxAntibioticService,
     AbxAntibioticGuidelineService,

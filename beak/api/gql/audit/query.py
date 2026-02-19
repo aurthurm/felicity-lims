@@ -4,7 +4,7 @@ import strawberry  # noqa
 
 from beak.api.gql.audit.types import AuditLogType
 from beak.api.gql.permissions import IsAuthenticated
-from beak.apps.auditlog.services import AuditLogService
+from beak.modules.core.auditlog.services import AuditLogService
 from beak.core.config import settings
 from beak.database.mongo import MongoService, MongoCollection
 

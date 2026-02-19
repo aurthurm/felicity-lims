@@ -11,15 +11,15 @@ from beak.api.gql.shipment import types
 from beak.api.gql.shipment.permissions import CanActionShipment
 from beak.api.gql.shipment.types import ShipmentType
 from beak.api.gql.types import OperationError
-from beak.apps.guard import FAction, FObject
-from beak.apps.idsequencer.service import IdSequenceService
-from beak.apps.job import schemas as job_schemas
-from beak.apps.job.enum import JobAction, JobCategory, JobPriority, JobState
-from beak.apps.job.services import JobService
-from beak.apps.shipment import schemas
-from beak.apps.shipment.enum import ShipmentState
-from beak.apps.shipment.services import ReferralLaboratoryService, ShipmentService
-from beak.apps.shipment.utils import (
+from beak.modules.core.guard import FAction, FObject
+from beak.modules.core.idsequencer.service import IdSequenceService
+from beak.modules.core.job import schemas as job_schemas
+from beak.modules.core.job.enum import JobAction, JobCategory, JobPriority, JobState
+from beak.modules.core.job.services import JobService
+from beak.modules.core.shipment import schemas
+from beak.modules.core.shipment.enum import ShipmentState
+from beak.modules.core.shipment.services import ReferralLaboratoryService, ShipmentService
+from beak.modules.core.shipment.utils import (
     action_shipment,
     shipment_recall,
     shipment_recover,

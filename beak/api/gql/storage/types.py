@@ -4,7 +4,7 @@ import strawberry  # noqa
 
 from beak.api.gql.setup.types import LaboratoryType
 from beak.api.gql.user.types import UserType
-from beak.apps.storage.services import (
+from beak.modules.core.storage.services import (
     StorageContainerService,
     StorageLocationService,
     StorageSectionService,

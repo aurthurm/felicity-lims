@@ -4,7 +4,7 @@ from typing import Optional, List
 import strawberry
 from strawberry.file_uploads import Upload
 
-from beak.apps.grind.enum import (
+from beak.modules.core.grind.enum import (
     PosterCategory,
     ErrandCategory,
     StampCategory,

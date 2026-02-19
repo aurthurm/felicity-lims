@@ -1,10 +1,10 @@
 import logging
 from uuid import uuid4
 
-from beak.apps.client import schemas as client_schemas
-from beak.apps.client.services import ClientContactService, ClientService
-from beak.apps.setup import schemas
-from beak.apps.setup.services import (
+from beak.modules.core.client import schemas as client_schemas
+from beak.modules.core.client.services import ClientContactService, ClientService
+from beak.modules.core.setup import schemas
+from beak.modules.core.setup.services import (
     CountryService,
     DepartmentService,
     DistrictService,

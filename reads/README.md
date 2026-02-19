@@ -38,6 +38,7 @@ This folder contains documentation for the Beak LIMS application covering archit
 
 | Document | Description |
 |----------|-------------|
+| [ModulePluginArchitecture.md](ModulePluginArchitecture.md) | Core vs industry module architecture, plugin registry, runtime guards, and module lifecycle |
 | [Deployment.md](Deployment.md) | General deployment and Docker setup |
 | [StyleGuide.md](StyleGuide.md) | Tailwind CSS and frontend styling guide |
 | [Performance.md](Performance.md) | Performance considerations and KPIs |

@@ -4,7 +4,7 @@ import strawberry  # noqa
 
 from beak.api.gql.messaging.types import MessageThreadType
 from beak.api.gql.permissions import IsAuthenticated
-from beak.apps.messaging.services import MessageThreadService
+from beak.modules.core.messaging.services import MessageThreadService
 
 
 @strawberry.type

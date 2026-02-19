@@ -8,9 +8,9 @@ from beak.api.gql.auth import auth_from_info
 from beak.api.gql.client.types import ClientContactType, ClientType
 from beak.api.gql.permissions import IsAuthenticated, HasPermission
 from beak.api.gql.types import DeletedItem, OperationError
-from beak.apps.client import schemas
-from beak.apps.client.services import ClientContactService, ClientService
-from beak.apps.guard import FAction, FObject
+from beak.modules.core.client import schemas
+from beak.modules.core.client.services import ClientContactService, ClientService
+from beak.modules.core.guard import FAction, FObject
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

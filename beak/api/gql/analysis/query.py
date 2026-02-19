@@ -11,8 +11,8 @@ from beak.api.gql.analysis.types import results as r_types
 from beak.api.gql.permissions import IsAuthenticated, HasPermission
 from beak.api.gql.types import PageInfo
 from beak.api.gql.types.generic import StrawberryMapper
-from beak.apps.analysis.enum import ResultState, SampleState
-from beak.apps.analysis.services.analysis import (
+from beak.modules.core.analysis.enum import ResultState, SampleState
+from beak.modules.core.analysis.services.analysis import (
     AnalysisCategoryService,
     AnalysisCodingService,
     AnalysisCorrectionFactorService,
@@ -33,19 +33,19 @@ from beak.apps.analysis.services.analysis import (
     SampleTypeService,
     SampleRelationshipService,
 )
-from beak.apps.analysis.services.quality_control import (
+from beak.modules.core.analysis.services.quality_control import (
     QCLevelService,
     QCSetService,
     QCTemplateService,
 )
-from beak.apps.analysis.services.result import (
+from beak.modules.core.analysis.services.result import (
     AnalysisResultService,
     ResultMutationService,
 )
-from beak.apps.analysis.utils import sample_search, get_qc_sample_type
-from beak.apps.guard import FAction, FObject
-from beak.apps.patient.services import PatientService
-from beak.apps.user.caches import get_current_user_preferences
+from beak.modules.core.analysis.utils import sample_search, get_qc_sample_type
+from beak.modules.core.guard import FAction, FObject
+from beak.modules.clinical.patient.services import PatientService
+from beak.modules.core.identity.caches import get_current_user_preferences
 from beak.database.session import async_session
 from beak.utils import has_value_or_is_truthy
 

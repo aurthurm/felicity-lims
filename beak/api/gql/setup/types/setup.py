@@ -4,11 +4,11 @@ import strawberry  # noqa
 
 from beak.api.gql.types import PageInfo
 from beak.api.gql.user.types import UserType
-from beak.apps.setup.services import (
+from beak.modules.core.setup.services import (
     LaboratorySettingService,
     OrganizationSettingService,
 )
-from beak.apps.billing.enum import PaymentStatus
+from beak.modules.core.billing.enum import PaymentStatus
 
 
 @strawberry.type

@@ -4,7 +4,7 @@ import strawberry  # noqa
 
 from beak.api.gql.notification.types import NotificationType
 from beak.api.gql.permissions import IsAuthenticated
-from beak.apps.notification.services import NotificationService
+from beak.modules.core.notification.services import NotificationService
 
 
 @strawberry.type

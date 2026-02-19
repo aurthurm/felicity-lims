@@ -6,19 +6,19 @@ from beak.api.gql.auth import auth_from_info
 from beak.api.gql.multiplex.microbiology import AbxAntibioticType, AbxGuidelineType
 from beak.api.gql.permissions import IsAuthenticated
 from beak.api.gql.types import OperationError, DeletedItem
-from beak.apps.multiplex.microbiology.entities import laboratory_antibiotics
-from beak.apps.multiplex.microbiology.schemas import (
+from beak.modules.clinical.microbiology.entities import laboratory_antibiotics
+from beak.modules.clinical.microbiology.schemas import (
     AbxGuidelineCreate,
     AbxGuidelineUpdate,
     AbxAntibioticCreate,
     AbxAntibioticUpdate,
 )
-from beak.apps.multiplex.microbiology.services import (
+from beak.modules.clinical.microbiology.services import (
     AbxAntibioticGuidelineService,
     AbxGuidelineService,
     AbxAntibioticService,
 )
-from beak.apps.setup.services import LaboratoryService
+from beak.modules.core.setup.services import LaboratoryService
 from beak.core.tenant_context import get_current_lab_uid
 
 logging.basicConfig(level=logging.INFO)

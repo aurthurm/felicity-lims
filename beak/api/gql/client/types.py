@@ -7,7 +7,7 @@ import strawberry  # noqa
 from beak.api.gql.setup.types import DistrictType, ProvinceType, LaboratoryType
 from beak.api.gql.types import PageInfo
 from beak.api.gql.user.types import UserType
-from beak.apps.client.services import ClientContactService
+from beak.modules.core.client.services import ClientContactService
 
 
 @strawberry.type

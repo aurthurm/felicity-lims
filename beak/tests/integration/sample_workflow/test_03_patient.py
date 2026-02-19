@@ -4,7 +4,7 @@ import random
 import pytest
 from faker import Faker
 
-from beak.apps.patient.enum import Sex
+from beak.modules.clinical.patient.enum import Sex
 
 fake_engine = Faker()
 

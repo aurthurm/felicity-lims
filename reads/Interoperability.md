@@ -14,7 +14,7 @@ Beak LIMS supports industry-standard protocols for instrument integration and he
 
 ### Instrument Interface Layer (IOL)
 
-- Located in `beak/apps/iol/`
+- Located in `beak/modules/core/iol/`
 - Driver mapping and analyzer interfaces
 - Message size limits (10 MB), timeouts (60s), checksum validation
 
@@ -32,4 +32,4 @@ Beak LIMS supports industry-standard protocols for instrument integration and he
 ## References
 
 - [integration_guide.md](../beak/api/gql/integration_guide.md)
-- [DRIVER_MAPPING.md](../beak/apps/iol/analyzer/DRIVER_MAPPING.md)
+- [DRIVER_MAPPING.md](../beak/modules/core/iol/analyzer/DRIVER_MAPPING.md)

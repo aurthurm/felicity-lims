@@ -474,7 +474,7 @@ if __name__ == "__main__":
 Create a compatibility layer that reads from both old and new columns during transition:
 
 ```python
-# File: beak/apps/patient/compatibility.py
+# File: beak/modules/clinical/patient/compatibility.py
 from typing import Optional
 from beak.utils.encryption import decrypt_pii
 
@@ -510,7 +510,7 @@ class PatientCompatibilityMixin:
 Update the Patient entity to use the compatibility layer:
 
 ```python
-# Update: beak/apps/patient/entities.py
+# Update: beak/modules/clinical/patient/entities.py
 from beak.apps.patient.compatibility import PatientCompatibilityMixin
 
 class Patient(BaseEntity, PatientCompatibilityMixin):
@@ -548,7 +548,7 @@ class Patient(BaseEntity, PatientCompatibilityMixin):
 Update services to prioritize encrypted data:
 
 ```python
-# Update: beak/apps/patient/services.py
+# Update: beak/modules/clinical/patient/services.py
 class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
     
     async def search_compatible(self, query_string: str = None) -> list[Patient]:

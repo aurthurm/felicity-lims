@@ -2,7 +2,7 @@ import logging
 
 import pytest
 
-from beak.apps.analysis.tasks import submit_results, verify_results
+from beak.modules.core.analysis.tasks import submit_results, verify_results
 from beak.lims.middleware.tenant import settings
 from beak.tests.integration.utils.user import make_password, make_username, auth_to_headers, auth_user_mutation
 

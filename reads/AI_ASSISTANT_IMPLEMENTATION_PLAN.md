@@ -636,7 +636,7 @@ NO PII is involved in this interaction.
 
 #### 5.1.1 AI Assistant Service Layer
 ```
-beak/apps/assistant/
+beak/modules/core/assistant/
 ├── __init__.py
 ├── entities.py              # Conversation, Message, TokenMap models
 ├── repository.py            # Database access for conversations
@@ -1931,7 +1931,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'beak/apps/assistant/**'
+      - 'beak/modules/core/assistant/**'
       - 'beak/api/gql/assistant/**'
 
 jobs:

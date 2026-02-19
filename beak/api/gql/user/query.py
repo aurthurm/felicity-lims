@@ -19,13 +19,13 @@ from beak.api.gql.user.types import (
     UserEdge,
     UserType,
 )
-from beak.apps.user.services import (
+from beak.modules.core.identity.services import (
     GroupService,
     PermissionService,
     UserService,
     UserPreferenceService,
 )
-from beak.apps.user import schemas as user_schemas
+from beak.modules.core.identity import schemas as user_schemas
 
 logger = logging.getLogger(__name__)
 

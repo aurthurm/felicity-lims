@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
 
-from beak.apps.platform.services import TenantRegistryService
+from beak.modules.platform.services import TenantRegistryService
 from beak.core.tenant_context import TenantContext, clear_tenant_context, set_tenant_context
 
 

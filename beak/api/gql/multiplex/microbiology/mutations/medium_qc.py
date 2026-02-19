@@ -3,13 +3,13 @@ import logging
 import strawberry  # noqa
 
 from beak.api.gql.multiplex.microbiology import AbxMediumType, AbxQCRangeType
-from beak.apps.multiplex.microbiology.schemas import (
+from beak.modules.clinical.microbiology.schemas import (
     AbxMediumCreate,
     AbxMediumUpdate,
     AbxQCRangeCreate,
     AbxQCRangeUpdate,
 )
-from beak.apps.multiplex.microbiology.services import (
+from beak.modules.clinical.microbiology.services import (
     AbxMediumService,
     AbxQCRangeService,
 )

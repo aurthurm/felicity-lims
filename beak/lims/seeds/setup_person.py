@@ -1,7 +1,7 @@
 import logging
 
-from beak.apps.patient import schemas
-from beak.apps.patient.services import IdentificationService
+from beak.modules.clinical.patient import schemas
+from beak.modules.clinical.patient.services import IdentificationService
 from beak.core.config import get_settings
 
 from .data import get_seeds

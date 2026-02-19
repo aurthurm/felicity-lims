@@ -16,7 +16,7 @@ from beak.api.gql.setup.types.department import DepartmentType
 from beak.api.gql.storage.types import StorageContainerType
 from beak.api.gql.types.generic import PageInfo, JSONScalar, StrawberryMapper
 from beak.api.gql.user.types import UserType
-from beak.apps.analysis.services.analysis import SampleService
+from beak.modules.core.analysis.services.analysis import SampleService
 
 
 @strawberry.type

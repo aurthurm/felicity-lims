@@ -18,10 +18,10 @@ from beak.api.gql.billing.types import (
 )
 from beak.api.gql.permissions import IsAuthenticated, HasPermission
 from beak.api.gql.types import OperationError
-from beak.apps.billing import schemas, utils
-from beak.apps.billing.enum import DiscountType, TransactionKind
-from beak.apps.billing.schemas import TestBillTransactionUpdate, TestBillUpdate
-from beak.apps.billing.services import (
+from beak.modules.core.billing import schemas, utils
+from beak.modules.core.billing.enum import DiscountType, TransactionKind
+from beak.modules.core.billing.schemas import TestBillTransactionUpdate, TestBillUpdate
+from beak.modules.core.billing.services import (
     AnalysisDiscountService,
     AnalysisPriceService,
     ProfileDiscountService,
@@ -31,8 +31,8 @@ from beak.apps.billing.services import (
     VoucherCodeService,
     VoucherService,
 )
-from beak.apps.guard import FAction, FObject
-from beak.apps.impress.invoicing import utils as invoice_utils
+from beak.modules.core.guard import FAction, FObject
+from beak.modules.core.impress.invoicing import utils as invoice_utils
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

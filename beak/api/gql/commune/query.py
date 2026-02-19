@@ -10,7 +10,7 @@ from beak.api.gql.commune.types import (
 )
 from beak.api.gql.permissions import IsAuthenticated
 from beak.api.gql.types import PageInfo
-from beak.apps.commune.sms.services import SmsMessageService, SmsTemplateService
+from beak.modules.core.commune.sms.services import SmsMessageService, SmsTemplateService
 from beak.utils import has_value_or_is_truthy
 
 

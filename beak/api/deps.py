@@ -10,9 +10,9 @@ from strawberry.fastapi import BaseContext
 from strawberry.types.info import Info as StrawberryInfo
 from strawberry.types.info import RootValueType
 
-from beak.apps.common import schemas as core_schemas  # noqa
-from beak.apps.user.entities import User
-from beak.apps.user.services import UserService
+from beak.modules.core.common import schemas as core_schemas  # noqa
+from beak.modules.core.identity.entities import User
+from beak.modules.core.identity.services import UserService
 from beak.core import get_settings  # noqa
 from beak.core.tenant_context import (
     get_tenant_context,

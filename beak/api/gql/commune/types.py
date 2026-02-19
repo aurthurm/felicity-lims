@@ -6,7 +6,7 @@ import strawberry
 from beak.api.gql.setup.types import LaboratoryType
 from beak.api.gql.types import PageInfo
 from beak.api.gql.user.types import UserType
-from beak.apps.commune.sms.enum import SmsTrigger, SmsAudience
+from beak.modules.core.commune.sms.enum import SmsTrigger, SmsAudience
 
 
 # Document Category Type

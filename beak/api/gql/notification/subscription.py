@@ -6,9 +6,9 @@ import strawberry  # noqa
 
 from beak.api.gql.notification.types import ActivityStreamType, ActivityProcessType
 from beak.api.gql.permissions import IsAuthenticated
-from beak.apps.common.channel import broadcast
-from beak.apps.notification.enum import NotificationChannel
-from beak.apps.notification.services import ActivityStreamService
+from beak.modules.core.common.channel import broadcast
+from beak.modules.core.notification.enum import NotificationChannel
+from beak.modules.core.notification.services import ActivityStreamService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

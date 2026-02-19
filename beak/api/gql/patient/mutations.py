@@ -11,10 +11,10 @@ from beak.api.gql.patient.types import IdentificationType, PatientType
 from beak.api.gql.permissions import IsAuthenticated, HasPermission
 from beak.api.gql.types import OperationError
 from beak.api.gql.types.generic import StrawberryMapper
-from beak.apps.client.services import ClientService
-from beak.apps.guard import FAction, FObject
-from beak.apps.patient import schemas
-from beak.apps.patient.services import (
+from beak.modules.core.client.services import ClientService
+from beak.modules.core.guard import FAction, FObject
+from beak.modules.clinical.patient import schemas
+from beak.modules.clinical.patient.services import (
     IdentificationService,
     PatientIdentificationService,
     PatientService,

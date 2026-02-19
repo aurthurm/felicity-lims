@@ -7,11 +7,11 @@ from beak.api.gql.auth import auth_from_info
 from beak.api.gql.noticeboard.types import NoticeType
 from beak.api.gql.permissions import IsAuthenticated, HasPermission
 from beak.api.gql.types import DeletedItem, DeleteResponse, OperationError
-from beak.apps.guard import FAction, FObject
-from beak.apps.noticeboard import schemas
-from beak.apps.noticeboard.services import NoticeService
-from beak.apps.setup.services import DepartmentService
-from beak.apps.user.services import GroupService, UserService
+from beak.modules.core.guard import FAction, FObject
+from beak.modules.core.noticeboard import schemas
+from beak.modules.core.noticeboard.services import NoticeService
+from beak.modules.core.setup.services import DepartmentService
+from beak.modules.core.identity.services import GroupService, UserService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

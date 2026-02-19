@@ -52,7 +52,7 @@ class DocumentTagType:
 
     @strawberry.field
     async def documents(self, info) -> List["DocumentType"]:
-        from beak.apps.document.services import DocumentService
+        from beak.modules.core.document.services import DocumentService
 
         return await DocumentService().get_by_tag(self.uid)
 
@@ -90,13 +90,13 @@ class DocumentFolderType:
 
     @strawberry.field
     async def subfolders(self, info) -> List["DocumentFolderType"]:
-        from beak.apps.document.services import DocumentFolderService
+        from beak.modules.core.document.services import DocumentFolderService
 
         return await DocumentFolderService().get_all(parent_uid=self.uid)
 
     @strawberry.field
     async def documents(self, info) -> List["DocumentType"]:
-        from beak.apps.document.services import DocumentService
+        from beak.modules.core.document.services import DocumentService
 
         return await DocumentService().get_all(folder_uid=self.uid)
 
@@ -135,7 +135,7 @@ class DocumentTemplateType:
 
     @strawberry.field
     async def documents(self, info) -> List["DocumentType"]:
-        from beak.apps.document.services import DocumentService
+        from beak.modules.core.document.services import DocumentService
 
         return await DocumentService().get_all(template_uid=self.uid)
 
@@ -281,7 +281,7 @@ class DocumentReviewCycleType:
 
     @strawberry.field
     async def steps(self, info) -> List[DocumentReviewStepType]:
-        from beak.apps.document.services import DocumentReviewStepService
+        from beak.modules.core.document.services import DocumentReviewStepService
 
         return await DocumentReviewStepService().get_all(review_cycle_uid=self.uid)
 
@@ -397,72 +397,72 @@ class DocumentType:
 
     @strawberry.field
     async def tags(self, info) -> List[DocumentTagType]:
-        from beak.apps.document.services import DocumentService
+        from beak.modules.core.document.services import DocumentService
 
         document = await DocumentService().get(uid=self.uid)
         return document.tags if document else []
 
     @strawberry.field
     async def authors(self, info) -> List[UserType]:
-        from beak.apps.document.services import DocumentService
+        from beak.modules.core.document.services import DocumentService
 
         document = await DocumentService().get(uid=self.uid)
         return document.authors if document else []
 
     @strawberry.field
     async def readers(self, info) -> List[UserType]:
-        from beak.apps.document.services import DocumentService
+        from beak.modules.core.document.services import DocumentService
 
         document = await DocumentService().get(uid=self.uid)
         return document.readers if document else []
 
     @strawberry.field
     async def related_to(self, info) -> List["DocumentType"]:
-        from beak.apps.document.services import DocumentService
+        from beak.modules.core.document.services import DocumentService
 
         document = await DocumentService().get(uid=self.uid)
         return document.related_to if document else []
 
     @strawberry.field
     async def related_from(self, info) -> List["DocumentType"]:
-        from beak.apps.document.services import DocumentService
+        from beak.modules.core.document.services import DocumentService
 
         document = await DocumentService().get(uid=self.uid)
         return document.related_from if document else []
 
     @strawberry.field
     async def versions(self, info) -> List[DocumentVersionType]:
-        from beak.apps.document.services import DocumentVersionService
+        from beak.modules.core.document.services import DocumentVersionService
 
         return await DocumentVersionService().get_all(document_uid=self.uid)
 
     @strawberry.field
     async def statuses(self, info) -> List[DocumentStatusType]:
-        from beak.apps.document.services import DocumentStatusService
+        from beak.modules.core.document.services import DocumentStatusService
 
         return await DocumentStatusService().get_all(document_uid=self.uid)
 
     @strawberry.field
     async def review_cycles(self, info) -> List[DocumentReviewCycleType]:
-        from beak.apps.document.services import DocumentReviewCycleService
+        from beak.modules.core.document.services import DocumentReviewCycleService
 
         return await DocumentReviewCycleService().get_all(document_uid=self.uid)
 
     @strawberry.field
     async def subscriptions(self, info) -> List[DocumentSubscriptionType]:
-        from beak.apps.document.services import DocumentSubscriptionService
+        from beak.modules.core.document.services import DocumentSubscriptionService
 
         return await DocumentSubscriptionService().get_all(document_uid=self.uid)
 
     @strawberry.field
     async def audit_records(self, info) -> List[DocumentAuditType]:
-        from beak.apps.document.services import DocumentAuditService
+        from beak.modules.core.document.services import DocumentAuditService
 
         return await DocumentAuditService().get_all(document_uid=self.uid)
 
     @strawberry.field
     async def latest_version(self, info) -> Optional[DocumentVersionType]:
-        from beak.apps.document.services import DocumentVersionService
+        from beak.modules.core.document.services import DocumentVersionService
 
         versions = await DocumentVersionService().get_all(document_uid=self.uid)
         if not versions:
@@ -481,7 +481,7 @@ class DocumentType:
 
     @strawberry.field
     async def status(self, info) -> Optional[str]:
-        from beak.apps.document.services import DocumentStatusService
+        from beak.modules.core.document.services import DocumentStatusService
 
         statuses = await DocumentStatusService().get_all(document_uid=self.uid)
         if not statuses:

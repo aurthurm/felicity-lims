@@ -16,9 +16,9 @@ from beak.api.gql.multiplex.microbiology import (
 from beak.api.gql.multiplex.microbiology.types import AbxOrganismResultType
 from beak.api.gql.permissions import IsAuthenticated
 from beak.api.gql.types import OperationError, DeletedItem, DeleteResponse
-from beak.apps.analysis.enum import ResultState
-from beak.apps.analysis.services.result import AnalysisResultService
-from beak.apps.multiplex.microbiology.schemas import (
+from beak.modules.core.analysis.enum import ResultState
+from beak.modules.core.analysis.services.result import AnalysisResultService
+from beak.modules.clinical.microbiology.schemas import (
     AbxKingdomCreate,
     AbxKingdomUpdate,
     AbxPhylumCreate,
@@ -38,7 +38,7 @@ from beak.apps.multiplex.microbiology.schemas import (
     AbxOrganismResultCreate,
     AbxOrganismResultUpdate,
 )
-from beak.apps.multiplex.microbiology.services import (
+from beak.modules.clinical.microbiology.services import (
     AbxKingdomService,
     AbxPhylumService,
     AbxOrganismService,

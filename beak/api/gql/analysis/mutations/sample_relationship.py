@@ -4,8 +4,8 @@ from beak.api.gql.analysis import types as a_types
 from beak.api.gql.auth import auth_from_info
 from beak.api.gql.permissions import IsAuthenticated
 from beak.api.gql.types import OperationError
-from beak.apps.analysis.enum import SampleRelationshipType
-from beak.apps.analysis.services.analysis import (
+from beak.modules.core.analysis.enum import SampleRelationshipType
+from beak.modules.core.analysis.services.analysis import (
     SampleRelationshipService,
     SampleService,
 )

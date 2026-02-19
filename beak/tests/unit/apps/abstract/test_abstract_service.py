@@ -4,8 +4,8 @@ from unittest.mock import AsyncMock, create_autospec
 import pytest
 from pydantic import BaseModel
 
-from beak.apps.abstract.repository import BaseRepository
-from beak.apps.abstract.service import BaseService
+from beak.modules.core.abstract.repository import BaseRepository
+from beak.modules.core.abstract.service import BaseService
 
 
 # Define mock classes for entities and Pydantic models

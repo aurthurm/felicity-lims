@@ -10,12 +10,12 @@ from beak.api.gql.setup.types.department import DepartmentType
 from beak.api.gql.types.generic import StrawberryMapper
 from beak.api.gql.user.types import GroupType, UserType
 from beak.api.gql.worksheet.types import WorkSheetType
-from beak.apps.analysis.services.analysis import SampleService
-from beak.apps.analysis.services.result import AnalysisResultService
-from beak.apps.analytics.services import ReportMetaService
-from beak.apps.notification.enum import NotificationObjectType, NotificationObject
-from beak.apps.user.services import UserService
-from beak.apps.worksheet.services import WorkSheetService
+from beak.modules.core.analysis.services.analysis import SampleService
+from beak.modules.core.analysis.services.result import AnalysisResultService
+from beak.modules.core.analytics.services import ReportMetaService
+from beak.modules.core.notification.enum import NotificationObjectType, NotificationObject
+from beak.modules.core.identity.services import UserService
+from beak.modules.core.worksheet.services import WorkSheetService
 
 
 @strawberry.type

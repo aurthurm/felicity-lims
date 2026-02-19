@@ -18,8 +18,8 @@ from strawberry.subscriptions.protocols.graphql_ws.types import (
     ConnectionInitMessage as LegacyConnectionInitMessage,
 )
 
-from beak.apps.setup.services import LaboratoryService
-from beak.apps.user.services import UserService
+from beak.modules.core.setup.services import LaboratoryService
+from beak.modules.core.identity.services import UserService
 from beak.core.config import get_settings
 from beak.core.tenant_context import TenantContext, set_tenant_context
 

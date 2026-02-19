@@ -6,11 +6,11 @@ Patient management in Beak LIMS handles patient registry, demographics, and HIPA
 
 ## Architecture
 
-- **Entities**: `beak/apps/patient/entities.py` — Patient, PatientIdentification
-- **Repository**: `beak/apps/patient/repository.py` — CRUD, encrypted search
-- **Services**: `beak/apps/patient/services.py` — PatientService, search logic
-- **Search Indices**: `beak/apps/patient/search_indices.py` — PatientSearchIndex, PhoneSearchIndex, DateSearchIndex
-- **Search Service**: `beak/apps/patient/search_service.py` — SearchableEncryptionService
+- **Entities**: `beak/modules/clinical/patient/entities.py` — Patient, PatientIdentification
+- **Repository**: `beak/modules/clinical/patient/repository.py` — CRUD, encrypted search
+- **Services**: `beak/modules/clinical/patient/services.py` — PatientService, search logic
+- **Search Indices**: `beak/modules/clinical/patient/search_indices.py` — PatientSearchIndex, PhoneSearchIndex, DateSearchIndex
+- **Search Service**: `beak/modules/clinical/patient/search_service.py` — SearchableEncryptionService
 
 ## Encrypted Fields (PII)
 

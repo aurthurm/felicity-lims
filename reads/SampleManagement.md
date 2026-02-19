@@ -22,9 +22,9 @@ Process performance metrics track transitions such as:
 
 ## Architecture
 
-- **Entities**: `beak/apps/analysis/entities/` — Sample, Analysis, AnalysisResult
-- **Worksheets**: `beak/apps/worksheet/` — WorkSheet, WorkSheetTemplate
-- **Enums**: SampleState, ResultState in `beak/apps/analysis/enum.py`
+- **Entities**: `beak/modules/core/analysis/entities/` — Sample, Analysis, AnalysisResult
+- **Worksheets**: `beak/modules/core/worksheet/` — WorkSheet, WorkSheetTemplate
+- **Enums**: SampleState, ResultState in `beak/modules/core/analysis/enum.py`
 
 ## Derived Samples
 

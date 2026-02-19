@@ -407,7 +407,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'beak/apps/assistant/**'
+      - 'beak/modules/core/assistant/**'
       - 'beak/api/gql/assistant/**'
 
 jobs:

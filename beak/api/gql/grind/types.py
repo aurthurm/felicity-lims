@@ -9,7 +9,7 @@ from beak.api.gql.auth import auth_from_info
 from beak.api.gql.setup.types import LaboratoryType
 from beak.api.gql.types import PageInfo
 from beak.api.gql.user.types import UserType
-from beak.apps.grind.enum import MediaTarget, OccurrenceTarget
+from beak.modules.core.grind.enum import MediaTarget, OccurrenceTarget
 
 
 # Scheme Types
@@ -33,14 +33,14 @@ class GrindSchemeType:
 
     @strawberry.field
     async def members(self, info) -> List["UserType"]:
-        from beak.apps.grind.services import GrindSchemeService
+        from beak.modules.core.grind.services import GrindSchemeService
 
         scheme = await GrindSchemeService().get(uid=self.uid, related=["members"])
         return scheme.members if scheme else []
 
     @strawberry.field
     async def boards(self, info) -> List["GrindBoardType"]:
-        from beak.apps.grind.services import GrindBoardService
+        from beak.modules.core.grind.services import GrindBoardService
 
         return await GrindBoardService().get_all(scheme_uid=self.uid)
 
@@ -78,7 +78,7 @@ class GrindBoardType:
 
     @strawberry.field
     async def posters(self, info) -> List["GrindPosterType"]:
-        from beak.apps.grind.services import GrindPosterService
+        from beak.modules.core.grind.services import GrindPosterService
 
         return await GrindPosterService().get_all(board_uid=self.uid)
 
@@ -120,21 +120,21 @@ class GrindPosterType:
 
     @strawberry.field
     async def members(self, info) -> List[UserType]:
-        from beak.apps.grind.services import GrindPosterService
+        from beak.modules.core.grind.services import GrindPosterService
 
         poster = await GrindPosterService().get(uid=self.uid)
         return poster.members if poster else []
 
     @strawberry.field
     async def stamps(self, info) -> List["GrindStampType"]:
-        from beak.apps.grind.services import GrindPosterService
+        from beak.modules.core.grind.services import GrindPosterService
 
         poster = await GrindPosterService().get(uid=self.uid, related=["stamps"])
         return poster.stamps if poster else []
 
     @strawberry.field
     async def errands(self, info) -> List["GrindErrandType"]:
-        from beak.apps.grind.services import GrindErrandService
+        from beak.modules.core.grind.services import GrindErrandService
 
         return await GrindErrandService().get_all(poster_uid=self.uid)
 
@@ -213,27 +213,27 @@ class GrindErrandType:
 
     @strawberry.field
     async def members(self, info) -> List[UserType]:
-        from beak.apps.grind.services import GrindErrandService
+        from beak.modules.core.grind.services import GrindErrandService
 
         errand = await GrindErrandService().get(uid=self.uid, related=["members"])
         return errand.members if errand else []
 
     @strawberry.field
     async def stamps(self, info) -> List[GrindStampType]:
-        from beak.apps.grind.services import GrindErrandService
+        from beak.modules.core.grind.services import GrindErrandService
 
         errand = await GrindErrandService().get(uid=self.uid, related=["stamps"])
         return errand.stamps if errand else []
 
     @strawberry.field
     async def milestones(self, info) -> List["GrindMilestoneType"]:
-        from beak.apps.grind.services import GrindMilestoneService
+        from beak.modules.core.grind.services import GrindMilestoneService
 
         return await GrindMilestoneService().get_all(errand_uid=self.uid)
 
     @strawberry.field
     async def milestones_at(self, info) -> float:
-        from beak.apps.grind.services import GrindMilestoneService
+        from beak.modules.core.grind.services import GrindMilestoneService
 
         milestones = await GrindMilestoneService().get_all(errand_uid=self.uid)
         complete = list(filter(lambda x: x.complete, milestones))
@@ -241,7 +241,7 @@ class GrindErrandType:
 
     @strawberry.field
     async def occurrences(self, info) -> List["GrindOccurrenceType"]:
-        from beak.apps.grind.services import GrindOccurrenceService
+        from beak.modules.core.grind.services import GrindOccurrenceService
 
         return await GrindOccurrenceService().get_all(
             target=OccurrenceTarget.ERRAND.value, target_uid=self.uid
@@ -249,7 +249,7 @@ class GrindErrandType:
 
     @strawberry.field
     async def media(self, info) -> List["GrindMediaType"]:
-        from beak.apps.grind.services import GrindMediaService
+        from beak.modules.core.grind.services import GrindMediaService
 
         return await GrindMediaService().get_all(
             target=MediaTarget.ERRAND.value, target_uid=self.uid
@@ -289,14 +289,14 @@ class GrindErrandDiscussionType:
 
     @strawberry.field
     async def subdiscussions(self) -> List["GrindErrandDiscussionType"]:
-        from beak.apps.grind.services import GrindErrandDiscussionService
+        from beak.modules.core.grind.services import GrindErrandDiscussionService
 
         return await GrindErrandDiscussionService().get_all(parent_uid=self.uid)
 
     @strawberry.field
     async def can_edit(self, info) -> bool:
         beak_user = await auth_from_info(info)
-        from beak.apps.grind.services import GrindErrandDiscussionService
+        from beak.modules.core.grind.services import GrindErrandDiscussionService
 
         if beak_user and beak_user.uid != self.created_by_uid:
             return False
@@ -410,7 +410,7 @@ class GrindMilestoneType:
 
     @strawberry.field
     async def occurrences(self, info) -> List["GrindOccurrenceType"]:
-        from beak.apps.grind.services import GrindOccurrenceService
+        from beak.modules.core.grind.services import GrindOccurrenceService
 
         return await GrindOccurrenceService().get_all(
             target=OccurrenceTarget.MILESTONE.value, target_uid=self.uid

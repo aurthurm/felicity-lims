@@ -101,10 +101,47 @@ async def bootstrap_platform_schema(connection) -> None:
                 schema_name VARCHAR(128) NOT NULL UNIQUE,
                 status VARCHAR(32) NOT NULL,
                 admin_email VARCHAR(255),
+                primary_industry VARCHAR(32),
+                enabled_modules JSONB,
+                module_state JSONB,
                 provisioned_at TIMESTAMP NULL,
                 created_at TIMESTAMP NULL,
                 updated_at TIMESTAMP NULL
             )
+            """
+        )
+    )
+    await connection.execute(
+        text(
+            f"""
+            ALTER TABLE "{platform_schema}".tenant
+            ADD COLUMN IF NOT EXISTS primary_industry VARCHAR(32)
+            """
+        )
+    )
+    await connection.execute(
+        text(
+            f"""
+            ALTER TABLE "{platform_schema}".tenant
+            ADD COLUMN IF NOT EXISTS enabled_modules JSONB
+            """
+        )
+    )
+    await connection.execute(
+        text(
+            f"""
+            ALTER TABLE "{platform_schema}".tenant
+            ADD COLUMN IF NOT EXISTS module_state JSONB
+            """
+        )
+    )
+    await connection.execute(
+        text(
+            f"""
+            UPDATE "{platform_schema}".tenant
+            SET primary_industry = COALESCE(primary_industry, 'clinical'),
+                enabled_modules = COALESCE(enabled_modules, '["core","clinical"]'::jsonb),
+                module_state = COALESCE(module_state, '{{}}'::jsonb)
             """
         )
     )

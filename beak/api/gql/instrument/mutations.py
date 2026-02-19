@@ -19,16 +19,16 @@ from beak.api.gql.instrument.types import (
 )
 from beak.api.gql.permissions import IsAuthenticated
 from beak.api.gql.types import OperationError, JSONScalar
-from beak.apps.analysis.entities.analysis import (
+from beak.modules.core.analysis.entities.analysis import (
     analysis_instrument,
     analysis_method,
 )
-from beak.apps.analysis.enum import SampleState
-from beak.apps.analysis.services.analysis import AnalysisService
-from beak.apps.analysis.services.result import AnalysisResultService
-from beak.apps.instrument import schemas
-from beak.apps.instrument.entities import method_instrument
-from beak.apps.instrument.services import (
+from beak.modules.core.analysis.enum import SampleState
+from beak.modules.core.analysis.services.analysis import AnalysisService
+from beak.modules.core.analysis.services.result import AnalysisResultService
+from beak.modules.core.instrument import schemas
+from beak.modules.core.instrument.entities import method_instrument
+from beak.modules.core.instrument.services import (
     CalibrationCertificateService,
     InstrumentCalibrationService,
     InstrumentCompetenceService,

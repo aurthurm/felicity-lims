@@ -63,6 +63,7 @@ class Settings(BaseSettings):
     POSTGRES_DB: str = getenv_value("POSTGRES_DB", "beak_lims")
     PLATFORM_SCHEMA: str = getenv_value("PLATFORM_SCHEMA", "platform")
     TENANT_SCHEMA_PREFIX: str = getenv_value("TENANT_SCHEMA_PREFIX", "org_")
+    DEFAULT_PRIMARY_INDUSTRY: str = getenv_value("DEFAULT_PRIMARY_INDUSTRY", "clinical")
     TENANT_HEADER_NAME: str = getenv_value("TENANT_HEADER_NAME", "X-Org-Slug")
     TENANT_REQUIRED_PATH_PREFIXES: list[str] = ["/beak-gql", "/api/v1"]
     TENANT_PUBLIC_PATHS: list[str] = [

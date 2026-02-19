@@ -69,6 +69,16 @@ async def default_setup() -> bool:
     await seed_stock_categories()
     await seed_instrument_categories()
     await seed_person()
+    await _seed_clinical_catalog()
+
+    # Loading default setup (lab-specific)
+    await _seed_lab_specific_defaults()
+
+    logger.info("Loading default setup complete.")
+    return True
+
+
+async def _seed_clinical_catalog() -> None:
     await seed_antibiotics()
     await seed_organisms()
     await seed_organism_serotypes()
@@ -78,7 +88,7 @@ async def default_setup() -> bool:
     await seed_qc_ranges()
     await seed_ast_services()
 
-    # Loading default setup (lab-specific)
+async def _seed_lab_specific_defaults() -> None:
     async def _sync_():
         await seed_clients()
         await seed_qc_levels()
@@ -93,7 +103,31 @@ async def default_setup() -> bool:
             set_tenant_context(TenantContext(laboratory_uid=lab.uid))
             await _sync_()
 
-    logger.info("Loading default setup complete.")
+
+async def initialize_core(org_name: str = "Beak Labs", lab_name: str = "My First Laboratory") -> bool:
+    logger.info("Initializing core module seeds ...")
+    await requisite_setup(org_name=org_name, lab_name=lab_name)
+    await seed_geographies()
+    await seed_categories()
+    await seed_sample_types()
+    await seed_rejection_reasons()
+    await seed_stock_units()
+    await seed_stock_hazards()
+    await seed_stock_categories()
+    await seed_instrument_categories()
+    await seed_person()
+    await _seed_lab_specific_defaults()
+    logger.info("Core module seed completed.")
+    return True
+
+
+async def initialize_industry(industry: str) -> bool:
+    logger.info("Initializing industry module seed: %s", industry)
+    if industry == "clinical":
+        await _seed_clinical_catalog()
+        logger.info("Clinical industry seed completed.")
+        return True
+    logger.info("No seed implementation for industry '%s' yet.", industry)
     return True
 
 
