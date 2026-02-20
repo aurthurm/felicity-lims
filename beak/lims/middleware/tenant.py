@@ -37,6 +37,20 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
         if request.method.upper() == "OPTIONS":
             return await call_next(request)
 
+        # Platform control-plane endpoints are authenticated with platform JWTs
+        # (aud=platform) and must bypass tenant JWT parsing/resolution.
+        if request.url.path.startswith("/api/v1/platform"):
+            request_id = str(uuid.uuid4())
+            ip_address = request.client.host if request.client else None
+            user_agent = request.headers.get("user-agent")
+            context = TenantContext(
+                request_id=request_id, ip_address=ip_address, user_agent=user_agent
+            )
+            set_tenant_context(context)
+            response = await call_next(request)
+            response.headers["X-Request-ID"] = request_id
+            return response
+
         tenant_required = self._is_tenant_required_path(request.url.path)
 
         # Generate unique request ID for tracking

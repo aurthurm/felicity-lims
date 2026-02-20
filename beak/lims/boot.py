@@ -80,15 +80,9 @@ async def _prewarm_tenant_engines() -> None:
 
 
 def register_middlewares(app: FastAPI) -> None:
-    app.add_middleware(
-        CORSMiddleware,  # noqa
-        allow_origins=settings.CORS_ORIGINS,
-        allow_origin_regex=settings.CORS_ORIGIN_REGEX,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
-    # Add tenant context middleware - should be early in the chain
+    # Add tenant context middleware - should be early in the chain.
+    # NOTE: CORSMiddleware is intentionally added LAST (outermost wrapper)
+    # so CORS headers are present even when inner middlewares return 4xx/5xx.
     app.add_middleware(TenantContextMiddleware)  # noqa
     app.add_middleware(GraphQLModuleGuardMiddleware)  # noqa
     # app.add_middleware(RequireTenantMiddleware)  # noqa
@@ -103,6 +97,14 @@ def register_middlewares(app: FastAPI) -> None:
             hour_limit=settings.RATE_LIMIT_PER_HOUR,
             exclude_paths=["/docs", "/redoc", "/openapi.json"],
         )
+    app.add_middleware(
+        CORSMiddleware,  # noqa
+        allow_origins=settings.CORS_ORIGINS,
+        allow_origin_regex=settings.CORS_ORIGIN_REGEX,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 
 def register_rate_limit(app: FastAPI) -> None:
