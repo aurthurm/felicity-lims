@@ -1,4 +1,4 @@
-import { RouteRecordRaw, createRouter, createWebHistory, createWebHashHistory } from 'vue-router';
+import { RouteRecordRaw, createRouter, createWebHashHistory } from 'vue-router';
 import * as guards from '@/guards';
 import adminRoutes from './admin';
 import patientRoutes from './patient';
@@ -10,9 +10,12 @@ import shipmentRoutes from './referral';
 import schemeRoutes from './scheme';
 import { isTokenValid } from './checks';
 import { useAuthStore } from '@/stores/auth';
+import { usePlatformAuthStore } from '@/stores/platform_auth';
 import documentRoutes from './document';
+import platformRoutes, { PLATFORM_HOME, PLATFORM_LOGIN } from './platform';
+import { APP_MODE } from '@/conf';
 
-const routes: RouteRecordRaw[] = [
+const tenantRoutes: RouteRecordRaw[] = [
     {
         path: '/',
         redirect: { name: guards.pages.DASHBOARD },
@@ -190,14 +193,27 @@ const routes: RouteRecordRaw[] = [
     },
 ];
 
-const historyX = createWebHistory('/');
 const history = createWebHashHistory();
 const router = createRouter({
     history,
-    routes,
+    routes: APP_MODE === 'platform' ? platformRoutes : tenantRoutes,
 });
 
-router.beforeEach(async (to, from) => {
+router.beforeEach(to => {
+    if (APP_MODE === 'platform') {
+        const platformAuthStore = usePlatformAuthStore();
+        const isPlatformTokenValid = isTokenValid(platformAuthStore.auth.token || null);
+
+        if (to.matched.some(record => record.meta.requiresPlatformAuth)) {
+            if (!isPlatformTokenValid) {
+                return { name: PLATFORM_LOGIN };
+            }
+        } else if (to.name === PLATFORM_LOGIN && isPlatformTokenValid) {
+            return { name: PLATFORM_HOME };
+        }
+        return true;
+    }
+
     const authStore = useAuthStore();
 
     if (to.matched.some(record => record.meta.requiresAuth)) {
@@ -219,7 +235,7 @@ router.beforeEach(async (to, from) => {
 
 const exemptions = ['print-barcodes'];
 
-function hasAccess(page: any) {
+function hasAccess(page: unknown) {
     switch (page) {
         case guards.pages.DASHBOARD:
             return guards.canAccessPage(guards.pages.DASHBOARD);
@@ -270,7 +286,7 @@ function hasAccess(page: any) {
             return true;
 
         default:
-            return exemptions.includes(page);
+            return typeof page === 'string' && exemptions.includes(page);
     }
 }
 
