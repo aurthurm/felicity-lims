@@ -33,6 +33,10 @@ class APIActivityLogMiddleware(BaseHTTPMiddleware):
 
         # Get tenant context (set by TenantContextMiddleware)
         tenant_context = get_tenant_context()
+        # Only log tenant-scoped requests to avoid writing non-tenant noise
+        # and to prevent cross-schema lookups during platform/public requests.
+        if not tenant_context or not tenant_context.schema_name:
+            return await call_next(request)
 
         # Get the Bearer token from Authorization header
         auth_header = request.headers.get(self.auth_header, "")

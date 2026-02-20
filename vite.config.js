@@ -23,6 +23,7 @@ export default defineConfig({
         port: 5173,
         strictPort: true,
         host: host || false,
+        allowedHosts: ['.localtest.me', 'localhost', '127.0.0.1'],
         hmr: host ? { protocol: 'ws', host, port: 1421 } : undefined,
         watch: {
             ignored: ['**/src-tauri/**'],

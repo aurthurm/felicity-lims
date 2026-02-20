@@ -10,7 +10,9 @@ from sqlalchemy.sql import func
 from beak.modules.core.abstract.entity import BaseEntity
 from beak.modules.core.analysis.entities.analysis import Analysis, Profile
 from beak.modules.core.identity.caches import get_current_user_preferences
-from beak.core.tenant_context import get_current_lab_uid
+from beak.modules.core.identity.services import UserService
+from beak.core.config import settings
+from beak.core.tenant_context import get_current_lab_uid, get_current_user_uid
 from beak.database.session import async_session
 
 logging.basicConfig(level=logging.INFO)
@@ -35,6 +37,24 @@ class EntityAnalyticsInit(Generic[ModelType]):
             for department in preferences.departments
             if department and department.uid
         ]
+
+    async def _can_query_without_active_lab(self) -> bool:
+        user_uid = get_current_user_uid()
+        if not user_uid:
+            return False
+
+        current_user = await UserService().get(uid=user_uid)
+        if not current_user:
+            return False
+
+        return bool(
+            current_user.is_superuser
+            or current_user.user_name
+            in {
+                settings.SYSTEM_DAEMON_USERNAME,
+                settings.FIRST_SUPERUSER_USERNAME,
+            }
+        )
 
     async def get_line_listing(
             self,
@@ -208,8 +228,10 @@ class EntityAnalyticsInit(Generic[ModelType]):
         if hasattr(self.model, "laboratory_uid"):
             current_lab_uid = get_current_lab_uid()
             if not current_lab_uid:
-                raise ValueError(f"Current user does not belong to laboratory")
-            stmt = stmt.filter(getattr(self.model, "laboratory_uid") == current_lab_uid)
+                if not await self._can_query_without_active_lab():
+                    raise ValueError("Current user does not belong to laboratory")
+            else:
+                stmt = stmt.filter(getattr(self.model, "laboratory_uid") == current_lab_uid)
 
         stmt = stmt.group_by(group_by_col)
 
@@ -255,8 +277,10 @@ class EntityAnalyticsInit(Generic[ModelType]):
         if hasattr(self.model, "laboratory_uid"):
             current_lab_uid = get_current_lab_uid()
             if not current_lab_uid:
-                raise ValueError(f"Current user does not belong to laboratory")
-            stmt = stmt.filter(getattr(self.model, "laboratory_uid") == current_lab_uid)
+                if not await self._can_query_without_active_lab():
+                    raise ValueError("Current user does not belong to laboratory")
+            else:
+                stmt = stmt.filter(getattr(self.model, "laboratory_uid") == current_lab_uid)
 
         async with async_session() as session:
             result = await session.execute(stmt)

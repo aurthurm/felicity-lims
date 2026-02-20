@@ -21,7 +21,7 @@ from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_P
 
 from beak.api.deps import get_gql_context
 from beak.api.gql.schema import schema
-from beak.api.rest.api_v1 import api
+from beak.api.rest.api_v1 import api, init_api
 from beak.modules.core.common.channel import broadcast
 from beak.modules.events import observe_events
 from beak.modules.core.iol.redis.client import create_redis_client
@@ -83,6 +83,7 @@ def register_middlewares(app: FastAPI) -> None:
     app.add_middleware(
         CORSMiddleware,  # noqa
         allow_origins=settings.CORS_ORIGINS,
+        allow_origin_regex=settings.CORS_ORIGIN_REGEX,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -119,6 +120,7 @@ def register_rate_limit(app: FastAPI) -> None:
 
 
 def register_routes(app: FastAPI) -> None:
+    init_api()
     app.include_router(api, prefix="/api/v1")
     setup_webapp(app, settings.SERVE_WEBAPP, schema)
 

@@ -3,6 +3,7 @@ import { REST_BASE_URL, GQL_BASE_URL } from '@/conf';
 import useNotifyToast from './alert_toast';
 import { authToStorage, getAuthData, generateRequestId } from '@/auth';
 import { AuthenticatedData } from '@/types/gql';
+import { resolveTenantSlug } from '@/composables/tenant';
 
 // Define TypeScript interfaces for better type safety
 interface AuthData {
@@ -55,7 +56,7 @@ const axiosInstance: AxiosInstance = axios.create({
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+        'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Org-Slug',
     },
 });
 
@@ -63,10 +64,14 @@ const axiosInstance: AxiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
         const auth = getAuthData();
+        const tenantSlug = resolveTenantSlug(auth?.token);
         if (config.headers) {
             config.headers['X-Request-ID'] = generateRequestId();
             if (auth?.token) {
                 config.headers['Authorization'] = `Bearer ${auth.token}`;
+            }
+            if (tenantSlug) {
+                config.headers['X-Org-Slug'] = tenantSlug;
             }
             if (auth?.activeLaboratory) {
                 config.headers['X-Laboratory-ID'] = auth?.activeLaboratory?.uid;

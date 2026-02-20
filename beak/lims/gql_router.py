@@ -3,6 +3,7 @@ Custom WebSocket handlers for Strawberry GraphQL with authentication
 """
 
 import logging
+import re
 from typing import Dict, Optional
 
 from jose import jwt, JWTError
@@ -20,6 +21,7 @@ from strawberry.subscriptions.protocols.graphql_ws.types import (
 
 from beak.modules.core.setup.services import LaboratoryService
 from beak.modules.core.identity.services import UserService
+from beak.modules.platform.services import TenantRegistryService
 from beak.core.config import get_settings
 from beak.core.tenant_context import TenantContext, set_tenant_context
 
@@ -34,6 +36,25 @@ class ConnectionRejectionError(Exception):
     def __init__(self, payload=None):
         self.payload = payload
         super().__init__("WebSocket connection rejected")
+
+
+def _extract_tenant_slug_from_host(hostname: str | None) -> str | None:
+    if not hostname:
+        return None
+    host = hostname.split(":", 1)[0].strip().lower()
+    if not host:
+        return None
+    if host in {"localhost", "127.0.0.1", "0.0.0.0"}:
+        return None
+    labels = [label for label in host.split(".") if label]
+    if len(labels) < 3:
+        return None
+    candidate = labels[0]
+    if candidate in {"www", "api"}:
+        return None
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,62}", candidate):
+        return None
+    return candidate
 
 
 async def _validate_ws_lab_membership(
@@ -111,7 +132,7 @@ class AuthenticatedGraphQLTransportWSHandler(BaseGraphQLTransportWSHandler):
             # this must survive all connections via current connection
             self._tenant_context = tenant_context
 
-            logger.info(f"WebSocket authenticated :)")
+            logger.info("WebSocket authenticated :)")
 
             # Call the parent method to complete the connection initialization
             await super().handle_connection_init(message)
@@ -169,6 +190,25 @@ class AuthenticatedGraphQLTransportWSHandler(BaseGraphQLTransportWSHandler):
             # Extract user info from JWT
             tenant_context.user_uid = jwt_payload.get("sub")
             tenant_context.organization_uid = jwt_payload.get("organization_uid")
+            tenant_slug = (
+                payload.get(settings.TENANT_HEADER_NAME)
+                or jwt_payload.get("tenant_slug")
+                or _extract_tenant_slug_from_host(
+                    self.websocket.headers.get("host")
+                )
+            )
+            if not tenant_slug:
+                logger.warning("No tenant slug found in WebSocket payload/token/host")
+                return None
+            tenant = await TenantRegistryService().get_by_slug(tenant_slug)
+            if not tenant or tenant.get("status") != "active":
+                logger.warning(f"Tenant '{tenant_slug}' is not active for WebSocket")
+                return None
+            tenant_context.tenant_slug = tenant_slug
+            tenant_context.schema_name = tenant.get("schema_name")
+            # Bind tenant context before membership checks so session routing
+            # uses the tenant schema instead of default/public.
+            set_tenant_context(tenant_context)
 
             # Extract laboratory context from token or payload
             lab_from_token = jwt_payload.get("laboratory_uid")
@@ -185,7 +225,7 @@ class AuthenticatedGraphQLTransportWSHandler(BaseGraphQLTransportWSHandler):
                     logger.warning("WebSocket lab access denied for user")
                     return None
 
-            logger.info(f"Extracted WebSocket context :)")
+            logger.info("Extracted WebSocket context :)")
             return tenant_context
 
         except JWTError as e:
@@ -275,6 +315,25 @@ class AuthenticatedGraphQLWSHandler(BaseGraphQLWSHandler):
 
             tenant_context.user_uid = jwt_payload.get("sub")
             tenant_context.organization_uid = jwt_payload.get("organization_uid")
+            tenant_slug = (
+                payload.get(settings.TENANT_HEADER_NAME)
+                or jwt_payload.get("tenant_slug")
+                or _extract_tenant_slug_from_host(
+                    self.websocket.headers.get("host")
+                )
+            )
+            if not tenant_slug:
+                logger.warning("No tenant slug found in legacy WebSocket context")
+                return None
+            tenant = await TenantRegistryService().get_by_slug(tenant_slug)
+            if not tenant or tenant.get("status") != "active":
+                logger.warning(f"Tenant '{tenant_slug}' is not active for WebSocket")
+                return None
+            tenant_context.tenant_slug = tenant_slug
+            tenant_context.schema_name = tenant.get("schema_name")
+            # Bind tenant context before membership checks so session routing
+            # uses the tenant schema instead of default/public.
+            set_tenant_context(tenant_context)
 
             lab_from_token = jwt_payload.get("laboratory_uid")
             lab_from_payload = payload.get("X-Laboratory-ID")

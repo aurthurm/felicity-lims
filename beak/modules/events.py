@@ -1,8 +1,8 @@
-from beak.modules import registry
+from beak.modules import get_registry
 
 
 def observe_events() -> None:
-    for manifest in registry.resolve(
+    for manifest in get_registry().resolve(
         [
             "core",
             "clinical",

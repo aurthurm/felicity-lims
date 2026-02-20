@@ -8,6 +8,8 @@ then sets the context for the current request.
 import logging
 import time
 import uuid
+import ipaddress
+import re
 
 from fastapi import Request
 from fastapi.responses import JSONResponse
@@ -32,6 +34,10 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
 
     async def dispatch(self, request: Request, call_next):
         """Process request and set tenant context"""
+        if request.method.upper() == "OPTIONS":
+            return await call_next(request)
+
+        tenant_required = self._is_tenant_required_path(request.url.path)
 
         # Generate unique request ID for tracking
         request_id = str(uuid.uuid4())
@@ -49,6 +55,11 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
             # Extract tenant info from JWT token
             await self._extract_from_jwt(request, context)
             await self._resolve_tenant_schema(request, context)
+
+            # Bind context before any downstream service/repository calls so
+            # tenant-aware sessions use the resolved schema.
+            set_tenant_context(context)
+
             if context.laboratory_uid:
                 await self._validate_lab_membership(
                     context, context.laboratory_uid
@@ -57,7 +68,7 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
             # Extract laboratory context from headers (for lab switching)
             await self._extract_from_headers(request, context)
 
-            # Set the context for this request
+            # Context is already bound above; keep this for clarity/readability.
             set_tenant_context(context)
 
             # Add request ID to response headers for tracing
@@ -76,7 +87,12 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
             return JSONResponse(status_code=403, content={"detail": str(e)})
         except Exception as e:
             logger.error(f"Error in tenant middleware: {str(e)}")
-            # Don't fail the request, just log the error
+            if tenant_required:
+                return JSONResponse(
+                    status_code=500,
+                    content={"detail": "Tenant context resolution failed"},
+                )
+            # Keep best-effort behavior for non-tenant routes.
             set_tenant_context(context)
             response = await call_next(request)
             response.headers["X-Request-ID"] = request_id
@@ -126,14 +142,19 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
             self, request: Request, context: TenantContext
     ) -> None:
         path = request.url.path
-        if not any(path.startswith(prefix) for prefix in settings.TENANT_REQUIRED_PATH_PREFIXES):
+        if not self._is_tenant_required_path(path):
             return
         if any(path.startswith(public_path) for public_path in settings.TENANT_PUBLIC_PATHS):
             return
 
         tenant_slug = request.headers.get(settings.TENANT_HEADER_NAME) or context.tenant_slug
         if not tenant_slug:
-            return
+            tenant_slug = self._extract_tenant_slug_from_request_host(request)
+        if not tenant_slug:
+            raise PermissionError(
+                "Tenant context is required. Provide tenant_slug in JWT or "
+                f"'{settings.TENANT_HEADER_NAME}' header."
+            )
 
         context.tenant_slug = tenant_slug
         schema_name = await self._cached_schema_lookup(tenant_slug)
@@ -147,6 +168,38 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
         context.schema_name = schema_name
         # Warm session factory lazily for this tenant.
         get_tenant_session_factory(schema_name)
+
+    def _is_tenant_required_path(self, path: str) -> bool:
+        return any(
+            path.startswith(prefix) for prefix in settings.TENANT_REQUIRED_PATH_PREFIXES
+        )
+
+    def _extract_tenant_slug_from_request_host(self, request: Request) -> str | None:
+        hostname = (request.url.hostname or "").strip().lower()
+        if not hostname:
+            return None
+
+        if hostname in {"localhost", "127.0.0.1", "0.0.0.0"}:
+            return None
+
+        try:
+            ipaddress.ip_address(hostname)
+            return None
+        except ValueError:
+            pass
+
+        labels = [label for label in hostname.split(".") if label]
+        if len(labels) < 3:
+            return None
+
+        candidate = labels[0]
+        if candidate in {"www", "api"}:
+            return None
+
+        if not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,62}", candidate):
+            return None
+
+        return candidate
 
     async def _cached_schema_lookup(self, tenant_slug: str) -> str | None:
         record = _TENANT_CACHE.get(tenant_slug)
@@ -214,7 +267,6 @@ class RequireTenantMiddleware(BaseHTTPMiddleware):
         super().__init__(app)
         self.protected_paths = protected_paths or ["/gql", "/api/v1"]
         self.public_paths = public_paths or [
-            "/api/v1/setup/installation",
             "/api/v1/version",
             "/api/v1/version/updates",
         ]

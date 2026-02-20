@@ -1,6 +1,6 @@
 import strawberry
 
-from beak.modules import registry
+from beak.modules import get_registry
 
 
 def _compose_type(name: str, mixins: tuple[type, ...]):
@@ -9,7 +9,7 @@ def _compose_type(name: str, mixins: tuple[type, ...]):
 
 
 def _build_schema() -> strawberry.Schema:
-    manifests = registry.resolve(["core", "clinical", "pharma", "environment", "industrial"])
+    manifests = get_registry().resolve(["core", "clinical", "pharma", "environment", "industrial"])
 
     types: list[type] = []
     query_mixins: list[type] = []

@@ -1,5 +1,13 @@
 import logging
 
+from beak.core.tenant_context import (
+    clear_tenant_context,
+    set_tenant_context,
+    TenantContext,
+    get_tenant_context,
+    get_current_lab_uid,
+)
+from beak.modules.core.setup.services import LaboratoryService
 from .groups_perms import seed_groups_perms
 from .setup_analyses import (
     seed_analyses_services_and_profiles,
@@ -30,12 +38,6 @@ from .setup_microbiology import (
 )
 from .setup_person import seed_person
 from .superusers import seed_daemon_user, seed_super_user
-from ...apps.setup.services import LaboratoryService
-from ...core.tenant_context import (
-    set_tenant_context,
-    TenantContext,
-    get_current_lab_uid,
-)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -88,6 +90,7 @@ async def _seed_clinical_catalog() -> None:
     await seed_qc_ranges()
     await seed_ast_services()
 
+
 async def _seed_lab_specific_defaults() -> None:
     async def _sync_():
         await seed_clients()
@@ -98,10 +101,30 @@ async def _seed_lab_specific_defaults() -> None:
     if get_current_lab_uid() is not None:
         await _sync_()
     else:
+        base_context = get_tenant_context()
         laboratories = await LaboratoryService().all()
-        for lab in laboratories:
-            set_tenant_context(TenantContext(laboratory_uid=lab.uid))
-            await _sync_()
+        try:
+            for lab in laboratories:
+                set_tenant_context(
+                    TenantContext(
+                        user_uid=base_context.user_uid if base_context else None,
+                        organization_uid=(
+                            base_context.organization_uid if base_context else None
+                        ),
+                        laboratory_uid=lab.uid,
+                        tenant_slug=base_context.tenant_slug if base_context else None,
+                        schema_name=base_context.schema_name if base_context else None,
+                        request_id=base_context.request_id if base_context else None,
+                        ip_address=base_context.ip_address if base_context else None,
+                        user_agent=base_context.user_agent if base_context else None,
+                    )
+                )
+                await _sync_()
+        finally:
+            if base_context is not None:
+                set_tenant_context(base_context)
+            else:
+                clear_tenant_context()
 
 
 async def initialize_core(org_name: str = "Beak Labs", lab_name: str = "My First Laboratory") -> bool:

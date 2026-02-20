@@ -6,28 +6,14 @@ from fastapi import APIRouter, Depends, UploadFile, File
 from pydantic import BaseModel
 
 from beak.api.deps import get_current_user
-from beak.modules.core.common.utils.serializer import marshaller
-from beak.modules.core.setup import schemas
-from beak.modules.core.setup.services import LaboratoryService, OrganizationService
 from beak.modules.core.identity.schemas import User
 from beak.core.config import settings
-from beak.lims.seeds import default_setup, requisite_setup
+from beak.lims.seeds import default_setup
 
 setup = APIRouter(tags=["setup"], prefix="/setup")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-
-class InstallResponse(BaseModel):
-    laboratories: list[schemas.Laboratory] | None = None
-    installed: bool
-    message: str | None = None
-
-
-class InstallationDetails(BaseModel):
-    organisation_name: str
-    laboratory_name: str
 
 
 class SetupResponse(BaseModel):
@@ -39,65 +25,6 @@ class LogoUploadResponse(BaseModel):
     success: bool
     message: str
     logo_path: str | None = None
-
-
-@setup.get("/installation")
-async def instance_lookup(
-        org_service: OrganizationService = Depends(OrganizationService),
-        lab_service: LaboratoryService = Depends(LaboratoryService),
-) -> Any:
-    """
-    Retrieve the installed instance
-    """
-    organisation = await org_service.get_by_setup_name("beak")
-    laboratories = []
-    if organisation:
-        laboratories = await lab_service.get_all(organization_uid=organisation.uid)
-    return {
-        "laboratories": [
-            (marshaller(laboratory, exclude=["lab_manager"]))
-            for laboratory in laboratories
-        ]
-        if laboratories
-        else None,
-        "installed": True if organisation else False,
-        "message": "" if organisation else "Instance installation required",
-    }
-
-
-@setup.post("/installation")
-async def register_instance(
-        details: InstallationDetails,
-        org_service: OrganizationService = Depends(OrganizationService),
-        lab_service: LaboratoryService = Depends(LaboratoryService),
-) -> Any:
-    """
-    Install a laboratory and initialise departments example post: curl -X POST
-    http://localhost:8000/api/v1/setup/installation -d '{"name":"Beak Lims"}' -H "Content-Type: application/json"
-    """
-    try:
-        await requisite_setup(details.organisation_name, details.laboratory_name)
-    except Exception as e:
-        return {
-            "laboratories": [],
-            "installed": False,
-            "message": f"Failed to load requisite setup: {e}",
-        }
-
-    organisation = await org_service.get_by_setup_name("beak")
-    laboratories = []
-    if organisation:
-        laboratories = await lab_service.get_all(organization_uid=organisation.uid)
-    return {
-        "laboratories": [
-            (marshaller(laboratory, exclude=["lab_manager"]))
-            for laboratory in laboratories
-        ]
-        if laboratories
-        else None,
-        "installed": True if organisation else False,
-        "message": "Installation success" if organisation else "Instance installation required",
-    }
 
 
 @setup.post("/load-default-setup")

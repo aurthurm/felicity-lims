@@ -1,9 +1,11 @@
 import logging
 from uuid import uuid4
 
+from beak.core.config import get_settings
 from beak.modules.core.client import schemas as client_schemas
 from beak.modules.core.client.services import ClientContactService, ClientService
 from beak.modules.core.setup import schemas
+from beak.modules.core.setup.entities import Organization, Laboratory
 from beak.modules.core.setup.services import (
     CountryService,
     DepartmentService,
@@ -14,9 +16,7 @@ from beak.modules.core.setup.services import (
     OrganizationService,
     OrganizationSettingService,
 )
-from beak.core.config import get_settings
 from .data import get_seeds
-from ...apps.setup.entities import Organization, Laboratory
 
 settings = get_settings()
 logging.basicConfig(level=logging.INFO)

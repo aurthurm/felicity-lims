@@ -1,18 +1,18 @@
 import logging
 from typing import TYPE_CHECKING, List, Union
 
+from beak.core.tenant_context import get_current_lab_uid
+from beak.modules.core.analysis.entities.analysis import Sample
+from beak.modules.core.analysis.entities.results import AnalysisResult
 from beak.modules.core.analysis.services.analysis import SampleService
 from beak.modules.core.analysis.services.result import AnalysisResultService
 from beak.modules.core.setup.services import LaboratoryService, LaboratorySettingService
-from .entities.analysis import Sample
-from .entities.results import AnalysisResult
-from ...core.tenant_context import get_current_lab_uid
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
-    from ..user.entities import User
+    from beak.modules.core.identity.entities import User
 
 
 async def check_sample_verification(

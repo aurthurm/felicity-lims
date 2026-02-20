@@ -21,14 +21,6 @@ const routes: RouteRecordRaw[] = [
         },
     },
     {
-        path: '/installation',
-        name: guards.pages.INSTALLATION,
-        component: () => import('@/views/install/Install.vue'),
-        meta: {
-            layout: 'empty',
-        },
-    },
-    {
         path: '/auth',
         name: guards.pages.LOGIN,
         component: () => import('@/views/auth/Auth.vue'),

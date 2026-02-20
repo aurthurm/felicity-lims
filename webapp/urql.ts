@@ -6,6 +6,7 @@ import { pipe, tap } from 'wonka';
 import { getAuthData, authLogout, generateRequestId } from '@/auth';
 import { GQL_BASE_URL, WS_BASE_URL } from '@/conf';
 import useNotifyToast from '@/composables/alert_toast';
+import { resolveTenantSlug } from '@/composables/tenant';
 
 const { toastError } = useNotifyToast();
 
@@ -14,10 +15,14 @@ const subscriptionClient = new SubscriptionClient(WS_BASE_URL, {
     lazy: true,
     connectionParams: () => {
         const authData = getAuthData();
+        const tenantSlug = resolveTenantSlug(authData?.token);
         return {
             'X-Request-ID': generateRequestId(),
             ...(authData?.token && {
                 Authorization: `Bearer ${authData?.token}`,
+            }),
+            ...(tenantSlug && {
+                'X-Org-Slug': tenantSlug,
             }),
             ...(authData?.activeLaboratory && {
                 'X-Laboratory-ID': authData?.activeLaboratory?.uid,
@@ -30,10 +35,14 @@ const wsClient = createWSClient({
     url: WS_BASE_URL,
     connectionParams: () => {
         const authData = getAuthData();
+        const tenantSlug = resolveTenantSlug(authData?.token);
         return {
             'X-Request-ID': generateRequestId(),
             ...(authData?.token && {
                 Authorization: `Bearer ${authData?.token}`,
+            }),
+            ...(tenantSlug && {
+                'X-Org-Slug': tenantSlug,
             }),
             ...(authData?.activeLaboratory && {
                 'X-Laboratory-ID': authData?.activeLaboratory?.uid,
@@ -101,14 +110,18 @@ export const urqlClient = createClient({
     ],
     fetchOptions: () => {
         const authData = getAuthData();
+        const tenantSlug = resolveTenantSlug(authData?.token);
         return {
             headers: {
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-                'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+                'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Org-Slug',
                 'X-Request-ID': generateRequestId(),
                 ...(authData?.token && {
                     Authorization: `Bearer ${authData?.token}`,
+                }),
+                ...(tenantSlug && {
+                    'X-Org-Slug': tenantSlug,
                 }),
                 ...(authData?.activeLaboratory && {
                     'X-Laboratory-ID': authData?.activeLaboratory?.uid,

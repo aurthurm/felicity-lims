@@ -58,6 +58,8 @@ class TenantProvisioningService:
         initial_lab_name: str | None = None,
         primary_industry: str = settings.DEFAULT_PRIMARY_INDUSTRY,
         enabled_modules: list[str] | None = None,
+        seed: bool = True,
+        seed_scopes: list[str] | None = None,
     ) -> dict:
         await self.registry.ensure_registry()
         self._validate_slug(slug)
@@ -65,6 +67,11 @@ class TenantProvisioningService:
         selection = normalize_modules(
             primary_industry=primary_industry,
             enabled_modules=enabled_modules,
+        )
+        resolved_seed_scopes = self._resolve_seed_scopes(
+            seed_scopes=seed_scopes,
+            primary_industry=selection.primary_industry,
+            enabled_modules=selection.enabled_modules,
         )
 
         if await self.registry.get_by_slug(slug):
@@ -87,12 +94,14 @@ class TenantProvisioningService:
             await self._create_schema(schema_name)
             self._run_tenant_migrations(schema_name)
             await self._assert_tenant_seed_ready(schema_name)
-            await self._seed_tenant(
-                schema_name=schema_name,
-                org_name=name,
-                lab_name=initial_lab_name,
-                primary_industry=selection.primary_industry,
-            )
+            if seed:
+                await self._seed_tenant(
+                    schema_name=schema_name,
+                    org_name=name,
+                    lab_name=initial_lab_name,
+                    primary_industry=selection.primary_industry,
+                    seed_scopes=resolved_seed_scopes,
+                )
             await self.registry.update_status(tenant_row["uid"], "active")
             active = await self.registry.get_by_slug(slug)
             return active or tenant_row
@@ -337,15 +346,63 @@ class TenantProvisioningService:
         org_name: str,
         lab_name: str | None,
         primary_industry: str = settings.DEFAULT_PRIMARY_INDUSTRY,
+        seed_scopes: list[str] | None = None,
     ) -> None:
         default_lab_name = lab_name or f"{org_name} Main Lab"
         tenant_slug = schema_name.removeprefix(settings.TENANT_SCHEMA_PREFIX)
+        scopes = seed_scopes or ["core", primary_industry]
         set_tenant_context(TenantContext(schema_name=schema_name, tenant_slug=tenant_slug))
         try:
-            await initialize_core(org_name=org_name, lab_name=default_lab_name)
-            await initialize_industry(primary_industry)
+            if "core" in scopes:
+                await initialize_core(org_name=org_name, lab_name=default_lab_name)
+            for scope in scopes:
+                if scope == "core":
+                    continue
+                await initialize_industry(scope)
         finally:
             clear_tenant_context()
+
+    def _resolve_seed_scopes(
+        self,
+        *,
+        seed_scopes: list[str] | None,
+        primary_industry: str,
+        enabled_modules: list[str],
+    ) -> list[str]:
+        if not seed_scopes:
+            return ["core", primary_industry]
+
+        parsed: list[str] = []
+        for raw in seed_scopes:
+            for token in raw.split(","):
+                value = token.strip().lower()
+                if value:
+                    parsed.append(value)
+
+        if not parsed:
+            return ["core", primary_industry]
+
+        if "all" in parsed:
+            parsed = ["core", *enabled_modules]
+
+        ordered: list[str] = []
+        for scope in parsed:
+            if scope not in ordered:
+                ordered.append(scope)
+
+        if "core" not in ordered:
+            ordered.insert(0, "core")
+
+        allowed = set(enabled_modules) | {"core"}
+        invalid = [scope for scope in ordered if scope not in allowed]
+        if invalid:
+            raise ValueError(
+                "Invalid seed scope(s): "
+                + ",".join(invalid)
+                + f". Allowed scopes: {','.join(sorted(allowed))},all"
+            )
+
+        return ordered
 
     @staticmethod
     def _validate_slug(slug: str) -> None:

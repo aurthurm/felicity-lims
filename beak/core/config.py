@@ -15,6 +15,7 @@ ROOT_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".
 BASE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 ENV_FILE: Path = Path(BASE_DIR, "./../.env")
 load_dotenv(dotenv_path=ENV_FILE, override=False)
+DEFAULT_CORS_ORIGIN_REGEX = r"^https?://([a-z0-9-]+\.)?localtest\.me(:\d+)?$"
 
 
 class Settings(BaseSettings):
@@ -42,6 +43,10 @@ class Settings(BaseSettings):
         "http://0.0.0.0:8000",
         "http://127.0.0.1:8000",
     ]
+    CORS_ORIGIN_REGEX: str | None = getenv_value(
+        "CORS_ORIGIN_REGEX",
+        DEFAULT_CORS_ORIGIN_REGEX,
+    )
     CORS_SUPPORTS_CREDENTIALS: bool = True
     CORS_ALLOW_HEADERS: list[str] = [
         "Authorization",
@@ -67,7 +72,6 @@ class Settings(BaseSettings):
     TENANT_HEADER_NAME: str = getenv_value("TENANT_HEADER_NAME", "X-Org-Slug")
     TENANT_REQUIRED_PATH_PREFIXES: list[str] = ["/beak-gql", "/api/v1"]
     TENANT_PUBLIC_PATHS: list[str] = [
-        "/api/v1/setup/installation",
         "/api/v1/health/status",
         "/api/v1/health/system",
         "/api/v1/version",
@@ -115,6 +119,13 @@ class Settings(BaseSettings):
         if not v:
             return info.data["PROJECT_NAME"]
         return v
+
+    @field_validator("CORS_ORIGIN_REGEX")
+    def normalize_cors_origin_regex(cls, v: str | None) -> str:
+        # Prevent blank env values from disabling regex matching.
+        if v is None or not str(v).strip():
+            return DEFAULT_CORS_ORIGIN_REGEX
+        return str(v).strip()
 
     EMAIL_RESET_TOKEN_EXPIRE_HOURS: int = 48
     EMAIL_TEMPLATES_DIR: str = BASE_DIR + "/utils/email/email-templates/output"

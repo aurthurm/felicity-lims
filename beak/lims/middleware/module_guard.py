@@ -10,10 +10,10 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 from beak.modules.platform.module_access import get_enabled_modules
 from beak.core.tenant_context import get_tenant_context
-from beak.modules import registry
+from beak.modules import get_registry
 from beak.modules.graphql_fields import build_graphql_field_module_map
 
-_GRAPHQL_FIELD_MODULE_MAP = build_graphql_field_module_map(registry)
+_GRAPHQL_FIELD_MODULE_MAP = build_graphql_field_module_map(get_registry())
 
 
 class GraphQLModuleGuardMiddleware(BaseHTTPMiddleware):

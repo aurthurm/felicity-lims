@@ -3,8 +3,8 @@ from typing import Any, Optional
 
 from pydantic import BaseModel, ConfigDict
 
+from beak.core.dtz import timenow_dt
 from .enum import JobCategory, JobPriority, JobState
-from ...core.dtz import timenow_dt
 
 
 #

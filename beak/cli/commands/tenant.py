@@ -22,8 +22,24 @@ async def provision(
             "--enable-module",
             help="Extra modules to enable (repeat flag as needed)",
         ),
+        seed: list[str] = typer.Option(
+            None,
+            "--seed",
+            help=(
+                "Seed scopes (repeatable or comma-separated), e.g. "
+                "--seed core --seed clinical or --seed core,clinical or --seed all"
+            ),
+        ),
+        no_seed: bool = typer.Option(
+            False,
+            "--no-seed",
+            help="Skip seeding and run migrations only",
+        ),
 ) -> None:
-    """Provision a tenant schema and run tenant migration + baseline setup."""
+    """Provision a tenant schema and run tenant migrations (and optional seeding)."""
+    if no_seed and seed:
+        raise ValueError("Use either --no-seed or --seed, not both.")
+
     tenant = await TenantProvisioningService().provision(
         name=name,
         slug=slug,
@@ -31,6 +47,8 @@ async def provision(
         initial_lab_name=initial_lab_name,
         primary_industry=primary_industry,
         enabled_modules=enable_module or None,
+        seed=not no_seed,
+        seed_scopes=seed or None,
     )
     typer.echo(f"Provisioned tenant: {tenant['slug']} -> {tenant['schema_name']}")
 

@@ -284,6 +284,26 @@ docker compose -f docker-compose.dev.yml up -d --build
 docker compose -f docker-compose.dev.yml exec beak-api beak-lims db upgrade
 ```
 
+### **Local Subdomain Testing (Tenant-Safe Development)**
+
+Use subdomain-based access in development to match production tenant routing.
+
+Example tenant URLs:
+
+- `http://taddy.localtest.me:5173`
+- `http://acme.localtest.me:5173`
+
+Backend/API:
+
+- `http://localhost:8000/beak-gql`
+- `http://localhost:8000/api/v1`
+
+Notes:
+
+- `localtest.me` resolves to `127.0.0.1`, so you can test tenant subdomains without custom DNS.
+- Frontend sends `X-Org-Slug` automatically and backend also supports subdomain fallback.
+- Vite dev host allowlist includes `.localtest.me` for tenant subdomain access.
+
 ## **Production Installation**
 
 ### **Using Docker**
@@ -305,6 +325,22 @@ docker compose up -d
 docker compose exec bash -c "beak-lims upgrade"
 docker compose logs -f -n100
 ```
+
+### **Production Subdomain Standard**
+
+Tenant access should use subdomains under your primary domain:
+
+- `https://<tenant-slug>.yourdomain.com`
+
+Recommended deployment pattern:
+
+1. Configure wildcard DNS (`*.yourdomain.com`) to your ingress/load balancer.
+2. Configure wildcard TLS certificate for `*.yourdomain.com`.
+3. Route all tenant subdomains to the Beak webapp/backend stack.
+4. Keep backend tenant enforcement enabled (JWT/header/host-based tenant resolution).
+5. Provision each tenant with CLI/platform APIs before granting access.
+
+This keeps tenant identity explicit and avoids cross-tenant ambiguity.
 
 ### **Manual Installation** _(Alternative)_
 
@@ -440,7 +476,8 @@ For tenant schema provisioning and tenant-specific maintenance commands, see:
 Key commands:
 
 - `beak-lims seed platform-superuser`
-- `beak-lims tenant provision --name "<org>" --slug <slug> --admin-email <email> --initial-lab-name "<lab>" --industry clinical --enable-module clinical`
+- `beak-lims tenant provision --name "<org>" --slug <slug> --admin-email <email> --initial-lab-name "<lab>" --industry clinical --enable-module clinical --seed core,clinical`
+- `beak-lims tenant provision --name "<org>" --slug <slug> --industry clinical --no-seed`
 - `beak-lims tenant modules --slug <slug>`
 - `beak-lims tenant module-enable --slug <slug> --module <module-id>`
 - `beak-lims tenant module-disable --slug <slug> --module <module-id>`
@@ -448,7 +485,7 @@ Key commands:
 - `beak-lims tenant activate --slug <slug>`
 - `beak-lims tenant add-lab --slug <slug> --name "<lab>"`
 - `beak-lims tenant cleanup --drop-schema`
-- `beak-lims seed all --tenant-slug <slug>`
+- `beak-lims seed all --tenant-slug <slug> --seed core,clinical`
 - `beak-lims seed core --tenant-slug <slug>`
 - `beak-lims seed industry --module clinical --tenant-slug <slug>`
 - `beak-lims snapshot refresh-all --tenant-slug <slug>`

@@ -18,7 +18,6 @@ const pages = {
     REFLEX_RULES: 'REFLEX_RULES',
     NOT_AUTHORISED: 'NOT_AUTHORISED',
     FOUR_OR_FOUR: 'FOUR_OR_FOUR',
-    INSTALLATION: 'INSTALLATION',
 };
 
 const themes = [
