@@ -73,7 +73,12 @@ class PlatformIAMService:
 
     async def decode_access_token(self, token: str) -> dict | None:
         try:
-            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+            payload = jwt.decode(
+                token,
+                settings.SECRET_KEY,
+                algorithms=[settings.ALGORITHM],
+                audience="platform",
+            )
         except JWTError:
             return None
         if payload.get("aud") != "platform":
