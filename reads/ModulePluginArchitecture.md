@@ -248,6 +248,29 @@ Recommended migration pattern for other domains:
 - Treat `enabled_modules` as the source of truth for runtime feature access.
 - Validate module profile before provisioning in automation pipelines.
 
+## Always Required (Invariants)
+
+- Every tenant must always have `core` enabled.
+- Every tenant must always have exactly one `primary_industry`.
+- The `primary_industry` must always be included in that tenant's `enabled_modules`.
+- Module dependency rules must always resolve before runtime composition (dependency-first order).
+- Platform lifecycle operations (provision, migrate, module enable/disable) must be performed through platform services/CLI/API, not ad-hoc SQL.
+- Runtime access checks must always enforce `enabled_modules` for REST and GraphQL operations.
+- Tenant-aware provisioning must always run in this order:
+  1. create tenant record (`provisioning`)
+  2. create tenant schema
+  3. run tenant migrations
+  4. seed `core`
+  5. seed enabled industry modules
+  6. mark `active` or `failed`
+- Failed provisioning must never be marked `active` without successful migration/seed completion.
+- New module introduction must always include:
+  1. registry manifest
+  2. module catalog update
+  3. migration + seed path
+  4. guard mapping (if new GraphQL/REST surface is added)
+- Runtime and docs must remain module-first (`beak/modules/*`), with no new `beak/apps/*` imports introduced.
+
 ## Known Constraints and Next Improvements
 
 - GraphQL guard currently targets root fields in POST operations; nested dynamic resolution can be expanded later if needed.
