@@ -676,12 +676,12 @@ class PlatformBillingService:
         row = await self.repository.upsert_plan(data)
         return BillingPlanOut.model_validate(row)
 
-    async def get_tenant_entitlements(self, tenant_slug: str) -> TenantEntitlementsOut:
+    async def get_tenant_entitlements(self, tenant_slug: str) -> TenantEntitlementsOut | None:
         """Resolve effective limits and features for a tenant."""
         await self._assert_tenant_exists(tenant_slug)
         subscription = await self.get_subscription(tenant_slug)
         if not subscription:
-            raise ValueError(f"No subscription found for tenant '{tenant_slug}'")
+            return None
         plan = await self.repository.get_plan_by_code(subscription.plan_code)
         if not plan:
             raise ValueError(f"No billing plan configured for plan_code '{subscription.plan_code}'")
@@ -765,6 +765,8 @@ class PlatformBillingService:
     async def enforce_tenant_user_capacity(self, tenant_slug: str) -> None:
         """Raise when tenant user cap would be exceeded."""
         entitlements = await self.get_tenant_entitlements(tenant_slug)
+        if not entitlements:
+            return
         row = next(
             (item for item in entitlements.limits if item.metric_key == BillingLimitMetricKey.TENANT_USERS),
             None,
@@ -780,6 +782,8 @@ class PlatformBillingService:
     async def enforce_tenant_lab_capacity(self, tenant_slug: str) -> None:
         """Raise when tenant laboratory cap would be exceeded."""
         entitlements = await self.get_tenant_entitlements(tenant_slug)
+        if not entitlements:
+            return
         row = next(
             (item for item in entitlements.limits if item.metric_key == BillingLimitMetricKey.TENANT_LABS),
             None,
@@ -795,6 +799,8 @@ class PlatformBillingService:
     async def assert_feature_enabled(self, tenant_slug: str, feature_key: str) -> None:
         """Raise when a billable feature is disabled for tenant."""
         entitlements = await self.get_tenant_entitlements(tenant_slug)
+        if not entitlements:
+            return
         row = next((item for item in entitlements.features if item.feature_key == feature_key), None)
         if not row or not row.enabled:
             raise ValueError(
@@ -811,6 +817,8 @@ class PlatformBillingService:
     ) -> tuple[int, int] | None:
         """Validate request metric cap and increment usage counter."""
         entitlements = await self.get_tenant_entitlements(tenant_slug)
+        if not entitlements:
+            return None
         limit_row = next((item for item in entitlements.limits if item.metric_key == metric_key), None)
         if not limit_row:
             return None

@@ -75,11 +75,11 @@ async def self_service_overview(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
 
 
-@billing_self_service.get("/entitlements", response_model=TenantEntitlementsOut)
+@billing_self_service.get("/entitlements", response_model=TenantEntitlementsOut | None)
 async def self_service_entitlements(
     current_user: Annotated[User, Depends(get_current_user)],
     tenant_context: Annotated[TenantContext, Depends(get_current_tenant_context)],
-) -> TenantEntitlementsOut:
+) -> TenantEntitlementsOut | None:
     """Return resolved limits/features for the authenticated tenant."""
     _require_platform_billing_enabled()
     _ = current_user
