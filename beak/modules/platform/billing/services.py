@@ -4,11 +4,13 @@ from __future__ import annotations
 
 from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
+import re
 from typing import Any
 
 from beak.core.config import get_settings
 from beak.modules.platform.billing.entities import (
     BillingEnforcementMode,
+    BillingPaymentProofStatus,
     BillingInvoiceStatus,
     BillingLimitMetricKey,
     BillingLimitWindow,
@@ -16,6 +18,9 @@ from beak.modules.platform.billing.entities import (
     BillingProvider,
     BillingSubscriptionStatus,
 )
+from beak.modules.shared.infrastructure.minio import MinioClient
+from beak.modules.shared.infrastructure.minio.buckets import MinioBucket
+from beak.modules.shared.infrastructure.scope import resolve_storage_scope
 from beak.modules.platform.billing.providers.base import BillingProviderAdapter
 from beak.modules.platform.billing.providers.paystack import PaystackBillingAdapter
 from beak.modules.platform.billing.providers.stripe import StripeBillingAdapter
@@ -24,6 +29,9 @@ from beak.modules.platform.billing.schemas import (
     BillingAgingSnapshot,
     BillingInvoice,
     BillingInvoiceCreatePayload,
+    BillingPaymentProof,
+    BillingPaymentProofCreateResponse,
+    BillingPaymentProofReviewPayload,
     BillingPlanCreate,
     BillingPlanOut,
     BillingPlanUpdate,
@@ -74,6 +82,7 @@ class PlatformBillingService:
 
     def __init__(self) -> None:
         self.repository = PlatformBillingRepository()
+        self._storage: MinioClient | None = None
         self._providers: dict[BillingProvider, BillingProviderAdapter] = {
             BillingProvider.STRIPE: StripeBillingAdapter(),
             BillingProvider.PAYSTACK: PaystackBillingAdapter(),
@@ -88,6 +97,14 @@ class PlatformBillingService:
         if not adapter:
             raise ValueError(f"Unsupported provider '{provider}'")
         return adapter
+
+    def _get_storage(self) -> MinioClient:
+        if self._storage is not None:
+            return self._storage
+        if not settings.MINIO_SERVER:
+            raise ValueError("MINIO_SERVER is required for payment proof uploads")
+        self._storage = MinioClient()
+        return self._storage
 
     async def get_profile(self, tenant_slug: str) -> TenantBillingProfile:
         """Get tenant billing profile, creating default if missing."""
@@ -348,6 +365,155 @@ class PlatformBillingService:
         await self._assert_tenant_exists(tenant_slug)
         rows = await self.repository.list_payment_attempts(tenant_slug, limit=limit)
         return [BillingPaymentAttempt.model_validate(row) for row in rows]
+
+    async def list_payment_proofs(
+        self,
+        tenant_slug: str,
+        *,
+        invoice_uid: str | None = None,
+        limit: int = 100,
+    ) -> list[BillingPaymentProof]:
+        """List submitted payment proofs for a tenant."""
+        await self._assert_tenant_exists(tenant_slug)
+        rows = await self.repository.list_payment_proofs(
+            tenant_slug=tenant_slug,
+            invoice_uid=invoice_uid,
+            limit=limit,
+        )
+        return [BillingPaymentProof.model_validate(row) for row in rows]
+
+    async def submit_payment_proof(
+        self,
+        *,
+        tenant_slug: str,
+        invoice_uid: str,
+        file_bytes: bytes,
+        original_filename: str,
+        content_type: str,
+        amount: Decimal | None = None,
+        currency: str | None = None,
+        payment_method: str | None = None,
+        payment_reference: str | None = None,
+        note: str | None = None,
+    ) -> BillingPaymentProofCreateResponse:
+        """Upload and record a tenant payment-proof attachment for an invoice."""
+        await self._assert_tenant_exists(tenant_slug)
+        invoice = await self.get_invoice(tenant_slug, invoice_uid)
+        if not invoice:
+            raise ValueError("Invoice not found")
+        if invoice.status in {BillingInvoiceStatus.PAID, BillingInvoiceStatus.VOID}:
+            raise ValueError("Cannot upload proof for paid/void invoice")
+
+        cleaned_name = re.sub(r"[^a-zA-Z0-9._-]+", "_", original_filename).strip("._")
+        safe_name = cleaned_name or "proof.bin"
+        proof_uid = f"pf-{datetime.now(UTC).strftime('%Y%m%d%H%M%S')}-{invoice_uid[-6:]}"
+        object_name = f"{invoice_uid}/{proof_uid}-{safe_name}"
+        scope = resolve_storage_scope(tenant_slug=tenant_slug, require_tenant=True)
+
+        storage = self._get_storage()
+        storage.put_object(
+            bucket=MinioBucket.INVOICE,
+            object_name=object_name,
+            data=file_bytes,
+            metadata={
+                "tenant_slug": tenant_slug,
+                "invoice_uid": invoice_uid,
+                "payment_reference": payment_reference or "",
+            },
+            content_type=content_type or "application/octet-stream",
+            scope=scope,
+            domain="billing-payment-proof",
+        )
+
+        proof = await self.repository.create_payment_proof(
+            tenant_slug=tenant_slug,
+            invoice_uid=invoice_uid,
+            amount=amount,
+            currency=currency,
+            payment_method=payment_method,
+            payment_reference=payment_reference,
+            note=note,
+            original_filename=safe_name,
+            content_type=content_type or "application/octet-stream",
+            size_bytes=len(file_bytes),
+            bucket_name=str(MinioBucket.INVOICE),
+            object_name=object_name,
+            metadata={},
+        )
+        return BillingPaymentProofCreateResponse(proof=BillingPaymentProof.model_validate(proof))
+
+    async def get_payment_proof_download(
+        self,
+        *,
+        tenant_slug: str,
+        proof_uid: str,
+    ) -> tuple[BillingPaymentProof, bytes]:
+        """Fetch payment proof metadata and file bytes for secure download."""
+        await self._assert_tenant_exists(tenant_slug)
+        row = await self.repository.get_payment_proof(tenant_slug=tenant_slug, proof_uid=proof_uid)
+        if not row:
+            raise ValueError("Payment proof not found")
+        proof = BillingPaymentProof.model_validate(row)
+        scope = resolve_storage_scope(tenant_slug=tenant_slug, require_tenant=True)
+        storage = self._get_storage()
+        payloads = storage.get_object(
+            bucket=MinioBucket(proof.bucket_name),
+            object_names=[proof.object_name],
+            scope=scope,
+            domain="billing-payment-proof",
+        )
+        if not payloads:
+            raise ValueError("Payment proof file missing")
+        return proof, payloads[0]
+
+    async def review_payment_proof(
+        self,
+        *,
+        tenant_slug: str,
+        proof_uid: str,
+        payload: BillingPaymentProofReviewPayload,
+        reviewed_by: str | None = None,
+    ) -> BillingPaymentProof:
+        """Review a tenant payment proof and optionally settle the invoice."""
+        await self._assert_tenant_exists(tenant_slug)
+        row = await self.repository.get_payment_proof(tenant_slug=tenant_slug, proof_uid=proof_uid)
+        if not row:
+            raise ValueError("Payment proof not found")
+
+        if payload.status == BillingPaymentProofStatus.SUBMITTED:
+            raise ValueError("Review status must be reviewed or rejected")
+
+        proof = BillingPaymentProof.model_validate(row)
+        metadata = dict(proof.metadata or {})
+        metadata["reviewed_by"] = reviewed_by
+        metadata["reviewed_at"] = datetime.now(UTC).isoformat()
+        if payload.note:
+            metadata["review_note"] = payload.note
+
+        updated = await self.repository.update_payment_proof(
+            tenant_slug=tenant_slug,
+            proof_uid=proof_uid,
+            status=str(payload.status),
+            note=payload.note,
+            metadata=metadata,
+        )
+        if not updated:
+            raise ValueError("Payment proof not found")
+
+        if payload.mark_invoice_paid:
+            if payload.status != BillingPaymentProofStatus.REVIEWED:
+                raise ValueError("Cannot mark invoice paid when proof is rejected")
+            mark_payload = InvoiceMarkPaidPayload(
+                amount=payload.amount,
+                payment_reference=payload.payment_reference or proof.payment_reference,
+                note=payload.note or f"Marked paid from proof {proof_uid}",
+            )
+            await self.mark_invoice_paid(tenant_slug, proof.invoice_uid, mark_payload)
+
+        refreshed = await self.repository.get_payment_proof(tenant_slug=tenant_slug, proof_uid=proof_uid)
+        if not refreshed:
+            raise ValueError("Payment proof not found")
+        return BillingPaymentProof.model_validate(refreshed)
 
     async def get_provider_health(self) -> BillingProviderHealthResponse:
         """Return provider health/config snapshot."""

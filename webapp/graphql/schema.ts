@@ -16,8 +16,11 @@ export type Scalars = {
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
   BytesScalar: { input: never; output: never; }
+  /** Date with time (isoformat) */
   DateTime: { input: never; output: never; }
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](https://ecma-international.org/wp-content/uploads/ECMA-404_2nd_edition_december_2017.pdf). */
   JSON: { input: never; output: never; }
+  /** json field */
   JSONScalar: { input: never; output: never; }
   Upload: { input: never; output: never; }
 };

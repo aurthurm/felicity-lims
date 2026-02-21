@@ -110,6 +110,29 @@ def upgrade() -> None:
         )
         """
     )
+    op.execute(
+        f"""
+        CREATE TABLE IF NOT EXISTS "{platform_schema}".billing_payment_proof (
+            uid VARCHAR(64) PRIMARY KEY,
+            tenant_slug VARCHAR(128) NOT NULL,
+            invoice_uid VARCHAR(64) NOT NULL,
+            status VARCHAR(32) NOT NULL DEFAULT 'submitted',
+            amount NUMERIC(18, 2),
+            currency VARCHAR(8),
+            payment_method VARCHAR(64),
+            payment_reference VARCHAR(255),
+            note TEXT,
+            original_filename VARCHAR(255) NOT NULL,
+            content_type VARCHAR(128) NOT NULL,
+            size_bytes BIGINT NOT NULL DEFAULT 0,
+            bucket_name VARCHAR(128) NOT NULL,
+            object_name VARCHAR(512) NOT NULL,
+            metadata JSONB,
+            created_at TIMESTAMP NULL,
+            updated_at TIMESTAMP NULL
+        )
+        """
+    )
 
 
 def downgrade() -> None:
@@ -117,6 +140,7 @@ def downgrade() -> None:
     op.execute(
         f'DROP INDEX IF EXISTS "{platform_schema}".uq_billing_usage_counter_dims'
     )
+    op.execute(f'DROP TABLE IF EXISTS "{platform_schema}".billing_payment_proof')
     op.execute(f'DROP TABLE IF EXISTS "{platform_schema}".billing_usage_counter')
     op.execute(f'DROP TABLE IF EXISTS "{platform_schema}".billing_tenant_override')
     op.execute(f'DROP TABLE IF EXISTS "{platform_schema}".billing_plan_feature')

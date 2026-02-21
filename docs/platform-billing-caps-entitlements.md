@@ -4,6 +4,7 @@
 This document covers the caps/limits and billable feature entitlement system introduced on top of platform billing.
 
 This is part of platform control-plane billing (`/api/v1/platform/billing/*`) and is separate from tenant operational billing.
+Tenant self-service subscription/invoice endpoints are under `/api/v1/billing/self-service/*`.
 
 ## Behavior Model
 Default behavior is hard enforcement.

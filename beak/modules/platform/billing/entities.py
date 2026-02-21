@@ -34,6 +34,14 @@ class BillingPaymentAttemptStatus(StrEnum):
     ACTION_REQUIRED = "action_required"
 
 
+class BillingPaymentProofStatus(StrEnum):
+    """Allowed status values for tenant-submitted payment proofs."""
+
+    SUBMITTED = "submitted"
+    REVIEWED = "reviewed"
+    REJECTED = "rejected"
+
+
 class BillingProvider(StrEnum):
     """Supported billing providers."""
 

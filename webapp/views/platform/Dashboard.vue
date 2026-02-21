@@ -5,6 +5,7 @@ import usePlatformApi, {
     BillingPlan,
     BillingInvoice,
     BillingPaymentAttempt,
+    BillingPaymentProof,
     BillingProviderHealthResponse,
     TenantEntitlements,
     Tenant,
@@ -115,6 +116,8 @@ const billingProfile = ref<TenantBillingProfile | null>(null);
 const billingSubscription = ref<TenantBillingSubscription | null>(null);
 const billingInvoices = ref<BillingInvoice[]>([]);
 const billingAttempts = ref<BillingPaymentAttempt[]>([]);
+const billingPaymentProofs = ref<BillingPaymentProof[]>([]);
+const billingProofInvoiceUid = ref('');
 const billingPlans = ref<BillingPlan[]>([]);
 const billingEntitlements = ref<TenantEntitlements | null>(null);
 const billingUsage = ref<TenantUsageSnapshot | null>(null);
@@ -167,6 +170,8 @@ const billingInvoiceForm = ref({
 });
 const markPaidInvoiceUid = ref('');
 const markPaidAmount = ref('');
+const billingProofReviewNote = ref('');
+const billingProofMarkPaidAmount = ref('');
 
 const placeholderUserRows = computed(() =>
     tenants.value.map(tenant => ({
@@ -495,6 +500,8 @@ const loadTenantBillingDetails = async (slug: string): Promise<void> => {
         billingSubscription.value = subscription;
         billingInvoices.value = invoices;
         billingAttempts.value = attempts;
+        billingPaymentProofs.value = [];
+        billingProofInvoiceUid.value = '';
         billingEntitlements.value = entitlements;
         billingUsage.value = usage;
         billingOverridesText.value = '[]';
@@ -505,6 +512,60 @@ const loadTenantBillingDetails = async (slug: string): Promise<void> => {
     } finally {
         billingPanelLoading.value = false;
     }
+};
+
+const loadInvoiceProofs = async (invoiceUid: string): Promise<void> => {
+    if (!billingSelectedSlug.value) {
+        return;
+    }
+    await withAction('billing-invoice-proofs', async () => {
+        billingProofInvoiceUid.value = invoiceUid;
+        billingPaymentProofs.value = await api.listTenantInvoicePaymentProofs(billingSelectedSlug.value, invoiceUid);
+    });
+};
+
+const reviewBillingPaymentProof = async (
+    proofUid: string,
+    status: 'reviewed' | 'rejected',
+    markInvoicePaid = false,
+    paymentReference?: string | null
+): Promise<void> => {
+    if (!billingSelectedSlug.value) {
+        return;
+    }
+    await withAction('billing-proof-review', async () => {
+        await api.reviewTenantPaymentProof(billingSelectedSlug.value, proofUid, {
+            status,
+            note: billingProofReviewNote.value || undefined,
+            mark_invoice_paid: markInvoicePaid,
+            amount: markInvoicePaid ? billingProofMarkPaidAmount.value || undefined : undefined,
+            payment_reference: paymentReference || undefined,
+        });
+        pushToast('success', `Payment proof ${status}`);
+        if (billingProofInvoiceUid.value) {
+            await loadInvoiceProofs(billingProofInvoiceUid.value);
+        }
+        if (markInvoicePaid) {
+            await refreshBilling();
+        }
+    });
+};
+
+const downloadBillingPaymentProof = async (proofUid: string, filename: string): Promise<void> => {
+    if (!billingSelectedSlug.value) {
+        return;
+    }
+    await withAction('billing-proof-download', async () => {
+        const blob = await api.downloadTenantPaymentProof(billingSelectedSlug.value, proofUid);
+        const objectUrl = URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = objectUrl;
+        anchor.download = filename;
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
+        URL.revokeObjectURL(objectUrl);
+    });
 };
 
 const refreshBilling = async (): Promise<void> => {
@@ -1075,6 +1136,14 @@ onMounted(async () => {
                       Send
                     </button>
                     <button
+                      class="btn small ghost"
+                      type="button"
+                      :disabled="isBusy || billingPanelLoading"
+                      @click="loadInvoiceProofs(invoice.uid)"
+                    >
+                      Proofs
+                    </button>
+                    <button
                       class="btn small"
                       type="button"
                       :disabled="invoice.status === 'paid' || isBusy || billingPanelLoading"
@@ -1106,6 +1175,37 @@ onMounted(async () => {
                   <span class="muted">{{ attempt.provider_reference ?? 'n/a' }}</span>
                 </li>
               </ul>
+            </div>
+            <h3>Tenant Payment Proof Uploads</h3>
+            <div class="module-list">
+              <p v-if="!billingProofInvoiceUid" class="muted">Click "Proofs" on an invoice to inspect uploaded evidence.</p>
+              <template v-else>
+                <div class="form-grid compact">
+                  <label>
+                    Review Note (optional)
+                    <input v-model.trim="billingProofReviewNote" placeholder="Reviewed by billing ops" />
+                  </label>
+                  <label>
+                    Mark-Paid Amount (optional)
+                    <input v-model.trim="billingProofMarkPaidAmount" placeholder="full amount if blank" />
+                  </label>
+                </div>
+                <ul v-if="billingPaymentProofs.length">
+                  <li v-for="proof in billingPaymentProofs" :key="proof.uid">
+                    <div>
+                      <span>{{ proof.original_filename }} / {{ proof.status }} / {{ proof.payment_reference ?? 'n/a' }}</span>
+                      <span class="muted">{{ proof.created_at ?? '' }}</span>
+                    </div>
+                    <div class="drawer-shortcuts">
+                      <button class="btn small ghost" type="button" :disabled="isBusy || billingPanelLoading" @click="downloadBillingPaymentProof(proof.uid, proof.original_filename)">Download</button>
+                      <button class="btn small ghost" type="button" :disabled="isBusy || billingPanelLoading" @click="reviewBillingPaymentProof(proof.uid, 'reviewed', false, proof.payment_reference)">Approve</button>
+                      <button class="btn small ghost" type="button" :disabled="isBusy || billingPanelLoading" @click="reviewBillingPaymentProof(proof.uid, 'rejected', false, proof.payment_reference)">Reject</button>
+                      <button class="btn small" type="button" :disabled="isBusy || billingPanelLoading" @click="reviewBillingPaymentProof(proof.uid, 'reviewed', true, proof.payment_reference)">Approve + Mark Paid</button>
+                    </div>
+                  </li>
+                </ul>
+                <p v-else class="muted">No payment proofs uploaded for selected invoice.</p>
+              </template>
             </div>
           </section>
         </div>

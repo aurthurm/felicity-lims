@@ -15,6 +15,7 @@ from beak.modules.platform.billing.entities import (
     BillingLimitMetricKey,
     BillingLimitWindow,
     BillingPaymentAttemptStatus,
+    BillingPaymentProofStatus,
     BillingProvider,
     BillingSubscriptionStatus,
 )
@@ -332,3 +333,41 @@ class TenantUsageSnapshot(BaseModel):
 
     tenant_slug: str
     rows: list[UsageCounterRow] = Field(default_factory=list)
+
+
+class BillingPaymentProof(BaseModel):
+    """Tenant-submitted proof-of-payment attachment for an invoice."""
+
+    uid: str
+    tenant_slug: str
+    invoice_uid: str
+    status: BillingPaymentProofStatus = BillingPaymentProofStatus.SUBMITTED
+    amount: Decimal | None = None
+    currency: str | None = None
+    payment_method: str | None = None
+    payment_reference: str | None = None
+    note: str | None = None
+    original_filename: str
+    content_type: str
+    size_bytes: int
+    bucket_name: str
+    object_name: str
+    metadata: dict[str, Any] = Field(default_factory=dict)
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
+
+
+class BillingPaymentProofCreateResponse(BaseModel):
+    """Result returned when tenant uploads proof of payment."""
+
+    proof: BillingPaymentProof
+
+
+class BillingPaymentProofReviewPayload(BaseModel):
+    """Platform review payload for a tenant-uploaded payment proof."""
+
+    status: BillingPaymentProofStatus
+    note: str | None = None
+    mark_invoice_paid: bool = False
+    amount: Decimal | None = None
+    payment_reference: str | None = None

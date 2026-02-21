@@ -45,6 +45,9 @@ All routes are under `/api/v1/platform/billing`.
 - `POST /tenants/{slug}/invoices/{invoice_uid}/finalize`
 - `POST /tenants/{slug}/invoices/{invoice_uid}/send`
 - `POST /tenants/{slug}/invoices/{invoice_uid}/mark-paid`
+- `GET /tenants/{slug}/invoices/{invoice_uid}/payment-proofs`
+- `POST /tenants/{slug}/payment-proofs/{proof_uid}/review`
+- `GET /tenants/{slug}/payment-proofs/{proof_uid}/download`
 
 ### Portfolio and Reconciliation
 - `GET /tenants/{slug}/overview`
@@ -63,6 +66,20 @@ All routes are under `/api/v1/platform/billing`.
 - `POST /webhooks/stripe`
 - `POST /webhooks/paystack`
 
+### Tenant Self-Service (Authenticated Tenant User)
+All routes are under `/api/v1/billing/self-service`.
+
+- `GET /subscription`
+- `GET /overview`
+- `GET /entitlements`
+- `GET /invoices`
+- `GET /payment-attempts`
+- `POST /invoices/{invoice_uid}/payment-proofs` (multipart upload)
+- `GET /invoices/{invoice_uid}/payment-proofs`
+- `GET /payment-proofs/{proof_uid}/download`
+
+Platform reviewers can approve/reject proof uploads and optionally settle invoices from proof review.
+
 ## RBAC
 Uses platform JWT auth and platform roles:
 
@@ -79,6 +96,7 @@ Platform schema bootstrap now creates these tables idempotently in `beak/migrati
 - `billing_invoice`
 - `billing_invoice_line`
 - `billing_payment_attempt`
+- `billing_payment_proof`
 - `billing_payment_allocation`
 - `billing_webhook_event`
 - `billing_provider_account_config`
@@ -128,7 +146,15 @@ Platform dashboard billing tab (`webapp/views/platform/Dashboard.vue`) now inclu
 - tenant billing profile/subscription editing
 - invoice workflow actions
 - recent payment attempts
+- invoice payment proof visibility (tenant uploads)
 - provider health panel
+
+Tenant app billing page (`webapp/views/billing/BillingSubscription.vue`) now includes:
+
+- subscription details (plan/status/MRR/next billing)
+- invoice list with provider hosted payment links (when available)
+- off-platform proof upload and secure download
+- entitlement visibility
 
 API client methods are in `webapp/composables/platform_api.ts`.
 

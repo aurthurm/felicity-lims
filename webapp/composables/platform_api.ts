@@ -182,6 +182,34 @@ export interface BillingPaymentAttempt {
     updated_at?: string | null;
 }
 
+export interface BillingPaymentProof {
+    uid: string;
+    tenant_slug: string;
+    invoice_uid: string;
+    status: 'submitted' | 'reviewed' | 'rejected';
+    amount?: string | null;
+    currency?: string | null;
+    payment_method?: string | null;
+    payment_reference?: string | null;
+    note?: string | null;
+    original_filename: string;
+    content_type: string;
+    size_bytes: number;
+    bucket_name: string;
+    object_name: string;
+    metadata: Record<string, unknown>;
+    created_at?: string | null;
+    updated_at?: string | null;
+}
+
+export interface BillingPaymentProofReviewPayload {
+    status: 'reviewed' | 'rejected';
+    note?: string | null;
+    mark_invoice_paid?: boolean;
+    amount?: string | number | null;
+    payment_reference?: string | null;
+}
+
 export interface BillingPlanLimitInput {
     metric_key: 'tenant_users' | 'tenant_labs' | 'api_requests_user' | 'api_requests_lab' | 'api_requests_tenant';
     limit_value: number;
@@ -425,6 +453,38 @@ export default function usePlatformApi() {
         return data;
     };
 
+    const listTenantInvoicePaymentProofs = async <T = BillingPaymentProof[]>(
+        slug: string,
+        invoiceUid: string,
+        limit = 100
+    ): Promise<T> => {
+        const { data } = await platformAxios.get<T>(
+            `/billing/tenants/${slug}/invoices/${invoiceUid}/payment-proofs`,
+            { params: { limit } }
+        );
+        return data;
+    };
+
+    const reviewTenantPaymentProof = async <T = BillingPaymentProof>(
+        slug: string,
+        proofUid: string,
+        payload: BillingPaymentProofReviewPayload
+    ): Promise<T> => {
+        const { data } = await platformAxios.post<T>(
+            `/billing/tenants/${slug}/payment-proofs/${proofUid}/review`,
+            payload
+        );
+        return data;
+    };
+
+    const downloadTenantPaymentProof = async (slug: string, proofUid: string): Promise<Blob> => {
+        const { data } = await platformAxios.get(
+            `/billing/tenants/${slug}/payment-proofs/${proofUid}/download`,
+            { responseType: 'blob' }
+        );
+        return data as Blob;
+    };
+
     const listBillingPlans = async <T = BillingPlan[]>(): Promise<T> => {
         const { data } = await platformAxios.get<T>('/billing/plans');
         return data;
@@ -488,6 +548,9 @@ export default function usePlatformApi() {
         getBillingProvidersHealth,
         getTenantBillingOverview,
         listTenantBillingPaymentAttempts,
+        listTenantInvoicePaymentProofs,
+        reviewTenantPaymentProof,
+        downloadTenantPaymentProof,
         listBillingPlans,
         createBillingPlan,
         updateBillingPlan,

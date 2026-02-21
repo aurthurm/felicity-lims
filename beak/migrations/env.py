@@ -407,6 +407,31 @@ async def bootstrap_platform_schema(connection) -> None:
     await connection.execute(
         text(
             f"""
+            CREATE TABLE IF NOT EXISTS "{platform_schema}".billing_payment_proof (
+                uid VARCHAR(64) PRIMARY KEY,
+                tenant_slug VARCHAR(128) NOT NULL,
+                invoice_uid VARCHAR(64) NOT NULL,
+                status VARCHAR(32) NOT NULL DEFAULT 'submitted',
+                amount NUMERIC(18, 2),
+                currency VARCHAR(8),
+                payment_method VARCHAR(64),
+                payment_reference VARCHAR(255),
+                note TEXT,
+                original_filename VARCHAR(255) NOT NULL,
+                content_type VARCHAR(128) NOT NULL,
+                size_bytes BIGINT NOT NULL DEFAULT 0,
+                bucket_name VARCHAR(128) NOT NULL,
+                object_name VARCHAR(512) NOT NULL,
+                metadata JSONB,
+                created_at TIMESTAMP NULL,
+                updated_at TIMESTAMP NULL
+            )
+            """
+        )
+    )
+    await connection.execute(
+        text(
+            f"""
             CREATE TABLE IF NOT EXISTS "{platform_schema}".billing_payment_allocation (
                 uid VARCHAR(64) PRIMARY KEY,
                 payment_attempt_uid VARCHAR(64) NOT NULL,

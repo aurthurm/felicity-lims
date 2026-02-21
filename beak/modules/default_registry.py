@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from beak.modules.clinical.api.rest import fhir_v4
-from beak.modules.core.api.rest import jobs, reports, setup
+from beak.modules.core.api.rest import billing_self_service, jobs, reports, setup
 from beak.modules.platform.api.rest import platform
 from beak.modules.contracts import GraphQLContrib, ModuleKind, ModuleManifest
 from beak.modules.registry import ModuleRegistry
@@ -168,6 +168,7 @@ def _core_manifest() -> ModuleManifest:
             reports,
             setup,
             jobs,
+            billing_self_service,
             platform,
         ),
         register_events=register_events,

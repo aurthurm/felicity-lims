@@ -1,7 +1,9 @@
+import io
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request, status
 from fastapi.security import OAuth2PasswordBearer
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, EmailStr, Field
 
 from beak.core.config import get_settings
@@ -14,6 +16,8 @@ from beak.modules.platform.billing.schemas import (
     BillingPlanOut,
     BillingPlanUpdate,
     BillingPaymentAttempt,
+    BillingPaymentProof,
+    BillingPaymentProofReviewPayload,
     BillingProviderHealthResponse,
     BillingWebhookResult,
     InvoiceMarkPaidPayload,
@@ -565,6 +569,98 @@ async def list_tenant_billing_payment_attempts(
         return await PlatformBillingService().list_payment_attempts(slug, limit=limit)
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+
+@platform.get(
+    "/billing/tenants/{slug}/invoices/{invoice_uid}/payment-proofs",
+    response_model=list[BillingPaymentProof],
+)
+async def list_tenant_payment_proofs(
+    slug: str,
+    invoice_uid: str,
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+    limit: int = Query(100, ge=1, le=200),
+) -> list[BillingPaymentProof]:
+    _require_platform_billing_enabled()
+    _require_platform_roles(
+        current_user,
+        allowed={
+            PlatformRole.ADMINISTRATOR,
+            PlatformRole.BILLING,
+            PlatformRole.SUPPORT,
+        },
+    )
+    try:
+        return await PlatformBillingService().list_payment_proofs(
+            slug,
+            invoice_uid=invoice_uid,
+            limit=limit,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+
+@platform.post(
+    "/billing/tenants/{slug}/payment-proofs/{proof_uid}/review",
+    response_model=BillingPaymentProof,
+)
+async def review_tenant_payment_proof(
+    slug: str,
+    proof_uid: str,
+    payload: BillingPaymentProofReviewPayload,
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+) -> BillingPaymentProof:
+    _require_platform_billing_enabled()
+    _require_platform_roles(
+        current_user,
+        allowed={PlatformRole.ADMINISTRATOR, PlatformRole.BILLING},
+    )
+    try:
+        reviewer = (
+            current_user.get("email")
+            or current_user.get("identifier")
+            or current_user.get("username")
+            or current_user.get("sub")
+        )
+        return await PlatformBillingService().review_payment_proof(
+            tenant_slug=slug,
+            proof_uid=proof_uid,
+            payload=payload,
+            reviewed_by=reviewer,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+
+@platform.get("/billing/tenants/{slug}/payment-proofs/{proof_uid}/download")
+async def download_tenant_payment_proof(
+    slug: str,
+    proof_uid: str,
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+) -> StreamingResponse:
+    _require_platform_billing_enabled()
+    _require_platform_roles(
+        current_user,
+        allowed={
+            PlatformRole.ADMINISTRATOR,
+            PlatformRole.BILLING,
+            PlatformRole.SUPPORT,
+        },
+    )
+    try:
+        proof, content = await PlatformBillingService().get_payment_proof_download(
+            tenant_slug=slug,
+            proof_uid=proof_uid,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+    headers = {"Content-Disposition": f'attachment; filename="{proof.original_filename}"'}
+    return StreamingResponse(
+        io.BytesIO(content),
+        media_type=proof.content_type,
+        headers=headers,
+    )
 
 
 @platform.get(

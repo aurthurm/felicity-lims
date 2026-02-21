@@ -1,7 +1,7 @@
 overwrite: true
 debug: true
 schema:
-    - 'http://127.0.0.1:8000/beak-gql'
+    - './webapp/graphql/schema.graphql'
 documents:
     - './webapp/graphql/operations/**/*.graphql'
 ignoreNoDocuments: true

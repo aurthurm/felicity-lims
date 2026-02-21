@@ -97,6 +97,27 @@ class PlatformBillingRepository:
                 COALESCE(scope_lab_uid, '')
             )
             """,
+            f"""
+            CREATE TABLE IF NOT EXISTS "{settings.PLATFORM_SCHEMA}".billing_payment_proof (
+                uid VARCHAR(64) PRIMARY KEY,
+                tenant_slug VARCHAR(128) NOT NULL,
+                invoice_uid VARCHAR(64) NOT NULL,
+                status VARCHAR(32) NOT NULL DEFAULT 'submitted',
+                amount NUMERIC(18, 2),
+                currency VARCHAR(8),
+                payment_method VARCHAR(64),
+                payment_reference VARCHAR(255),
+                note TEXT,
+                original_filename VARCHAR(255) NOT NULL,
+                content_type VARCHAR(128) NOT NULL,
+                size_bytes BIGINT NOT NULL DEFAULT 0,
+                bucket_name VARCHAR(128) NOT NULL,
+                object_name VARCHAR(512) NOT NULL,
+                metadata JSONB,
+                created_at TIMESTAMP NULL,
+                updated_at TIMESTAMP NULL
+            )
+            """,
         ]
         async with PlatformSessionScoped() as session:
             for stmt in stmts:
@@ -504,6 +525,244 @@ class PlatformBillingRepository:
         async with PlatformSessionScoped() as session:
             rows = (await session.execute(stmt, {"tenant_slug": tenant_slug})).mappings().all()
         return [dict(row) for row in rows]
+
+    async def create_payment_proof(
+        self,
+        *,
+        tenant_slug: str,
+        invoice_uid: str,
+        amount: Decimal | None,
+        currency: str | None,
+        payment_method: str | None,
+        payment_reference: str | None,
+        note: str | None,
+        original_filename: str,
+        content_type: str,
+        size_bytes: int,
+        bucket_name: str,
+        object_name: str,
+        metadata: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """Insert a tenant-submitted proof-of-payment row."""
+        now = datetime.now(UTC)
+        uid = get_flake_uid()
+        stmt = text(
+            f"""
+            INSERT INTO "{settings.PLATFORM_SCHEMA}".billing_payment_proof (
+                uid,
+                tenant_slug,
+                invoice_uid,
+                status,
+                amount,
+                currency,
+                payment_method,
+                payment_reference,
+                note,
+                original_filename,
+                content_type,
+                size_bytes,
+                bucket_name,
+                object_name,
+                metadata,
+                created_at,
+                updated_at
+            ) VALUES (
+                :uid,
+                :tenant_slug,
+                :invoice_uid,
+                'submitted',
+                :amount,
+                :currency,
+                :payment_method,
+                :payment_reference,
+                :note,
+                :original_filename,
+                :content_type,
+                :size_bytes,
+                :bucket_name,
+                :object_name,
+                CAST(:metadata AS jsonb),
+                :created_at,
+                :updated_at
+            )
+            """
+        )
+        async with PlatformSessionScoped() as session:
+            await session.execute(
+                stmt,
+                {
+                    "uid": uid,
+                    "tenant_slug": tenant_slug,
+                    "invoice_uid": invoice_uid,
+                    "amount": amount,
+                    "currency": currency,
+                    "payment_method": payment_method,
+                    "payment_reference": payment_reference,
+                    "note": note,
+                    "original_filename": original_filename,
+                    "content_type": content_type,
+                    "size_bytes": size_bytes,
+                    "bucket_name": bucket_name,
+                    "object_name": object_name,
+                    "metadata": json.dumps(metadata or {}),
+                    "created_at": now,
+                    "updated_at": now,
+                },
+            )
+            await session.commit()
+        created = await self.get_payment_proof(tenant_slug=tenant_slug, proof_uid=uid)
+        if not created:
+            raise RuntimeError("Failed to create payment proof")
+        return created
+
+    async def get_payment_proof(self, *, tenant_slug: str, proof_uid: str) -> dict[str, Any] | None:
+        """Fetch one payment proof by uid for tenant."""
+        stmt = text(
+            f"""
+            SELECT
+                uid,
+                tenant_slug,
+                invoice_uid,
+                status,
+                amount,
+                currency,
+                payment_method,
+                payment_reference,
+                note,
+                original_filename,
+                content_type,
+                size_bytes,
+                bucket_name,
+                object_name,
+                COALESCE(metadata, '{{}}'::jsonb) AS metadata,
+                created_at,
+                updated_at
+            FROM "{settings.PLATFORM_SCHEMA}".billing_payment_proof
+            WHERE tenant_slug = :tenant_slug
+              AND uid = :proof_uid
+            LIMIT 1
+            """
+        )
+        async with PlatformSessionScoped() as session:
+            row = (
+                await session.execute(
+                    stmt,
+                    {"tenant_slug": tenant_slug, "proof_uid": proof_uid},
+                )
+            ).mappings().first()
+        return dict(row) if row else None
+
+    async def list_payment_proofs(
+        self,
+        *,
+        tenant_slug: str,
+        invoice_uid: str | None = None,
+        limit: int = 100,
+    ) -> list[dict[str, Any]]:
+        """List payment proofs for tenant, optionally filtered by invoice."""
+        if invoice_uid:
+            stmt = text(
+                f"""
+                SELECT
+                    uid,
+                    tenant_slug,
+                    invoice_uid,
+                    status,
+                    amount,
+                    currency,
+                    payment_method,
+                    payment_reference,
+                    note,
+                    original_filename,
+                    content_type,
+                    size_bytes,
+                    bucket_name,
+                    object_name,
+                    COALESCE(metadata, '{{}}'::jsonb) AS metadata,
+                    created_at,
+                    updated_at
+                FROM "{settings.PLATFORM_SCHEMA}".billing_payment_proof
+                WHERE tenant_slug = :tenant_slug
+                  AND invoice_uid = :invoice_uid
+                ORDER BY created_at DESC
+                LIMIT :limit
+                """
+            )
+            params: dict[str, Any] = {
+                "tenant_slug": tenant_slug,
+                "invoice_uid": invoice_uid,
+                "limit": limit,
+            }
+        else:
+            stmt = text(
+                f"""
+                SELECT
+                    uid,
+                    tenant_slug,
+                    invoice_uid,
+                    status,
+                    amount,
+                    currency,
+                    payment_method,
+                    payment_reference,
+                    note,
+                    original_filename,
+                    content_type,
+                    size_bytes,
+                    bucket_name,
+                    object_name,
+                    COALESCE(metadata, '{{}}'::jsonb) AS metadata,
+                    created_at,
+                    updated_at
+                FROM "{settings.PLATFORM_SCHEMA}".billing_payment_proof
+                WHERE tenant_slug = :tenant_slug
+                ORDER BY created_at DESC
+                LIMIT :limit
+                """
+            )
+            params = {"tenant_slug": tenant_slug, "limit": limit}
+
+        async with PlatformSessionScoped() as session:
+            rows = (await session.execute(stmt, params)).mappings().all()
+        return [dict(row) for row in rows]
+
+    async def update_payment_proof(
+        self,
+        *,
+        tenant_slug: str,
+        proof_uid: str,
+        status: str | None = None,
+        note: str | None = None,
+        metadata: dict[str, Any] | None = None,
+    ) -> dict[str, Any] | None:
+        """Update status/note/metadata for a payment proof row."""
+        now = datetime.now(UTC)
+        stmt = text(
+            f"""
+            UPDATE "{settings.PLATFORM_SCHEMA}".billing_payment_proof
+            SET
+                status = COALESCE(:status, status),
+                note = COALESCE(:note, note),
+                metadata = COALESCE(CAST(:metadata AS jsonb), metadata),
+                updated_at = :updated_at
+            WHERE tenant_slug = :tenant_slug
+              AND uid = :proof_uid
+            """
+        )
+        async with PlatformSessionScoped() as session:
+            await session.execute(
+                stmt,
+                {
+                    "tenant_slug": tenant_slug,
+                    "proof_uid": proof_uid,
+                    "status": status,
+                    "note": note,
+                    "metadata": json.dumps(metadata) if metadata is not None else None,
+                    "updated_at": now,
+                },
+            )
+            await session.commit()
+        return await self.get_payment_proof(tenant_slug=tenant_slug, proof_uid=proof_uid)
 
     async def get_invoice(self, tenant_slug: str, invoice_uid: str) -> dict[str, Any] | None:
         """Fetch one invoice by uid/tenant."""

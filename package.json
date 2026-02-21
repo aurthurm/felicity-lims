@@ -13,7 +13,7 @@
     "webapp:prettier:format": "prettier --write \"{,webapp/**/}*.{md,json,yml,html,cjs,mjs,js,ts,tsx,css,scss}\"",
     "webapp:lint": "eslint . --ext .js,.ts,.tsx,.vue",
     "webapp:lint:fix": "npm run lint -- --fix",
-    "webapp:codegen": "graphql-codegen --config codegen.yml --watch --verbose",
+    "webapp:codegen": "pnpm server:schema:export:tofront && graphql-codegen --config codegen.yml --watch --verbose",
     "server:install": "pip install -e .",
     "server:uv": "uvicorn beak.main:beak",
     "server:uv:watch": "uvicorn beak.main:beak",
