@@ -44,7 +44,7 @@ def upgrade() -> None:
             plan_uid VARCHAR(64) NOT NULL,
             metric_key VARCHAR(64) NOT NULL,
             limit_value INTEGER NOT NULL,
-            window VARCHAR(16) NOT NULL,
+            limit_window VARCHAR(16) NOT NULL,
             enforcement_mode VARCHAR(32) NOT NULL DEFAULT 'hard_block',
             created_at TIMESTAMP NULL,
             updated_at TIMESTAMP NULL
@@ -74,7 +74,7 @@ def upgrade() -> None:
             feature_key VARCHAR(64),
             override_limit_value INTEGER,
             override_enabled BOOLEAN,
-            window VARCHAR(16),
+            limit_window VARCHAR(16),
             enforcement_mode VARCHAR(32),
             metadata JSONB,
             created_at TIMESTAMP NULL,

@@ -40,7 +40,7 @@ class PlatformBillingRepository:
                 plan_uid VARCHAR(64) NOT NULL,
                 metric_key VARCHAR(64) NOT NULL,
                 limit_value INTEGER NOT NULL,
-                window VARCHAR(16) NOT NULL,
+                limit_window VARCHAR(16) NOT NULL,
                 enforcement_mode VARCHAR(32) NOT NULL DEFAULT 'hard_block',
                 created_at TIMESTAMP NULL,
                 updated_at TIMESTAMP NULL
@@ -66,7 +66,7 @@ class PlatformBillingRepository:
                 feature_key VARCHAR(64),
                 override_limit_value INTEGER,
                 override_enabled BOOLEAN,
-                window VARCHAR(16),
+                limit_window VARCHAR(16),
                 enforcement_mode VARCHAR(32),
                 metadata JSONB,
                 created_at TIMESTAMP NULL,
@@ -1214,7 +1214,7 @@ class PlatformBillingRepository:
     async def list_plan_limits(self, plan_uid: str) -> list[dict[str, Any]]:
         stmt = text(
             f"""
-            SELECT metric_key, limit_value, window, enforcement_mode
+            SELECT metric_key, limit_value, limit_window AS window, enforcement_mode
             FROM "{settings.PLATFORM_SCHEMA}".billing_plan_limit
             WHERE plan_uid = :plan_uid
             ORDER BY metric_key ASC
@@ -1245,7 +1245,7 @@ class PlatformBillingRepository:
         insert_stmt = text(
             f"""
             INSERT INTO "{settings.PLATFORM_SCHEMA}".billing_plan_limit (
-                uid, plan_uid, metric_key, limit_value, window, enforcement_mode, created_at, updated_at
+                uid, plan_uid, metric_key, limit_value, limit_window, enforcement_mode, created_at, updated_at
             ) VALUES (
                 :uid, :plan_uid, :metric_key, :limit_value, :window, :enforcement_mode, :created_at, :updated_at
             )
@@ -1321,7 +1321,7 @@ class PlatformBillingRepository:
                 feature_key,
                 override_limit_value,
                 override_enabled,
-                window,
+                limit_window,
                 enforcement_mode,
                 metadata,
                 created_at,
@@ -1373,7 +1373,7 @@ class PlatformBillingRepository:
                 feature_key,
                 override_limit_value,
                 override_enabled,
-                window,
+                limit_window AS window,
                 enforcement_mode,
                 COALESCE(metadata, '{{}}'::jsonb) AS metadata
             FROM "{settings.PLATFORM_SCHEMA}".billing_tenant_override
