@@ -1,13 +1,15 @@
 from beak.modules.core.impress.shipment.engine import ManifetReport
-from beak.modules.core.iol.minio import MinioClient
-from beak.modules.core.iol.minio.enum import MinioBucket
+from beak.modules.shared.infrastructure.minio import MinioClient
+from beak.modules.shared.infrastructure.minio.buckets import MinioBucket
+from beak.modules.shared.infrastructure import resolve_storage_scope
 from beak.modules.core.shipment.schemas import ShipmentUpdate
 from beak.modules.core.shipment.services import ShipmentService
 from beak.core.config import settings
-from beak.database.mongo import MongoService, MongoCollection
+from beak.modules.shared.infrastructure.mongo import MongoService, MongoCollection
 
 
 async def gen_pdf_manifest(data, shipment):
+    scope = resolve_storage_scope(laboratory_uid=shipment.laboratory_uid, require_tenant=True, require_lab=True)
     manifest_pdf = await ManifetReport().generate(data)
     sm_in = {
         "json_content": {"data": data},
@@ -32,6 +34,8 @@ async def gen_pdf_manifest(data, shipment):
                 "shipment_uid": shipment.uid,
             },
             content_type="application/pdf",
+            scope=scope,
+            domain="shipment",
         )
 
         # Save the json to mongodb
@@ -40,4 +44,5 @@ async def gen_pdf_manifest(data, shipment):
             collection_name=MongoCollection.SHIPMENT,
             uid=shipment.uid,
             data={"data": data},
+            scope=scope,
         )

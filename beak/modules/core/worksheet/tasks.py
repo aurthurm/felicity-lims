@@ -15,8 +15,8 @@ from beak.modules.core.analysis.services.quality_control import (
 from beak.modules.core.analysis.services.result import AnalysisResultService
 from beak.modules.core.analysis.utils import get_qc_sample_type
 from beak.modules.core.analysis.workflow.analysis_result import AnalysisResultWorkFlow
-from beak.modules.core.iol.redis import task_guard
-from beak.modules.core.iol.redis.enum import TrackableObject
+from beak.modules.shared.infrastructure.redis import task_guard
+from beak.modules.shared.infrastructure.redis.enum import TrackableObject
 from beak.modules.core.job.enum import JobState
 from beak.modules.core.job.services import JobService
 from beak.modules.core.worksheet.entities import WorkSheet

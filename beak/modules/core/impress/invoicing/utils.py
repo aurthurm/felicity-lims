@@ -10,11 +10,12 @@ from beak.modules.core.billing.services import (
 )
 from beak.modules.core.common.utils.serializer import marshaller
 from beak.modules.core.impress.invoicing.engine import BeakInvoice
-from beak.modules.core.iol.minio import MinioClient
-from beak.modules.core.iol.minio.enum import MinioBucket
+from beak.modules.shared.infrastructure.minio import MinioClient
+from beak.modules.shared.infrastructure.minio.buckets import MinioBucket
+from beak.modules.shared.infrastructure import resolve_storage_scope
 from beak.modules.core.setup.caches import get_laboratory_setting
 from beak.core.config import settings
-from beak.database.mongo import MongoService, MongoCollection
+from beak.modules.shared.infrastructure.mongo import MongoService, MongoCollection
 
 
 async def impress_invoice(test_bill: TestBill):
@@ -25,6 +26,7 @@ async def impress_invoice(test_bill: TestBill):
 
     # laboratory
     lab, lab_setting = await get_laboratory_setting()
+    scope = resolve_storage_scope(laboratory_uid=lab.uid, require_tenant=True, require_lab=True)
     impress_meta["laboratory"] = marshaller(lab, depth=1)
     impress_meta["laboratory_settings"] = marshaller(lab_setting, depth=1)
 
@@ -103,6 +105,8 @@ async def impress_invoice(test_bill: TestBill):
                 "test_bill_uid": test_bill.uid,
             },
             content_type="application/pdf",
+            scope=scope,
+            domain="invoice",
         )
 
     # Save the json to mongodb
@@ -111,6 +115,7 @@ async def impress_invoice(test_bill: TestBill):
             collection_name=MongoCollection.INVOICE,
             uid=test_bill.uid,
             data=impress_meta,
+            scope=scope,
         )
 
     return pdf

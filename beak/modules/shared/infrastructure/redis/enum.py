@@ -1,3 +1,5 @@
+"""Trackable object kinds for processing locks."""
+
 from enum import StrEnum, auto
 
 

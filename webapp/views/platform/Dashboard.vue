@@ -2,13 +2,16 @@
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import usePlatformApi, {
+    BillingPlan,
     BillingInvoice,
     BillingPaymentAttempt,
     BillingProviderHealthResponse,
+    TenantEntitlements,
     Tenant,
     TenantBillingOverview,
     TenantBillingProfile,
     TenantBillingSubscription,
+    TenantUsageSnapshot,
 } from '@/composables/platform_api';
 import { PLATFORM_LOGIN } from '@/router/platform';
 import { usePlatformAuthStore } from '@/stores/platform_auth';
@@ -112,6 +115,28 @@ const billingProfile = ref<TenantBillingProfile | null>(null);
 const billingSubscription = ref<TenantBillingSubscription | null>(null);
 const billingInvoices = ref<BillingInvoice[]>([]);
 const billingAttempts = ref<BillingPaymentAttempt[]>([]);
+const billingPlans = ref<BillingPlan[]>([]);
+const billingEntitlements = ref<TenantEntitlements | null>(null);
+const billingUsage = ref<TenantUsageSnapshot | null>(null);
+const billingOverridesText = ref('[]');
+const billingPlanCreateForm = ref({
+    plan_code: '',
+    name: '',
+    active: true,
+    currency: 'USD',
+    base_amount: '0',
+    limits_json: '[]',
+    features_json: '[]',
+});
+const billingPlanUpdateForm = ref({
+    plan_code: '',
+    name: '',
+    active: true,
+    currency: 'USD',
+    base_amount: '0',
+    limits_json: '',
+    features_json: '',
+});
 const billingPanelLoading = ref(false);
 const billingProfileForm = ref({
     legal_name: '',
@@ -458,16 +483,21 @@ const loadTenantBillingDetails = async (slug: string): Promise<void> => {
     billingPanelLoading.value = true;
     billingSelectedSlug.value = slug;
     try {
-        const [profile, subscription, invoices, attempts] = await Promise.all([
+        const [profile, subscription, invoices, attempts, entitlements, usage] = await Promise.all([
             api.getTenantBillingProfile(slug),
             api.getTenantBillingSubscription(slug),
             api.listTenantBillingInvoices(slug),
             api.listTenantBillingPaymentAttempts(slug, 20),
+            api.getTenantEntitlements(slug),
+            api.getTenantUsageSnapshot(slug),
         ]);
         billingProfile.value = profile;
         billingSubscription.value = subscription;
         billingInvoices.value = invoices;
         billingAttempts.value = attempts;
+        billingEntitlements.value = entitlements;
+        billingUsage.value = usage;
+        billingOverridesText.value = '[]';
         hydrateBillingForms();
     } catch (err: unknown) {
         const message = err instanceof Error ? err.message : 'Failed to load tenant billing details';
@@ -479,10 +509,86 @@ const loadTenantBillingDetails = async (slug: string): Promise<void> => {
 
 const refreshBilling = async (): Promise<void> => {
     await withAction('billing-refresh', async () => {
-        await Promise.all([loadBillingPortfolio(), loadProviderHealth()]);
+        await Promise.all([loadBillingPortfolio(), loadProviderHealth(), loadBillingPlans()]);
         if (billingSelectedSlug.value) {
             await loadTenantBillingDetails(billingSelectedSlug.value);
         }
+    });
+};
+
+const parseJsonArray = <T = unknown>(value: string, label: string): T[] => {
+    const trimmed = value.trim();
+    if (!trimmed) {
+        return [];
+    }
+    const parsed = JSON.parse(trimmed);
+    if (!Array.isArray(parsed)) {
+        throw new Error(`${label} must be a JSON array`);
+    }
+    return parsed as T[];
+};
+
+const loadBillingPlans = async (): Promise<void> => {
+    try {
+        billingPlans.value = await api.listBillingPlans();
+    } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Failed to load billing plans';
+        pushToast('error', message);
+    }
+};
+
+const createBillingPlan = async (): Promise<void> => {
+    await withAction('billing-plan-create', async () => {
+        const limits = parseJsonArray(billingPlanCreateForm.value.limits_json, 'limits_json');
+        const features = parseJsonArray(billingPlanCreateForm.value.features_json, 'features_json');
+        await api.createBillingPlan({
+            plan_code: billingPlanCreateForm.value.plan_code.trim(),
+            name: billingPlanCreateForm.value.name.trim(),
+            active: billingPlanCreateForm.value.active,
+            currency: billingPlanCreateForm.value.currency.trim() || 'USD',
+            base_amount: billingPlanCreateForm.value.base_amount,
+            limits,
+            features,
+        });
+        pushToast('success', `Plan ${billingPlanCreateForm.value.plan_code} created`);
+        await loadBillingPlans();
+    });
+};
+
+const updateBillingPlan = async (): Promise<void> => {
+    if (!billingPlanUpdateForm.value.plan_code.trim()) {
+        pushToast('info', 'Plan code is required');
+        return;
+    }
+    await withAction('billing-plan-update', async () => {
+        const payload: Record<string, unknown> = {
+            name: billingPlanUpdateForm.value.name.trim() || undefined,
+            active: billingPlanUpdateForm.value.active,
+            currency: billingPlanUpdateForm.value.currency.trim() || undefined,
+            base_amount: billingPlanUpdateForm.value.base_amount || undefined,
+        };
+        if (billingPlanUpdateForm.value.limits_json.trim()) {
+            payload.limits = parseJsonArray(billingPlanUpdateForm.value.limits_json, 'limits_json');
+        }
+        if (billingPlanUpdateForm.value.features_json.trim()) {
+            payload.features = parseJsonArray(billingPlanUpdateForm.value.features_json, 'features_json');
+        }
+        await api.updateBillingPlan(billingPlanUpdateForm.value.plan_code.trim(), payload);
+        pushToast('success', `Plan ${billingPlanUpdateForm.value.plan_code} updated`);
+        await loadBillingPlans();
+    });
+};
+
+const saveBillingOverrides = async (): Promise<void> => {
+    if (!billingSelectedSlug.value) {
+        pushToast('info', 'Select a tenant in billing overview');
+        return;
+    }
+    await withAction('billing-overrides', async () => {
+        const overrides = parseJsonArray(billingOverridesText.value, 'overrides');
+        await api.putTenantEntitlements(billingSelectedSlug.value, overrides);
+        pushToast('success', `Entitlement overrides updated for ${billingSelectedSlug.value}`);
+        await loadTenantBillingDetails(billingSelectedSlug.value);
     });
 };
 
@@ -1014,6 +1120,124 @@ onMounted(async () => {
                 <span class="muted">{{ provider.details }}</span>
               </li>
             </ul>
+          </div>
+          <div class="placeholder-card">
+            <h3>Billing Plans</h3>
+            <p class="muted">Manage plans, limits, and feature bundles directly.</p>
+            <form class="form-grid compact" @submit.prevent="createBillingPlan">
+              <label>
+                Plan Code
+                <input v-model.trim="billingPlanCreateForm.plan_code" required placeholder="starter" />
+              </label>
+              <label>
+                Name
+                <input v-model.trim="billingPlanCreateForm.name" required placeholder="Starter Plan" />
+              </label>
+              <label>
+                Currency
+                <input v-model.trim="billingPlanCreateForm.currency" placeholder="USD" />
+              </label>
+              <label>
+                Base Amount
+                <input v-model.trim="billingPlanCreateForm.base_amount" placeholder="0" />
+              </label>
+              <label class="inline-checkbox">
+                <input v-model="billingPlanCreateForm.active" type="checkbox" />
+                Active
+              </label>
+              <label>
+                Limits JSON
+                <textarea v-model="billingPlanCreateForm.limits_json" rows="3"></textarea>
+              </label>
+              <label>
+                Features JSON
+                <textarea v-model="billingPlanCreateForm.features_json" rows="3"></textarea>
+              </label>
+              <button class="btn" :disabled="isBusy || billingPanelLoading" type="submit">Create Plan</button>
+            </form>
+            <form class="form-grid compact" @submit.prevent="updateBillingPlan">
+              <label>
+                Plan Code
+                <input v-model.trim="billingPlanUpdateForm.plan_code" required placeholder="starter" />
+              </label>
+              <label>
+                Name
+                <input v-model.trim="billingPlanUpdateForm.name" placeholder="Optional update" />
+              </label>
+              <label>
+                Currency
+                <input v-model.trim="billingPlanUpdateForm.currency" placeholder="USD" />
+              </label>
+              <label>
+                Base Amount
+                <input v-model.trim="billingPlanUpdateForm.base_amount" placeholder="0" />
+              </label>
+              <label class="inline-checkbox">
+                <input v-model="billingPlanUpdateForm.active" type="checkbox" />
+                Active
+              </label>
+              <label>
+                Limits JSON (optional replace)
+                <textarea v-model="billingPlanUpdateForm.limits_json" rows="3"></textarea>
+              </label>
+              <label>
+                Features JSON (optional replace)
+                <textarea v-model="billingPlanUpdateForm.features_json" rows="3"></textarea>
+              </label>
+              <button class="btn" :disabled="isBusy || billingPanelLoading" type="submit">Update Plan</button>
+            </form>
+            <div class="module-list">
+              <p v-if="!billingPlans.length" class="muted">No plans configured.</p>
+              <ul v-else>
+                <li v-for="plan in billingPlans" :key="plan.uid">
+                  <span>{{ plan.plan_code }} ({{ plan.name }})</span>
+                  <span class="status-pill" :class="{ on: plan.active }">
+                    {{ plan.active ? 'active' : 'inactive' }}
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="placeholder-card">
+            <h3>Entitlements & Usage</h3>
+            <p class="muted">
+              Selected tenant:
+              <strong>{{ billingSelectedSlug || 'none' }}</strong>
+            </p>
+            <div class="module-list">
+              <p v-if="!billingEntitlements" class="muted">No entitlement data loaded.</p>
+              <ul v-else>
+                <li>
+                  <span>Plan</span>
+                  <span class="muted">{{ billingEntitlements.plan_code }}</span>
+                </li>
+                <li v-for="row in billingEntitlements.limits" :key="`${row.metric_key}-${row.window}`">
+                  <span>{{ row.metric_key }}</span>
+                  <span class="muted">{{ row.limit_value }} / {{ row.window }}</span>
+                </li>
+                <li v-for="row in billingEntitlements.features" :key="row.feature_key">
+                  <span>{{ row.feature_key }}</span>
+                  <span class="status-pill" :class="{ on: row.enabled }">{{ row.enabled ? 'enabled' : 'disabled' }}</span>
+                </li>
+              </ul>
+            </div>
+            <h4>Overrides JSON</h4>
+            <form class="form-grid compact" @submit.prevent="saveBillingOverrides">
+              <label>
+                Overrides
+                <textarea v-model="billingOverridesText" rows="5"></textarea>
+              </label>
+              <button class="btn" :disabled="isBusy || billingPanelLoading" type="submit">Save Overrides</button>
+            </form>
+            <div class="module-list">
+              <p v-if="!billingUsage || !billingUsage.rows.length" class="muted">No usage counters recorded.</p>
+              <ul v-else>
+                <li v-for="row in billingUsage.rows" :key="`${row.metric_key}-${row.window_start}-${row.scope_user_uid || ''}-${row.scope_lab_uid || ''}`">
+                  <span>{{ row.metric_key }}</span>
+                  <span class="muted">{{ row.quantity }} ({{ row.window_start }})</span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </article>

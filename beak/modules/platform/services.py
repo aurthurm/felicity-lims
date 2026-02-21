@@ -8,6 +8,7 @@ from sqlalchemy import text
 
 from beak.modules.platform.repository import TenantRepository
 from beak.modules.platform.module_catalog import normalize_modules
+from beak.modules.platform.billing.services import PlatformBillingService
 from beak.modules.core.tenant_registry import register_tenant_registry_provider
 from beak.modules.core.setup import schemas as setup_schemas
 from beak.modules.core.setup.services import (
@@ -177,6 +178,8 @@ class TenantProvisioningService:
         setup_name: str = "beak",
     ) -> dict:
         tenant = await self._require_active_tenant(slug)
+        if settings.PLATFORM_BILLING_ENABLED:
+            await PlatformBillingService().enforce_tenant_lab_capacity(slug)
         set_tenant_context(
             TenantContext(schema_name=tenant["schema_name"], tenant_slug=tenant["slug"])
         )

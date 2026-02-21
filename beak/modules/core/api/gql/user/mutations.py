@@ -26,6 +26,7 @@ from beak.modules.core.identity.services import (
     UserPreferenceService,
     UserService,
 )
+from beak.modules.platform.billing.services import PlatformBillingService
 from beak.core import security
 from beak.core.config import get_settings
 from beak.core.events import post_event
@@ -227,11 +228,20 @@ class UserMutations:
         group_service = GroupService()
         user_preference_service = UserPreferenceService()
         beak_user = await auth_from_info(info)
+        tenant_context = get_tenant_context()
 
         if open_reg and not settings.USERS_OPEN_REGISTRATION:
             return OperationError(
                 error="Open user registration is forbidden on this server"
             )
+
+        if settings.PLATFORM_BILLING_ENABLED and tenant_context and tenant_context.tenant_slug:
+            try:
+                await PlatformBillingService().enforce_tenant_user_capacity(
+                    tenant_context.tenant_slug
+                )
+            except ValueError as exc:
+                return OperationError(error=str(exc))
 
         user_e = await user_service.get_by_email(email=email)
         if user_e:

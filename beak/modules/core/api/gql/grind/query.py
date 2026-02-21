@@ -24,8 +24,10 @@ from beak.modules.core.grind.services import (
     GrindErrandDiscussionService,
 )
 from beak.modules.core.guard import FAction, FObject
-from beak.modules.core.iol.minio import MinioClient
-from beak.modules.core.iol.minio.enum import MinioBucket
+from beak.modules.shared.infrastructure.minio import MinioClient
+from beak.modules.shared.infrastructure.minio.buckets import MinioBucket
+from beak.modules.shared.infrastructure import resolve_storage_scope
+from beak.modules.shared.infrastructure.minio.paths import build_scoped_object_name
 from beak.utils import has_value_or_is_truthy
 
 
@@ -858,9 +860,15 @@ class GrindQuery:
             raise Exception("Media not found")
 
         if media.destination == "minio":
+            scope = resolve_storage_scope(require_tenant=True)
+            scoped_object_name = build_scoped_object_name(
+                media.path,
+                scope=scope,
+                domain="grind-media",
+            )
             download_url = MinioClient().client.presigned_get_object(
                 bucket_name=MinioBucket.GRIND_MEDIA,
-                object_name=media.path,
+                object_name=scoped_object_name,
                 expires=timedelta(
                     minutes=5
                 ),  # valid for 1 minute since download is instant
@@ -888,8 +896,12 @@ class GrindQuery:
         if media.destination == "minio":
             # Get file content from MinIO
             try:
+                scope = resolve_storage_scope(require_tenant=True)
                 files = MinioClient().get_object(
-                    bucket=MinioBucket.GRIND_MEDIA, object_names=[media.path]
+                    bucket=MinioBucket.GRIND_MEDIA,
+                    object_names=[media.path],
+                    scope=scope,
+                    domain="grind-media",
                 )
                 if not files:
                     raise Exception(f"Failed to retrieve {media.path}")

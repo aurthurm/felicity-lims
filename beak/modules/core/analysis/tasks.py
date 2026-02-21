@@ -1,8 +1,8 @@
 import logging
 
 from beak.modules.core.analysis import utils
-from beak.modules.core.iol.redis.enum import TrackableObject
-from beak.modules.core.iol.redis.tracking import task_guard
+from beak.modules.shared.infrastructure.redis.enum import TrackableObject
+from beak.modules.shared.infrastructure.redis.tracking import task_guard
 from beak.modules.core.job.enum import JobState
 from beak.modules.core.job.services import JobService
 from beak.modules.core.notification.services import NotificationService

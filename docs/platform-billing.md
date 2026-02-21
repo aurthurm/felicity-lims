@@ -5,6 +5,10 @@ This document describes the platform-level billing implementation for tenant sub
 
 It is intentionally isolated from operational test billing under `beak/modules/core/billing/*`.
 
+For caps/limits and billable feature entitlements, see:
+
+- `docs/platform-billing-caps-entitlements.md`
+
 ## Feature Flag
 Platform billing APIs are gated by:
 
@@ -46,6 +50,14 @@ All routes are under `/api/v1/platform/billing`.
 - `GET /tenants/{slug}/overview`
 - `GET /tenants/{slug}/payment-attempts`
 
+### Plans, Entitlements, Usage
+- `GET /plans`
+- `POST /plans`
+- `PUT /plans/{plan_code}`
+- `GET /tenants/{slug}/entitlements`
+- `PUT /tenants/{slug}/entitlements`
+- `GET /tenants/{slug}/usage`
+
 ### Providers and Webhooks
 - `GET /providers/health`
 - `POST /webhooks/stripe`
@@ -71,6 +83,11 @@ Platform schema bootstrap now creates these tables idempotently in `beak/migrati
 - `billing_webhook_event`
 - `billing_provider_account_config`
 - `billing_audit_log`
+- `billing_plan`
+- `billing_plan_limit`
+- `billing_plan_feature`
+- `billing_tenant_override`
+- `billing_usage_counter`
 
 Implemented constraints include:
 
@@ -83,6 +100,11 @@ Adapters are implemented with `httpx`:
 
 - Stripe: `beak/modules/platform/billing/providers/stripe.py`
 - Paystack: `beak/modules/platform/billing/providers/paystack.py`
+
+### Stripe and Paystack Positioning
+- Stripe announced the Paystack acquisition on October 15, 2020.
+- Paystack continues to operate with its own API surface and credentials (`https://api.paystack.co`, `PAYSTACK_SECRET_KEY`).
+- For this codebase, Stripe and Paystack remain separate provider adapters. Paystack is not managed through Stripe API objects in this implementation.
 
 The service stores provider object identifiers in metadata for later lifecycle operations:
 
@@ -115,9 +137,10 @@ Unit tests:
 
 - `beak/tests/unit/platform/billing/test_provider_adapters.py`
 - `beak/tests/unit/platform/billing/test_platform_billing_service.py`
+- `beak/tests/unit/platform/billing/test_platform_billing_entitlements.py`
 
 Run:
 
 ```bash
-.venv/bin/pytest -q beak/tests/unit/platform/billing/test_provider_adapters.py beak/tests/unit/platform/billing/test_platform_billing_service.py
+.venv/bin/pytest -q beak/tests/unit/platform/billing
 ```

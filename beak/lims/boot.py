@@ -24,7 +24,7 @@ from beak.api.gql.schema import schema
 from beak.api.rest.api_v1 import api, init_api
 from beak.modules.core.common.channel import broadcast
 from beak.modules.events import observe_events
-from beak.modules.core.iol.redis.client import create_redis_client
+from beak.modules.shared.infrastructure.redis.client import create_redis_client
 from beak.modules.core.job.sched import beak_workforce_init
 from beak.modules.platform.services import TenantRegistryService
 from beak.core.config import settings

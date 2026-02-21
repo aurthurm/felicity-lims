@@ -5,8 +5,8 @@ from beak.modules.core.analysis.entities.analysis import Sample
 from beak.modules.core.analysis.enum import SampleState
 from beak.modules.core.analysis.services.analysis import SampleService
 from beak.modules.core.impress.sample import utils
-from beak.modules.core.iol.redis import task_guard
-from beak.modules.core.iol.redis.enum import TrackableObject
+from beak.modules.shared.infrastructure.redis import task_guard
+from beak.modules.shared.infrastructure.redis.enum import TrackableObject
 from beak.modules.core.job import schemas as job_schemas
 from beak.modules.core.job.enum import JobAction, JobCategory, JobState
 from beak.modules.core.job.enum import JobPriority

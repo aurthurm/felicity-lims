@@ -1,3 +1,5 @@
+"""Shared Redis connection helpers."""
+
 from redis import asyncio as aioredis
 
 from beak.core.config import settings

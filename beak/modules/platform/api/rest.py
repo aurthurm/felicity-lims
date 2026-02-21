@@ -10,15 +10,21 @@ from beak.modules.platform.billing.entities import BillingProvider
 from beak.modules.platform.billing.schemas import (
     BillingInvoice,
     BillingInvoiceCreatePayload,
+    BillingPlanCreate,
+    BillingPlanOut,
+    BillingPlanUpdate,
     BillingPaymentAttempt,
     BillingProviderHealthResponse,
     BillingWebhookResult,
     InvoiceMarkPaidPayload,
     SubscriptionResponse,
     SubscriptionUpdatePayload,
+    TenantEntitlementOverrideInput,
+    TenantEntitlementsOut,
     TenantBillingOverview,
     TenantBillingProfile,
     TenantBillingProfileUpdate,
+    TenantUsageSnapshot,
 )
 from beak.modules.platform.billing.services import PlatformBillingService
 from beak.modules.platform.billing.webhooks import (
@@ -578,6 +584,130 @@ async def get_billing_providers_health(
         },
     )
     return await PlatformBillingService().get_provider_health()
+
+
+@platform.get(
+    "/billing/plans",
+    response_model=list[BillingPlanOut],
+)
+async def list_billing_plans(
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+) -> list[BillingPlanOut]:
+    _require_platform_billing_enabled()
+    _require_platform_roles(
+        current_user,
+        allowed={
+            PlatformRole.ADMINISTRATOR,
+            PlatformRole.BILLING,
+            PlatformRole.SUPPORT,
+        },
+    )
+    return await PlatformBillingService().list_plans()
+
+
+@platform.post(
+    "/billing/plans",
+    response_model=BillingPlanOut,
+)
+async def create_billing_plan(
+    payload: BillingPlanCreate,
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+) -> BillingPlanOut:
+    _require_platform_billing_enabled()
+    _require_platform_roles(
+        current_user,
+        allowed={PlatformRole.ADMINISTRATOR, PlatformRole.BILLING},
+    )
+    try:
+        return await PlatformBillingService().upsert_plan(payload.plan_code, payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+
+@platform.put(
+    "/billing/plans/{plan_code}",
+    response_model=BillingPlanOut,
+)
+async def update_billing_plan(
+    plan_code: str,
+    payload: BillingPlanUpdate,
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+) -> BillingPlanOut:
+    _require_platform_billing_enabled()
+    _require_platform_roles(
+        current_user,
+        allowed={PlatformRole.ADMINISTRATOR, PlatformRole.BILLING},
+    )
+    try:
+        return await PlatformBillingService().upsert_plan(plan_code, payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+
+@platform.get(
+    "/billing/tenants/{slug}/entitlements",
+    response_model=TenantEntitlementsOut,
+)
+async def get_tenant_entitlements(
+    slug: str,
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+) -> TenantEntitlementsOut:
+    _require_platform_billing_enabled()
+    _require_platform_roles(
+        current_user,
+        allowed={
+            PlatformRole.ADMINISTRATOR,
+            PlatformRole.BILLING,
+            PlatformRole.SUPPORT,
+        },
+    )
+    try:
+        return await PlatformBillingService().get_tenant_entitlements(slug)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+
+@platform.put(
+    "/billing/tenants/{slug}/entitlements",
+    response_model=TenantEntitlementsOut,
+)
+async def put_tenant_entitlements(
+    slug: str,
+    payload: list[TenantEntitlementOverrideInput],
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+) -> TenantEntitlementsOut:
+    _require_platform_billing_enabled()
+    _require_platform_roles(
+        current_user,
+        allowed={PlatformRole.ADMINISTRATOR, PlatformRole.BILLING},
+    )
+    try:
+        return await PlatformBillingService().upsert_tenant_overrides(slug, payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+
+@platform.get(
+    "/billing/tenants/{slug}/usage",
+    response_model=TenantUsageSnapshot,
+)
+async def get_tenant_usage_snapshot(
+    slug: str,
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+) -> TenantUsageSnapshot:
+    _require_platform_billing_enabled()
+    _require_platform_roles(
+        current_user,
+        allowed={
+            PlatformRole.ADMINISTRATOR,
+            PlatformRole.BILLING,
+            PlatformRole.SUPPORT,
+        },
+    )
+    try:
+        return await PlatformBillingService().get_usage_snapshot(slug)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
 
 
 @platform.post(

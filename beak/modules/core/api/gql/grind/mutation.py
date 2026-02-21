@@ -26,8 +26,9 @@ from beak.modules.core.grind.services import (
     GrindErrandDiscussionService,
 )
 from beak.modules.core.guard import FAction, FObject
-from beak.modules.core.iol.minio import MinioClient
-from beak.modules.core.iol.minio.enum import MinioBucket
+from beak.modules.shared.infrastructure.minio import MinioClient
+from beak.modules.shared.infrastructure.minio.buckets import MinioBucket
+from beak.modules.shared.infrastructure import resolve_storage_scope
 from beak.core.config import settings
 from beak.utils.dirs import resolve_media_dirs_for, delete_file
 
@@ -673,6 +674,7 @@ class GrindMutations:
         # Create the media
         obj_in = schema.GrindMediaCreate(**incoming)
         media = await GrindMediaService().create(obj_in)
+        scope = resolve_storage_scope(require_tenant=True)
 
         # save file to minio
         if settings.OBJECT_STORAGE:
@@ -697,6 +699,8 @@ class GrindMutations:
                     "target": payload.target.value,
                     "target_uid": payload.target_uid,
                 },
+                scope=scope,
+                domain="grind-media",
             )
 
             # Refresh the media object after update
@@ -723,7 +727,12 @@ class GrindMutations:
                 bucket = MinioBucket.GRIND_MEDIA
 
                 try:
-                    MinioClient().remove_object(bucket=bucket, object_name=object_name)
+                    MinioClient().remove_object(
+                        bucket=bucket,
+                        object_name=object_name,
+                        scope=resolve_storage_scope(require_tenant=True),
+                        domain="grind-media",
+                    )
                 except Exception as e:
                     logging.error(f"Failed to delete object from MinIO: {str(e)}")
                     # Continue with deletion even if MinIO fails

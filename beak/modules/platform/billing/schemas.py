@@ -9,7 +9,11 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, Field
 
 from beak.modules.platform.billing.entities import (
+    BillingEnforcementMode,
+    BillingFeatureKey,
     BillingInvoiceStatus,
+    BillingLimitMetricKey,
+    BillingLimitWindow,
     BillingPaymentAttemptStatus,
     BillingProvider,
     BillingSubscriptionStatus,
@@ -197,3 +201,134 @@ class TenantBillingOverview(BaseModel):
     subscription_status: BillingSubscriptionStatus | None = None
     mrr_snapshot: Decimal = Decimal("0")
     aging: BillingAgingSnapshot
+
+
+class BillingPlanLimitInput(BaseModel):
+    """Input row for a plan limit definition."""
+
+    metric_key: BillingLimitMetricKey
+    limit_value: int
+    window: BillingLimitWindow
+    enforcement_mode: BillingEnforcementMode = BillingEnforcementMode.HARD_BLOCK
+
+
+class BillingPlanFeatureInput(BaseModel):
+    """Input row for a plan feature entitlement definition."""
+
+    feature_key: BillingFeatureKey
+    enabled: bool = True
+    included_units: Decimal = Decimal("0")
+    unit_price: Decimal = Decimal("0")
+
+
+class BillingPlanCreate(BaseModel):
+    """Create payload for billing plans."""
+
+    plan_code: str
+    name: str
+    active: bool = True
+    currency: str = "USD"
+    base_amount: Decimal = Decimal("0")
+    limits: list[BillingPlanLimitInput] = Field(default_factory=list)
+    features: list[BillingPlanFeatureInput] = Field(default_factory=list)
+
+
+class BillingPlanUpdate(BaseModel):
+    """Mutable plan fields plus optional child replacement."""
+
+    name: str | None = None
+    active: bool | None = None
+    currency: str | None = None
+    base_amount: Decimal | None = None
+    limits: list[BillingPlanLimitInput] | None = None
+    features: list[BillingPlanFeatureInput] | None = None
+
+
+class BillingPlanLimitOut(BaseModel):
+    """Plan limit projection."""
+
+    metric_key: BillingLimitMetricKey
+    limit_value: int
+    window: BillingLimitWindow
+    enforcement_mode: BillingEnforcementMode
+
+
+class BillingPlanFeatureOut(BaseModel):
+    """Plan feature projection."""
+
+    feature_key: BillingFeatureKey
+    enabled: bool
+    included_units: Decimal = Decimal("0")
+    unit_price: Decimal = Decimal("0")
+
+
+class BillingPlanOut(BaseModel):
+    """Billing plan projection."""
+
+    uid: str
+    plan_code: str
+    name: str
+    active: bool = True
+    currency: str = "USD"
+    base_amount: Decimal = Decimal("0")
+    limits: list[BillingPlanLimitOut] = Field(default_factory=list)
+    features: list[BillingPlanFeatureOut] = Field(default_factory=list)
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
+
+
+class TenantEntitlementOverrideInput(BaseModel):
+    """Per-tenant override payload for limit or feature values."""
+
+    metric_key: BillingLimitMetricKey | None = None
+    feature_key: BillingFeatureKey | None = None
+    override_limit_value: int | None = None
+    override_enabled: bool | None = None
+    window: BillingLimitWindow | None = None
+    enforcement_mode: BillingEnforcementMode | None = None
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class TenantEffectiveLimit(BaseModel):
+    """Resolved effective limit for a tenant metric."""
+
+    metric_key: BillingLimitMetricKey
+    limit_value: int
+    window: BillingLimitWindow
+    enforcement_mode: BillingEnforcementMode = BillingEnforcementMode.HARD_BLOCK
+
+
+class TenantEffectiveFeature(BaseModel):
+    """Resolved effective feature entitlement for a tenant."""
+
+    feature_key: BillingFeatureKey
+    enabled: bool
+    included_units: Decimal = Decimal("0")
+    unit_price: Decimal = Decimal("0")
+
+
+class TenantEntitlementsOut(BaseModel):
+    """Resolved tenant entitlement state."""
+
+    tenant_slug: str
+    plan_code: str
+    limits: list[TenantEffectiveLimit] = Field(default_factory=list)
+    features: list[TenantEffectiveFeature] = Field(default_factory=list)
+
+
+class UsageCounterRow(BaseModel):
+    """Single usage counter row."""
+
+    metric_key: BillingLimitMetricKey
+    quantity: int
+    window_start: datetime
+    window_end: datetime
+    scope_user_uid: str | None = None
+    scope_lab_uid: str | None = None
+
+
+class TenantUsageSnapshot(BaseModel):
+    """Tenant usage projection for a time window."""
+
+    tenant_slug: str
+    rows: list[UsageCounterRow] = Field(default_factory=list)

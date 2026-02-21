@@ -4,8 +4,8 @@ from beak.modules.core.iol.fhir.utils import (
     get_diagnostic_report_resource,
     get_shipment_bundle_resource,
 )
-from beak.modules.core.iol.redis import task_guard
-from beak.modules.core.iol.redis.enum import TrackableObject
+from beak.modules.shared.infrastructure.redis import task_guard
+from beak.modules.shared.infrastructure.redis.enum import TrackableObject
 from beak.modules.core.iol.relay import post_data
 from beak.modules.core.job.enum import JobState
 from beak.modules.core.job.services import JobService

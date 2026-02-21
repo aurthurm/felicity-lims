@@ -8,7 +8,8 @@ from beak.modules.core.api.gql.setup.types import LaboratoryType
 from beak.modules.shared.api.gql.types import JSONScalar
 from beak.modules.core.api.gql.user.types import UserType
 from beak.core.config import settings
-from beak.database.mongo import MongoService, MongoCollection
+from beak.modules.shared.infrastructure import resolve_storage_scope
+from beak.modules.shared.infrastructure.mongo import MongoService, MongoCollection
 
 
 @strawberry.type
@@ -36,8 +37,15 @@ class ReportImpressType:
     @strawberry.field
     async def json_content(self) -> Optional[JSONScalar]:
         if settings.OBJECT_STORAGE:
+            scope = resolve_storage_scope(
+                laboratory_uid=self.laboratory_uid,
+                require_tenant=True,
+                require_lab=True,
+            )
             return await MongoService().retrieve(
-                MongoCollection.DIAGNOSTIC_REPORT, self.uid
+                MongoCollection.DIAGNOSTIC_REPORT,
+                self.uid,
+                scope=scope,
             )
         else:
             return self.json_content

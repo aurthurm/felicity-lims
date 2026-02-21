@@ -2,13 +2,16 @@
 
 from __future__ import annotations
 
-from datetime import UTC, date, datetime
+from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
 from typing import Any
 
 from beak.core.config import get_settings
 from beak.modules.platform.billing.entities import (
+    BillingEnforcementMode,
     BillingInvoiceStatus,
+    BillingLimitMetricKey,
+    BillingLimitWindow,
     BillingPaymentAttemptStatus,
     BillingProvider,
     BillingSubscriptionStatus,
@@ -21,6 +24,9 @@ from beak.modules.platform.billing.schemas import (
     BillingAgingSnapshot,
     BillingInvoice,
     BillingInvoiceCreatePayload,
+    BillingPlanCreate,
+    BillingPlanOut,
+    BillingPlanUpdate,
     BillingPaymentAttempt,
     BillingProviderHealth,
     BillingProviderHealthResponse,
@@ -28,9 +34,15 @@ from beak.modules.platform.billing.schemas import (
     InvoiceMarkPaidPayload,
     SubscriptionResponse,
     SubscriptionUpdatePayload,
+    TenantEffectiveFeature,
+    TenantEffectiveLimit,
     TenantBillingOverview,
     TenantBillingProfile,
     TenantBillingProfileUpdate,
+    TenantEntitlementOverrideInput,
+    TenantEntitlementsOut,
+    TenantUsageSnapshot,
+    UsageCounterRow,
 )
 
 settings = get_settings()
@@ -462,3 +474,226 @@ class PlatformBillingService:
             duplicate=False,
             detail="Webhook processed",
         )
+
+    async def list_plans(self) -> list[BillingPlanOut]:
+        """List all billing plans."""
+        rows = await self.repository.list_plans()
+        return [BillingPlanOut.model_validate(row) for row in rows]
+
+    async def upsert_plan(
+        self,
+        plan_code: str,
+        payload: BillingPlanCreate | BillingPlanUpdate,
+    ) -> BillingPlanOut:
+        """Create or update a billing plan."""
+        if isinstance(payload, BillingPlanCreate):
+            data = payload.model_dump()
+        else:
+            existing = await self.repository.get_plan_by_code(plan_code)
+            if not existing:
+                raise ValueError(f"Unknown billing plan '{plan_code}'")
+            data = {
+                "plan_code": plan_code,
+                "name": payload.name if payload.name is not None else existing["name"],
+                "active": payload.active if payload.active is not None else existing["active"],
+                "currency": payload.currency if payload.currency is not None else existing["currency"],
+                "base_amount": (
+                    payload.base_amount if payload.base_amount is not None else existing["base_amount"]
+                ),
+            }
+            if payload.limits is not None:
+                data["limits"] = [row.model_dump() for row in payload.limits]
+            if payload.features is not None:
+                data["features"] = [row.model_dump() for row in payload.features]
+        if "plan_code" not in data:
+            data["plan_code"] = plan_code
+        row = await self.repository.upsert_plan(data)
+        return BillingPlanOut.model_validate(row)
+
+    async def get_tenant_entitlements(self, tenant_slug: str) -> TenantEntitlementsOut:
+        """Resolve effective limits and features for a tenant."""
+        await self._assert_tenant_exists(tenant_slug)
+        subscription = await self.get_subscription(tenant_slug)
+        if not subscription:
+            raise ValueError(f"No subscription found for tenant '{tenant_slug}'")
+        plan = await self.repository.get_plan_by_code(subscription.plan_code)
+        if not plan:
+            raise ValueError(f"No billing plan configured for plan_code '{subscription.plan_code}'")
+
+        limit_map: dict[str, dict[str, Any]] = {
+            item["metric_key"]: dict(item) for item in plan.get("limits", [])
+        }
+        feature_map: dict[str, dict[str, Any]] = {
+            item["feature_key"]: dict(item) for item in plan.get("features", [])
+        }
+        overrides = await self.repository.list_tenant_overrides(tenant_slug)
+        for override in overrides:
+            metric_key = override.get("metric_key")
+            feature_key = override.get("feature_key")
+            if metric_key and metric_key in limit_map:
+                if override.get("override_limit_value") is not None:
+                    limit_map[metric_key]["limit_value"] = int(override["override_limit_value"])
+                if override.get("window"):
+                    limit_map[metric_key]["window"] = override["window"]
+                if override.get("enforcement_mode"):
+                    limit_map[metric_key]["enforcement_mode"] = override["enforcement_mode"]
+            elif metric_key and metric_key not in limit_map:
+                limit_map[metric_key] = {
+                    "metric_key": metric_key,
+                    "limit_value": int(override.get("override_limit_value") or 0),
+                    "window": override.get("window") or BillingLimitWindow.MONTH,
+                    "enforcement_mode": (
+                        override.get("enforcement_mode") or BillingEnforcementMode.HARD_BLOCK
+                    ),
+                }
+
+            if feature_key and feature_key in feature_map:
+                if override.get("override_enabled") is not None:
+                    feature_map[feature_key]["enabled"] = bool(override["override_enabled"])
+            elif feature_key and feature_key not in feature_map:
+                feature_map[feature_key] = {
+                    "feature_key": feature_key,
+                    "enabled": bool(override.get("override_enabled", False)),
+                    "included_units": Decimal("0"),
+                    "unit_price": Decimal("0"),
+                }
+
+        limits = [
+            TenantEffectiveLimit.model_validate(item)
+            for item in sorted(limit_map.values(), key=lambda row: str(row["metric_key"]))
+        ]
+        features = [
+            TenantEffectiveFeature.model_validate(item)
+            for item in sorted(feature_map.values(), key=lambda row: str(row["feature_key"]))
+        ]
+        return TenantEntitlementsOut(
+            tenant_slug=tenant_slug,
+            plan_code=subscription.plan_code,
+            limits=limits,
+            features=features,
+        )
+
+    async def upsert_tenant_overrides(
+        self,
+        tenant_slug: str,
+        overrides: list[TenantEntitlementOverrideInput],
+    ) -> TenantEntitlementsOut:
+        """Replace tenant override set then resolve effective entitlements."""
+        await self._assert_tenant_exists(tenant_slug)
+        rows = [item.model_dump() for item in overrides]
+        for row in rows:
+            if not row.get("metric_key") and not row.get("feature_key"):
+                raise ValueError("Each override must include metric_key or feature_key")
+        await self.repository.replace_tenant_overrides(tenant_slug, rows)
+        return await self.get_tenant_entitlements(tenant_slug)
+
+    async def get_usage_snapshot(self, tenant_slug: str) -> TenantUsageSnapshot:
+        """Return usage counters for tenant."""
+        await self._assert_tenant_exists(tenant_slug)
+        rows = await self.repository.list_usage_counters(tenant_slug)
+        return TenantUsageSnapshot(
+            tenant_slug=tenant_slug,
+            rows=[UsageCounterRow.model_validate(row) for row in rows],
+        )
+
+    async def enforce_tenant_user_capacity(self, tenant_slug: str) -> None:
+        """Raise when tenant user cap would be exceeded."""
+        entitlements = await self.get_tenant_entitlements(tenant_slug)
+        row = next(
+            (item for item in entitlements.limits if item.metric_key == BillingLimitMetricKey.TENANT_USERS),
+            None,
+        )
+        if not row:
+            return
+        current = await self.repository.count_tenant_users(tenant_slug)
+        if current >= row.limit_value:
+            raise ValueError(
+                f"CAP_LIMIT_EXCEEDED metric=tenant_users limit={row.limit_value} current={current}"
+            )
+
+    async def enforce_tenant_lab_capacity(self, tenant_slug: str) -> None:
+        """Raise when tenant laboratory cap would be exceeded."""
+        entitlements = await self.get_tenant_entitlements(tenant_slug)
+        row = next(
+            (item for item in entitlements.limits if item.metric_key == BillingLimitMetricKey.TENANT_LABS),
+            None,
+        )
+        if not row:
+            return
+        current = await self.repository.count_tenant_labs(tenant_slug)
+        if current >= row.limit_value:
+            raise ValueError(
+                f"CAP_LIMIT_EXCEEDED metric=tenant_labs limit={row.limit_value} current={current}"
+            )
+
+    async def assert_feature_enabled(self, tenant_slug: str, feature_key: str) -> None:
+        """Raise when a billable feature is disabled for tenant."""
+        entitlements = await self.get_tenant_entitlements(tenant_slug)
+        row = next((item for item in entitlements.features if item.feature_key == feature_key), None)
+        if not row or not row.enabled:
+            raise ValueError(
+                f"FEATURE_NOT_ENTITLED feature={feature_key} tenant={tenant_slug} plan={entitlements.plan_code}"
+            )
+
+    async def check_and_increment_request_limit(
+        self,
+        *,
+        tenant_slug: str,
+        metric_key: BillingLimitMetricKey,
+        scope_user_uid: str | None = None,
+        scope_lab_uid: str | None = None,
+    ) -> tuple[int, int] | None:
+        """Validate request metric cap and increment usage counter."""
+        entitlements = await self.get_tenant_entitlements(tenant_slug)
+        limit_row = next((item for item in entitlements.limits if item.metric_key == metric_key), None)
+        if not limit_row:
+            return None
+        if limit_row.window == BillingLimitWindow.INSTANT:
+            return None
+        window_start, window_end = self._window_bounds(limit_row.window)
+        current = await self.repository.get_usage_counter_value(
+            tenant_slug=tenant_slug,
+            metric_key=str(metric_key),
+            window_start=window_start,
+            scope_user_uid=scope_user_uid,
+            scope_lab_uid=scope_lab_uid,
+        )
+        if current + 1 > limit_row.limit_value:
+            raise ValueError(
+                "CAP_LIMIT_EXCEEDED "
+                f"metric={metric_key} limit={limit_row.limit_value} current={current} "
+                f"window={limit_row.window}"
+            )
+        await self.repository.increment_usage_counter(
+            tenant_slug=tenant_slug,
+            metric_key=str(metric_key),
+            window_start=window_start,
+            window_end=window_end,
+            scope_user_uid=scope_user_uid,
+            scope_lab_uid=scope_lab_uid,
+            delta=1,
+        )
+        return current + 1, limit_row.limit_value
+
+    def _window_bounds(self, window: BillingLimitWindow) -> tuple[datetime, datetime]:
+        now = datetime.now(UTC)
+        if window == BillingLimitWindow.MINUTE:
+            start = now.replace(second=0, microsecond=0)
+            end = start.replace(second=59, microsecond=999999)
+            return start, end
+        if window == BillingLimitWindow.HOUR:
+            start = now.replace(minute=0, second=0, microsecond=0)
+            end = start.replace(minute=59, second=59, microsecond=999999)
+            return start, end
+        if window == BillingLimitWindow.DAY:
+            start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+            end = now.replace(hour=23, minute=59, second=59, microsecond=999999)
+            return start, end
+        # month fallback
+        start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        if start.month == 12:
+            next_month = start.replace(year=start.year + 1, month=1, day=1)
+        else:
+            next_month = start.replace(month=start.month + 1, day=1)
+        end = next_month.replace(microsecond=0) - timedelta(microseconds=1)
+        return start, end

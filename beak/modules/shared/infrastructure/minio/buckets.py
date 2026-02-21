@@ -1,3 +1,5 @@
+"""MinIO bucket names used by the application."""
+
 from enum import StrEnum
 
 

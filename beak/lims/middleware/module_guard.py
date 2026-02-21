@@ -8,12 +8,17 @@ from fastapi.responses import JSONResponse
 from graphql import OperationType, get_operation_ast, parse
 from starlette.middleware.base import BaseHTTPMiddleware
 
+from beak.core.config import get_settings
 from beak.modules.platform.module_access import get_enabled_modules
+from beak.modules.platform.feature_graphql_fields import build_graphql_field_feature_map
+from beak.modules.platform.billing.services import PlatformBillingService
 from beak.core.tenant_context import get_tenant_context
 from beak.modules import get_registry
 from beak.modules.graphql_fields import build_graphql_field_module_map
 
 _GRAPHQL_FIELD_MODULE_MAP = build_graphql_field_module_map(get_registry())
+_GRAPHQL_FIELD_FEATURE_MAP = build_graphql_field_feature_map()
+settings = get_settings()
 
 
 class GraphQLModuleGuardMiddleware(BaseHTTPMiddleware):
@@ -67,6 +72,21 @@ class GraphQLModuleGuardMiddleware(BaseHTTPMiddleware):
                         ]
                     },
                 )
+
+            if settings.PLATFORM_BILLING_ENABLED:
+                feature_map = _GRAPHQL_FIELD_FEATURE_MAP.get(op_type, {})
+                required_feature = feature_map.get(field_name)
+                if required_feature:
+                    try:
+                        await PlatformBillingService().assert_feature_enabled(
+                            context.tenant_slug,
+                            required_feature,
+                        )
+                    except ValueError as exc:
+                        return JSONResponse(
+                            status_code=403,
+                            content={"errors": [{"message": str(exc)}]},
+                        )
 
         return await call_next(request)
 

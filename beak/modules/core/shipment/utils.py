@@ -22,8 +22,8 @@ from beak.modules.core.client.services import ClientService
 from beak.modules.core.common.utils.serializer import marshaller
 from beak.modules.core.impress.shipment.utils import gen_pdf_manifest
 from beak.modules.core.iol.fhir.utils import get_shipment_bundle_resource
-from beak.modules.core.iol.redis import task_guard
-from beak.modules.core.iol.redis.enum import TrackableObject
+from beak.modules.shared.infrastructure.redis import task_guard
+from beak.modules.shared.infrastructure.redis.enum import TrackableObject
 from beak.modules.core.iol.relay import post_data
 from beak.modules.core.job import schemas as job_schemas
 from beak.modules.core.job.enum import JobAction, JobCategory, JobPriority, JobState

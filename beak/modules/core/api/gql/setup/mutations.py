@@ -33,9 +33,13 @@ from beak.modules.core.setup.services import (
     OrganizationSettingService,
 )
 from beak.modules.core.billing.enum import PaymentStatus
+from beak.modules.platform.billing.services import PlatformBillingService
+from beak.core.config import get_settings
+from beak.core.tenant_context import get_tenant_context
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+settings = get_settings()
 
 OrganizationResponse = strawberry.union(
     "OrganizationResponse",
@@ -305,11 +309,20 @@ class SetupMutations:
     async def create_laboratory(
         self, info, payload: LaboratoryCreateInputType
     ) -> LaboratoryResponse:  # noqa
+        tenant_context = get_tenant_context()
         if not payload.name:
             return OperationError(error="Laboratory name is required")
 
         if not payload.organization_uid:
             return OperationError(error="Organization UID is required")
+
+        if settings.PLATFORM_BILLING_ENABLED and tenant_context and tenant_context.tenant_slug:
+            try:
+                await PlatformBillingService().enforce_tenant_lab_capacity(
+                    tenant_context.tenant_slug
+                )
+            except ValueError as exc:
+                return OperationError(error=str(exc))
 
         try:
             incoming: dict = dict()

@@ -16,14 +16,15 @@ from beak.modules.core.analysis.tasks import verify_results, submit_results
 from beak.modules.core.analysis.utils import retest_from_result_uids
 from beak.modules.core.analysis.workflow.analysis_result import AnalysisResultWorkFlow
 from beak.modules.core.guard import FAction, FObject
-from beak.modules.core.iol.redis import task_guard
-from beak.modules.core.iol.redis.enum import TrackableObject
+from beak.modules.shared.infrastructure.redis import task_guard
+from beak.modules.shared.infrastructure.redis.enum import TrackableObject
 from beak.modules.core.job import schemas as job_schemas
 from beak.modules.core.job.enum import JobAction, JobCategory, JobPriority, JobState
 from beak.modules.core.job.services import JobService
 from beak.modules.core.notification.enum import NotificationObject
 from beak.modules.core.notification.services import ActivityStreamService
 from beak.core.config import settings
+from beak.modules.shared.infrastructure import resolve_storage_scope
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -109,15 +110,23 @@ async def submit_analysis_results(
         )
 
     for _ar in an_results:
-        await task_guard.process(uid=_ar["uid"], object_type=TrackableObject.RESULT)
+        await task_guard.process(
+            uid=_ar["uid"],
+            object_type=TrackableObject.RESULT,
+            scope=resolve_storage_scope(require_tenant=True, require_lab=True),
+        )
 
     if source_object == "worksheet" and source_object_uid:
         await task_guard.process(
-            uid=source_object_uid, object_type=TrackableObject.WORKSHEET
+            uid=source_object_uid,
+            object_type=TrackableObject.WORKSHEET,
+            scope=resolve_storage_scope(require_tenant=True, require_lab=True),
         )
     elif source_object == "sample" and source_object_uid:
         await task_guard.process(
-            uid=source_object_uid, object_type=TrackableObject.SAMPLE
+            uid=source_object_uid,
+            object_type=TrackableObject.SAMPLE,
+            scope=resolve_storage_scope(require_tenant=True, require_lab=True),
         )
 
     return ResultOperationType(
@@ -155,16 +164,24 @@ async def verify_analysis_results(
         )
 
     for uid in analyses:
-        await task_guard.process(uid=uid, object_type=TrackableObject.RESULT)
+        await task_guard.process(
+            uid=uid,
+            object_type=TrackableObject.RESULT,
+            scope=resolve_storage_scope(require_tenant=True, require_lab=True),
+        )
 
     if source_object == "worksheet" and source_object_uid:
         await task_guard.process(
-            uid=source_object_uid, object_type=TrackableObject.WORKSHEET
+            uid=source_object_uid,
+            object_type=TrackableObject.WORKSHEET,
+            scope=resolve_storage_scope(require_tenant=True, require_lab=True),
         )
     elif source_object == "sample" and source_object_uid:
         # TODO: ? we might not need to lock the sample
         await task_guard.process(
-            uid=source_object_uid, object_type=TrackableObject.SAMPLE
+            uid=source_object_uid,
+            object_type=TrackableObject.SAMPLE,
+            scope=resolve_storage_scope(require_tenant=True, require_lab=True),
         )
 
     return ResultOperationType(

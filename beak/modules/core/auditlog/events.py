@@ -3,7 +3,8 @@ import logging
 from beak.modules.core.auditlog.services import AuditLogService
 from beak.core.config import settings
 from beak.core.events import subscribe
-from beak.database.mongo import MongoService, MongoCollection
+from beak.modules.shared.infrastructure import resolve_storage_scope
+from beak.modules.shared.infrastructure.mongo import MongoService, MongoCollection
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -31,7 +32,11 @@ async def auditlog_tracker(action: str, table_name: str, metadata):
     }
 
     if settings.DOCUMENT_STORAGE:
-        await MongoService().create(MongoCollection.AUDIT_LOG, update)
+        await MongoService().create(
+            MongoCollection.AUDIT_LOG,
+            update,
+            scope=resolve_storage_scope(require_tenant=True),
+        )
     else:
         del update["uid"]
         await AuditLogService().create(update)

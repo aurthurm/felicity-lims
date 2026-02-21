@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 
 from beak.modules.core.analysis.enum import SampleState
@@ -7,14 +9,15 @@ from beak.modules.core.impress.sample.engine import BeakImpress
 from beak.modules.core.impress.sample.helpers import _get_user_meta
 from beak.modules.core.impress.sample.schemas import ReportImpressCreate, SampleImpressMetadata
 from beak.modules.core.impress.services import ReportImpressService
-from beak.modules.core.iol.minio.client import MinioClient
-from beak.modules.core.iol.minio.enum import MinioBucket
+from beak.modules.shared.infrastructure.minio import MinioClient
+from beak.modules.shared.infrastructure.minio.buckets import MinioBucket
+from beak.modules.shared.infrastructure import resolve_storage_scope
 from beak.modules.core.notification.enum import NotificationObject
 from beak.modules.core.notification.services import ActivityStreamService
 from beak.modules.core.setup.caches import get_laboratory
 from beak.core.config import settings
 from beak.core.dtz import format_datetime
-from beak.database.mongo import MongoService, MongoCollection
+from beak.modules.shared.infrastructure.mongo import MongoService, MongoCollection
 from beak.utils import to_text
 
 logging.basicConfig(level=logging.INFO)
@@ -33,7 +36,7 @@ exclude = [
 ]
 
 
-async def build_impress_metadata(sample: "Sample", laboratory: "Laboratory") -> dict:
+async def build_impress_metadata(sample, laboratory) -> dict:
     """Build minimal metadata structure for PDF generation"""
     patient_meta = (
         ((sample.analysis_request.metadata_snapshot or {}).get("patient", {}))
@@ -182,6 +185,7 @@ async def impress_samples(sample_meta: list[dict], user):
 
             # save pdf to minio
             if settings.OBJECT_STORAGE:
+                scope = resolve_storage_scope(laboratory_uid=sample.laboratory_uid, require_tenant=True, require_lab=True)
                 MinioClient().put_object(
                     bucket=MinioBucket.DIAGNOSTIC_REPORT,
                     object_name=f"{sample.sample_id}.pdf",
@@ -192,14 +196,18 @@ async def impress_samples(sample_meta: list[dict], user):
                         "impress_meta_uid": report_impress.uid,
                     },
                     content_type="application/pdf",
+                    scope=scope,
+                    domain="diagnostic-report",
                 )
 
             # Save the minimal json to mongodb
             if settings.DOCUMENT_STORAGE:
+                scope = resolve_storage_scope(laboratory_uid=sample.laboratory_uid, require_tenant=True, require_lab=True)
                 await MongoService().upsert(
                     collection_name=MongoCollection.DIAGNOSTIC_REPORT,
                     uid=report_impress.uid,  # noqa
                     data=impress_meta.model_dump(),
+                    scope=scope,
                 )
 
             if action != "pre-publish":

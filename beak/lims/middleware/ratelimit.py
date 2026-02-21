@@ -16,6 +16,11 @@ from starlette.status import HTTP_429_TOO_MANY_REQUESTS
 from starlette.types import ASGIApp
 
 from beak.core.tenant_context import get_tenant_context
+from beak.core.config import get_settings
+from beak.modules.platform.billing.entities import BillingLimitMetricKey
+from beak.modules.platform.billing.services import PlatformBillingService
+
+settings = get_settings()
 
 
 class RateLimitMiddleware(BaseHTTPMiddleware):
@@ -141,18 +146,79 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             # 3. 🟢 LAB-BASED RATE LIMITING
             if tenant_context.laboratory_uid:
                 lab_check = await self._check_lab_rate_limit(
-                    tenant_context.laboratory_uid
+                    tenant_context.laboratory_uid,
+                    tenant_context.tenant_slug,
                 )
                 rate_checks.append(lab_check)
 
             # 4. 🟡 ORGANIZATION-BASED RATE LIMITING
             if tenant_context.organization_uid:
                 org_check = await self._check_org_rate_limit(
-                    tenant_context.organization_uid
+                    tenant_context.organization_uid,
+                    tenant_context.tenant_slug,
                 )
                 rate_checks.append(org_check)
 
+            # 5. 🧾 Billing-plan request caps
+            # Apply after legacy checks to avoid billing counter increments
+            # when request is already rejected by infrastructure limits.
+            if settings.PLATFORM_BILLING_ENABLED and tenant_context.tenant_slug:
+                if not any(item.get("exceeded") for item in rate_checks):
+                    billing_checks = await self._check_billing_request_caps(tenant_context)
+                    rate_checks.extend(billing_checks)
+
         return rate_checks
+
+    async def _check_billing_request_caps(self, tenant_context) -> List[Dict]:
+        checks: List[Dict] = []
+        service = PlatformBillingService()
+        tenant_slug = tenant_context.tenant_slug
+        if not tenant_slug:
+            return checks
+        if tenant_context.user_uid:
+            try:
+                await service.check_and_increment_request_limit(
+                    tenant_slug=tenant_slug,
+                    metric_key=BillingLimitMetricKey.API_REQUESTS_USER,
+                    scope_user_uid=tenant_context.user_uid,
+                )
+            except ValueError as exc:
+                checks.append(
+                    {
+                        "exceeded": True,
+                        "message": str(exc),
+                        "headers": {"Retry-After": "60", "X-RateLimit-Type": "Billing-User"},
+                    }
+                )
+        if tenant_context.laboratory_uid:
+            try:
+                await service.check_and_increment_request_limit(
+                    tenant_slug=tenant_slug,
+                    metric_key=BillingLimitMetricKey.API_REQUESTS_LAB,
+                    scope_lab_uid=tenant_context.laboratory_uid,
+                )
+            except ValueError as exc:
+                checks.append(
+                    {
+                        "exceeded": True,
+                        "message": str(exc),
+                        "headers": {"Retry-After": "60", "X-RateLimit-Type": "Billing-Lab"},
+                    }
+                )
+        try:
+            await service.check_and_increment_request_limit(
+                tenant_slug=tenant_slug,
+                metric_key=BillingLimitMetricKey.API_REQUESTS_TENANT,
+            )
+        except ValueError as exc:
+            checks.append(
+                {
+                    "exceeded": True,
+                    "message": str(exc),
+                    "headers": {"Retry-After": "60", "X-RateLimit-Type": "Billing-Tenant"},
+                }
+            )
+        return checks
 
     async def _check_ip_rate_limit(self, client_ip: str) -> Dict:
         """Traditional IP-based rate limiting"""
@@ -210,8 +276,9 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             else self.user_hour_limit
         )
 
-        minute_key = f"ratelimit:user:{user_uid}:minute"
-        hour_key = f"ratelimit:user:{user_uid}:hour"
+        tenant_slug = request.headers.get("X-Org-Slug", "global")
+        minute_key = f"ratelimit:user:{tenant_slug}:{user_uid}:minute"
+        hour_key = f"ratelimit:user:{tenant_slug}:{user_uid}:hour"
 
         async with self.redis_client.pipeline(transaction=True) as pipe:
             await pipe.get(minute_key)
@@ -250,11 +317,12 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             "is_admin": is_admin,
         }
 
-    async def _check_lab_rate_limit(self, lab_uid: str) -> Dict:
+    async def _check_lab_rate_limit(self, lab_uid: str, tenant_slug: str | None = None) -> Dict:
         """🆕 Laboratory-based rate limiting"""
 
-        minute_key = f"ratelimit:lab:{lab_uid}:minute"
-        hour_key = f"ratelimit:lab:{lab_uid}:hour"
+        tenant = tenant_slug or "global"
+        minute_key = f"ratelimit:lab:{tenant}:{lab_uid}:minute"
+        hour_key = f"ratelimit:lab:{tenant}:{lab_uid}:hour"
 
         async with self.redis_client.pipeline(transaction=True) as pipe:
             await pipe.get(minute_key)
@@ -288,11 +356,12 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
         return {"exceeded": False, "lab_minute": minute_count, "lab_hour": hour_count}
 
-    async def _check_org_rate_limit(self, org_uid: str) -> Dict:
+    async def _check_org_rate_limit(self, org_uid: str, tenant_slug: str | None = None) -> Dict:
         """🆕 Organization-based rate limiting"""
 
-        hour_key = f"ratelimit:org:{org_uid}:hour"
-        day_key = f"ratelimit:org:{org_uid}:day"
+        tenant = tenant_slug or "global"
+        hour_key = f"ratelimit:org:{tenant}:{org_uid}:hour"
+        day_key = f"ratelimit:org:{tenant}:{org_uid}:day"
 
         async with self.redis_client.pipeline(transaction=True) as pipe:
             await pipe.get(hour_key)
@@ -383,8 +452,9 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         # 🆕 Tenant-aware headers
         if tenant_context:
             if tenant_context.user_uid:
-                user_minute_key = f"ratelimit:user:{tenant_context.user_uid}:minute"
-                user_hour_key = f"ratelimit:user:{tenant_context.user_uid}:hour"
+                tenant = tenant_context.tenant_slug or "global"
+                user_minute_key = f"ratelimit:user:{tenant}:{tenant_context.user_uid}:minute"
+                user_hour_key = f"ratelimit:user:{tenant}:{tenant_context.user_uid}:hour"
 
                 async with self.redis_client.pipeline(transaction=True) as pipe:
                     await pipe.get(user_minute_key)

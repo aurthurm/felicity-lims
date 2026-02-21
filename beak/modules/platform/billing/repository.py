@@ -19,6 +19,90 @@ settings = get_settings()
 class PlatformBillingRepository:
     """Persistence adapter for platform billing domain."""
 
+    async def ensure_billing_refinement_tables(self) -> None:
+        """Ensure entitlement and cap tables exist in platform schema."""
+        stmts = [
+            f"""
+            CREATE TABLE IF NOT EXISTS "{settings.PLATFORM_SCHEMA}".billing_plan (
+                uid VARCHAR(64) PRIMARY KEY,
+                plan_code VARCHAR(64) NOT NULL UNIQUE,
+                name VARCHAR(128) NOT NULL,
+                active BOOLEAN NOT NULL DEFAULT true,
+                currency VARCHAR(8) NOT NULL DEFAULT 'USD',
+                base_amount NUMERIC(18, 2) NOT NULL DEFAULT 0,
+                created_at TIMESTAMP NULL,
+                updated_at TIMESTAMP NULL
+            )
+            """,
+            f"""
+            CREATE TABLE IF NOT EXISTS "{settings.PLATFORM_SCHEMA}".billing_plan_limit (
+                uid VARCHAR(64) PRIMARY KEY,
+                plan_uid VARCHAR(64) NOT NULL,
+                metric_key VARCHAR(64) NOT NULL,
+                limit_value INTEGER NOT NULL,
+                window VARCHAR(16) NOT NULL,
+                enforcement_mode VARCHAR(32) NOT NULL DEFAULT 'hard_block',
+                created_at TIMESTAMP NULL,
+                updated_at TIMESTAMP NULL
+            )
+            """,
+            f"""
+            CREATE TABLE IF NOT EXISTS "{settings.PLATFORM_SCHEMA}".billing_plan_feature (
+                uid VARCHAR(64) PRIMARY KEY,
+                plan_uid VARCHAR(64) NOT NULL,
+                feature_key VARCHAR(64) NOT NULL,
+                enabled BOOLEAN NOT NULL DEFAULT true,
+                included_units NUMERIC(18, 4) NOT NULL DEFAULT 0,
+                unit_price NUMERIC(18, 4) NOT NULL DEFAULT 0,
+                created_at TIMESTAMP NULL,
+                updated_at TIMESTAMP NULL
+            )
+            """,
+            f"""
+            CREATE TABLE IF NOT EXISTS "{settings.PLATFORM_SCHEMA}".billing_tenant_override (
+                uid VARCHAR(64) PRIMARY KEY,
+                tenant_slug VARCHAR(128) NOT NULL,
+                metric_key VARCHAR(64),
+                feature_key VARCHAR(64),
+                override_limit_value INTEGER,
+                override_enabled BOOLEAN,
+                window VARCHAR(16),
+                enforcement_mode VARCHAR(32),
+                metadata JSONB,
+                created_at TIMESTAMP NULL,
+                updated_at TIMESTAMP NULL
+            )
+            """,
+            f"""
+            CREATE TABLE IF NOT EXISTS "{settings.PLATFORM_SCHEMA}".billing_usage_counter (
+                uid VARCHAR(64) PRIMARY KEY,
+                tenant_slug VARCHAR(128) NOT NULL,
+                metric_key VARCHAR(64) NOT NULL,
+                window_start TIMESTAMP NOT NULL,
+                window_end TIMESTAMP NOT NULL,
+                scope_user_uid VARCHAR(64),
+                scope_lab_uid VARCHAR(64),
+                quantity BIGINT NOT NULL DEFAULT 0,
+                created_at TIMESTAMP NULL,
+                updated_at TIMESTAMP NULL
+            )
+            """,
+            f"""
+            CREATE UNIQUE INDEX IF NOT EXISTS uq_billing_usage_counter_dims
+            ON "{settings.PLATFORM_SCHEMA}".billing_usage_counter (
+                tenant_slug,
+                metric_key,
+                window_start,
+                COALESCE(scope_user_uid, ''),
+                COALESCE(scope_lab_uid, '')
+            )
+            """,
+        ]
+        async with PlatformSessionScoped() as session:
+            for stmt in stmts:
+                await session.execute(text(stmt))
+            await session.commit()
+
     async def ensure_tenant_exists(self, tenant_slug: str) -> bool:
         """Check tenant existence in platform registry.
 
@@ -766,4 +850,447 @@ class PlatformBillingRepository:
                     "updated_at": now,
                 },
             )
+            await session.commit()
+
+    async def list_plans(self) -> list[dict[str, Any]]:
+        """List billing plans with child limits/features."""
+        await self.ensure_billing_refinement_tables()
+        stmt = text(
+            f"""
+            SELECT uid, plan_code, name, active, currency, base_amount, created_at, updated_at
+            FROM "{settings.PLATFORM_SCHEMA}".billing_plan
+            ORDER BY plan_code ASC
+            """
+        )
+        async with PlatformSessionScoped() as session:
+            rows = (await session.execute(stmt)).mappings().all()
+        plans = [dict(row) for row in rows]
+        for plan in plans:
+            plan["limits"] = await self.list_plan_limits(plan["uid"])
+            plan["features"] = await self.list_plan_features(plan["uid"])
+        return plans
+
+    async def get_plan_by_code(self, plan_code: str) -> dict[str, Any] | None:
+        """Fetch one billing plan by code with child rows."""
+        await self.ensure_billing_refinement_tables()
+        stmt = text(
+            f"""
+            SELECT uid, plan_code, name, active, currency, base_amount, created_at, updated_at
+            FROM "{settings.PLATFORM_SCHEMA}".billing_plan
+            WHERE plan_code = :plan_code
+            LIMIT 1
+            """
+        )
+        async with PlatformSessionScoped() as session:
+            row = (await session.execute(stmt, {"plan_code": plan_code})).mappings().first()
+        if not row:
+            return None
+        plan = dict(row)
+        plan["limits"] = await self.list_plan_limits(plan["uid"])
+        plan["features"] = await self.list_plan_features(plan["uid"])
+        return plan
+
+    async def upsert_plan(self, payload: dict[str, Any]) -> dict[str, Any]:
+        """Create or update billing plan by plan_code."""
+        now = datetime.now(UTC)
+        existing = await self.get_plan_by_code(str(payload["plan_code"]))
+        if existing:
+            stmt = text(
+                f"""
+                UPDATE "{settings.PLATFORM_SCHEMA}".billing_plan
+                SET
+                    name = :name,
+                    active = :active,
+                    currency = :currency,
+                    base_amount = :base_amount,
+                    updated_at = :updated_at
+                WHERE uid = :uid
+                """
+            )
+            params = {
+                "uid": existing["uid"],
+                "name": payload["name"],
+                "active": payload.get("active", True),
+                "currency": payload.get("currency", "USD"),
+                "base_amount": payload.get("base_amount", Decimal("0")),
+                "updated_at": now,
+            }
+            plan_uid = existing["uid"]
+        else:
+            plan_uid = get_flake_uid()
+            stmt = text(
+                f"""
+                INSERT INTO "{settings.PLATFORM_SCHEMA}".billing_plan (
+                    uid, plan_code, name, active, currency, base_amount, created_at, updated_at
+                ) VALUES (
+                    :uid, :plan_code, :name, :active, :currency, :base_amount, :created_at, :updated_at
+                )
+                """
+            )
+            params = {
+                "uid": plan_uid,
+                "plan_code": payload["plan_code"],
+                "name": payload["name"],
+                "active": payload.get("active", True),
+                "currency": payload.get("currency", "USD"),
+                "base_amount": payload.get("base_amount", Decimal("0")),
+                "created_at": now,
+                "updated_at": now,
+            }
+
+        async with PlatformSessionScoped() as session:
+            await session.execute(stmt, params)
+            await session.commit()
+
+        if "limits" in payload:
+            await self.replace_plan_limits(plan_uid, payload.get("limits") or [])
+        if "features" in payload:
+            await self.replace_plan_features(plan_uid, payload.get("features") or [])
+
+        refreshed = await self.get_plan_by_code(str(payload["plan_code"]))
+        if not refreshed:
+            raise RuntimeError("Failed to upsert billing plan")
+        return refreshed
+
+    async def list_plan_limits(self, plan_uid: str) -> list[dict[str, Any]]:
+        stmt = text(
+            f"""
+            SELECT metric_key, limit_value, window, enforcement_mode
+            FROM "{settings.PLATFORM_SCHEMA}".billing_plan_limit
+            WHERE plan_uid = :plan_uid
+            ORDER BY metric_key ASC
+            """
+        )
+        async with PlatformSessionScoped() as session:
+            rows = (await session.execute(stmt, {"plan_uid": plan_uid})).mappings().all()
+        return [dict(row) for row in rows]
+
+    async def list_plan_features(self, plan_uid: str) -> list[dict[str, Any]]:
+        stmt = text(
+            f"""
+            SELECT feature_key, enabled, included_units, unit_price
+            FROM "{settings.PLATFORM_SCHEMA}".billing_plan_feature
+            WHERE plan_uid = :plan_uid
+            ORDER BY feature_key ASC
+            """
+        )
+        async with PlatformSessionScoped() as session:
+            rows = (await session.execute(stmt, {"plan_uid": plan_uid})).mappings().all()
+        return [dict(row) for row in rows]
+
+    async def replace_plan_limits(self, plan_uid: str, limits: list[dict[str, Any]]) -> None:
+        now = datetime.now(UTC)
+        delete_stmt = text(
+            f'DELETE FROM "{settings.PLATFORM_SCHEMA}".billing_plan_limit WHERE plan_uid = :plan_uid'
+        )
+        insert_stmt = text(
+            f"""
+            INSERT INTO "{settings.PLATFORM_SCHEMA}".billing_plan_limit (
+                uid, plan_uid, metric_key, limit_value, window, enforcement_mode, created_at, updated_at
+            ) VALUES (
+                :uid, :plan_uid, :metric_key, :limit_value, :window, :enforcement_mode, :created_at, :updated_at
+            )
+            """
+        )
+        async with PlatformSessionScoped() as session:
+            await session.execute(delete_stmt, {"plan_uid": plan_uid})
+            for row in limits:
+                await session.execute(
+                    insert_stmt,
+                    {
+                        "uid": get_flake_uid(),
+                        "plan_uid": plan_uid,
+                        "metric_key": row["metric_key"],
+                        "limit_value": row["limit_value"],
+                        "window": row["window"],
+                        "enforcement_mode": row.get("enforcement_mode", "hard_block"),
+                        "created_at": now,
+                        "updated_at": now,
+                    },
+                )
+            await session.commit()
+
+    async def replace_plan_features(self, plan_uid: str, features: list[dict[str, Any]]) -> None:
+        now = datetime.now(UTC)
+        delete_stmt = text(
+            f'DELETE FROM "{settings.PLATFORM_SCHEMA}".billing_plan_feature WHERE plan_uid = :plan_uid'
+        )
+        insert_stmt = text(
+            f"""
+            INSERT INTO "{settings.PLATFORM_SCHEMA}".billing_plan_feature (
+                uid, plan_uid, feature_key, enabled, included_units, unit_price, created_at, updated_at
+            ) VALUES (
+                :uid, :plan_uid, :feature_key, :enabled, :included_units, :unit_price, :created_at, :updated_at
+            )
+            """
+        )
+        async with PlatformSessionScoped() as session:
+            await session.execute(delete_stmt, {"plan_uid": plan_uid})
+            for row in features:
+                await session.execute(
+                    insert_stmt,
+                    {
+                        "uid": get_flake_uid(),
+                        "plan_uid": plan_uid,
+                        "feature_key": row["feature_key"],
+                        "enabled": row.get("enabled", True),
+                        "included_units": row.get("included_units", Decimal("0")),
+                        "unit_price": row.get("unit_price", Decimal("0")),
+                        "created_at": now,
+                        "updated_at": now,
+                    },
+                )
+            await session.commit()
+
+    async def replace_tenant_overrides(
+        self,
+        tenant_slug: str,
+        overrides: list[dict[str, Any]],
+    ) -> list[dict[str, Any]]:
+        """Replace override set for tenant."""
+        await self.ensure_billing_refinement_tables()
+        now = datetime.now(UTC)
+        delete_stmt = text(
+            f'DELETE FROM "{settings.PLATFORM_SCHEMA}".billing_tenant_override WHERE tenant_slug = :tenant_slug'
+        )
+        insert_stmt = text(
+            f"""
+            INSERT INTO "{settings.PLATFORM_SCHEMA}".billing_tenant_override (
+                uid,
+                tenant_slug,
+                metric_key,
+                feature_key,
+                override_limit_value,
+                override_enabled,
+                window,
+                enforcement_mode,
+                metadata,
+                created_at,
+                updated_at
+            ) VALUES (
+                :uid,
+                :tenant_slug,
+                :metric_key,
+                :feature_key,
+                :override_limit_value,
+                :override_enabled,
+                :window,
+                :enforcement_mode,
+                CAST(:metadata AS jsonb),
+                :created_at,
+                :updated_at
+            )
+            """
+        )
+        async with PlatformSessionScoped() as session:
+            await session.execute(delete_stmt, {"tenant_slug": tenant_slug})
+            for row in overrides:
+                await session.execute(
+                    insert_stmt,
+                    {
+                        "uid": get_flake_uid(),
+                        "tenant_slug": tenant_slug,
+                        "metric_key": row.get("metric_key"),
+                        "feature_key": row.get("feature_key"),
+                        "override_limit_value": row.get("override_limit_value"),
+                        "override_enabled": row.get("override_enabled"),
+                        "window": row.get("window"),
+                        "enforcement_mode": row.get("enforcement_mode"),
+                        "metadata": json.dumps(row.get("metadata") or {}),
+                        "created_at": now,
+                        "updated_at": now,
+                    },
+                )
+            await session.commit()
+        return await self.list_tenant_overrides(tenant_slug)
+
+    async def list_tenant_overrides(self, tenant_slug: str) -> list[dict[str, Any]]:
+        await self.ensure_billing_refinement_tables()
+        stmt = text(
+            f"""
+            SELECT
+                tenant_slug,
+                metric_key,
+                feature_key,
+                override_limit_value,
+                override_enabled,
+                window,
+                enforcement_mode,
+                COALESCE(metadata, '{{}}'::jsonb) AS metadata
+            FROM "{settings.PLATFORM_SCHEMA}".billing_tenant_override
+            WHERE tenant_slug = :tenant_slug
+            ORDER BY feature_key NULLS LAST, metric_key NULLS LAST
+            """
+        )
+        async with PlatformSessionScoped() as session:
+            rows = (await session.execute(stmt, {"tenant_slug": tenant_slug})).mappings().all()
+        return [dict(row) for row in rows]
+
+    async def list_usage_counters(self, tenant_slug: str) -> list[dict[str, Any]]:
+        await self.ensure_billing_refinement_tables()
+        stmt = text(
+            f"""
+            SELECT metric_key, quantity, window_start, window_end, scope_user_uid, scope_lab_uid
+            FROM "{settings.PLATFORM_SCHEMA}".billing_usage_counter
+            WHERE tenant_slug = :tenant_slug
+            ORDER BY window_start DESC, metric_key ASC
+            """
+        )
+        async with PlatformSessionScoped() as session:
+            rows = (await session.execute(stmt, {"tenant_slug": tenant_slug})).mappings().all()
+        return [dict(row) for row in rows]
+
+    async def get_tenant_schema(self, tenant_slug: str) -> str | None:
+        """Resolve schema name for a tenant."""
+        stmt = text(
+            f"""
+            SELECT schema_name
+            FROM "{settings.PLATFORM_SCHEMA}".tenant
+            WHERE slug = :tenant_slug
+            LIMIT 1
+            """
+        )
+        async with PlatformSessionScoped() as session:
+            row = (await session.execute(stmt, {"tenant_slug": tenant_slug})).first()
+        return str(row[0]) if row else None
+
+    async def count_tenant_users(self, tenant_slug: str) -> int:
+        """Count users in tenant schema."""
+        schema = await self.get_tenant_schema(tenant_slug)
+        if not schema:
+            return 0
+        stmt = text(f'SELECT COUNT(*) FROM "{schema}"."user"')
+        async with PlatformSessionScoped() as session:
+            count = (await session.execute(stmt)).scalar()
+        return int(count or 0)
+
+    async def count_tenant_labs(self, tenant_slug: str) -> int:
+        """Count laboratories in tenant schema."""
+        schema = await self.get_tenant_schema(tenant_slug)
+        if not schema:
+            return 0
+        stmt = text(f'SELECT COUNT(*) FROM "{schema}"."laboratory"')
+        async with PlatformSessionScoped() as session:
+            count = (await session.execute(stmt)).scalar()
+        return int(count or 0)
+
+    async def get_usage_counter_value(
+        self,
+        *,
+        tenant_slug: str,
+        metric_key: str,
+        window_start: datetime,
+        scope_user_uid: str | None = None,
+        scope_lab_uid: str | None = None,
+    ) -> int:
+        """Fetch current usage counter quantity for a metric dimension."""
+        await self.ensure_billing_refinement_tables()
+        stmt = text(
+            f"""
+            SELECT COALESCE(SUM(quantity), 0)
+            FROM "{settings.PLATFORM_SCHEMA}".billing_usage_counter
+            WHERE tenant_slug = :tenant_slug
+              AND metric_key = :metric_key
+              AND window_start = :window_start
+              AND scope_user_uid IS NOT DISTINCT FROM :scope_user_uid
+              AND scope_lab_uid IS NOT DISTINCT FROM :scope_lab_uid
+            """
+        )
+        async with PlatformSessionScoped() as session:
+            value = (
+                await session.execute(
+                    stmt,
+                    {
+                        "tenant_slug": tenant_slug,
+                        "metric_key": metric_key,
+                        "window_start": window_start,
+                        "scope_user_uid": scope_user_uid,
+                        "scope_lab_uid": scope_lab_uid,
+                    },
+                )
+            ).scalar()
+        return int(value or 0)
+
+    async def increment_usage_counter(
+        self,
+        *,
+        tenant_slug: str,
+        metric_key: str,
+        window_start: datetime,
+        window_end: datetime,
+        scope_user_uid: str | None = None,
+        scope_lab_uid: str | None = None,
+        delta: int = 1,
+    ) -> None:
+        """Increment usage counter for one metric window/dimension."""
+        await self.ensure_billing_refinement_tables()
+        now = datetime.now(UTC)
+        update_stmt = text(
+            f"""
+            UPDATE "{settings.PLATFORM_SCHEMA}".billing_usage_counter
+            SET quantity = quantity + :delta,
+                updated_at = :updated_at
+            WHERE tenant_slug = :tenant_slug
+              AND metric_key = :metric_key
+              AND window_start = :window_start
+              AND scope_user_uid IS NOT DISTINCT FROM :scope_user_uid
+              AND scope_lab_uid IS NOT DISTINCT FROM :scope_lab_uid
+            """
+        )
+        insert_stmt = text(
+            f"""
+            INSERT INTO "{settings.PLATFORM_SCHEMA}".billing_usage_counter (
+                uid,
+                tenant_slug,
+                metric_key,
+                window_start,
+                window_end,
+                scope_user_uid,
+                scope_lab_uid,
+                quantity,
+                created_at,
+                updated_at
+            ) VALUES (
+                :uid,
+                :tenant_slug,
+                :metric_key,
+                :window_start,
+                :window_end,
+                :scope_user_uid,
+                :scope_lab_uid,
+                :quantity,
+                :created_at,
+                :updated_at
+            )
+            """
+        )
+        async with PlatformSessionScoped() as session:
+            result = await session.execute(
+                update_stmt,
+                {
+                    "delta": delta,
+                    "updated_at": now,
+                    "tenant_slug": tenant_slug,
+                    "metric_key": metric_key,
+                    "window_start": window_start,
+                    "scope_user_uid": scope_user_uid,
+                    "scope_lab_uid": scope_lab_uid,
+                },
+            )
+            if result.rowcount == 0:
+                await session.execute(
+                    insert_stmt,
+                    {
+                        "uid": get_flake_uid(),
+                        "tenant_slug": tenant_slug,
+                        "metric_key": metric_key,
+                        "window_start": window_start,
+                        "window_end": window_end,
+                        "scope_user_uid": scope_user_uid,
+                        "scope_lab_uid": scope_lab_uid,
+                        "quantity": delta,
+                        "created_at": now,
+                        "updated_at": now,
+                    },
+                )
             await session.commit()

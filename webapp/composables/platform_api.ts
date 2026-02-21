@@ -182,6 +182,60 @@ export interface BillingPaymentAttempt {
     updated_at?: string | null;
 }
 
+export interface BillingPlanLimitInput {
+    metric_key: 'tenant_users' | 'tenant_labs' | 'api_requests_user' | 'api_requests_lab' | 'api_requests_tenant';
+    limit_value: number;
+    window: 'instant' | 'minute' | 'hour' | 'day' | 'month';
+    enforcement_mode?: 'hard_block';
+}
+
+export interface BillingPlanFeatureInput {
+    feature_key: 'billing' | 'inventory' | 'storage' | 'grind' | 'document' | 'shipment' | 'worksheet' | 'reflex';
+    enabled: boolean;
+    included_units?: string | number;
+    unit_price?: string | number;
+}
+
+export interface BillingPlan {
+    uid: string;
+    plan_code: string;
+    name: string;
+    active: boolean;
+    currency: string;
+    base_amount: string;
+    limits: BillingPlanLimitInput[];
+    features: BillingPlanFeatureInput[];
+}
+
+export interface TenantEntitlementOverrideInput {
+    metric_key?: BillingPlanLimitInput['metric_key'] | null;
+    feature_key?: BillingPlanFeatureInput['feature_key'] | null;
+    override_limit_value?: number | null;
+    override_enabled?: boolean | null;
+    window?: BillingPlanLimitInput['window'] | null;
+    enforcement_mode?: 'hard_block' | null;
+    metadata?: Record<string, unknown>;
+}
+
+export interface TenantEntitlements {
+    tenant_slug: string;
+    plan_code: string;
+    limits: BillingPlanLimitInput[];
+    features: BillingPlanFeatureInput[];
+}
+
+export interface TenantUsageSnapshot {
+    tenant_slug: string;
+    rows: Array<{
+        metric_key: BillingPlanLimitInput['metric_key'];
+        quantity: number;
+        window_start: string;
+        window_end: string;
+        scope_user_uid?: string | null;
+        scope_lab_uid?: string | null;
+    }>;
+}
+
 const getPlatformAccessToken = (): string | undefined => {
     try {
         const raw = localStorage.getItem(PLATFORM_STORAGE_AUTH_KEY);
@@ -371,6 +425,44 @@ export default function usePlatformApi() {
         return data;
     };
 
+    const listBillingPlans = async <T = BillingPlan[]>(): Promise<T> => {
+        const { data } = await platformAxios.get<T>('/billing/plans');
+        return data;
+    };
+
+    const createBillingPlan = async <T = BillingPlan>(
+        payload: Omit<BillingPlan, 'uid'>
+    ): Promise<T> => {
+        const { data } = await platformAxios.post<T>('/billing/plans', payload);
+        return data;
+    };
+
+    const updateBillingPlan = async <T = BillingPlan>(
+        planCode: string,
+        payload: Partial<Omit<BillingPlan, 'uid' | 'plan_code'>>
+    ): Promise<T> => {
+        const { data } = await platformAxios.put<T>(`/billing/plans/${planCode}`, payload);
+        return data;
+    };
+
+    const getTenantEntitlements = async <T = TenantEntitlements>(slug: string): Promise<T> => {
+        const { data } = await platformAxios.get<T>(`/billing/tenants/${slug}/entitlements`);
+        return data;
+    };
+
+    const putTenantEntitlements = async <T = TenantEntitlements>(
+        slug: string,
+        payload: TenantEntitlementOverrideInput[]
+    ): Promise<T> => {
+        const { data } = await platformAxios.put<T>(`/billing/tenants/${slug}/entitlements`, payload);
+        return data;
+    };
+
+    const getTenantUsageSnapshot = async <T = TenantUsageSnapshot>(slug: string): Promise<T> => {
+        const { data } = await platformAxios.get<T>(`/billing/tenants/${slug}/usage`);
+        return data;
+    };
+
     return {
         client: platformAxios,
         login,
@@ -396,6 +488,12 @@ export default function usePlatformApi() {
         getBillingProvidersHealth,
         getTenantBillingOverview,
         listTenantBillingPaymentAttempts,
+        listBillingPlans,
+        createBillingPlan,
+        updateBillingPlan,
+        getTenantEntitlements,
+        putTenantEntitlements,
+        getTenantUsageSnapshot,
     };
 }
 

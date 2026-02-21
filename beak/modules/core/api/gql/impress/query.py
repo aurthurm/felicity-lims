@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import io
 import logging
 from functools import lru_cache
@@ -17,8 +19,9 @@ from beak.modules.core.client.services import ClientService
 from beak.modules.core.impress.barcode.schema import BarCode, BarCodeMeta
 from beak.modules.core.impress.barcode.utils import impress_barcodes
 from beak.modules.core.impress.services import ReportImpressService
-from beak.modules.core.iol.minio import MinioClient
-from beak.modules.core.iol.minio.enum import MinioBucket
+from beak.modules.shared.infrastructure.minio import MinioClient
+from beak.modules.shared.infrastructure.minio.buckets import MinioBucket
+from beak.modules.shared.infrastructure import resolve_storage_scope
 from beak.core.config import settings
 
 logging.basicConfig(level=logging.INFO)
@@ -39,8 +42,12 @@ class ReportImpressQuery:
     ) -> BytesScalar | None:
         """Fetch Latest report given sample id"""
         if settings.OBJECT_STORAGE:
+            scope = resolve_storage_scope(require_tenant=True)
             reports = MinioClient().get_object(
-                MinioBucket.DIAGNOSTIC_REPORT, [f"{sid}.pdf" for sid in sample_ids]
+                MinioBucket.DIAGNOSTIC_REPORT,
+                [f"{sid}.pdf" for sid in sample_ids],
+                scope=scope,
+                domain="diagnostic-report",
             )
 
             merger = PdfWriter()
@@ -95,8 +102,16 @@ class ReportImpressQuery:
 
         if settings.OBJECT_STORAGE:
             sample = await SampleService().get(uid=report.sample_uid)
+            scope = resolve_storage_scope(
+                laboratory_uid=sample.laboratory_uid if sample else None,
+                require_tenant=True,
+                require_lab=True,
+            )
             report = MinioClient().get_object(
-                MinioBucket.DIAGNOSTIC_REPORT, [f"{sample.sample_id}.pdf"]
+                MinioBucket.DIAGNOSTIC_REPORT,
+                [f"{sample.sample_id}.pdf"],
+                scope=scope,
+                domain="diagnostic-report",
             )
             if not report:
                 return None
@@ -115,7 +130,7 @@ class ReportImpressQuery:
         async def _client_name(uid: str) -> str:
             return (await ClientService().get(uid=uid)).name
 
-        def _test_names(sample: "Sample") -> str:
+        def _test_names(sample) -> str:
             _profile_names = map(lambda p: p.name, sample.profiles)
             _analysis_names = map(lambda a: a.name, sample.analyses)
             return ', '.join(list(_profile_names) + list(_analysis_names))

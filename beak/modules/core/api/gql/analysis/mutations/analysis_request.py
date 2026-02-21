@@ -29,7 +29,6 @@ from beak.modules.core.analysis.enum import (
     SampleRelationshipType,
     SampleState,
 )
-from beak.modules.core.analysis.schemas import ClinicalDataCreate
 from beak.modules.core.analysis.services.analysis import (
     AnalysisRequestService,
     AnalysisService,
@@ -39,7 +38,6 @@ from beak.modules.core.analysis.services.analysis import (
     SampleRelationshipService,
     SampleService,
     SampleTypeService,
-    ClinicalDataService,
 )
 from beak.modules.core.analysis.services.creation_provider import (
     AnalysisRequestCreationError,
@@ -49,11 +47,10 @@ from beak.modules.core.analysis.services.result import AnalysisResultService
 from beak.modules.core.analysis.workflow.analysis_result import AnalysisResultWorkFlow
 from beak.modules.core.analysis.workflow.sample import SampleWorkFlow
 from beak.modules.core.billing.utils import bill_order
-from beak.modules.core.client.services import ClientService
 from beak.modules.core.guard import FAction, FObject
 from beak.modules.core.impress.sample.tasks import impress_results
-from beak.modules.core.iol.redis import task_guard
-from beak.modules.core.iol.redis.enum import TrackableObject
+from beak.modules.shared.infrastructure.redis import task_guard
+from beak.modules.shared.infrastructure.redis.enum import TrackableObject
 from beak.modules.core.job import schemas as job_schemas
 from beak.modules.core.job.enum import JobAction, JobCategory, JobPriority, JobState
 from beak.modules.core.job.services import JobService
@@ -64,6 +61,7 @@ from beak.modules.core.notification.services import ActivityStreamService
 from beak.modules.clinical.patient.services import PatientService
 from beak.modules.core.reflex.services import ReflexEngineService
 from beak.modules.core.setup.caches import get_laboratory_setting
+from beak.modules.shared.infrastructure import resolve_storage_scope
 from beak.core.config import settings
 from beak.core.dtz import timenow_dt
 
@@ -995,7 +993,11 @@ async def publish_samples(
 
     if final_publish:
         for sample in final_publish:
-            await task_guard.process(uid=sample.uid, object_type=TrackableObject.SAMPLE)
+            await task_guard.process(
+                uid=sample.uid,
+                object_type=TrackableObject.SAMPLE,
+                scope=resolve_storage_scope(laboratory_uid=sample.laboratory_uid, require_tenant=True, require_lab=True),
+            )
 
     # TODO: clean up below - probably no longer necessary - needs checking
     # !important for frontend
