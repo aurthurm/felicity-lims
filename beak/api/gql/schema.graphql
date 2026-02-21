@@ -3835,7 +3835,7 @@ type MethodType {
 
 type Mutation {
   createUser(firstName: String!, lastName: String!, email: String!, userName: String!, password: String!, passwordc: String!, activeLaboratoryUid: String = null, laboratoryUids: [String!] = null, groupUid: String = null, openReg: Boolean = false): UserResponse!
-  updateUser(userUid: String!, firstName: String, lastName: String, userName: String, mobilePhone: String, email: String, groupUid: String, isActive: Boolean, isBlocked: Boolean, activeLaboratoryUid: String = null, laboratoryUids: [String!] = null, password: String = null, passwordc: String = null): UserResponse!
+  updateUser(userUid: String!, firstName: String = null, lastName: String = null, userName: String = null, mobilePhone: String = null, email: String = null, groupUid: String = null, isActive: Boolean = null, isBlocked: Boolean = null, activeLaboratoryUid: String = null, laboratoryUids: [String!] = null, password: String = null, passwordc: String = null): UserResponse!
   updateUserPreferences(preferencesIn: UserPreferenceInput!): UserPreferenceResponse!
   authenticateUser(username: String!, password: String!): AuthenticatedDataResponse!
   refresh(refreshToken: String!): AuthenticatedDataResponse!
@@ -3849,6 +3849,7 @@ type Mutation {
   removeUserFromLaboratory(userUid: String!, laboratoryUid: String!): UserLaboratoryAssignmentResponse!
   setUserActiveLaboratory(userUid: String!, laboratoryUid: String!): UserResponse!
   uploadProfilePicture(payload: ProfilePictureUploadInputType!): ProfilePictureUploadResponse!
+  provisionTenant(name: String!, slug: String!, adminEmail: String = null, initialLabName: String = null, primaryIndustry: String! = "clinical", enabledModules: [String!] = null): TenantProvisionResponse!
   updateOrganization(uid: String!, payload: OrganizationInputType!): OrganizationResponse!
   updateOrganizationSetting(uid: String!, payload: OrganizationSettingInputType!): OrganizationSettingResponse!
   createLaboratory(payload: LaboratoryCreateInputType!): LaboratoryResponse!
@@ -3874,10 +3875,6 @@ type Mutation {
   createClientContact(payload: ClientContactInputType!): ClientContactResponse! @isAuthenticated @hasPermission
   updateClientContact(uid: String!, payload: ClientContactInputType!): ClientContactResponse! @isAuthenticated @hasPermission
   deleteClientContact(uid: String!): DeleteContactResponse! @isAuthenticated @hasPermission
-  createIdentification(name: String!): IdentificationResponse! @isAuthenticated @hasPermission
-  updateIdentification(uid: String!, name: String!): IdentificationResponse! @isAuthenticated @hasPermission
-  createPatient(payload: PatientInputType!): PatientResponse! @isAuthenticated @hasPermission
-  updatePatient(uid: String!, payload: PatientInputType!): PatientResponse! @isAuthenticated @hasPermission
   createCodingStandard(payload: CodingStandardInputType!): CodingStandardResponse!
   updateCodingStandard(uid: String!, payload: CodingStandardInputType!): CodingStandardResponse!
   createSampleType(payload: SampleTypeInputType!): SampleTypeResponse!
@@ -3960,6 +3957,7 @@ type Mutation {
   updateReflexTrigger(uid: String!, payload: ReflexTriggerInput!): ReflexTriggerResponse!
   deleteReflexTrigger(uid: String!): DeleteResponse!
   deleteReflexDecision(uid: String!): DeleteResponse!
+  saveReflexRuleGraph(uid: String!, graph: ReflexRuleGraphInput!): ReflexRuleResponse!
   createStoreRoom(payload: StoreRoomInputType!): StoreRoomResponse! @isAuthenticated @hasPermission
   updateStoreRoom(uid: String!, payload: StoreRoomInputType!): StoreRoomResponse! @isAuthenticated @hasPermission
   createStorageLocation(payload: StorageLocationInputType!): StorageLocationResponse! @isAuthenticated @hasPermission
@@ -4025,53 +4023,6 @@ type Mutation {
   createTestBillTransaction(payload: BillTransactionInput!): TestBillTransactionResponse! @isAuthenticated @hasPermission
   confirmTestBillTransaction(uid: String!, notes: String): TestBillTransactionResponse! @isAuthenticated @hasPermission
   applyVoucher(payload: ApplyVoucherInput!): TestBillTransactionResponse! @isAuthenticated @hasPermission
-  createAbxGuideline(payload: AbxGuidelineInputType!): AbxGuidelineResponse!
-  updateAbxGuideline(uid: String!, payload: AbxGuidelineInputType!): AbxGuidelineResponse!
-  createAbxAntibiotic(payload: AbxAntibioticInputType!): AbxAntibioticResponse!
-  updateAbxAntibiotic(uid: String!, payload: AbxAntibioticInputType!): AbxAntibioticResponse!
-  useAbxAntibiotic(uid: String!): AbxAntibioticResponse!
-  discardAbxAntibiotic(uid: String!): DeletedItem!
-  createAbxAstPanel(payload: AbxASTPanelInputType!): AbxASTPanelResponse!
-  updateAbxAstPanel(uid: String!, payload: AbxASTPanelInputType!): AbxASTPanelResponse!
-  createAbxTestMethod(payload: AbxTestMethodInputType!): AbxTestMethodResponse!
-  updateAbxTestMethod(uid: String!, payload: AbxTestMethodInputType!): AbxTestMethodResponse!
-  createAbxBreakpointType(payload: AbxBreakpointTypeInputType!): AbxBreakpointTypeResponse!
-  updateAbxBreakpointType(uid: String!, payload: AbxBreakpointTypeInputType!): AbxBreakpointTypeResponse!
-  createAbxHost(payload: AbxHostInputType!): AbxHostResponse!
-  updateAbxHost(uid: String!, payload: AbxHostInputType!): AbxHostResponse!
-  createAbxSiteOfInfection(payload: AbxSiteOfInfectionInputType!): AbxSiteOfInfectionResponse!
-  updateAbxSiteOfInfection(uid: String!, payload: AbxSiteOfInfectionInputType!): AbxSiteOfInfectionResponse!
-  createAbxBreakpoint(payload: AbxBreakpointInputType!): AbxBreakpointResponse!
-  updateAbxBreakpoint(uid: String!, payload: AbxBreakpointInputType!): AbxBreakpointResponse!
-  createAbxMedium(payload: AbxMediumInputType!): AbxMediumResponse!
-  updateAbxMedium(uid: String!, payload: AbxMediumInputType!): AbxMediumResponse!
-  createAbxQcRange(payload: AbxQCRangeInputType!): AbxQCRangeResponse!
-  updateAbxQcRange(uid: String!, payload: AbxQCRangeInputType!): AbxQCRangeResponse!
-  createAbxKingdom(payload: AbxKingdomInputType!): AbxKingdomResponse!
-  updateAbxKingdom(uid: String!, payload: AbxKingdomInputType!): AbxKingdomResponse!
-  createAbxPhylum(payload: AbxPhylumInputType!): AbxPhylumResponse!
-  updateAbxPhylum(uid: String!, payload: AbxPhylumInputType!): AbxPhylumResponse!
-  createAbxOrder(payload: AbxOrderInputType!): AbxOrderResponse!
-  updateAbxOrder(uid: String!, payload: AbxOrderInputType!): AbxOrderResponse!
-  createAbxGenus(payload: AbxGenusInputType!): AbxGenusResponse!
-  updateAbxGenus(uid: String!, payload: AbxGenusInputType!): AbxGenusResponse!
-  createAbxFamily(payload: AbxFamilyInputType!): AbxFamilyResponse!
-  updateAbxFamily(uid: String!, payload: AbxFamilyInputType!): AbxFamilyResponse!
-  createAbxClass(payload: AbxClassInputType!): AbxClassResponse!
-  updateAbxClass(uid: String!, payload: AbxClassInputType!): AbxClassResponse!
-  createAbxOrganism(payload: AbxOrganismInputType!): AbxOrganismResponse!
-  updateAbxOrganism(uid: String!, payload: AbxOrganismInputType!): AbxOrganismResponse!
-  createAbxOrganismSerotype(payload: AbxOrganismSerotypeInputType!): AbxOrganismSerotypeResponse!
-  updateAbxOrganismSerotype(uid: String!, payload: AbxOrganismSerotypeInputType!): AbxOrganismSerotypeResponse!
-  createAbxOrganismResult(analysisResultUid: String!): AbxOrganismResultType!
-  removeAbxOrganismResult(uid: String!): DeleteResponse!
-  saveAbxOrganismResult(uid: String!, organismUid: String!): AbxOrganismResultType!
-  applyAbxAstPanel(payload: AbxApplyAstPanelInput!): AbxASTResultResponse!
-  updateAbxAstResults(payload: AbxASTResultsUpdateInput!): AbxASTResultResponse!
-  createAbxExpResPhenotype(payload: AbxExpResPhenotypeInputType!): AbxExpResPhenotypeResponse!
-  updateAbxExpResPhenotype(uid: String!, payload: AbxExpResPhenotypeInputType!): AbxExpResPhenotypeResponse!
-  createAbxExpertInterpretationRule(payload: AbxExpertInterpretationRuleInputType!): AbxExpertInterpretationRuleResponse!
-  updateAbxExpertInterpretationRule(uid: String!, payload: AbxExpertInterpretationRuleInputType!): AbxExpertInterpretationRuleResponse!
   createGrindScheme(payload: GrindCreateSchemeInput!): GrindSchemeResponse! @isAuthenticated @hasPermission
   updateGrindScheme(uid: String!, payload: GrindUpdateSchemeInput!): GrindSchemeResponse! @isAuthenticated @hasPermission
   deleteGrindScheme(uid: String!): DeleteResponse! @isAuthenticated @hasPermission
@@ -4130,6 +4081,57 @@ type Mutation {
   createSmsTemplate(payload: SmsTemplateInputType!): SmsTemplateResponse!
   updateSmsTemplate(uid: String!, payload: SmsTemplateInputType!): SmsTemplateResponse!
   deleteSmsTemplate(uid: String!): OperationErrorDeletedItem!
+  createIdentification(name: String!): IdentificationResponse! @isAuthenticated @hasPermission
+  updateIdentification(uid: String!, name: String!): IdentificationResponse! @isAuthenticated @hasPermission
+  createPatient(payload: PatientInputType!): PatientResponse! @isAuthenticated @hasPermission
+  updatePatient(uid: String!, payload: PatientInputType!): PatientResponse! @isAuthenticated @hasPermission
+  createAbxGuideline(payload: AbxGuidelineInputType!): AbxGuidelineResponse!
+  updateAbxGuideline(uid: String!, payload: AbxGuidelineInputType!): AbxGuidelineResponse!
+  createAbxAntibiotic(payload: AbxAntibioticInputType!): AbxAntibioticResponse!
+  updateAbxAntibiotic(uid: String!, payload: AbxAntibioticInputType!): AbxAntibioticResponse!
+  useAbxAntibiotic(uid: String!): AbxAntibioticResponse!
+  discardAbxAntibiotic(uid: String!): DeletedItem!
+  createAbxAstPanel(payload: AbxASTPanelInputType!): AbxASTPanelResponse!
+  updateAbxAstPanel(uid: String!, payload: AbxASTPanelInputType!): AbxASTPanelResponse!
+  createAbxTestMethod(payload: AbxTestMethodInputType!): AbxTestMethodResponse!
+  updateAbxTestMethod(uid: String!, payload: AbxTestMethodInputType!): AbxTestMethodResponse!
+  createAbxBreakpointType(payload: AbxBreakpointTypeInputType!): AbxBreakpointTypeResponse!
+  updateAbxBreakpointType(uid: String!, payload: AbxBreakpointTypeInputType!): AbxBreakpointTypeResponse!
+  createAbxHost(payload: AbxHostInputType!): AbxHostResponse!
+  updateAbxHost(uid: String!, payload: AbxHostInputType!): AbxHostResponse!
+  createAbxSiteOfInfection(payload: AbxSiteOfInfectionInputType!): AbxSiteOfInfectionResponse!
+  updateAbxSiteOfInfection(uid: String!, payload: AbxSiteOfInfectionInputType!): AbxSiteOfInfectionResponse!
+  createAbxBreakpoint(payload: AbxBreakpointInputType!): AbxBreakpointResponse!
+  updateAbxBreakpoint(uid: String!, payload: AbxBreakpointInputType!): AbxBreakpointResponse!
+  createAbxMedium(payload: AbxMediumInputType!): AbxMediumResponse!
+  updateAbxMedium(uid: String!, payload: AbxMediumInputType!): AbxMediumResponse!
+  createAbxQcRange(payload: AbxQCRangeInputType!): AbxQCRangeResponse!
+  updateAbxQcRange(uid: String!, payload: AbxQCRangeInputType!): AbxQCRangeResponse!
+  createAbxKingdom(payload: AbxKingdomInputType!): AbxKingdomResponse!
+  updateAbxKingdom(uid: String!, payload: AbxKingdomInputType!): AbxKingdomResponse!
+  createAbxPhylum(payload: AbxPhylumInputType!): AbxPhylumResponse!
+  updateAbxPhylum(uid: String!, payload: AbxPhylumInputType!): AbxPhylumResponse!
+  createAbxOrder(payload: AbxOrderInputType!): AbxOrderResponse!
+  updateAbxOrder(uid: String!, payload: AbxOrderInputType!): AbxOrderResponse!
+  createAbxGenus(payload: AbxGenusInputType!): AbxGenusResponse!
+  updateAbxGenus(uid: String!, payload: AbxGenusInputType!): AbxGenusResponse!
+  createAbxFamily(payload: AbxFamilyInputType!): AbxFamilyResponse!
+  updateAbxFamily(uid: String!, payload: AbxFamilyInputType!): AbxFamilyResponse!
+  createAbxClass(payload: AbxClassInputType!): AbxClassResponse!
+  updateAbxClass(uid: String!, payload: AbxClassInputType!): AbxClassResponse!
+  createAbxOrganism(payload: AbxOrganismInputType!): AbxOrganismResponse!
+  updateAbxOrganism(uid: String!, payload: AbxOrganismInputType!): AbxOrganismResponse!
+  createAbxOrganismSerotype(payload: AbxOrganismSerotypeInputType!): AbxOrganismSerotypeResponse!
+  updateAbxOrganismSerotype(uid: String!, payload: AbxOrganismSerotypeInputType!): AbxOrganismSerotypeResponse!
+  createAbxOrganismResult(analysisResultUid: String!): AbxOrganismResultType!
+  removeAbxOrganismResult(uid: String!): DeleteResponse!
+  saveAbxOrganismResult(uid: String!, organismUid: String!): AbxOrganismResultType!
+  applyAbxAstPanel(payload: AbxApplyAstPanelInput!): AbxASTResultResponse!
+  updateAbxAstResults(payload: AbxASTResultsUpdateInput!): AbxASTResultResponse!
+  createAbxExpResPhenotype(payload: AbxExpResPhenotypeInputType!): AbxExpResPhenotypeResponse!
+  updateAbxExpResPhenotype(uid: String!, payload: AbxExpResPhenotypeInputType!): AbxExpResPhenotypeResponse!
+  createAbxExpertInterpretationRule(payload: AbxExpertInterpretationRuleInputType!): AbxExpertInterpretationRuleResponse!
+  updateAbxExpertInterpretationRule(uid: String!, payload: AbxExpertInterpretationRuleInputType!): AbxExpertInterpretationRuleResponse!
   parseAnalyserMessage(message: String!): AnalyzerParsedMessageResponse!
   extractAnalyserMessage(message: String!, driver: JSONScalar!): AnalyzerExtractedMessageResponse!
 }
@@ -4790,12 +4792,6 @@ type Query {
   clientContactAll: [ClientContactType!]! @isAuthenticated @hasPermission
   clientContactUid(uid: String!): ClientContactType! @isAuthenticated @hasPermission
   clientContactByClientUid(clientUid: String!): [ClientContactType!]! @isAuthenticated @hasPermission
-  patientAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): PatientCursorPage! @isAuthenticated @hasPermission
-  patientByUid(uid: String!): PatientType @isAuthenticated @hasPermission
-  patientByPatientId(patientId: String!): PatientType @isAuthenticated @hasPermission
-  patientSearch(queryString: String!): [PatientType!]! @isAuthenticated @hasPermission
-  identificationAll: [IdentificationType!]! @isAuthenticated @hasPermission
-  identificationByUid(uid: String!): IdentificationType! @isAuthenticated @hasPermission
   codingStandardAll: [CodingStandardType!]!
   sampleTypeAll: [SampleTypeTyp!]!
   sampleTypeByUid(uid: String!): SampleTypeTyp!
@@ -4949,52 +4945,6 @@ type Query {
   voucherByUid(uid: String!): VoucherType @isAuthenticated @hasPermission
   voucherCodes(voucherUid: String!): [VoucherCodeType!] @isAuthenticated @hasPermission
   billingOverviewMetrics(startDate: DateTime = null, endDate: DateTime = null): BillingOverviewMetrics! @isAuthenticated @hasPermission
-  abxGuidelinesAll: [AbxGuidelineType!]
-  abxGuidelineByUid(uid: String!): AbxGuidelineType
-  abxAntibioticAll(text: String!, pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, sortBy: [String!] = null): AbxAntibioticCursorPage!
-  abxAntibioticByUid(uid: String!): AbxAntibioticType
-  abxLaboratoryAntibiotics: [AbxAntibioticType!]
-  abxKingdomAll: [AbxKingdomType!]
-  abxKingdomByUid(uid: String!): AbxKingdomType
-  abxPhylumAll: [AbxPhylumType!]
-  abxPhylumByUid(uid: String!): AbxPhylumType
-  abxClassAll: [AbxClassType!]
-  abxClassByUid(uid: String!): AbxClassType
-  abxOrderAll: [AbxOrderType!]
-  abxOrderByUid(uid: String!): AbxOrderType
-  abxFamilyAll: [AbxFamilyType!]
-  abxFamilyByUid(uid: String!): AbxFamilyType
-  abxGenusAll: [AbxGenusType!]
-  abxGenusByUid(uid: String!): AbxGenusType
-  abxOrganismAll(text: String!, pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, sortBy: [String!] = null): AbxOrganismCursorPage!
-  abxOrganismByUid(uid: String!): AbxOrganismType
-  abxOrganismResultAll(analysisResultUid: String!): [AbxOrganismResultType!]
-  abxOrganismSerotypeAll(text: String!, pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, sortBy: [String!] = null): AbxOrganismSerotypeCursorPage!
-  abxOrganismSerotypeByUid(uid: String!): AbxOrganismSerotypeType
-  abxTestMethodAll: [AbxTestMethodType!]
-  abxTestMethodByUid(uid: String!): AbxTestMethodType
-  abxBreakpointTypeAll: [AbxBreakpointTypeTyp!]
-  abxBreakpointTypeByUid(uid: String!): AbxBreakpointTypeTyp
-  abxHostAll: [AbxHostType!]
-  abxHostByUid(uid: String!): AbxHostType
-  abxSiteOfInfectionAll: [AbxSiteOfInfectionType!]
-  abxSiteOfInfectionByUid(uid: String!): AbxSiteOfInfectionType
-  abxGuidelineYearAll: [AbxGuidelineYearType!]
-  abxBreakpointAll(text: String!, pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, sortBy: [String!] = null): AbxBreakpointTypCursorPage!
-  abxBreakpointByUid(uid: String!): AbxBreakpointTyp
-  abxExpectedResistancePhenotypeAll(text: String!, pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, sortBy: [String!] = null): AbxExpResPhenotypeCursorPage!
-  abxExpectedResistancePhenotypeByUid(uid: String!): AbxExpResPhenotypeType
-  abxExpertInterpretationRuleAll(text: String!, pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, sortBy: [String!] = null): AbxExpertInterpretationRuleCursorPage!
-  abxExpertInterpretationRuleByUid(uid: String!): AbxExpertInterpretationRuleType
-  abxMediumAll: [AbxMediumType!]
-  abxMediumByUid(uid: String!): AbxMediumType
-  abxQcRangeAll(text: String!, pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, sortBy: [String!] = null): AbxQCRangeCursorPage!
-  abxQcRangeByUid(uid: String!): AbxQCRangeType
-  abxAstPanelAll: [AbxASTPanelType!]
-  abxAstPanelFilter(organismUid: String!, text: String! = ""): [AbxASTPanelType!]
-  abxAstPanelByUid(uid: String!): AbxASTPanelType
-  abxAstResultAll(sampleUid: String!): [AbxASTResultType!]
-  abxAstResultsByAnalysisResult(analysisResultUid: String!): [AbxASTResultType!]
   grindSchemeAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): GrindSchemeCursorPage! @isAuthenticated @hasPermission
   grindSchemeByUid(uid: String!): GrindSchemeType @isAuthenticated @hasPermission
   grindBoardAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, schemeUid: String = null, sortBy: [String!] = null): GrindBoardCursorPage! @isAuthenticated @hasPermission
@@ -5061,6 +5011,58 @@ type Query {
   documentAuditsByDocument(documentUid: String!): [DocumentAuditType!]! @isAuthenticated @hasPermission
   smsTemplatesByTarget(targetType: String!, targetUid: String!): [SmsTemplateType!]!
   smsAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, status: String = null, audience: String = null, sortBy: [String!] = null): SmsMessageCursorPage!
+  patientAll(pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, text: String = null, sortBy: [String!] = null): PatientCursorPage! @isAuthenticated @hasPermission
+  patientByUid(uid: String!): PatientType @isAuthenticated @hasPermission
+  patientByPatientId(patientId: String!): PatientType @isAuthenticated @hasPermission
+  patientSearch(queryString: String!): [PatientType!]! @isAuthenticated @hasPermission
+  identificationAll: [IdentificationType!]! @isAuthenticated @hasPermission
+  identificationByUid(uid: String!): IdentificationType! @isAuthenticated @hasPermission
+  abxGuidelinesAll: [AbxGuidelineType!]
+  abxGuidelineByUid(uid: String!): AbxGuidelineType
+  abxAntibioticAll(text: String!, pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, sortBy: [String!] = null): AbxAntibioticCursorPage!
+  abxAntibioticByUid(uid: String!): AbxAntibioticType
+  abxLaboratoryAntibiotics: [AbxAntibioticType!]
+  abxKingdomAll: [AbxKingdomType!]
+  abxKingdomByUid(uid: String!): AbxKingdomType
+  abxPhylumAll: [AbxPhylumType!]
+  abxPhylumByUid(uid: String!): AbxPhylumType
+  abxClassAll: [AbxClassType!]
+  abxClassByUid(uid: String!): AbxClassType
+  abxOrderAll: [AbxOrderType!]
+  abxOrderByUid(uid: String!): AbxOrderType
+  abxFamilyAll: [AbxFamilyType!]
+  abxFamilyByUid(uid: String!): AbxFamilyType
+  abxGenusAll: [AbxGenusType!]
+  abxGenusByUid(uid: String!): AbxGenusType
+  abxOrganismAll(text: String!, pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, sortBy: [String!] = null): AbxOrganismCursorPage!
+  abxOrganismByUid(uid: String!): AbxOrganismType
+  abxOrganismResultAll(analysisResultUid: String!): [AbxOrganismResultType!]
+  abxOrganismSerotypeAll(text: String!, pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, sortBy: [String!] = null): AbxOrganismSerotypeCursorPage!
+  abxOrganismSerotypeByUid(uid: String!): AbxOrganismSerotypeType
+  abxTestMethodAll: [AbxTestMethodType!]
+  abxTestMethodByUid(uid: String!): AbxTestMethodType
+  abxBreakpointTypeAll: [AbxBreakpointTypeTyp!]
+  abxBreakpointTypeByUid(uid: String!): AbxBreakpointTypeTyp
+  abxHostAll: [AbxHostType!]
+  abxHostByUid(uid: String!): AbxHostType
+  abxSiteOfInfectionAll: [AbxSiteOfInfectionType!]
+  abxSiteOfInfectionByUid(uid: String!): AbxSiteOfInfectionType
+  abxGuidelineYearAll: [AbxGuidelineYearType!]
+  abxBreakpointAll(text: String!, pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, sortBy: [String!] = null): AbxBreakpointTypCursorPage!
+  abxBreakpointByUid(uid: String!): AbxBreakpointTyp
+  abxExpectedResistancePhenotypeAll(text: String!, pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, sortBy: [String!] = null): AbxExpResPhenotypeCursorPage!
+  abxExpectedResistancePhenotypeByUid(uid: String!): AbxExpResPhenotypeType
+  abxExpertInterpretationRuleAll(text: String!, pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, sortBy: [String!] = null): AbxExpertInterpretationRuleCursorPage!
+  abxExpertInterpretationRuleByUid(uid: String!): AbxExpertInterpretationRuleType
+  abxMediumAll: [AbxMediumType!]
+  abxMediumByUid(uid: String!): AbxMediumType
+  abxQcRangeAll(text: String!, pageSize: Int = null, afterCursor: String = null, beforeCursor: String = null, sortBy: [String!] = null): AbxQCRangeCursorPage!
+  abxQcRangeByUid(uid: String!): AbxQCRangeType
+  abxAstPanelAll: [AbxASTPanelType!]
+  abxAstPanelFilter(organismUid: String!, text: String! = ""): [AbxASTPanelType!]
+  abxAstPanelByUid(uid: String!): AbxASTPanelType
+  abxAstResultAll(sampleUid: String!): [AbxASTResultType!]
+  abxAstResultsByAnalysisResult(analysisResultUid: String!): [AbxASTResultType!]
 }
 
 input ReferenceSampleInput {
@@ -5104,6 +5106,8 @@ type ReferralLaboratoryType {
 input ReflexAddAnalysisInput {
   analysisUid: String!
   count: Int! = 1
+  posX: Float = null
+  posY: Float = null
 }
 
 type ReflexAddAnalysisType {
@@ -5113,6 +5117,8 @@ type ReflexAddAnalysisType {
   analysisUid: String!
   analysis: AnalysisType
   count: Int!
+  posX: Float
+  posY: Float
   laboratoryUid: String
   laboratory: LaboratoryType
   createdByUid: String
@@ -5130,6 +5136,8 @@ input ReflexDecisionInput {
   ruleGroups: [ReflexRuleGroupInput!] = null
   addAnalyses: [ReflexAddAnalysisInput!] = null
   finalizeAnalyses: [ReflexFinalizeAnalysisInput!] = null
+  posX: Float = null
+  posY: Float = null
 }
 
 """Response for reflex decision mutations"""
@@ -5144,6 +5152,8 @@ type ReflexDecisionType {
   ruleGroups: [ReflexRuleGroupType!]
   addAnalyses: [ReflexAddAnalysisType!]
   finalizeAnalyses: [ReflexFinalizeAnalysisType!]
+  posX: Float
+  posY: Float
   laboratoryUid: String
   laboratory: LaboratoryType
   createdByUid: String
@@ -5157,6 +5167,8 @@ type ReflexDecisionType {
 input ReflexFinalizeAnalysisInput {
   analysisUid: String!
   value: String!
+  posX: Float = null
+  posY: Float = null
 }
 
 type ReflexFinalizeAnalysisType {
@@ -5166,6 +5178,8 @@ type ReflexFinalizeAnalysisType {
   analysisUid: String!
   analysis: AnalysisType
   value: String!
+  posX: Float
+  posY: Float
   laboratoryUid: String
   laboratory: LaboratoryType
   createdByUid: String
@@ -5214,10 +5228,32 @@ type ReflexRuleEdge {
   node: ReflexRuleType!
 }
 
+input ReflexRuleGraphEdge {
+  source: String!
+  target: String!
+  sourceHandle: String = null
+  targetHandle: String = null
+}
+
+input ReflexRuleGraphInput {
+  nodes: [ReflexRuleGraphNode!]!
+  edges: [ReflexRuleGraphEdge!]!
+}
+
+input ReflexRuleGraphNode {
+  id: String!
+  type: String!
+  positionX: Float!
+  positionY: Float!
+  data: JSON!
+}
+
 input ReflexRuleGroupInput {
   description: String = null
   priority: Int! = 0
   rules: [ReflexRuleCriteriaInput!] = null
+  posX: Float = null
+  posY: Float = null
 }
 
 type ReflexRuleGroupType {
@@ -5227,6 +5263,8 @@ type ReflexRuleGroupType {
   description: String
   priority: Int!
   rules: [ReflexRuleCriteriaType!]
+  posX: Float
+  posY: Float
   laboratoryUid: String
   laboratory: LaboratoryType
   createdByUid: String
@@ -5240,6 +5278,7 @@ type ReflexRuleGroupType {
 input ReflexRuleInput {
   name: String!
   description: String = ""
+  isActive: Boolean = null
 }
 
 """"""
@@ -5268,6 +5307,8 @@ input ReflexTriggerInput {
   description: String!
   sampleTypeUid: String = null
   analyses: [String!] = null
+  posX: Float = null
+  posY: Float = null
 }
 
 """Response for reflex trigger mutations"""
@@ -5283,6 +5324,8 @@ type ReflexTriggerType {
   sampleType: SampleTypeTyp
   analyses: [AnalysisType!]
   decisions: [ReflexDecisionType!]
+  posX: Float
+  posY: Float
   laboratoryUid: String
   laboratory: LaboratoryType
   createdByUid: String
@@ -6373,6 +6416,17 @@ type SupplierType {
   updatedAt: String
 }
 
+""""""
+union TenantProvisionResponse = TenantProvisionType | OperationError
+
+type TenantProvisionType {
+  uid: String!
+  name: String!
+  slug: String!
+  schemaName: String!
+  status: String!
+}
+
 type TestBillCursorPage {
   pageInfo: PageInfo!
   edges: [TestBillEdge!]
@@ -6525,6 +6579,7 @@ type UserLaboratoryAssignmentType {
 
 input UserPreferenceInput {
   expandedMenu: Boolean = false
+  megaMenu: Boolean = false
   theme: String = "light"
   defaultRoute: String = null
   departments: [String!] = null
@@ -6537,6 +6592,7 @@ type UserPreferenceType {
   uid: String!
   userUid: String
   expandedMenu: Boolean
+  megaMenu: Boolean
   departments: [DepartmentType!]
   theme: String
   defaultRoute: String

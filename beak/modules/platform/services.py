@@ -19,7 +19,6 @@ from beak.modules.core.setup.services import (
 from beak.core.config import ROOT_DIR, get_settings
 from beak.core.tenant_context import TenantContext, clear_tenant_context, set_tenant_context
 from beak.database.platform_session import PlatformSessionScoped
-from beak.lims.seeds import initialize_core, initialize_industry
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
@@ -360,6 +359,8 @@ class TenantProvisioningService:
         primary_industry: str = settings.DEFAULT_PRIMARY_INDUSTRY,
         seed_scopes: list[str] | None = None,
     ) -> None:
+        from beak.lims.seeds import initialize_core, initialize_industry
+
         default_lab_name = lab_name or f"{org_name} Main Lab"
         tenant_slug = schema_name.removeprefix(settings.TENANT_SCHEMA_PREFIX)
         scopes = seed_scopes or ["core", primary_industry]

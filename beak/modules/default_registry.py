@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-from beak.modules.clinical.api.rest import fhir_v4
-from beak.modules.core.api.rest import billing_self_service, jobs, reports, setup
-from beak.modules.platform.api.rest import platform
 from beak.modules.contracts import GraphQLContrib, ModuleKind, ModuleManifest
 from beak.modules.registry import ModuleRegistry
 
@@ -85,6 +82,9 @@ def _core_manifest() -> ModuleManifest:
     from beak.modules.core.analysis.events import init_analysis_events
     from beak.modules.core.auditlog.events import init_auditlog_listener_events
     from beak.modules.core.identity.events import init_user_events
+
+    from beak.modules.core.api.rest import billing_self_service, jobs, reports, setup
+    from beak.modules.platform.api.rest import platform
 
     def register_events() -> None:
         init_user_events()
@@ -176,6 +176,7 @@ def _core_manifest() -> ModuleManifest:
 
 
 def _clinical_manifest() -> ModuleManifest:
+    from beak.modules.clinical.api.rest import fhir_v4
     from beak.modules.clinical.api.gql.iol import iol_types, IOLMutations
     from beak.modules.clinical.api.gql.multiplex.microbiology import microbiology_types
     from beak.modules.clinical.api.gql.multiplex.microbiology.mutations import (

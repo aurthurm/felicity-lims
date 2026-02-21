@@ -20,7 +20,6 @@ from strawberry.fastapi import GraphQLRouter
 from strawberry.subscriptions import GRAPHQL_TRANSPORT_WS_PROTOCOL, GRAPHQL_WS_PROTOCOL
 
 from beak.api.deps import get_gql_context
-from beak.api.gql.schema import schema
 from beak.api.rest.api_v1 import api, init_api
 from beak.modules.core.common.channel import broadcast
 from beak.modules.events import observe_events
@@ -122,12 +121,16 @@ def register_rate_limit(app: FastAPI) -> None:
 
 
 def register_routes(app: FastAPI) -> None:
+    from beak.api.gql.schema import schema
+
     init_api()
     app.include_router(api, prefix="/api/v1")
     setup_webapp(app, settings.SERVE_WEBAPP, schema)
 
 
 def register_graphql(app: FastAPI) -> None:
+    from beak.api.gql.schema import schema
+
     if settings.RUN_OPEN_TRACING:
         schema.extensions = list(schema.extensions) + [OpenTelemetryExtension]
 
