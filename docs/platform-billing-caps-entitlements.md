@@ -177,3 +177,113 @@ Run billing unit tests:
 ```bash
 .venv/bin/pytest -q beak/tests/unit/platform/billing
 ```
+
+## Operator Runbook (First-Time Setup)
+This runbook assumes:
+
+- Platform API is reachable at `/api/v1/platform`
+- `PLATFORM_BILLING_ENABLED=True`
+- You are authenticated with a platform user that has `administrator` or `billing` role
+
+### 1. Create a baseline plan
+Create a plan with at least:
+
+- `tenant_users`
+- `tenant_labs`
+- request caps (`api_requests_user`, `api_requests_lab`, `api_requests_tenant`)
+- feature flags for all billable features
+
+Example:
+```bash
+curl -X POST "$BASE/api/v1/platform/billing/plans" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "plan_code": "starter",
+    "name": "Starter",
+    "active": true,
+    "currency": "USD",
+    "base_amount": "49.00",
+    "limits": [
+      {"metric_key":"tenant_users","limit_value":25,"window":"month","enforcement_mode":"hard_block"},
+      {"metric_key":"tenant_labs","limit_value":3,"window":"month","enforcement_mode":"hard_block"},
+      {"metric_key":"api_requests_user","limit_value":2000,"window":"hour","enforcement_mode":"hard_block"},
+      {"metric_key":"api_requests_lab","limit_value":30000,"window":"hour","enforcement_mode":"hard_block"},
+      {"metric_key":"api_requests_tenant","limit_value":120000,"window":"hour","enforcement_mode":"hard_block"}
+    ],
+    "features": [
+      {"feature_key":"billing","enabled":true},
+      {"feature_key":"inventory","enabled":true},
+      {"feature_key":"storage","enabled":true},
+      {"feature_key":"grind","enabled":true},
+      {"feature_key":"document","enabled":true},
+      {"feature_key":"shipment","enabled":true},
+      {"feature_key":"worksheet","enabled":true},
+      {"feature_key":"reflex","enabled":true}
+    ]
+  }'
+```
+
+### 2. Attach tenant subscription to plan
+Set tenant subscription `plan_code` to the plan created above.
+
+```bash
+curl -X PUT "$BASE/api/v1/platform/billing/tenants/$TENANT/subscription" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "plan_code":"starter",
+    "status":"active",
+    "base_amount":"49.00",
+    "usage_overage_amount":"0",
+    "mrr_snapshot":"49.00",
+    "metadata":{}
+  }'
+```
+
+### 3. Verify effective entitlements
+```bash
+curl -X GET "$BASE/api/v1/platform/billing/tenants/$TENANT/entitlements" \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+Confirm:
+- limits are present with expected values/windows
+- features reflect plan defaults (plus overrides if any)
+
+### 4. Apply tenant-specific overrides (optional)
+```bash
+curl -X PUT "$BASE/api/v1/platform/billing/tenants/$TENANT/entitlements" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '[
+    {"metric_key":"tenant_users","override_limit_value":50,"window":"month","enforcement_mode":"hard_block"},
+    {"feature_key":"billing","override_enabled":true}
+  ]'
+```
+
+### 5. Smoke test hard enforcement
+Do the following in tenant app scope:
+
+- attempt creating users until over `tenant_users` cap
+- attempt creating labs until over `tenant_labs` cap
+- call guarded feature APIs/GraphQL fields for disabled features
+
+Expected:
+- cap errors with `CAP_LIMIT_EXCEEDED`
+- feature errors with `FEATURE_NOT_ENTITLED`
+
+### 6. Validate usage counters
+```bash
+curl -X GET "$BASE/api/v1/platform/billing/tenants/$TENANT/usage" \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+Confirm counters exist for request metrics and increase over traffic.
+
+### 7. Platform dashboard checks
+In `webapp/views/platform/Dashboard.vue` billing tab, verify:
+
+- plans list includes your plan
+- entitlements panel matches API data
+- usage panel shows non-empty counters after traffic
