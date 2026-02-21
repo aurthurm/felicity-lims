@@ -66,6 +66,16 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
         )
 
         try:
+            # Public paths bypass JWT/tenant resolution entirely.
+            if any(
+                request.url.path.startswith(p)
+                for p in settings.TENANT_PUBLIC_PATHS
+            ):
+                set_tenant_context(context)
+                response = await call_next(request)
+                response.headers["X-Request-ID"] = request_id
+                return response
+
             # Extract tenant info from JWT token
             await self._extract_from_jwt(request, context)
             await self._resolve_tenant_schema(request, context)
