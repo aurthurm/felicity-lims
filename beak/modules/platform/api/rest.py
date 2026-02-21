@@ -1,14 +1,36 @@
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request, status
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel, EmailStr, Field
 
+from beak.core.config import get_settings
 from beak.modules.platform.enum import PlatformRole
+from beak.modules.platform.billing.entities import BillingProvider
+from beak.modules.platform.billing.schemas import (
+    BillingInvoice,
+    BillingInvoiceCreatePayload,
+    BillingPaymentAttempt,
+    BillingProviderHealthResponse,
+    BillingWebhookResult,
+    InvoiceMarkPaidPayload,
+    SubscriptionResponse,
+    SubscriptionUpdatePayload,
+    TenantBillingOverview,
+    TenantBillingProfile,
+    TenantBillingProfileUpdate,
+)
+from beak.modules.platform.billing.services import PlatformBillingService
+from beak.modules.platform.billing.webhooks import (
+    BillingWebhookError,
+    parse_webhook_json,
+    verify_provider_signature,
+)
 from beak.modules.platform.iam_service import PlatformIAMService
 from beak.modules.platform.services import TenantProvisioningService, TenantRegistryService
 
 platform = APIRouter(tags=["platform"], prefix="/platform")
+settings = get_settings()
 platform_oauth2 = OAuth2PasswordBearer(
     tokenUrl="/api/v1/platform/auth/login",
     scheme_name="PlatformJWT",
@@ -81,6 +103,14 @@ def _require_platform_roles(
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Insufficient platform role",
+        )
+
+
+def _require_platform_billing_enabled() -> None:
+    if not settings.PLATFORM_BILLING_ENABLED:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Platform billing is disabled",
         )
 
 
@@ -265,3 +295,340 @@ async def disable_module(
         )
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+
+@platform.get(
+    "/billing/tenants/{slug}/profile",
+    response_model=TenantBillingProfile,
+)
+async def get_tenant_billing_profile(
+    slug: str,
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+) -> TenantBillingProfile:
+    _require_platform_billing_enabled()
+    _require_platform_roles(
+        current_user,
+        allowed={
+            PlatformRole.ADMINISTRATOR,
+            PlatformRole.BILLING,
+            PlatformRole.SUPPORT,
+        },
+    )
+    try:
+        return await PlatformBillingService().get_profile(slug)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+
+@platform.put(
+    "/billing/tenants/{slug}/profile",
+    response_model=TenantBillingProfile,
+)
+async def update_tenant_billing_profile(
+    slug: str,
+    payload: TenantBillingProfileUpdate,
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+) -> TenantBillingProfile:
+    _require_platform_billing_enabled()
+    _require_platform_roles(
+        current_user,
+        allowed={PlatformRole.ADMINISTRATOR, PlatformRole.BILLING},
+    )
+    try:
+        return await PlatformBillingService().update_profile(slug, payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+
+@platform.get(
+    "/billing/tenants/{slug}/subscription",
+    response_model=SubscriptionResponse | None,
+)
+async def get_tenant_billing_subscription(
+    slug: str,
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+) -> SubscriptionResponse | None:
+    _require_platform_billing_enabled()
+    _require_platform_roles(
+        current_user,
+        allowed={
+            PlatformRole.ADMINISTRATOR,
+            PlatformRole.BILLING,
+            PlatformRole.SUPPORT,
+        },
+    )
+    try:
+        return await PlatformBillingService().get_subscription(slug)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+
+@platform.put(
+    "/billing/tenants/{slug}/subscription",
+    response_model=SubscriptionResponse,
+)
+async def update_tenant_billing_subscription(
+    slug: str,
+    payload: SubscriptionUpdatePayload,
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+) -> SubscriptionResponse:
+    _require_platform_billing_enabled()
+    _require_platform_roles(
+        current_user,
+        allowed={PlatformRole.ADMINISTRATOR, PlatformRole.BILLING},
+    )
+    try:
+        return await PlatformBillingService().update_subscription(slug, payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+
+@platform.post(
+    "/billing/tenants/{slug}/invoices",
+    response_model=BillingInvoice,
+)
+async def create_tenant_billing_invoice(
+    slug: str,
+    payload: BillingInvoiceCreatePayload,
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+) -> BillingInvoice:
+    _require_platform_billing_enabled()
+    _require_platform_roles(
+        current_user,
+        allowed={PlatformRole.ADMINISTRATOR, PlatformRole.BILLING},
+    )
+    try:
+        return await PlatformBillingService().create_invoice(slug, payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+
+@platform.get(
+    "/billing/tenants/{slug}/invoices",
+    response_model=list[BillingInvoice],
+)
+async def list_tenant_billing_invoices(
+    slug: str,
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+) -> list[BillingInvoice]:
+    _require_platform_billing_enabled()
+    _require_platform_roles(
+        current_user,
+        allowed={
+            PlatformRole.ADMINISTRATOR,
+            PlatformRole.BILLING,
+            PlatformRole.SUPPORT,
+        },
+    )
+    try:
+        return await PlatformBillingService().list_invoices(slug)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+
+@platform.get(
+    "/billing/tenants/{slug}/invoices/{invoice_uid}",
+    response_model=BillingInvoice,
+)
+async def get_tenant_billing_invoice(
+    slug: str,
+    invoice_uid: str,
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+) -> BillingInvoice:
+    _require_platform_billing_enabled()
+    _require_platform_roles(
+        current_user,
+        allowed={
+            PlatformRole.ADMINISTRATOR,
+            PlatformRole.BILLING,
+            PlatformRole.SUPPORT,
+        },
+    )
+    try:
+        invoice = await PlatformBillingService().get_invoice(slug, invoice_uid)
+        if not invoice:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invoice not found")
+        return invoice
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+
+@platform.post(
+    "/billing/tenants/{slug}/invoices/{invoice_uid}/finalize",
+    response_model=BillingInvoice,
+)
+async def finalize_tenant_billing_invoice(
+    slug: str,
+    invoice_uid: str,
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+) -> BillingInvoice:
+    _require_platform_billing_enabled()
+    _require_platform_roles(
+        current_user,
+        allowed={PlatformRole.ADMINISTRATOR, PlatformRole.BILLING},
+    )
+    try:
+        return await PlatformBillingService().finalize_invoice(slug, invoice_uid)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+
+@platform.post(
+    "/billing/tenants/{slug}/invoices/{invoice_uid}/send",
+    response_model=BillingInvoice,
+)
+async def send_tenant_billing_invoice(
+    slug: str,
+    invoice_uid: str,
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+) -> BillingInvoice:
+    _require_platform_billing_enabled()
+    _require_platform_roles(
+        current_user,
+        allowed={PlatformRole.ADMINISTRATOR, PlatformRole.BILLING},
+    )
+    try:
+        return await PlatformBillingService().send_invoice(slug, invoice_uid)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+
+@platform.post(
+    "/billing/tenants/{slug}/invoices/{invoice_uid}/mark-paid",
+    response_model=BillingInvoice,
+)
+async def mark_tenant_billing_invoice_paid(
+    slug: str,
+    invoice_uid: str,
+    payload: InvoiceMarkPaidPayload,
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+) -> BillingInvoice:
+    _require_platform_billing_enabled()
+    _require_platform_roles(
+        current_user,
+        allowed={PlatformRole.ADMINISTRATOR, PlatformRole.BILLING},
+    )
+    try:
+        return await PlatformBillingService().mark_invoice_paid(slug, invoice_uid, payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+
+@platform.get(
+    "/billing/tenants/{slug}/overview",
+    response_model=TenantBillingOverview,
+)
+async def get_tenant_billing_overview(
+    slug: str,
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+) -> TenantBillingOverview:
+    _require_platform_billing_enabled()
+    _require_platform_roles(
+        current_user,
+        allowed={
+            PlatformRole.ADMINISTRATOR,
+            PlatformRole.BILLING,
+            PlatformRole.SUPPORT,
+        },
+    )
+    try:
+        return await PlatformBillingService().get_overview(slug)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+
+@platform.get(
+    "/billing/tenants/{slug}/payment-attempts",
+    response_model=list[BillingPaymentAttempt],
+)
+async def list_tenant_billing_payment_attempts(
+    slug: str,
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+    limit: int = Query(20, ge=1, le=100),
+) -> list[BillingPaymentAttempt]:
+    _require_platform_billing_enabled()
+    _require_platform_roles(
+        current_user,
+        allowed={
+            PlatformRole.ADMINISTRATOR,
+            PlatformRole.BILLING,
+            PlatformRole.SUPPORT,
+        },
+    )
+    try:
+        return await PlatformBillingService().list_payment_attempts(slug, limit=limit)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+
+
+@platform.get(
+    "/billing/providers/health",
+    response_model=BillingProviderHealthResponse,
+)
+async def get_billing_providers_health(
+    current_user: Annotated[dict, Depends(get_current_platform_user)],
+) -> BillingProviderHealthResponse:
+    _require_platform_billing_enabled()
+    _require_platform_roles(
+        current_user,
+        allowed={
+            PlatformRole.ADMINISTRATOR,
+            PlatformRole.BILLING,
+            PlatformRole.SUPPORT,
+        },
+    )
+    return await PlatformBillingService().get_provider_health()
+
+
+@platform.post(
+    "/billing/webhooks/stripe",
+    response_model=BillingWebhookResult,
+)
+async def stripe_billing_webhook(
+    request: Request,
+    stripe_signature: Annotated[str | None, Header(alias="Stripe-Signature")] = None,
+) -> BillingWebhookResult:
+    _require_platform_billing_enabled()
+    raw_body = await request.body()
+    try:
+        verify_provider_signature(
+            BillingProvider.STRIPE,
+            raw_body=raw_body,
+            signature=stripe_signature,
+        )
+        payload = parse_webhook_json(raw_body)
+        return await PlatformBillingService().process_webhook(
+            provider=BillingProvider.STRIPE,
+            payload=payload,
+        )
+    except BillingWebhookError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(exc))
+
+
+@platform.post(
+    "/billing/webhooks/paystack",
+    response_model=BillingWebhookResult,
+)
+async def paystack_billing_webhook(
+    request: Request,
+    x_paystack_signature: Annotated[str | None, Header(alias="X-Paystack-Signature")] = None,
+) -> BillingWebhookResult:
+    _require_platform_billing_enabled()
+    raw_body = await request.body()
+    try:
+        verify_provider_signature(
+            BillingProvider.PAYSTACK,
+            raw_body=raw_body,
+            signature=x_paystack_signature,
+        )
+        payload = parse_webhook_json(raw_body)
+        return await PlatformBillingService().process_webhook(
+            provider=BillingProvider.PAYSTACK,
+            payload=payload,
+        )
+    except BillingWebhookError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(exc))

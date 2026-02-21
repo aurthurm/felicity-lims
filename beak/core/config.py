@@ -69,6 +69,7 @@ class Settings(BaseSettings):
     PLATFORM_SCHEMA: str = getenv_value("PLATFORM_SCHEMA", "platform")
     TENANT_SCHEMA_PREFIX: str = getenv_value("TENANT_SCHEMA_PREFIX", "org_")
     DEFAULT_PRIMARY_INDUSTRY: str = getenv_value("DEFAULT_PRIMARY_INDUSTRY", "clinical")
+    PLATFORM_BILLING_ENABLED: bool = getenv_boolean("PLATFORM_BILLING_ENABLED", False)
     TENANT_HEADER_NAME: str = getenv_value("TENANT_HEADER_NAME", "X-Org-Slug")
     TENANT_REQUIRED_PATH_PREFIXES: list[str] = ["/beak-gql", "/api/v1"]
     TENANT_PUBLIC_PATHS: list[str] = [
@@ -201,6 +202,10 @@ class Settings(BaseSettings):
     SMS_TOKEN: str | None = getenv_value("SMS_TOKEN", None)
     SMS_USERNAME: str | None = getenv_value("SMS_USERNAME", None)
     SMS_PASSWORD: str | None = getenv_value("SMS_PASSWORD", None)
+    STRIPE_SECRET_KEY: str | None = getenv_value("STRIPE_SECRET_KEY", None)
+    STRIPE_WEBHOOK_SECRET: str | None = getenv_value("STRIPE_WEBHOOK_SECRET", None)
+    PAYSTACK_SECRET_KEY: str | None = getenv_value("PAYSTACK_SECRET_KEY", None)
+    PAYSTACK_WEBHOOK_SECRET: str | None = getenv_value("PAYSTACK_WEBHOOK_SECRET", None)
 
     # HIPAA Compliance
     HIPAA_ENCRYPTION_KEY: str | None = getenv_value("HIPAA_ENCRYPTION_KEY", None)

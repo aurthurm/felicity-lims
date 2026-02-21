@@ -148,6 +148,239 @@ async def bootstrap_platform_schema(connection) -> None:
     await connection.execute(
         text(
             f"""
+            CREATE TABLE IF NOT EXISTS "{platform_schema}".billing_customer (
+                tenant_slug VARCHAR(128) PRIMARY KEY,
+                customer_uid VARCHAR(64) NOT NULL,
+                legal_name VARCHAR(255),
+                billing_email VARCHAR(255),
+                currency VARCHAR(8) NOT NULL DEFAULT 'USD',
+                country VARCHAR(8),
+                provider_preference VARCHAR(32) NOT NULL DEFAULT 'stripe',
+                auto_finalize_invoices BOOLEAN NOT NULL DEFAULT false,
+                auto_send_invoices BOOLEAN NOT NULL DEFAULT false,
+                payment_terms_days INTEGER NOT NULL DEFAULT 30,
+                metadata JSONB,
+                created_at TIMESTAMP NULL,
+                updated_at TIMESTAMP NULL
+            )
+            """
+        )
+    )
+    await connection.execute(
+        text(
+            f"""
+            CREATE UNIQUE INDEX IF NOT EXISTS uq_billing_customer_tenant_slug
+            ON "{platform_schema}".billing_customer (tenant_slug)
+            """
+        )
+    )
+    await connection.execute(
+        text(
+            f"""
+            CREATE TABLE IF NOT EXISTS "{platform_schema}".billing_subscription (
+                uid VARCHAR(64) PRIMARY KEY,
+                tenant_slug VARCHAR(128) NOT NULL,
+                plan_code VARCHAR(64) NOT NULL,
+                status VARCHAR(32) NOT NULL,
+                base_amount NUMERIC(18, 2) NOT NULL DEFAULT 0,
+                usage_overage_amount NUMERIC(18, 2) NOT NULL DEFAULT 0,
+                mrr_snapshot NUMERIC(18, 2) NOT NULL DEFAULT 0,
+                next_billing_date DATE NULL,
+                starts_at TIMESTAMP NULL,
+                ends_at TIMESTAMP NULL,
+                paused_at TIMESTAMP NULL,
+                canceled_at TIMESTAMP NULL,
+                metadata JSONB,
+                created_at TIMESTAMP NULL,
+                updated_at TIMESTAMP NULL
+            )
+            """
+        )
+    )
+    await connection.execute(
+        text(
+            f"""
+            CREATE TABLE IF NOT EXISTS "{platform_schema}".billing_subscription_item (
+                uid VARCHAR(64) PRIMARY KEY,
+                subscription_uid VARCHAR(64) NOT NULL,
+                tenant_slug VARCHAR(128) NOT NULL,
+                item_code VARCHAR(128) NOT NULL,
+                quantity NUMERIC(18, 4) NOT NULL DEFAULT 0,
+                unit_price NUMERIC(18, 4) NOT NULL DEFAULT 0,
+                amount NUMERIC(18, 2) NOT NULL DEFAULT 0,
+                metadata JSONB,
+                created_at TIMESTAMP NULL,
+                updated_at TIMESTAMP NULL
+            )
+            """
+        )
+    )
+    await connection.execute(
+        text(
+            f"""
+            CREATE TABLE IF NOT EXISTS "{platform_schema}".billing_usage_record_daily (
+                uid VARCHAR(64) PRIMARY KEY,
+                tenant_slug VARCHAR(128) NOT NULL,
+                usage_date DATE NOT NULL,
+                metric_key VARCHAR(128) NOT NULL,
+                quantity NUMERIC(18, 4) NOT NULL DEFAULT 0,
+                unit_price NUMERIC(18, 4) NOT NULL DEFAULT 0,
+                amount NUMERIC(18, 2) NOT NULL DEFAULT 0,
+                metadata JSONB,
+                created_at TIMESTAMP NULL,
+                updated_at TIMESTAMP NULL
+            )
+            """
+        )
+    )
+    await connection.execute(
+        text(
+            f"""
+            CREATE TABLE IF NOT EXISTS "{platform_schema}".billing_invoice (
+                uid VARCHAR(64) PRIMARY KEY,
+                tenant_slug VARCHAR(128) NOT NULL,
+                invoice_number VARCHAR(64) NOT NULL,
+                status VARCHAR(32) NOT NULL,
+                currency VARCHAR(8) NOT NULL DEFAULT 'USD',
+                subtotal NUMERIC(18, 2) NOT NULL DEFAULT 0,
+                tax_amount NUMERIC(18, 2) NOT NULL DEFAULT 0,
+                total_amount NUMERIC(18, 2) NOT NULL DEFAULT 0,
+                amount_due NUMERIC(18, 2) NOT NULL DEFAULT 0,
+                amount_paid NUMERIC(18, 2) NOT NULL DEFAULT 0,
+                due_date DATE NULL,
+                issued_at TIMESTAMP NULL,
+                finalized_at TIMESTAMP NULL,
+                sent_at TIMESTAMP NULL,
+                paid_at TIMESTAMP NULL,
+                metadata JSONB,
+                created_at TIMESTAMP NULL,
+                updated_at TIMESTAMP NULL
+            )
+            """
+        )
+    )
+    await connection.execute(
+        text(
+            f"""
+            CREATE UNIQUE INDEX IF NOT EXISTS uq_billing_invoice_invoice_number
+            ON "{platform_schema}".billing_invoice (invoice_number)
+            """
+        )
+    )
+    await connection.execute(
+        text(
+            f"""
+            CREATE TABLE IF NOT EXISTS "{platform_schema}".billing_invoice_line (
+                uid VARCHAR(64) PRIMARY KEY,
+                invoice_uid VARCHAR(64) NOT NULL,
+                line_index INTEGER NOT NULL,
+                description TEXT NOT NULL,
+                quantity NUMERIC(18, 4) NOT NULL DEFAULT 0,
+                unit_price NUMERIC(18, 4) NOT NULL DEFAULT 0,
+                amount NUMERIC(18, 2) NOT NULL DEFAULT 0,
+                metadata JSONB,
+                created_at TIMESTAMP NULL,
+                updated_at TIMESTAMP NULL
+            )
+            """
+        )
+    )
+    await connection.execute(
+        text(
+            f"""
+            CREATE TABLE IF NOT EXISTS "{platform_schema}".billing_payment_attempt (
+                uid VARCHAR(64) PRIMARY KEY,
+                invoice_uid VARCHAR(64) NOT NULL,
+                tenant_slug VARCHAR(128) NOT NULL,
+                provider VARCHAR(32) NOT NULL,
+                status VARCHAR(32) NOT NULL,
+                amount NUMERIC(18, 2) NOT NULL DEFAULT 0,
+                currency VARCHAR(8) NOT NULL DEFAULT 'USD',
+                provider_reference VARCHAR(255),
+                failure_reason TEXT,
+                metadata JSONB,
+                created_at TIMESTAMP NULL,
+                updated_at TIMESTAMP NULL
+            )
+            """
+        )
+    )
+    await connection.execute(
+        text(
+            f"""
+            CREATE TABLE IF NOT EXISTS "{platform_schema}".billing_payment_allocation (
+                uid VARCHAR(64) PRIMARY KEY,
+                payment_attempt_uid VARCHAR(64) NOT NULL,
+                invoice_uid VARCHAR(64) NOT NULL,
+                tenant_slug VARCHAR(128) NOT NULL,
+                amount NUMERIC(18, 2) NOT NULL DEFAULT 0,
+                metadata JSONB,
+                created_at TIMESTAMP NULL,
+                updated_at TIMESTAMP NULL
+            )
+            """
+        )
+    )
+    await connection.execute(
+        text(
+            f"""
+            CREATE TABLE IF NOT EXISTS "{platform_schema}".billing_webhook_event (
+                uid VARCHAR(64) PRIMARY KEY,
+                provider VARCHAR(32) NOT NULL,
+                idempotency_key VARCHAR(255) NOT NULL,
+                event_type VARCHAR(128) NOT NULL,
+                payload JSONB NOT NULL,
+                processed BOOLEAN NOT NULL DEFAULT false,
+                processed_at TIMESTAMP NULL,
+                created_at TIMESTAMP NULL,
+                updated_at TIMESTAMP NULL
+            )
+            """
+        )
+    )
+    await connection.execute(
+        text(
+            f"""
+            CREATE UNIQUE INDEX IF NOT EXISTS uq_billing_webhook_event_idempotency_key
+            ON "{platform_schema}".billing_webhook_event (idempotency_key)
+            """
+        )
+    )
+    await connection.execute(
+        text(
+            f"""
+            CREATE TABLE IF NOT EXISTS "{platform_schema}".billing_provider_account_config (
+                uid VARCHAR(64) PRIMARY KEY,
+                provider VARCHAR(32) NOT NULL,
+                account_name VARCHAR(128),
+                account_reference VARCHAR(255),
+                enabled BOOLEAN NOT NULL DEFAULT false,
+                metadata JSONB,
+                created_at TIMESTAMP NULL,
+                updated_at TIMESTAMP NULL
+            )
+            """
+        )
+    )
+    await connection.execute(
+        text(
+            f"""
+            CREATE TABLE IF NOT EXISTS "{platform_schema}".billing_audit_log (
+                uid VARCHAR(64) PRIMARY KEY,
+                tenant_slug VARCHAR(128),
+                actor_identifier VARCHAR(255),
+                action VARCHAR(128) NOT NULL,
+                resource_type VARCHAR(128) NOT NULL,
+                resource_uid VARCHAR(64),
+                details JSONB,
+                created_at TIMESTAMP NULL
+            )
+            """
+        )
+    )
+    await connection.execute(
+        text(
+            f"""
             CREATE TABLE IF NOT EXISTS "{platform_schema}".alembic_version_platform (
                 version_num VARCHAR(32) NOT NULL PRIMARY KEY
             )

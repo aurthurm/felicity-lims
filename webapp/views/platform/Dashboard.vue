@@ -1,7 +1,15 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import usePlatformApi, { Tenant } from '@/composables/platform_api';
+import usePlatformApi, {
+    BillingInvoice,
+    BillingPaymentAttempt,
+    BillingProviderHealthResponse,
+    Tenant,
+    TenantBillingOverview,
+    TenantBillingProfile,
+    TenantBillingSubscription,
+} from '@/composables/platform_api';
 import { PLATFORM_LOGIN } from '@/router/platform';
 import { usePlatformAuthStore } from '@/stores/platform_auth';
 
@@ -97,13 +105,43 @@ const activeTenantSlug = computed(() => selectedTenant.value?.slug ?? '');
 
 const meJson = computed(() => JSON.stringify(authStore.auth.me ?? {}, null, 2));
 
-const placeholderBillingRows = computed(() =>
-    tenants.value.map(tenant => ({
-        slug: tenant.slug ?? 'unknown',
-        descriptor: tenant.primary_industry ?? 'unclassified',
-        status: tenant.status ?? (tenant.active ? 'active' : 'pending'),
-    }))
-);
+const billingOverviewRows = ref<TenantBillingOverview[]>([]);
+const billingProviderHealth = ref<BillingProviderHealthResponse | null>(null);
+const billingSelectedSlug = ref('');
+const billingProfile = ref<TenantBillingProfile | null>(null);
+const billingSubscription = ref<TenantBillingSubscription | null>(null);
+const billingInvoices = ref<BillingInvoice[]>([]);
+const billingAttempts = ref<BillingPaymentAttempt[]>([]);
+const billingPanelLoading = ref(false);
+const billingProfileForm = ref({
+    legal_name: '',
+    billing_email: '',
+    currency: 'USD',
+    country: '',
+    provider_preference: 'stripe' as 'stripe' | 'paystack',
+    auto_finalize_invoices: false,
+    auto_send_invoices: false,
+    payment_terms_days: 30,
+});
+const billingSubscriptionForm = ref({
+    plan_code: '',
+    status: 'active' as 'trialing' | 'active' | 'past_due' | 'paused' | 'canceled',
+    base_amount: '0',
+    usage_overage_amount: '0',
+    mrr_snapshot: '0',
+    next_billing_date: '',
+});
+const billingInvoiceForm = ref({
+    currency: 'USD',
+    due_date: '',
+    tax_amount: '0',
+    description: '',
+    quantity: '1',
+    unit_price: '0',
+    amount: '0',
+});
+const markPaidInvoiceUid = ref('');
+const markPaidAmount = ref('');
 
 const placeholderUserRows = computed(() =>
     tenants.value.map(tenant => ({
@@ -114,6 +152,24 @@ const placeholderUserRows = computed(() =>
 );
 
 const isBusy = computed(() => loadingTenants.value || activeAction.value !== null || authStore.loading);
+const selectedBillingOverview = computed<TenantBillingOverview | null>(() => {
+    if (!billingSelectedSlug.value) {
+        return null;
+    }
+    return billingOverviewRows.value.find(row => row.tenant_slug === billingSelectedSlug.value) ?? null;
+});
+const tenantBillingOpenTotal = computed(() => {
+    if (!selectedBillingOverview.value) {
+        return '0.00';
+    }
+    const aging = selectedBillingOverview.value.aging;
+    const total =
+        Number(aging.current ?? 0) +
+        Number(aging.bucket_30 ?? 0) +
+        Number(aging.bucket_60 ?? 0) +
+        Number(aging.bucket_90_plus ?? 0);
+    return total.toFixed(2);
+});
 
 const tenantKey = (tenant: Tenant): string => {
     return String(tenant.slug ?? tenant.id ?? tenant.uid ?? tenant.schema_name ?? tenant.name ?? 'tenant');
@@ -322,6 +378,211 @@ const submitCleanupFailed = async (): Promise<void> => {
     });
 };
 
+const formatMoney = (value: string | number | null | undefined, currency = 'USD'): string => {
+    const numeric = Number(value ?? 0);
+    return new Intl.NumberFormat(undefined, {
+        style: 'currency',
+        currency,
+        maximumFractionDigits: 2,
+    }).format(Number.isFinite(numeric) ? numeric : 0);
+};
+
+const hydrateBillingForms = (): void => {
+    const profile = billingProfile.value;
+    if (profile) {
+        billingProfileForm.value.legal_name = profile.legal_name ?? '';
+        billingProfileForm.value.billing_email = profile.billing_email ?? '';
+        billingProfileForm.value.currency = profile.currency || 'USD';
+        billingProfileForm.value.country = profile.country ?? '';
+        billingProfileForm.value.provider_preference = profile.provider_preference ?? 'stripe';
+        billingProfileForm.value.auto_finalize_invoices = Boolean(profile.auto_finalize_invoices);
+        billingProfileForm.value.auto_send_invoices = Boolean(profile.auto_send_invoices);
+        billingProfileForm.value.payment_terms_days = Number(profile.payment_terms_days ?? 30);
+    }
+    const sub = billingSubscription.value;
+    if (sub) {
+        billingSubscriptionForm.value.plan_code = sub.plan_code ?? '';
+        billingSubscriptionForm.value.status = sub.status ?? 'active';
+        billingSubscriptionForm.value.base_amount = sub.base_amount ?? '0';
+        billingSubscriptionForm.value.usage_overage_amount = sub.usage_overage_amount ?? '0';
+        billingSubscriptionForm.value.mrr_snapshot = sub.mrr_snapshot ?? '0';
+        billingSubscriptionForm.value.next_billing_date = sub.next_billing_date ?? '';
+    }
+};
+
+const loadBillingPortfolio = async (): Promise<void> => {
+    if (!tenants.value.length) {
+        billingOverviewRows.value = [];
+        return;
+    }
+    billingPanelLoading.value = true;
+    try {
+        const slugs = tenants.value.map(tenant => tenant.slug).filter((slug): slug is string => Boolean(slug));
+        const rows = await Promise.all(
+            slugs.map(async slug => {
+                try {
+                    return await api.getTenantBillingOverview(slug);
+                } catch {
+                    return {
+                        tenant_slug: slug,
+                        plan_code: null,
+                        subscription_status: null,
+                        mrr_snapshot: '0',
+                        aging: { current: '0', bucket_30: '0', bucket_60: '0', bucket_90_plus: '0' },
+                    } as TenantBillingOverview;
+                }
+            })
+        );
+        billingOverviewRows.value = rows;
+        if (!billingSelectedSlug.value && rows.length) {
+            billingSelectedSlug.value = rows[0].tenant_slug;
+        }
+    } finally {
+        billingPanelLoading.value = false;
+    }
+};
+
+const loadProviderHealth = async (): Promise<void> => {
+    try {
+        billingProviderHealth.value = await api.getBillingProvidersHealth();
+    } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Failed to load provider health';
+        pushToast('error', message);
+    }
+};
+
+const loadTenantBillingDetails = async (slug: string): Promise<void> => {
+    if (!slug) {
+        return;
+    }
+    billingPanelLoading.value = true;
+    billingSelectedSlug.value = slug;
+    try {
+        const [profile, subscription, invoices, attempts] = await Promise.all([
+            api.getTenantBillingProfile(slug),
+            api.getTenantBillingSubscription(slug),
+            api.listTenantBillingInvoices(slug),
+            api.listTenantBillingPaymentAttempts(slug, 20),
+        ]);
+        billingProfile.value = profile;
+        billingSubscription.value = subscription;
+        billingInvoices.value = invoices;
+        billingAttempts.value = attempts;
+        hydrateBillingForms();
+    } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Failed to load tenant billing details';
+        pushToast('error', message);
+    } finally {
+        billingPanelLoading.value = false;
+    }
+};
+
+const refreshBilling = async (): Promise<void> => {
+    await withAction('billing-refresh', async () => {
+        await Promise.all([loadBillingPortfolio(), loadProviderHealth()]);
+        if (billingSelectedSlug.value) {
+            await loadTenantBillingDetails(billingSelectedSlug.value);
+        }
+    });
+};
+
+const saveBillingProfile = async (): Promise<void> => {
+    if (!billingSelectedSlug.value) {
+        pushToast('info', 'Select a tenant in billing overview');
+        return;
+    }
+    await withAction('billing-profile', async () => {
+        await api.updateTenantBillingProfile(billingSelectedSlug.value, billingProfileForm.value);
+        pushToast('success', `Billing profile updated for ${billingSelectedSlug.value}`);
+        await loadTenantBillingDetails(billingSelectedSlug.value);
+    });
+};
+
+const saveBillingSubscription = async (): Promise<void> => {
+    if (!billingSelectedSlug.value || !billingSubscriptionForm.value.plan_code.trim()) {
+        pushToast('info', 'Tenant and plan code are required');
+        return;
+    }
+    await withAction('billing-subscription', async () => {
+        await api.updateTenantBillingSubscription(billingSelectedSlug.value, {
+            plan_code: billingSubscriptionForm.value.plan_code.trim(),
+            status: billingSubscriptionForm.value.status,
+            base_amount: billingSubscriptionForm.value.base_amount,
+            usage_overage_amount: billingSubscriptionForm.value.usage_overage_amount,
+            mrr_snapshot: billingSubscriptionForm.value.mrr_snapshot,
+            next_billing_date: billingSubscriptionForm.value.next_billing_date || null,
+            metadata: {},
+        });
+        pushToast('success', `Subscription updated for ${billingSelectedSlug.value}`);
+        await refreshBilling();
+    });
+};
+
+const createBillingInvoice = async (): Promise<void> => {
+    if (!billingSelectedSlug.value || !billingInvoiceForm.value.description.trim()) {
+        pushToast('info', 'Tenant and invoice description are required');
+        return;
+    }
+    await withAction('billing-invoice-create', async () => {
+        await api.createTenantBillingInvoice(billingSelectedSlug.value, {
+            currency: billingInvoiceForm.value.currency || 'USD',
+            due_date: billingInvoiceForm.value.due_date || null,
+            tax_amount: billingInvoiceForm.value.tax_amount || '0',
+            lines: [
+                {
+                    description: billingInvoiceForm.value.description.trim(),
+                    quantity: billingInvoiceForm.value.quantity || '1',
+                    unit_price: billingInvoiceForm.value.unit_price || '0',
+                    amount: billingInvoiceForm.value.amount || '0',
+                },
+            ],
+        });
+        pushToast('success', `Draft invoice created for ${billingSelectedSlug.value}`);
+        billingInvoiceForm.value.description = '';
+        await refreshBilling();
+    });
+};
+
+const finalizeBillingInvoice = async (invoiceUid: string): Promise<void> => {
+    if (!billingSelectedSlug.value) {
+        return;
+    }
+    await withAction('billing-invoice-finalize', async () => {
+        await api.finalizeTenantBillingInvoice(billingSelectedSlug.value, invoiceUid);
+        pushToast('success', 'Invoice finalized');
+        await refreshBilling();
+    });
+};
+
+const sendBillingInvoice = async (invoiceUid: string): Promise<void> => {
+    if (!billingSelectedSlug.value) {
+        return;
+    }
+    await withAction('billing-invoice-send', async () => {
+        await api.sendTenantBillingInvoice(billingSelectedSlug.value, invoiceUid);
+        pushToast('success', 'Invoice sent');
+        await refreshBilling();
+    });
+};
+
+const markBillingInvoicePaid = async (invoiceUid?: string): Promise<void> => {
+    const resolvedUid = invoiceUid || markPaidInvoiceUid.value;
+    if (!billingSelectedSlug.value || !resolvedUid) {
+        pushToast('info', 'Select tenant and invoice');
+        return;
+    }
+    await withAction('billing-invoice-paid', async () => {
+        await api.markTenantBillingInvoicePaid(billingSelectedSlug.value, resolvedUid, {
+            amount: markPaidAmount.value || undefined,
+            note: 'manual platform mark-paid',
+        });
+        pushToast('success', 'Invoice marked paid');
+        markPaidInvoiceUid.value = '';
+        markPaidAmount.value = '';
+        await refreshBilling();
+    });
+};
+
 const logout = async (): Promise<void> => {
     authStore.clear();
     await router.push({ name: PLATFORM_LOGIN });
@@ -333,6 +594,7 @@ onMounted(async () => {
         return;
     }
     await Promise.all([loadMe(), loadTenants()]);
+    await refreshBilling();
 });
 </script>
 
@@ -527,16 +789,232 @@ onMounted(async () => {
 
       <article v-if="activeTab === 'billing'" class="stack-lg">
         <div class="section-head">
-          <h2>Billing (Placeholder)</h2>
-          <p>Future billing integration panel. Display is currently tenant-derived metadata only.</p>
+          <h2>Platform Billing</h2>
+          <p>Portfolio overview, tenant billing detail, invoice actions, and provider health.</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn ghost" :disabled="isBusy || billingPanelLoading" @click="refreshBilling">Refresh Billing</button>
+        </div>
+        <div class="table-wrap">
+          <table class="tenant-table">
+            <thead>
+              <tr>
+                <th>Tenant</th>
+                <th>Plan</th>
+                <th>Status</th>
+                <th>MRR</th>
+                <th>A/R Aging</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in billingOverviewRows" :key="row.tenant_slug">
+                <td>{{ row.tenant_slug }}</td>
+                <td>{{ row.plan_code ?? 'unassigned' }}</td>
+                <td><span class="status-pill">{{ row.subscription_status ?? 'none' }}</span></td>
+                <td>{{ formatMoney(row.mrr_snapshot) }}</td>
+                <td>
+                  C {{ formatMoney(row.aging.current) }} |
+                  30 {{ formatMoney(row.aging.bucket_30) }} |
+                  60 {{ formatMoney(row.aging.bucket_60) }} |
+                  90+ {{ formatMoney(row.aging.bucket_90_plus) }}
+                </td>
+                <td class="align-right">
+                  <button class="btn small ghost" type="button" @click="loadTenantBillingDetails(row.tenant_slug)">Details</button>
+                </td>
+              </tr>
+              <tr v-if="!billingOverviewRows.length">
+                <td colspan="6" class="empty-row">No billing portfolio rows available.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="split-grid">
+          <section class="panel inset-panel stack-lg">
+            <h3>Tenant Billing Detail</h3>
+            <p v-if="!billingSelectedSlug" class="muted">Select a tenant from overview to manage billing details.</p>
+            <template v-else>
+              <p class="muted">Tenant: <strong>{{ billingSelectedSlug }}</strong> | Open A/R: {{ formatMoney(tenantBillingOpenTotal) }}</p>
+              <form class="form-grid compact" @submit.prevent="saveBillingProfile">
+                <label>
+                  Legal Name
+                  <input v-model.trim="billingProfileForm.legal_name" placeholder="Tenant legal entity" />
+                </label>
+                <label>
+                  Billing Email
+                  <input v-model.trim="billingProfileForm.billing_email" type="email" placeholder="billing@tenant.tld" />
+                </label>
+                <label>
+                  Currency
+                  <input v-model.trim="billingProfileForm.currency" placeholder="USD" />
+                </label>
+                <label>
+                  Country
+                  <input v-model.trim="billingProfileForm.country" placeholder="US" />
+                </label>
+                <label>
+                  Provider
+                  <select v-model="billingProfileForm.provider_preference">
+                    <option value="stripe">Stripe</option>
+                    <option value="paystack">Paystack</option>
+                  </select>
+                </label>
+                <label>
+                  Payment Terms (days)
+                  <input v-model.number="billingProfileForm.payment_terms_days" type="number" min="1" />
+                </label>
+                <label class="inline-checkbox">
+                  <input v-model="billingProfileForm.auto_finalize_invoices" type="checkbox" />
+                  Auto-finalize invoices
+                </label>
+                <label class="inline-checkbox">
+                  <input v-model="billingProfileForm.auto_send_invoices" type="checkbox" />
+                  Auto-send invoices
+                </label>
+                <button class="btn" :disabled="isBusy || billingPanelLoading" type="submit">Save Profile</button>
+              </form>
+
+              <form class="form-grid compact" @submit.prevent="saveBillingSubscription">
+                <label>
+                  Plan Code
+                  <input v-model.trim="billingSubscriptionForm.plan_code" required placeholder="starter|growth|enterprise" />
+                </label>
+                <label>
+                  Status
+                  <select v-model="billingSubscriptionForm.status">
+                    <option value="trialing">trialing</option>
+                    <option value="active">active</option>
+                    <option value="past_due">past_due</option>
+                    <option value="paused">paused</option>
+                    <option value="canceled">canceled</option>
+                  </select>
+                </label>
+                <label>
+                  Base Amount
+                  <input v-model.trim="billingSubscriptionForm.base_amount" />
+                </label>
+                <label>
+                  Overage Amount
+                  <input v-model.trim="billingSubscriptionForm.usage_overage_amount" />
+                </label>
+                <label>
+                  MRR Snapshot
+                  <input v-model.trim="billingSubscriptionForm.mrr_snapshot" />
+                </label>
+                <label>
+                  Next Billing Date
+                  <input v-model="billingSubscriptionForm.next_billing_date" type="date" />
+                </label>
+                <button class="btn" :disabled="isBusy || billingPanelLoading" type="submit">Save Subscription</button>
+              </form>
+            </template>
+          </section>
+          <section class="panel inset-panel stack-lg">
+            <h3>Invoice Workflow</h3>
+            <form class="form-grid compact" @submit.prevent="createBillingInvoice">
+              <label>
+                Description
+                <input v-model.trim="billingInvoiceForm.description" required placeholder="Base plan monthly charge" />
+              </label>
+              <label>
+                Currency
+                <input v-model.trim="billingInvoiceForm.currency" placeholder="USD" />
+              </label>
+              <label>
+                Due Date
+                <input v-model="billingInvoiceForm.due_date" type="date" />
+              </label>
+              <label>
+                Quantity
+                <input v-model.trim="billingInvoiceForm.quantity" />
+              </label>
+              <label>
+                Unit Price
+                <input v-model.trim="billingInvoiceForm.unit_price" />
+              </label>
+              <label>
+                Line Amount
+                <input v-model.trim="billingInvoiceForm.amount" />
+              </label>
+              <label>
+                Tax Amount
+                <input v-model.trim="billingInvoiceForm.tax_amount" />
+              </label>
+              <button class="btn" :disabled="isBusy || billingPanelLoading" type="submit">Create Draft Invoice</button>
+            </form>
+            <div class="module-list">
+              <p v-if="!billingInvoices.length" class="muted">No invoices for selected tenant.</p>
+              <ul v-else>
+                <li v-for="invoice in billingInvoices" :key="invoice.uid">
+                  <div>
+                    <strong>{{ invoice.invoice_number }}</strong>
+                    <p class="muted">{{ invoice.status }} | Due {{ invoice.due_date ?? 'n/a' }}</p>
+                    <p class="muted">{{ formatMoney(invoice.total_amount, invoice.currency) }}</p>
+                  </div>
+                  <div class="drawer-shortcuts">
+                    <button
+                      class="btn small ghost"
+                      type="button"
+                      :disabled="invoice.status !== 'draft' || isBusy || billingPanelLoading"
+                      @click="finalizeBillingInvoice(invoice.uid)"
+                    >
+                      Finalize
+                    </button>
+                    <button
+                      class="btn small ghost"
+                      type="button"
+                      :disabled="invoice.status !== 'open' || isBusy || billingPanelLoading"
+                      @click="sendBillingInvoice(invoice.uid)"
+                    >
+                      Send
+                    </button>
+                    <button
+                      class="btn small"
+                      type="button"
+                      :disabled="invoice.status === 'paid' || isBusy || billingPanelLoading"
+                      @click="markBillingInvoicePaid(invoice.uid)"
+                    >
+                      Mark Paid
+                    </button>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <form class="form-grid compact" @submit.prevent="markBillingInvoicePaid()">
+              <label>
+                Invoice UID
+                <input v-model.trim="markPaidInvoiceUid" placeholder="optional if using row action" />
+              </label>
+              <label>
+                Amount (optional)
+                <input v-model.trim="markPaidAmount" placeholder="full amount if blank" />
+              </label>
+              <button class="btn" :disabled="isBusy || billingPanelLoading" type="submit">Manual Mark Paid</button>
+            </form>
+            <h3>Recent Payment Attempts</h3>
+            <div class="module-list">
+              <p v-if="!billingAttempts.length" class="muted">No payment attempts recorded.</p>
+              <ul v-else>
+                <li v-for="attempt in billingAttempts" :key="attempt.uid">
+                  <span>{{ attempt.provider }} / {{ attempt.status }} / {{ formatMoney(attempt.amount, attempt.currency) }}</span>
+                  <span class="muted">{{ attempt.provider_reference ?? 'n/a' }}</span>
+                </li>
+              </ul>
+            </div>
+          </section>
         </div>
         <div class="placeholder-grid">
-          <div v-for="row in placeholderBillingRows" :key="row.slug" class="placeholder-card">
-            <h3>{{ row.slug }}</h3>
-            <p>Industry: {{ row.descriptor }}</p>
-            <p>Status: {{ row.status }}</p>
+          <div class="placeholder-card">
+            <h3>Provider Health</h3>
+            <p v-if="!billingProviderHealth" class="muted">Health status unavailable.</p>
+            <ul v-else class="health-list">
+              <li v-for="provider in billingProviderHealth.providers" :key="provider.provider">
+                <span>{{ provider.provider }}</span>
+                <span class="status-pill" :class="{ on: provider.healthy }">{{ provider.healthy ? 'healthy' : 'degraded' }}</span>
+                <span class="muted">{{ provider.details }}</span>
+              </li>
+            </ul>
           </div>
-          <p v-if="!placeholderBillingRows.length" class="muted">No tenant data available yet.</p>
         </div>
       </article>
 
@@ -837,11 +1315,13 @@ label {
 }
 
 input,
+select,
 button {
     font: inherit;
 }
 
-input {
+input,
+select {
     border: 1px solid rgba(118, 146, 195, 0.38);
     border-radius: 10px;
     background: rgba(10, 16, 32, 0.64);
@@ -870,6 +1350,10 @@ input::placeholder {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 0.9rem;
+}
+
+.inset-panel {
+    padding: 0.75rem;
 }
 
 .module-toggle-row {
@@ -916,6 +1400,21 @@ input::placeholder {
 .placeholder-card p {
     margin: 0.42rem 0 0;
     color: var(--text-muted);
+}
+
+.health-list {
+    list-style: none;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+}
+
+.health-list li {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .btn {

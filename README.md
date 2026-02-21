@@ -669,6 +669,7 @@ We chose MPL-2.0 because it:
 ### **Documentation**
 
 - **[Architecture Guide](CLAUDE.md)**: Detailed technical architecture for developers
+- **[Platform Billing Guide](docs/platform-billing.md)**: Platform control-plane billing architecture, APIs, and operations
 - **[IOL Analyzer Module](beak/modules/core/iol/analyzer/EVALUATION.md)**: Instrument integration documentation
 - **[GraphQL Schema](beak/api/gql/)**: Self-documenting GraphQL API reference
 - **[Database Schema](beak/alembic/)**: Database structure and migrations
