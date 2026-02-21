@@ -3,7 +3,7 @@
 # ruff: noqa: I001
 # ruff: noqa: I001
 
-from beak.modules.core.abstract.entity import BaseEntity  # noqa
+from beak.modules.shared.abstract.entity import BaseEntity  # noqa
 from beak.modules.core.analysis.entities.analysis import Analysis  # noqa
 from beak.modules.core.analysis.entities.analysis import AnalysisCategory  # noqa
 from beak.modules.core.analysis.entities.analysis import AnalysisCoding  # noqa
@@ -154,3 +154,24 @@ from beak.modules.core.identity.entities import User  # noqa
 from beak.modules.core.identity.entities import UserPreference  # noqa
 from beak.modules.core.worksheet.entities import WorkSheet  # noqa
 from beak.modules.core.worksheet.entities import WorkSheetTemplate  # noqa
+from beak.modules.platform.billing.models import BillingAuditLog  # noqa
+from beak.modules.platform.billing.models import BillingCustomer  # noqa
+from beak.modules.platform.billing.models import BillingInvoice  # noqa
+from beak.modules.platform.billing.models import BillingInvoiceLine  # noqa
+from beak.modules.platform.billing.models import BillingPaymentAllocation  # noqa
+from beak.modules.platform.billing.models import BillingPaymentAttempt  # noqa
+from beak.modules.platform.billing.models import BillingPaymentProof  # noqa
+from beak.modules.platform.billing.models import BillingPlan  # noqa
+from beak.modules.platform.billing.models import BillingPlanFeature  # noqa
+from beak.modules.platform.billing.models import BillingPlanLimit  # noqa
+from beak.modules.platform.billing.models import BillingProviderAccountConfig  # noqa
+from beak.modules.platform.billing.models import BillingSubscription  # noqa
+from beak.modules.platform.billing.models import BillingSubscriptionItem  # noqa
+from beak.modules.platform.billing.models import BillingTenantOverride  # noqa
+from beak.modules.platform.billing.models import BillingUsageCounter  # noqa
+from beak.modules.platform.billing.models import BillingUsageRecordDaily  # noqa
+from beak.modules.platform.billing.models import BillingWebhookEvent  # noqa
+from beak.modules.platform.models import PlatformRole  # noqa
+from beak.modules.platform.models import PlatformUser  # noqa
+from beak.modules.platform.models import Tenant  # noqa
+from beak.modules.platform.models import platform_user_role  # noqa

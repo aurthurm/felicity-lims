@@ -1,10 +1,5 @@
-from sqlalchemy_mptt import BaseNestedSets
+"""Compatibility wrapper for shared MPTT base."""
 
+from beak.modules.shared.abstract.mptt import BaseMPTT
 
-class BaseMPTT(BaseNestedSets):
-    abstract = True
-
-    @classmethod
-    def get_pk_name(cls):
-        """override get_pk_name to use uid instead of id"""
-        return getattr(cls, "sqlalchemy_mptt_pk_name", "uid")
+__all__ = ["BaseMPTT"]

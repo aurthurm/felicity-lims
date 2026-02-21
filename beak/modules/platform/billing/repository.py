@@ -11,6 +11,7 @@ from sqlalchemy import text
 
 from beak.core.config import get_settings
 from beak.core.uid_gen import get_flake_uid
+from beak.database.base import BaseEntity
 from beak.database.platform_session import PlatformSessionScoped
 
 settings = get_settings()
@@ -20,108 +21,34 @@ class PlatformBillingRepository:
     """Persistence adapter for platform billing domain."""
 
     async def ensure_billing_refinement_tables(self) -> None:
-        """Ensure entitlement and cap tables exist in platform schema."""
-        stmts = [
-            f"""
-            CREATE TABLE IF NOT EXISTS "{settings.PLATFORM_SCHEMA}".billing_plan (
-                uid VARCHAR(64) PRIMARY KEY,
-                plan_code VARCHAR(64) NOT NULL UNIQUE,
-                name VARCHAR(128) NOT NULL,
-                active BOOLEAN NOT NULL DEFAULT true,
-                currency VARCHAR(8) NOT NULL DEFAULT 'USD',
-                base_amount NUMERIC(18, 2) NOT NULL DEFAULT 0,
-                created_at TIMESTAMP NULL,
-                updated_at TIMESTAMP NULL
-            )
-            """,
-            f"""
-            CREATE TABLE IF NOT EXISTS "{settings.PLATFORM_SCHEMA}".billing_plan_limit (
-                uid VARCHAR(64) PRIMARY KEY,
-                plan_uid VARCHAR(64) NOT NULL,
-                metric_key VARCHAR(64) NOT NULL,
-                limit_value INTEGER NOT NULL,
-                limit_window VARCHAR(16) NOT NULL,
-                enforcement_mode VARCHAR(32) NOT NULL DEFAULT 'hard_block',
-                created_at TIMESTAMP NULL,
-                updated_at TIMESTAMP NULL
-            )
-            """,
-            f"""
-            CREATE TABLE IF NOT EXISTS "{settings.PLATFORM_SCHEMA}".billing_plan_feature (
-                uid VARCHAR(64) PRIMARY KEY,
-                plan_uid VARCHAR(64) NOT NULL,
-                feature_key VARCHAR(64) NOT NULL,
-                enabled BOOLEAN NOT NULL DEFAULT true,
-                included_units NUMERIC(18, 4) NOT NULL DEFAULT 0,
-                unit_price NUMERIC(18, 4) NOT NULL DEFAULT 0,
-                created_at TIMESTAMP NULL,
-                updated_at TIMESTAMP NULL
-            )
-            """,
-            f"""
-            CREATE TABLE IF NOT EXISTS "{settings.PLATFORM_SCHEMA}".billing_tenant_override (
-                uid VARCHAR(64) PRIMARY KEY,
-                tenant_slug VARCHAR(128) NOT NULL,
-                metric_key VARCHAR(64),
-                feature_key VARCHAR(64),
-                override_limit_value INTEGER,
-                override_enabled BOOLEAN,
-                limit_window VARCHAR(16),
-                enforcement_mode VARCHAR(32),
-                metadata JSONB,
-                created_at TIMESTAMP NULL,
-                updated_at TIMESTAMP NULL
-            )
-            """,
-            f"""
-            CREATE TABLE IF NOT EXISTS "{settings.PLATFORM_SCHEMA}".billing_usage_counter (
-                uid VARCHAR(64) PRIMARY KEY,
-                tenant_slug VARCHAR(128) NOT NULL,
-                metric_key VARCHAR(64) NOT NULL,
-                window_start TIMESTAMP NOT NULL,
-                window_end TIMESTAMP NOT NULL,
-                scope_user_uid VARCHAR(64),
-                scope_lab_uid VARCHAR(64),
-                quantity BIGINT NOT NULL DEFAULT 0,
-                created_at TIMESTAMP NULL,
-                updated_at TIMESTAMP NULL
-            )
-            """,
-            f"""
-            CREATE UNIQUE INDEX IF NOT EXISTS uq_billing_usage_counter_dims
-            ON "{settings.PLATFORM_SCHEMA}".billing_usage_counter (
-                tenant_slug,
-                metric_key,
-                window_start,
-                COALESCE(scope_user_uid, ''),
-                COALESCE(scope_lab_uid, '')
-            )
-            """,
-            f"""
-            CREATE TABLE IF NOT EXISTS "{settings.PLATFORM_SCHEMA}".billing_payment_proof (
-                uid VARCHAR(64) PRIMARY KEY,
-                tenant_slug VARCHAR(128) NOT NULL,
-                invoice_uid VARCHAR(64) NOT NULL,
-                status VARCHAR(32) NOT NULL DEFAULT 'submitted',
-                amount NUMERIC(18, 2),
-                currency VARCHAR(8),
-                payment_method VARCHAR(64),
-                payment_reference VARCHAR(255),
-                note TEXT,
-                original_filename VARCHAR(255) NOT NULL,
-                content_type VARCHAR(128) NOT NULL,
-                size_bytes BIGINT NOT NULL DEFAULT 0,
-                bucket_name VARCHAR(128) NOT NULL,
-                object_name VARCHAR(512) NOT NULL,
-                metadata JSONB,
-                created_at TIMESTAMP NULL,
-                updated_at TIMESTAMP NULL
-            )
-            """,
+        """Ensure platform billing ORM tables exist in the platform schema."""
+        platform_tables = [
+            table
+            for table in BaseEntity.metadata.sorted_tables
+            if table.schema == settings.PLATFORM_SCHEMA
+            and table.name.startswith("billing_")
         ]
         async with PlatformSessionScoped() as session:
-            for stmt in stmts:
-                await session.execute(text(stmt))
+            await session.run_sync(
+                lambda sync_session: BaseEntity.metadata.create_all(  # noqa: ARG005
+                    bind=sync_session.connection(),
+                    tables=platform_tables,
+                )
+            )
+            await session.execute(
+                text(
+                    f"""
+                    CREATE UNIQUE INDEX IF NOT EXISTS uq_billing_usage_counter_dims
+                    ON "{settings.PLATFORM_SCHEMA}".billing_usage_counter (
+                        tenant_slug,
+                        metric_key,
+                        window_start,
+                        COALESCE(scope_user_uid, ''),
+                        COALESCE(scope_lab_uid, '')
+                    )
+                    """
+                )
+            )
             await session.commit()
 
     async def ensure_tenant_exists(self, tenant_slug: str) -> bool:

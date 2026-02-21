@@ -3997,6 +3997,7 @@ export type Mutation = {
   manageAnalyses: ResultedSampleActionResponse;
   parseAnalyserMessage: AnalyzerParsedMessageResponse;
   printSamples: SampleActionResponse;
+  provisionTenant: TenantProvisionResponse;
   publishSamples: SampleActionResponse;
   reInstateAnalysisResults: AnalysisResultResponse;
   reInstateSamples: ResultedSampleActionResponse;
@@ -4939,6 +4940,16 @@ export type MutationParseAnalyserMessageArgs = {
 
 export type MutationPrintSamplesArgs = {
   samples: Array<Scalars['String']['input']>;
+};
+
+
+export type MutationProvisionTenantArgs = {
+  adminEmail?: InputMaybe<Scalars['String']['input']>;
+  enabledModules?: InputMaybe<Array<Scalars['String']['input']>>;
+  initialLabName?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  primaryIndustry?: Scalars['String']['input'];
+  slug: Scalars['String']['input'];
 };
 
 
@@ -9807,6 +9818,17 @@ export type SupplierType = {
   updatedByUid?: Maybe<Scalars['String']['output']>;
 };
 
+export type TenantProvisionResponse = OperationError | TenantProvisionType;
+
+export type TenantProvisionType = {
+  __typename?: 'TenantProvisionType';
+  name: Scalars['String']['output'];
+  schemaName: Scalars['String']['output'];
+  slug: Scalars['String']['output'];
+  status: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
+};
+
 export type TestBillCursorPage = {
   __typename?: 'TestBillCursorPage';
   edges?: Maybe<Array<TestBillEdge>>;
@@ -10508,6 +10530,7 @@ export type GraphCacheKeysConfig = {
   StoreRoomType?: (data: WithTypename<StoreRoomType>) => null | string,
   StoredSamplesType?: (data: WithTypename<StoredSamplesType>) => null | string,
   SupplierType?: (data: WithTypename<SupplierType>) => null | string,
+  TenantProvisionType?: (data: WithTypename<TenantProvisionType>) => null | string,
   TestBillCursorPage?: (data: WithTypename<TestBillCursorPage>) => null | string,
   TestBillEdge?: (data: WithTypename<TestBillEdge>) => null | string,
   TestBillInvoiceType?: (data: WithTypename<TestBillInvoiceType>) => null | string,
@@ -14317,6 +14340,13 @@ export type GraphCacheResolvers = {
     updatedBy?: GraphCacheResolver<WithTypename<SupplierType>, Record<string, never>, WithTypename<UserType> | string>,
     updatedByUid?: GraphCacheResolver<WithTypename<SupplierType>, Record<string, never>, Scalars['String'] | string>
   },
+  TenantProvisionType?: {
+    name?: GraphCacheResolver<WithTypename<TenantProvisionType>, Record<string, never>, Scalars['String'] | string>,
+    schemaName?: GraphCacheResolver<WithTypename<TenantProvisionType>, Record<string, never>, Scalars['String'] | string>,
+    slug?: GraphCacheResolver<WithTypename<TenantProvisionType>, Record<string, never>, Scalars['String'] | string>,
+    status?: GraphCacheResolver<WithTypename<TenantProvisionType>, Record<string, never>, Scalars['String'] | string>,
+    uid?: GraphCacheResolver<WithTypename<TenantProvisionType>, Record<string, never>, Scalars['String'] | string>
+  },
   TestBillCursorPage?: {
     edges?: GraphCacheResolver<WithTypename<TestBillCursorPage>, Record<string, never>, Array<WithTypename<TestBillEdge> | string>>,
     items?: GraphCacheResolver<WithTypename<TestBillCursorPage>, Record<string, never>, Array<WithTypename<TestBillType> | string>>,
@@ -14771,6 +14801,7 @@ export type GraphCacheOptimisticUpdaters = {
   manageAnalyses?: GraphCacheOptimisticMutationResolver<MutationManageAnalysesArgs, WithTypename<ResultedSampleActionResponse>>,
   parseAnalyserMessage?: GraphCacheOptimisticMutationResolver<MutationParseAnalyserMessageArgs, WithTypename<AnalyzerParsedMessageResponse>>,
   printSamples?: GraphCacheOptimisticMutationResolver<MutationPrintSamplesArgs, WithTypename<SampleActionResponse>>,
+  provisionTenant?: GraphCacheOptimisticMutationResolver<MutationProvisionTenantArgs, WithTypename<TenantProvisionResponse>>,
   publishSamples?: GraphCacheOptimisticMutationResolver<MutationPublishSamplesArgs, WithTypename<SampleActionResponse>>,
   reInstateAnalysisResults?: GraphCacheOptimisticMutationResolver<MutationReInstateAnalysisResultsArgs, WithTypename<AnalysisResultResponse>>,
   reInstateSamples?: GraphCacheOptimisticMutationResolver<MutationReInstateSamplesArgs, WithTypename<ResultedSampleActionResponse>>,
@@ -15402,6 +15433,7 @@ export type GraphCacheUpdaters = {
     manageAnalyses?: GraphCacheUpdateResolver<{ manageAnalyses: WithTypename<ResultedSampleActionResponse> }, MutationManageAnalysesArgs>,
     parseAnalyserMessage?: GraphCacheUpdateResolver<{ parseAnalyserMessage: WithTypename<AnalyzerParsedMessageResponse> }, MutationParseAnalyserMessageArgs>,
     printSamples?: GraphCacheUpdateResolver<{ printSamples: WithTypename<SampleActionResponse> }, MutationPrintSamplesArgs>,
+    provisionTenant?: GraphCacheUpdateResolver<{ provisionTenant: WithTypename<TenantProvisionResponse> }, MutationProvisionTenantArgs>,
     publishSamples?: GraphCacheUpdateResolver<{ publishSamples: WithTypename<SampleActionResponse> }, MutationPublishSamplesArgs>,
     reInstateAnalysisResults?: GraphCacheUpdateResolver<{ reInstateAnalysisResults: WithTypename<AnalysisResultResponse> }, MutationReInstateAnalysisResultsArgs>,
     reInstateSamples?: GraphCacheUpdateResolver<{ reInstateSamples: WithTypename<ResultedSampleActionResponse> }, MutationReInstateSamplesArgs>,
@@ -19005,6 +19037,13 @@ export type GraphCacheUpdaters = {
     updatedAt?: GraphCacheUpdateResolver<Maybe<WithTypename<SupplierType>>, Record<string, never>>,
     updatedBy?: GraphCacheUpdateResolver<Maybe<WithTypename<SupplierType>>, Record<string, never>>,
     updatedByUid?: GraphCacheUpdateResolver<Maybe<WithTypename<SupplierType>>, Record<string, never>>
+  },
+  TenantProvisionType?: {
+    name?: GraphCacheUpdateResolver<Maybe<WithTypename<TenantProvisionType>>, Record<string, never>>,
+    schemaName?: GraphCacheUpdateResolver<Maybe<WithTypename<TenantProvisionType>>, Record<string, never>>,
+    slug?: GraphCacheUpdateResolver<Maybe<WithTypename<TenantProvisionType>>, Record<string, never>>,
+    status?: GraphCacheUpdateResolver<Maybe<WithTypename<TenantProvisionType>>, Record<string, never>>,
+    uid?: GraphCacheUpdateResolver<Maybe<WithTypename<TenantProvisionType>>, Record<string, never>>
   },
   TestBillCursorPage?: {
     edges?: GraphCacheUpdateResolver<Maybe<WithTypename<TestBillCursorPage>>, Record<string, never>>,

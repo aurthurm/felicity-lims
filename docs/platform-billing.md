@@ -87,7 +87,12 @@ Uses platform JWT auth and platform roles:
 - Read operations: `administrator`, `billing`, or `support`
 
 ## Data Model
-Platform schema bootstrap now creates these tables idempotently in `beak/migrations/env.py`:
+Platform schema bootstrap now creates these tables idempotently via:
+
+- ORM models in `beak/modules/platform/models.py`
+- ORM models in `beak/modules/platform/billing/models.py`
+- bootstrap executor in `beak/migrations/platform_bootstrap.py`
+- platform revision path `beak/migrations/platform_versions/`
 
 - `billing_customer`
 - `billing_subscription`
@@ -109,9 +114,14 @@ Platform schema bootstrap now creates these tables idempotently in `beak/migrati
 
 Implemented constraints include:
 
-- unique `billing_customer.tenant_slug`
+- primary key `billing_customer.tenant_slug`
 - unique `billing_invoice.invoice_number`
 - unique `billing_webhook_event.idempotency_key`
+
+### Schema Evolution Rule
+- Additive platform table/index additions should be captured in platform revisions under `beak/migrations/platform_versions/`.
+- Structural mutations (rename/drop/alter type/nullability/default/constraints) also require explicit platform revisions in `beak/migrations/platform_versions/`.
+- Tenant revisions remain in `beak/migrations/versions/` and are applied only when `TENANT_SCHEMA` is set.
 
 ## Provider Adapters
 Adapters are implemented with `httpx`:

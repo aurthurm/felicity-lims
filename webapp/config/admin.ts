@@ -24,6 +24,7 @@ export const ADMIN_CONFIGS: AdminConfigItem[] = [
   { title: 'Inventory Mgt', path: '/admin/inventory-conf', icon: 'database' },
   { title: 'Sample Referral', path: '/admin/shipment-conf', icon: 'truck' },
   { title: 'Billing', path: '/admin/billing-conf', icon: 'money-bill' },
+  { title: 'Platform Subscription', path: '/admin/platform-subscription-conf', icon: 'money-bill' },
   { title: 'Antibiotics', path: '/admin/antibiotics-conf', icon: 'pills' },
   { title: 'Organisms', path: '/admin/organisms-conf', icon: 'bacteria' },
   { title: 'Break Points', path: '/admin/breakpoints-conf', icon: 'life-ring' },

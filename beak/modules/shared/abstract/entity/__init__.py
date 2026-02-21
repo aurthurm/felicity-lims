@@ -1,0 +1,54 @@
+from sqlalchemy import Column, String, ForeignKey
+from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.orm import relationship
+
+from .audit import Auditable
+from .base import Base
+from .listenable import EventListenable
+
+
+class BaseEntity(Base, Auditable, EventListenable):
+    __abstract__ = True
+
+
+class LabScopedEntity(BaseEntity):
+    """Base entity for models that are scoped to a specific laboratory"""
+
+    __abstract__ = True
+
+    @declared_attr
+    def laboratory_uid(cls):
+        return Column(
+            String,
+            ForeignKey("laboratory.uid", name=f"fk_{cls.__tablename__}_laboratory"),
+            nullable=False,
+            index=True,
+        )
+
+    @declared_attr
+    def laboratory(cls):
+        return relationship(
+            "Laboratory", foreign_keys=[cls.laboratory_uid], lazy="selectin"
+        )
+
+
+class MaybeLabScopedEntity(BaseEntity):
+    """Base entity for models that may be scoped to a specific laboratory (optional)
+    If no laboratory_uid then its global"""
+
+    __abstract__ = True
+
+    @declared_attr
+    def laboratory_uid(cls):
+        return Column(
+            String,
+            ForeignKey("laboratory.uid", name=f"fk_{cls.__tablename__}_laboratory"),
+            nullable=True,
+            index=True,
+        )
+
+    @declared_attr
+    def laboratory(cls):
+        return relationship(
+            "Laboratory", foreign_keys=[cls.laboratory_uid], lazy="selectin"
+        )

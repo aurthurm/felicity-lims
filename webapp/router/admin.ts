@@ -153,6 +153,13 @@ const adminRoutes = [
         },
     },
     {
+        path: 'platform-subscription-conf',
+        component: () => import('@/views/admin/billing/PlatformSubscriptionAdmin.vue'),
+        meta: {
+            requiresAdmin: true,
+        },
+    },
+    {
         path: 'antibiotics-conf',
         component: () => import('@/views/admin/microbiology/antibiotics/AntibioticsAdmin.vue'),
         meta: {

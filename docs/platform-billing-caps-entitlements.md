@@ -144,8 +144,9 @@ Platform schema tables:
 - `billing_usage_counter`
 
 Defined in:
-- bootstrap path: `beak/migrations/env.py`
-- revision: `beak/migrations/versions/2026_02_21_1330-f7b2c1d4e9aa_add_billing_caps_entitlements.py`
+- bootstrap path: `beak/migrations/platform_bootstrap.py`
+- platform revision: `beak/migrations/platform_versions/2026_02_21_1330-f7b2c1d4e9aa_add_billing_caps_entitlements.py`
+- tenant compatibility no-op marker: `beak/migrations/versions/2026_02_21_1330-f7b2c1d4e9aa_add_billing_caps_entitlements.py`
 
 ## Error Semantics
 Current hard-block semantics:

@@ -1,4 +1,4 @@
-"""Entities and enums for platform billing domain."""
+"""Enums and ORM entities for platform billing domain."""
 
 from __future__ import annotations
 
@@ -86,3 +86,53 @@ class BillingEnforcementMode(StrEnum):
     """Limit enforcement modes."""
 
     HARD_BLOCK = "hard_block"
+
+
+from beak.modules.platform.billing.models import (  # noqa: E402
+    BillingAuditLog,
+    BillingCustomer,
+    BillingInvoice,
+    BillingInvoiceLine,
+    BillingPaymentAllocation,
+    BillingPaymentAttempt,
+    BillingPaymentProof,
+    BillingPlan,
+    BillingPlanFeature,
+    BillingPlanLimit,
+    BillingProviderAccountConfig,
+    BillingSubscription,
+    BillingSubscriptionItem,
+    BillingTenantOverride,
+    BillingUsageCounter,
+    BillingUsageRecordDaily,
+    BillingWebhookEvent,
+)
+
+__all__ = [
+    "BillingSubscriptionStatus",
+    "BillingInvoiceStatus",
+    "BillingPaymentAttemptStatus",
+    "BillingPaymentProofStatus",
+    "BillingProvider",
+    "BillingLimitMetricKey",
+    "BillingFeatureKey",
+    "BillingLimitWindow",
+    "BillingEnforcementMode",
+    "BillingCustomer",
+    "BillingSubscription",
+    "BillingSubscriptionItem",
+    "BillingPlan",
+    "BillingPlanLimit",
+    "BillingPlanFeature",
+    "BillingTenantOverride",
+    "BillingUsageCounter",
+    "BillingUsageRecordDaily",
+    "BillingInvoice",
+    "BillingInvoiceLine",
+    "BillingPaymentAttempt",
+    "BillingPaymentProof",
+    "BillingPaymentAllocation",
+    "BillingWebhookEvent",
+    "BillingProviderAccountConfig",
+    "BillingAuditLog",
+]

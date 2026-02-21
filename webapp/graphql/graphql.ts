@@ -3995,6 +3995,7 @@ export type Mutation = {
   manageAnalyses: ResultedSampleActionResponse;
   parseAnalyserMessage: AnalyzerParsedMessageResponse;
   printSamples: SampleActionResponse;
+  provisionTenant: TenantProvisionResponse;
   publishSamples: SampleActionResponse;
   reInstateAnalysisResults: AnalysisResultResponse;
   reInstateSamples: ResultedSampleActionResponse;
@@ -4937,6 +4938,16 @@ export type MutationParseAnalyserMessageArgs = {
 
 export type MutationPrintSamplesArgs = {
   samples: Array<Scalars['String']['input']>;
+};
+
+
+export type MutationProvisionTenantArgs = {
+  adminEmail?: InputMaybe<Scalars['String']['input']>;
+  enabledModules?: InputMaybe<Array<Scalars['String']['input']>>;
+  initialLabName?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  primaryIndustry?: Scalars['String']['input'];
+  slug: Scalars['String']['input'];
 };
 
 
@@ -9803,6 +9814,17 @@ export type SupplierType = {
   updatedAt?: Maybe<Scalars['String']['output']>;
   updatedBy?: Maybe<UserType>;
   updatedByUid?: Maybe<Scalars['String']['output']>;
+};
+
+export type TenantProvisionResponse = OperationError | TenantProvisionType;
+
+export type TenantProvisionType = {
+  __typename?: 'TenantProvisionType';
+  name: Scalars['String']['output'];
+  schemaName: Scalars['String']['output'];
+  slug: Scalars['String']['output'];
+  status: Scalars['String']['output'];
+  uid: Scalars['String']['output'];
 };
 
 export type TestBillCursorPage = {
