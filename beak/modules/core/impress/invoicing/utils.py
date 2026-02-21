@@ -28,8 +28,8 @@ async def impress_invoice(test_bill: TestBill):
     impress_meta["laboratory"] = marshaller(lab, depth=1)
     impress_meta["laboratory_settings"] = marshaller(lab_setting, depth=1)
 
-    # customer
-    impress_meta["customer"] = marshaller(test_bill.patient)
+    # customer (resolved from order metadata snapshot when available)
+    impress_meta["customer"] = {"uid": test_bill.patient_uid}
     impress_meta["client"] = marshaller(test_bill.client, depth=1)
 
     # orders
@@ -39,6 +39,12 @@ async def impress_invoice(test_bill: TestBill):
     )
     orders = await AnalysisRequestService().get_by_uids(uids=analysis_request_uids)
     for order in orders:
+        if (
+            impress_meta["customer"] == {"uid": test_bill.patient_uid}
+            and order.metadata_snapshot
+            and order.metadata_snapshot.get("patient")
+        ):
+            impress_meta["customer"] = marshaller(order.metadata_snapshot.get("patient"))
         _order = marshaller(order, depth=1)
         _order["samples"] = []
         for _sample in order.samples:

@@ -139,10 +139,15 @@ class BeakImpress:
         self.pdf.line(20.0, 42.0, 180.0, 42.0)
 
         # Customer Column
+        patient_meta = (
+            ((sample.analysis_request.metadata_snapshot or {}).get("patient", {}))
+            if sample.analysis_request
+            else {}
+        )
         full_name = (
-                to_text(sample.analysis_request.patient.first_name)
+                to_text(patient_meta.get("first_name"))
                 + " " +
-                to_text(sample.analysis_request.patient.last_name)
+                to_text(patient_meta.get("last_name"))
         ).strip()
         self.pdf.set_font("helvetica", "B", 10)
         self.pdf.set_xy(20, 42)
@@ -173,7 +178,7 @@ class BeakImpress:
             h=5.5,
             align="L",
             w=10.0,
-            text=to_text(sample.analysis_request.patient.age),
+            text=to_text(patient_meta.get("age")),
             border=0,
         )
         self.pdf.set_font("helvetica", "B", 10)
@@ -186,7 +191,7 @@ class BeakImpress:
             h=5.5,
             align="L",
             w=10.0,
-            text=to_text(sample.analysis_request.patient.gender),
+            text=to_text(patient_meta.get("gender")),
             border=0,
         )
 

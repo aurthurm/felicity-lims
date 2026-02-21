@@ -20,7 +20,7 @@ from beak.modules.core.analysis.services.analysis import (
 from beak.modules.core.analysis.services.result import AnalysisResultService
 from beak.modules.core.iol.fhir.utils.helpers import safe_fhir_datetime
 from beak.core.dtz import format_datetime
-from beak.modules.clinical.patient.services import PatientService
+from beak.modules.core.patient_gateway import get_patient_gateway
 from beak.modules.core.setup.services import LaboratoryService
 from beak.modules.core.shipment.services import ShipmentService, ShippedSampleService
 
@@ -31,7 +31,6 @@ class FhirReadService:
         self.sample_service = SampleService()
         self.analysis_result_service = AnalysisResultService()
         self.shipped_sample_service = ShippedSampleService()
-        self.patient_service = PatientService()
         self.shipment_service = ShipmentService()
         self.laboratory_service = LaboratoryService()
 
@@ -244,7 +243,7 @@ class FhirReadService:
         return DiagnosticReport(**dr_vars)
 
     async def get_patient_resource(self, patient_id: int) -> Patient | None:
-        patient = await self.patient_service.get(uid=patient_id)
+        patient = await get_patient_gateway().get_patient(patient_id)
         if not patient:
             return None
 

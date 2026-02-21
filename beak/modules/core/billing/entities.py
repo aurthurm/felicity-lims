@@ -102,8 +102,7 @@ class VoucherCode(MaybeLabScopedEntity):
 class VoucherCustomer(LabScopedEntity):
     __tablename__ = "voucher_customer"
 
-    patient_uid = Column(String, ForeignKey("patient.uid"), nullable=False)
-    patient = relationship("Patient", lazy="selectin")
+    patient_uid = Column(String, nullable=False)
     voucher_code_uid = Column(String, ForeignKey("voucher_code.uid"), nullable=False)
     voucher_code = relationship("VoucherCode", lazy="selectin")
 
@@ -125,8 +124,7 @@ class TestBill(LabScopedEntity):
     __tablename__ = "test_bill"
 
     bill_id = Column(String, index=True, unique=True, nullable=False)
-    patient_uid = Column(String, ForeignKey("patient.uid"), nullable=True)
-    patient = relationship("Patient", lazy="selectin")
+    patient_uid = Column(String, nullable=True)
     client_uid = Column(String, ForeignKey("client.uid"), nullable=True)
     client = relationship("Client", lazy="selectin")
     is_active = Column(Boolean, nullable=False)

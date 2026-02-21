@@ -18,7 +18,7 @@ from beak.modules.core.impress.sample.tasks import (
 from beak.modules.core.iol.analyzer.services.connection import ConnectionService
 from beak.modules.core.job.enum import JobAction, JobCategory
 from beak.modules.core.job.services import JobService
-from beak.modules.platform.services import TenantRegistryService
+from beak.modules.core.tenant_registry import get_tenant_registry_provider
 from beak.modules.core.shipment.tasks import (
     dispatch_shipment,
     populate_shipment_manually,
@@ -242,7 +242,7 @@ def _unschedule_tenant_jobs(tenant_slug: str) -> None:
 
 
 async def refresh_tenant_workforce_jobs() -> None:
-    tenants = await TenantRegistryService().list_active()
+    tenants = await get_tenant_registry_provider().list_active()
     active_by_slug = {
         t["slug"]: t for t in tenants if t.get("slug") and t.get("schema_name")
     }

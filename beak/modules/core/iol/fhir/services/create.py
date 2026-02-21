@@ -33,8 +33,7 @@ from beak.modules.core.impress.shipment.utils import gen_pdf_manifest
 from beak.modules.core.job.enum import JobAction, JobCategory, JobPriority, JobState
 from beak.modules.core.job.schemas import JobCreate
 from beak.modules.core.job.services import JobService
-from beak.modules.clinical.patient.schemas import PatientCreate
-from beak.modules.clinical.patient.services import PatientService
+from beak.modules.core.patient_gateway import get_patient_gateway
 from beak.modules.core.reflex.services import ReflexEngineService
 from beak.modules.core.shipment.enum import ShipmentState
 from beak.modules.core.shipment.schemas import ShipmentCreate
@@ -48,7 +47,6 @@ class FhirCreateService:
         self.shipment_service = ShipmentService()
         self.referral_laboratory_service = ReferralLaboratoryService()
         self.job_service = JobService()
-        self.patient_service = PatientService()
         self.client_service = ClientService()
         self.analysis_request_service = AnalysisRequestService()
         self.sample_service = SampleService()
@@ -205,8 +203,7 @@ class FhirCreateService:
             "phone_mobile": phone,
             "consent_sms": False,
         }
-        pt_sch = PatientCreate(**patient_in)
-        return await self.patient_service.create(pt_sch)
+        return await get_patient_gateway().create_patient(patient_in)
 
     async def create_service_request(
         self, service_request: ServiceRequest, request: Request, current_user: User
@@ -272,8 +269,9 @@ class FhirCreateService:
             ),
             "consent_sms": False,
         }
-        pt_sch = PatientCreate(**patient_in)
-        patient = await self.patient_service.create(pt_sch)
+        patient = await get_patient_gateway().create_patient(patient_in)
+        if not patient:
+            return False
 
         requisition_value = (
             service_request.requisition.value

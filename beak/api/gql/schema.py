@@ -1,6 +1,7 @@
 import strawberry
 
 from beak.modules import get_registry
+from beak.api.gql.registry import collect_graphql_contrib
 
 
 def _compose_type(name: str, mixins: tuple[type, ...]):
@@ -9,19 +10,9 @@ def _compose_type(name: str, mixins: tuple[type, ...]):
 
 
 def _build_schema() -> strawberry.Schema:
-    manifests = get_registry().resolve(["core", "clinical", "pharma", "environment", "industrial"])
-
-    types: list[type] = []
-    query_mixins: list[type] = []
-    mutation_mixins: list[type] = []
-    subscription_mixins: list[type] = []
-
-    for manifest in manifests:
-        gql = manifest.graphql
-        types.extend(gql.types)
-        query_mixins.extend(gql.query_mixins)
-        mutation_mixins.extend(gql.mutation_mixins)
-        subscription_mixins.extend(gql.subscription_mixins)
+    types, query_mixins, mutation_mixins, subscription_mixins = collect_graphql_contrib(
+        get_registry()
+    )
 
     Query = _compose_type("Query", tuple(query_mixins))
     Mutation = _compose_type("Mutation", tuple(mutation_mixins))

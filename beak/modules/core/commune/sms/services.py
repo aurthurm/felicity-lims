@@ -44,7 +44,7 @@ class SmsMessageService(BaseService[SmsMessage, SmsMessageCreate, SmsMessageUpda
         sample = await SampleService().get(
             uid=uid,
             related=[
-                "analysis_request.patient.identifications",
+                "analysis_request",
                 "analysis_request.client",
                 "analysis_request.client_contact",
                 "analysis_results.analysis",
@@ -89,10 +89,30 @@ class SmsMessageService(BaseService[SmsMessage, SmsMessageCreate, SmsMessageUpda
             if hasattr(result, "sms_metadata"):
                 metadata.update(result.sms_metadata)
 
-            patient = sample.analysis_request.patient
-            # Add patient metadata
-            if hasattr(patient, "sms_metadata"):
-                metadata.update(patient.sms_metadata)
+            patient_meta = (
+                ((sample.analysis_request.metadata_snapshot or {}).get("patient", {}))
+                if sample.analysis_request
+                else {}
+            )
+            if patient_meta:
+                metadata.update(
+                    {
+                        "patient_name": " ".join(
+                            filter(
+                                None,
+                                [
+                                    patient_meta.get("first_name"),
+                                    patient_meta.get("middle_name"),
+                                    patient_meta.get("last_name"),
+                                ],
+                            )
+                        ).strip(),
+                        "patient_id": patient_meta.get("patient_id"),
+                        "gender": patient_meta.get("gender"),
+                        "client_patient_id": patient_meta.get("client_patient_id"),
+                        "age": patient_meta.get("age"),
+                    }
+                )
 
             client_contact = sample.analysis_request.client_contact
             if hasattr(client_contact, "sms_metadata"):
@@ -104,14 +124,16 @@ class SmsMessageService(BaseService[SmsMessage, SmsMessageCreate, SmsMessageUpda
             # Check who should receive the SMS based on audience
             if template.audience == SmsAudience.PATIENT:
                 # Send to patient
-                if not patient or not patient.phone_mobile or not patient.consent_sms:
+                phone_mobile = patient_meta.get("phone_mobile")
+                consent_sms = bool(patient_meta.get("consent_sms"))
+                if not phone_mobile or not consent_sms:
                     # Skip if patient doesn't have a phone or hasn't consented
                     return
 
                 # Create the SMS
                 sms = SmsMessageCreate(
                     template_uid=template.uid,
-                    recipient=patient.phone_mobile,
+                    recipient=phone_mobile,
                     message=message,
                     status=SmsStatus.SCHEDULED,
                     target_type="result",
@@ -268,19 +290,14 @@ class SmsMessageService(BaseService[SmsMessage, SmsMessageCreate, SmsMessageUpda
         method_uid = result.method_uid if hasattr(result, "method_uid") else None
 
         # Try to get patient info (for gender/age specific specs)
-        patient = None
         patient_gender = None
         patient_age = None
-
-        if (
-            hasattr(sample, "analysis_request")
-            and sample.analysis_request
-            and hasattr(sample.analysis_request, "patient")
-            and sample.analysis_request.patient
-        ):
-            patient = sample.analysis_request.patient
-            patient_gender = patient.gender if hasattr(patient, "gender") else None
-            patient_age = patient.age if hasattr(patient, "age") else None
+        if hasattr(sample, "analysis_request") and sample.analysis_request:
+            patient_meta = (sample.analysis_request.metadata_snapshot or {}).get(
+                "patient", {}
+            )
+            patient_gender = patient_meta.get("gender")
+            patient_age = patient_meta.get("age")
 
         # Find the most specific matching specification
         matching_specs = []

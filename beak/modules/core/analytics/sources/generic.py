@@ -87,15 +87,15 @@ class EntityAnalyticsInit(Generic[ModelType]):
         stmt = text(
             f"""
             SELECT 
-                pt.patient_id AS "Patient Id",
-                pt.first_name AS "First Name",
-                pt.last_name AS "Last Name",
-                pt.client_patient_id AS "Client Patient Id",
+                ar.metadata_snapshot -> 'patient' ->> 'patient_id' AS "Patient Id",
+                ar.metadata_snapshot -> 'patient' ->> 'first_name' AS "First Name",
+                ar.metadata_snapshot -> 'patient' ->> 'last_name' AS "Last Name",
+                ar.metadata_snapshot -> 'patient' ->> 'client_patient_id' AS "Client Patient Id",
                 cl.name AS "Client",
-                pt.gender AS "Gender",
-                pt.age AS "Age",
-                pt.date_of_birth AS "Date Of Birth",
-                pt.age_dob_estimated AS "Age DOB Estimated",
+                ar.metadata_snapshot -> 'patient' ->> 'gender' AS "Gender",
+                ar.metadata_snapshot -> 'patient' ->> 'age' AS "Age",
+                ar.metadata_snapshot -> 'patient' ->> 'date_of_birth' AS "Date Of Birth",
+                ar.metadata_snapshot -> 'patient' ->> 'age_dob_estimated' AS "Age DOB Estimated",
                 ar.client_request_id AS "Client Request Id",    
                 sa.sample_id AS "Sample Id",
                 sa.date_received AS "Date Received",
@@ -117,7 +117,6 @@ class EntityAnalyticsInit(Generic[ModelType]):
             INNER JOIN client cl ON cl.uid = ar.client_uid
             INNER JOIN analysis an ON an.uid = re.analysis_uid
             INNER JOIN sample_type st ON st.uid = re.analysis_uid
-            INNER JOIN patient pt ON pt.uid = ar.patient_uid
             LEFT JOIN laboratory_instrument li ON li.uid = re.laboratory_instrument_uid
             INNER JOIN instrument inst ON inst.uid = li.instrument_uid
             LEFT JOIN method mt ON mt.uid = re.method_uid

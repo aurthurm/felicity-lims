@@ -15,7 +15,7 @@ The `TenantContextMiddleware` has been added to your FastAPI app in `/beak/lims/
 
 ```python
 # Import the decorators
-from beak.api.gql.decorators import tenant_query, tenant_mutation
+from beak.modules.shared.api.gql.decorators import tenant_query, tenant_mutation
 
 # For queries that should only return current lab's data
 @strawberry.field
@@ -35,7 +35,7 @@ async def create_sample(self, info: Info, input: CreateSampleInput):
 ### **For User-Only Operations (No Lab Required)**
 
 ```python
-from beak.api.gql.decorators import require_authentication, log_resolver_access
+from beak.modules.shared.api.gql.decorators import require_authentication, log_resolver_access
 
 # For operations like "get user's accessible labs"
 @strawberry.field
@@ -49,7 +49,7 @@ async def user_laboratories(self, info: Info):
 ### **For Admin Operations (Cross-Lab)**
 
 ```python
-from beak.api.gql.decorators import admin_query, admin_mutation
+from beak.modules.shared.api.gql.decorators import admin_query, admin_mutation
 
 # For admin queries that work across all labs
 @strawberry.field

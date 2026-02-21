@@ -118,6 +118,7 @@ from beak.modules.core.notification.entities import ActivityStream  # noqa
 from beak.modules.core.notification.entities import Notification  # noqa
 from beak.modules.clinical.patient.entities import Identification  # noqa
 from beak.modules.clinical.patient.entities import Patient  # noqa
+from beak.modules.clinical.patient.entities import PatientAnalysisRequestLink  # noqa
 from beak.modules.clinical.patient.entities import PatientIdentification  # noqa
 from beak.modules.clinical.patient.search_indices import DateSearchIndex  # noqa
 from beak.modules.clinical.patient.search_indices import PatientSearchIndex  # noqa

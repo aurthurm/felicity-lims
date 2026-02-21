@@ -11,10 +11,12 @@ from beak.modules.core.idsequencer.service import IdSequenceService
 from beak.modules.clinical.patient.entities import (
     Identification,
     Patient,
+    PatientAnalysisRequestLink,
     PatientIdentification,
 )
 from beak.modules.clinical.patient.repository import (
     IdentificationRepository,
+    PatientAnalysisRequestLinkRepository,
     PatientIdentificationRepository,
     PatientRepository,
 )
@@ -22,10 +24,21 @@ from beak.modules.clinical.patient.schemas import (
     IdentificationCreate,
     IdentificationUpdate,
     PatientCreate,
+    PatientAnalysisRequestLinkCreate,
+    PatientAnalysisRequestLinkUpdate,
     PatientIdentificationCreate,
     PatientIdentificationUpdate,
     PatientUpdate,
 )
+from beak.modules.core.analysis.services.creation_provider import (
+    AnalysisRequestCreationError,
+    CoreAnalysisRequestCreationProvider,
+    register_analysis_request_creation_provider,
+)
+from beak.modules.core.analysis.services.analysis import AnalysisRequestService
+from beak.modules.core.patient_gateway import register_patient_gateway
+from beak.modules.clinical.microbiology.schemas import AbxOrganismResultCreate
+from beak.modules.clinical.microbiology.services import AbxOrganismResultService
 from beak.database.paging import PageCursor, PageInfo, EdgeNode
 
 
@@ -498,3 +511,102 @@ class PatientService(BaseService[Patient, PatientCreate, PatientUpdate]):
         return await self.update(
             pt.uid, {"metadata_snapshot": marshaller(metadata, depth=3)}
         )
+
+
+class PatientAnalysisRequestLinkService(
+    BaseService[
+        PatientAnalysisRequestLink,
+        PatientAnalysisRequestLinkCreate,
+        PatientAnalysisRequestLinkUpdate,
+    ]
+):
+    def __init__(self):
+        super().__init__(PatientAnalysisRequestLinkRepository())
+
+
+class ClinicalAnalysisRequestCreationProvider(CoreAnalysisRequestCreationProvider):
+    async def _validate(self, payload, session=None) -> None:
+        await super()._validate(payload=payload, session=session)
+        patient_uid = getattr(payload, "patient_uid", None)
+        if not patient_uid:
+            raise AnalysisRequestCreationError("patient_uid is required")
+
+        patient = await PatientService().get(uid=patient_uid, session=session)
+        if not patient:
+            raise AnalysisRequestCreationError(
+                f"Patient with uid {patient_uid} Not found"
+            )
+
+    async def _after_results_created(
+        self,
+        created_results,
+        session=None,
+    ) -> None:
+        for result in created_results:
+            if result.keyword == "beak_ast_abx_organism":
+                await AbxOrganismResultService().create(
+                    AbxOrganismResultCreate(
+                        analysis_result_uid=result.uid,
+                        organism_uid=None,
+                        isolate_number=1,
+                    ),
+                    commit=False,
+                    session=session,
+                )
+
+    async def _after_analysis_request_created(
+        self,
+        analysis_request,
+        payload,
+        actor,
+        session=None,
+    ) -> None:
+        patient = await PatientService().get(uid=payload.patient_uid, session=session)
+        await PatientAnalysisRequestLinkService().create(
+            PatientAnalysisRequestLinkCreate(
+                patient_uid=payload.patient_uid,
+                analysis_request_uid=analysis_request.uid,
+                created_by_uid=actor.uid,
+                updated_by_uid=actor.uid,
+            ),
+            commit=False,
+            session=session,
+        )
+        if patient:
+            metadata_snapshot = analysis_request.metadata_snapshot or {}
+            metadata_snapshot["patient"] = {
+                "uid": patient.uid,
+                "patient_id": patient.patient_id,
+                "client_patient_id": patient.client_patient_id,
+                "first_name": patient.first_name,
+                "middle_name": patient.middle_name,
+                "last_name": patient.last_name,
+                "gender": patient.gender,
+                "age": patient.age,
+                "date_of_birth": patient.date_of_birth,
+                "age_dob_estimated": patient.age_dob_estimated,
+                "phone_mobile": patient.phone_mobile,
+                "consent_sms": patient.consent_sms,
+            }
+            await AnalysisRequestService().update(
+                analysis_request.uid,
+                {"metadata_snapshot": metadata_snapshot},
+                commit=False,
+                session=session,
+            )
+
+
+def register_clinical_analysis_request_provider() -> None:
+    register_analysis_request_creation_provider(ClinicalAnalysisRequestCreationProvider())
+    register_patient_gateway(ClinicalPatientGateway())
+
+
+class ClinicalPatientGateway:
+    async def create_patient(self, payload: dict):
+        return await PatientService().create(PatientCreate(**payload))
+
+    async def get_patient(self, uid: str):
+        return await PatientService().get(uid=uid)
+
+    async def find_patient(self, **kwargs):
+        return await PatientService().get(**kwargs)

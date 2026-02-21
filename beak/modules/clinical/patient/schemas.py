@@ -138,3 +138,30 @@ class PatientIdentification(PatientIdentificationInDBBase):
 # Additional properties stored in DB
 class PatientIdentificationInDB(PatientIdentificationInDBBase):
     pass
+
+
+class PatientAnalysisRequestLinkBase(BaseAuditModel):
+    patient_uid: str
+    analysis_request_uid: str
+
+
+class PatientAnalysisRequestLinkCreate(PatientAnalysisRequestLinkBase):
+    pass
+
+
+class PatientAnalysisRequestLinkUpdate(PatientAnalysisRequestLinkBase):
+    pass
+
+
+class PatientAnalysisRequestLinkInDBBase(PatientAnalysisRequestLinkBase):
+    uid: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class PatientAnalysisRequestLink(PatientAnalysisRequestLinkInDBBase):
+    pass
+
+
+class PatientAnalysisRequestLinkInDB(PatientAnalysisRequestLinkInDBBase):
+    pass

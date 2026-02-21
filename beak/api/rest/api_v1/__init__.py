@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 
 if TYPE_CHECKING:
     from beak.modules.registry import ModuleRegistry
@@ -20,17 +20,9 @@ def init_api(registry: ModuleRegistry | None = None) -> APIRouter:
         from beak.modules import get_registry
 
         registry = get_registry()
-    from beak.modules.platform.module_access import module_dependency
+    from beak.api.rest.registry import compose_rest_api
 
-    for manifest in registry.resolve(["core", "clinical", "pharma", "environment", "industrial"]):
-        for router in manifest.rest_routers:
-            if manifest.module_id == "core":
-                api.include_router(router)
-            else:
-                api.include_router(
-                    router,
-                    dependencies=[Depends(module_dependency(manifest.module_id))],
-                )
+    api.include_router(compose_rest_api(registry))
 
     _INITIALIZED = True
     return api

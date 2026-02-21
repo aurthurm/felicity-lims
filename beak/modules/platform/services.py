@@ -8,6 +8,7 @@ from sqlalchemy import text
 
 from beak.modules.platform.repository import TenantRepository
 from beak.modules.platform.module_catalog import normalize_modules
+from beak.modules.core.tenant_registry import register_tenant_registry_provider
 from beak.modules.core.setup import schemas as setup_schemas
 from beak.modules.core.setup.services import (
     LaboratoryService,
@@ -43,6 +44,14 @@ class TenantRegistryService:
     async def get_by_slug(self, slug: str) -> dict | None:
         await self.repository.ensure_registry()
         return await self.repository.get_by_slug(slug)
+
+
+class PlatformTenantRegistryProvider:
+    async def list_active(self) -> list[dict]:
+        return await TenantRegistryService().list_active()
+
+
+register_tenant_registry_provider(PlatformTenantRegistryProvider())
 
 
 class TenantProvisioningService:

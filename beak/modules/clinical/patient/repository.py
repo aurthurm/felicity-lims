@@ -6,6 +6,7 @@ from beak.modules.core.abstract.repository import BaseRepository
 from beak.modules.clinical.patient.entities import (
     Identification,
     Patient,
+    PatientAnalysisRequestLink,
     PatientIdentification,
 )
 from beak.utils.encryption import encrypt_pii
@@ -251,6 +252,11 @@ class PatientRepository(BaseRepository[Patient]):
 class IdentificationRepository(BaseRepository[Identification]):
     def __init__(self) -> None:
         super().__init__(Identification)
+
+
+class PatientAnalysisRequestLinkRepository(BaseRepository[PatientAnalysisRequestLink]):
+    def __init__(self) -> None:
+        super().__init__(PatientAnalysisRequestLink)
 
 
 class PatientIdentificationRepository(BaseRepository[PatientIdentification]):

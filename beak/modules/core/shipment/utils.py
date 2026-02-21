@@ -28,8 +28,7 @@ from beak.modules.core.iol.relay import post_data
 from beak.modules.core.job import schemas as job_schemas
 from beak.modules.core.job.enum import JobAction, JobCategory, JobPriority, JobState
 from beak.modules.core.job.services import JobService
-from beak.modules.clinical.patient.schemas import PatientCreate
-from beak.modules.clinical.patient.services import PatientService
+from beak.modules.core.patient_gateway import get_patient_gateway
 from beak.modules.core.reflex.services import ReflexEngineService
 from beak.modules.core.shipment.enum import ShipmentState
 from beak.modules.core.shipment.services import ShipmentService, ShippedSampleService
@@ -101,7 +100,6 @@ async def shipment_receive(job_uid: str):
     analysis_result_service = AnalysisResultService()
     shipped_sample_service = ShippedSampleService()
     client_service = ClientService()
-    patient_service = PatientService()
     analysis_request_service = AnalysisRequestService()
     sample_type_service = SampleTypeService()
     analysis_service = AnalysisService()
@@ -224,8 +222,9 @@ async def shipment_receive(job_uid: str):
             # "province_uid": str| None = None
             # "country_uid": str| None = None
         }
-        pt_sch = PatientCreate(**patient_in)
-        patient = await patient_service.create(pt_sch)
+        patient = await get_patient_gateway().create_patient(patient_in)
+        if not patient:
+            continue
 
         # get sample data
         sample_type_data = (sample_data.get("type") or {}).get("coding", [{}])[0]

@@ -20,7 +20,6 @@ from beak.modules.core.abstract import LabScopedEntity, BaseMPTT, BaseEntity
 from beak.modules.core.analysis.entities.qc import QCLevel, QCSet
 from beak.modules.core.analysis.enum import ResultType
 from beak.modules.core.client import entities as ct_entities
-from beak.modules.clinical.patient import entities as pt_entities
 from beak.modules.core.identity.entities import User
 from beak.utils.hipaa_fields import EncryptedPHI
 
@@ -405,10 +404,7 @@ class AnalysisRequest(LabScopedEntity):
 
     __tablename__ = "analysis_request"
 
-    patient_uid = Column(String, ForeignKey("patient.uid"))
-    patient = relationship(
-        pt_entities.Patient, backref="analysis_requests", lazy="selectin"
-    )
+    patient_uid = Column(String, nullable=True)
     client_uid = Column(String, ForeignKey("client.uid"))
     client = relationship(
         ct_entities.Client, backref="analysis_requests", lazy="selectin"

@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, relationship
 
@@ -96,3 +96,15 @@ class Patient(LabScopedEntity):
                 ):
                     result.update(identification.sms_metadata)
         return result
+
+
+class PatientAnalysisRequestLink(LabScopedEntity):
+    __tablename__ = "patient_analysis_request_link"
+    __table_args__ = (UniqueConstraint("analysis_request_uid"),)
+
+    patient_uid = Column(String, ForeignKey("patient.uid"), nullable=False)
+    patient: Mapped["Patient"] = relationship("Patient", lazy="selectin")
+    analysis_request_uid = Column(
+        String, ForeignKey("analysis_request.uid"), nullable=False
+    )
+    analysis_request = relationship("AnalysisRequest", lazy="selectin")

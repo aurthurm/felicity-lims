@@ -17,10 +17,6 @@ from beak.modules.core.analysis.schemas import AnalysisResultCreate, AnalysisRes
 from beak.modules.core.common.schemas.dummy import Dummy
 from beak.modules.core.common.utils.serializer import marshaller
 from beak.modules.core.instrument.services import LaboratoryInstrumentService, MethodService
-from beak.modules.clinical.microbiology.services import (
-    AbxOrganismResultService,
-    AbxASTResultService,
-)
 from beak.modules.core.notification.enum import NotificationObject
 from beak.modules.core.notification.services import ActivityStreamService
 from beak.modules.core.identity.entities import User, logger
@@ -284,7 +280,6 @@ class AnalysisResultService(
             for result in analyses_results
             if result.laboratory_instrument_uid
         ]
-        result_uids = [result.uid for result in analyses_results]
 
         # Bulk load all related data
         analyses = await AnalysisService().get_all(
@@ -304,27 +299,6 @@ class AnalysisResultService(
         methods_map = {method.uid: method for method in methods}
         lab_instruments_map = {
             instrument.uid: instrument for instrument in lab_instruments
-        }
-
-        # Bulk load AMR/AST related data
-        ast_organism_results = await AbxOrganismResultService().get_all(
-            analysis_result_uid__in=result_uids, related=["organism"]
-        )
-        ast_antibiotic_results = await AbxASTResultService().get_all(
-            analysis_result_uid__in=result_uids,
-            related=["antibiotic", "guideline_year", "breakpoint", "ast_method"],
-        )
-
-        # Group AMR/AST results by analysis_result_uid
-        organism_results_map = {}
-        for org_result in ast_organism_results:
-            if org_result.analysis_result_uid not in organism_results_map:
-                organism_results_map[org_result.analysis_result_uid] = []
-            organism_results_map[org_result.analysis_result_uid].append(org_result)
-
-        antibiotic_results_map = {
-            ast_result.analysis_result_uid: ast_result
-            for ast_result in ast_antibiotic_results
         }
 
         # Collect all instrument UIDs for laboratory instruments bulk loading
@@ -395,37 +369,6 @@ class AnalysisResultService(
                         metadata[_field] = thing.snapshot() if thing else None
                 except Exception as e:
                     logger.error(f"Failed to snapshot field {_field}: {e}")
-
-            # AMR - AST snapshots using pre-loaded data
-            if analysis.keyword == "beak_ast_abx_organism":
-                _orgs = organism_results_map.get(result.uid, [])
-                metadata["organisms"] = [
-                    {
-                        **org.snapshot(),
-                        "organism": org.organism.snapshot() if org.organism else None,
-                    }
-                    for org in _orgs
-                ]
-
-            if analysis.keyword == "beak_ast_abx_antibiotic":
-                ast_result = antibiotic_results_map.get(result.uid)
-                metadata["ast_result"] = None
-                if ast_result:
-                    metadata["ast_result"] = {
-                        **ast_result.snapshot(),
-                        "antibiotic": ast_result.antibiotic.snapshot()
-                        if ast_result.antibiotic
-                        else None,
-                        "guideline_year": ast_result.guideline_year.snapshot()
-                        if ast_result.guideline_year
-                        else None,
-                        "breakpoint": ast_result.breakpoint.snapshot()
-                        if ast_result.breakpoint
-                        else None,
-                        "ast_method": ast_result.ast_method.snapshot()
-                        if ast_result.ast_method
-                        else None,
-                    }
 
             # Prepare bulk update data
             updates.append(

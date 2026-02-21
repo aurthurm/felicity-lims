@@ -66,15 +66,15 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
         stmt = text(
             f"""
             select 
-                pt.patient_id as "Patient Id",
-                pt.first_name as "First Name",
-                pt.last_name as "Last Name",
-                pt.client_patient_id as "Client Patient Id",
+                ar.metadata_snapshot -> 'patient' ->> 'patient_id' as "Patient Id",
+                ar.metadata_snapshot -> 'patient' ->> 'first_name' as "First Name",
+                ar.metadata_snapshot -> 'patient' ->> 'last_name' as "Last Name",
+                ar.metadata_snapshot -> 'patient' ->> 'client_patient_id' as "Client Patient Id",
                 cl.name as "Client",
-                pt.gender as "Gender",
-                pt.age as "Age",
-                pt.date_of_birth as "Date Of Birth",
-                pt.age_dob_estimated as "Age DOB Estimated",
+                ar.metadata_snapshot -> 'patient' ->> 'gender' as "Gender",
+                ar.metadata_snapshot -> 'patient' ->> 'age' as "Age",
+                ar.metadata_snapshot -> 'patient' ->> 'date_of_birth' as "Date Of Birth",
+                ar.metadata_snapshot -> 'patient' ->> 'age_dob_estimated' as "Age DOB Estimated",
                 ar.client_request_id as "Client Request Id",    
                 sa.sample_id as "Sample Id",
                 sa.date_received as "Date Received",
@@ -96,7 +96,6 @@ class SampleAnalyticsRepository(BaseRepository[Sample]):
             inner join client cl on cl.uid = ar.client_uid
             inner join analysis an on an.uid = re.analysis_uid
             inner join sampletype st on st.uid = re.analysis_uid
-            inner join patient pt on pt.uid = ar.patient_uid
             left join instrument inst on inst.uid = re.instrument_uid
             left join method mt on mt.uid = re.method_uid
             where {where_clause}

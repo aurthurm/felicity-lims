@@ -35,6 +35,11 @@ exclude = [
 
 async def build_impress_metadata(sample: "Sample", laboratory: "Laboratory") -> dict:
     """Build minimal metadata structure for PDF generation"""
+    patient_meta = (
+        ((sample.analysis_request.metadata_snapshot or {}).get("patient", {}))
+        if sample.analysis_request
+        else {}
+    )
     return {
         "sample_id": sample.sample_id,
         "status": sample.status,
@@ -65,11 +70,11 @@ async def build_impress_metadata(sample: "Sample", laboratory: "Laboratory") -> 
         "analysis_request": {
             "client_request_id": sample.analysis_request.client_request_id if sample.analysis_request else None,
             "patient": {
-                "first_name": sample.analysis_request.patient.first_name,
-                "last_name": sample.analysis_request.patient.last_name,
-                "age": to_text(sample.analysis_request.patient.age),
-                "gender": sample.analysis_request.patient.gender,
-            } if sample.analysis_request and sample.analysis_request.patient else {
+                "first_name": patient_meta.get("first_name", ""),
+                "last_name": patient_meta.get("last_name", ""),
+                "age": to_text(patient_meta.get("age")),
+                "gender": patient_meta.get("gender", ""),
+            } if patient_meta else {
                 "first_name": "",
                 "last_name": "",
                 "age": "",
