@@ -127,14 +127,14 @@ async def self_service_payment_attempts(
 )
 async def self_service_upload_payment_proof(
     invoice_uid: str,
+    current_user: Annotated[User, Depends(get_current_user)],
+    tenant_context: Annotated[TenantContext, Depends(get_current_tenant_context)],
     file: UploadFile = File(...),
     amount: Decimal | None = Form(None),
     currency: str | None = Form(None),
     payment_method: str | None = Form(None),
     payment_reference: str | None = Form(None),
     note: str | None = Form(None),
-    current_user: Annotated[User, Depends(get_current_user)],
-    tenant_context: Annotated[TenantContext, Depends(get_current_tenant_context)],
 ) -> BillingPaymentProofCreateResponse:
     """Upload proof of off-platform payment for a tenant invoice."""
     _require_platform_billing_enabled()
