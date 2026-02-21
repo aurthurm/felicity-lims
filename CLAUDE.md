@@ -11,8 +11,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 -   **Run tests**: `pnpm server:test` or `bash ./beak/scripts/test.sh` (supports "unit" or "integration" args)
 -   **Lint code**: `pnpm server:lint` or `bash ./beak/scripts/lint.sh` (uses ruff)
 -   **Format code**: `pnpm server:format` or `bash ./beak/scripts/format.sh` (uses ruff format)
--   **Database migration**: `pnpm db:upgrade` or `beak-lims db upgrade`
--   **Create migration**: `pnpm db:revision` or `beak-lims revision`
+-   **Upgrade platform schema**: `beak-lims db upgrade`
+-   **Create platform migration**: `beak-lims db revision "message" --scope platform`
+-   **Create tenant migration**: `beak-lims db revision "message" --scope tenant`
 
 ### Frontend Development
 
@@ -86,7 +87,7 @@ The GraphQL API is organized by domain with centralized schema composition:
 -   **Audit**: MongoDB for audit logs and document storage
 -   **Cache**: DragonflyDB/Redis for session management and real-time features
 -   **Storage**: MinIO for file uploads and report storage
--   **Migrations**: Alembic for database schema versioning
+-   **Migrations**: Alembic with dual-scope revision management (see Migration Strategy below)
 
 ### Security & Compliance
 
@@ -105,6 +106,33 @@ The project uses Docker Compose for local development with:
 -   Persistent volumes for all databases
 -   DbGate for database administration
 -   All services networked for seamless communication
+
+### Migration Strategy
+
+Migrations are split into two independent scopes with separate revision chains and version tracking:
+
+#### Platform Migrations (`beak/migrations/platform/`)
+
+-   Manage the `platform` PostgreSQL schema (tenant registry, platform users/roles, billing tables)
+-   Models use `__table_args__ = {"schema": settings.PLATFORM_SCHEMA}` to target the platform schema
+-   Tracked in `platform.alembic_version`
+-   Upgraded directly via `beak-lims db upgrade` (runs without `TENANT_SCHEMA`)
+-   Generate new revisions: `beak-lims db revision "description" --scope platform`
+
+#### Tenant Migrations (`beak/migrations/versions/`)
+
+-   Manage per-tenant schemas (e.g., `org_lab1`, `org_lab2`)
+-   Models inherit from `BaseEntity`/`LabScopedEntity` without explicit schema (schema set at runtime)
+-   Tracked in `{tenant_schema}.alembic_version` (one per tenant)
+-   Upgraded per-tenant during provisioning via `beak-lims tenant provision` or `beak-lims tenant migrate`
+-   Generate new revisions: `beak-lims db revision "description" --scope tenant`
+
+#### How It Works
+
+-   `env.py` uses the `TENANT_SCHEMA` environment variable to determine scope at runtime
+-   `include_object` callbacks filter autogenerate to only detect tables belonging to the active scope
+-   Each scope has its own `version_locations` directory so revision chains are fully independent
+-   Platform tables are identified by `schema == "platform"` in `__table_args__`; everything else is tenant-scoped
 
 ### Testing Strategy
 

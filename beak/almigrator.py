@@ -1,12 +1,17 @@
+from pathlib import Path
+
 from alembic import command
 from alembic.config import Config
 from alembic.script import ScriptDirectory
 from sqlalchemy import text
-from sqlalchemy.engine import CursorResult
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from beak.core.config import ROOT_DIR
 from beak.core.config import settings
+
+_MIGRATIONS_DIR = Path(ROOT_DIR) / "beak" / "migrations"
+_VERSIONS_DIR = str(_MIGRATIONS_DIR / "versions")
+_PLATFORM_DIR = str(_MIGRATIONS_DIR / "platform")
 
 
 class BeakMigrator:
@@ -15,13 +20,31 @@ class BeakMigrator:
         self.database_url = settings.SQLALCHEMY_DATABASE_URI
 
     def upgrade(self, revision: str = "head") -> None:
+        # Without TENANT_SCHEMA, env.py routes to platform migrations.
+        # Restrict version_locations so ScriptDirectory only sees platform revisions.
+        self.alembic_cfg.set_main_option("version_locations", _PLATFORM_DIR)
         command.upgrade(self.alembic_cfg, revision)
 
     def downgrade(self, revision: str) -> None:
+        self.alembic_cfg.set_main_option("version_locations", _PLATFORM_DIR)
         command.downgrade(self.alembic_cfg, revision)
 
-    def create_revision(self, message: str) -> None:
-        command.revision(self.alembic_cfg, message=message)
+    def create_revision(self, message: str, scope: str = "tenant", autogenerate: bool = True) -> None:
+        if scope == "platform":
+            version_path = _PLATFORM_DIR
+        else:
+            version_path = _VERSIONS_DIR
+
+        # Restrict version_locations so Alembic's ScriptDirectory only sees
+        # the relevant folder and doesn't confuse cross-scope heads.
+        self.alembic_cfg.set_main_option("version_locations", version_path)
+
+        command.revision(
+            self.alembic_cfg,
+            message=message,
+            autogenerate=autogenerate,
+            version_path=version_path,
+        )
 
     def current(self) -> None:
         command.current(self.alembic_cfg)
@@ -32,8 +55,10 @@ class BeakMigrator:
     async def get_current_db_revision(self) -> str | None:
         engine = create_async_engine(self.database_url)
         async with engine.connect() as connection:
-            result: CursorResult = await connection.execute(
-                text("SELECT version_num FROM alembic_version")
+            result = await connection.execute(
+                text(
+                    f'SELECT version_num FROM "{settings.PLATFORM_SCHEMA}".alembic_version'
+                )
             )
         return result.scalar()
 
@@ -42,7 +67,6 @@ class BeakMigrator:
         return script.get_current_head()
 
     async def check_for_updates(self) -> None:
-        # Get current and latest revisions
         current_revision = await self.get_current_db_revision()
         latest_revision = await self.get_latest_revision()
 
@@ -51,6 +75,5 @@ class BeakMigrator:
             print(f"Current revision: {current_revision}")
             print(f"Latest revision: {latest_revision}")
             print("You should run the Alembic upgrade.")
-            # Optionally, you can call `run_alembic_upgrade()` here to auto-upgrade.
         else:
             print("Database is up-to-date.")

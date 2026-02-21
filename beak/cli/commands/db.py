@@ -1,4 +1,5 @@
 import asyncio
+from enum import Enum
 
 import typer
 
@@ -8,11 +9,16 @@ app = typer.Typer()
 alembic_service = BeakMigrator()
 
 
+class MigrationScope(str, Enum):
+    platform = "platform"
+    tenant = "tenant"
+
+
 @app.command()
 def upgrade(
         revision: str = typer.Option("head", help="Target revision to upgrade to"),
 ) -> None:
-    """Upgrade to a specified revision."""
+    """Upgrade platform schema to a specified revision."""
     alembic_service.upgrade(revision)
     typer.echo(f"Upgraded to revision: {revision}")
 
@@ -21,7 +27,7 @@ def upgrade(
 def downgrade(
         revision: str = typer.Argument(..., help="Target revision to downgrade to"),
 ) -> None:
-    """Downgrade to a specified revision."""
+    """Downgrade platform schema to a specified revision."""
     alembic_service.downgrade(revision)
     typer.echo(f"Downgraded to revision: {revision}")
 
@@ -29,11 +35,18 @@ def downgrade(
 @app.command()
 def revision(
         message: str = typer.Argument(..., help="Message for the new revision"),
+        scope: MigrationScope = typer.Option(
+            MigrationScope.tenant,
+            help="Migration scope: 'platform' for platform schema, 'tenant' for tenant schema",
+        ),
+        autogenerate: bool = typer.Option(
+            True,
+            help="Auto-generate migration from model changes",
+        ),
 ) -> None:
-    """Not working --- no idea why yet
-    Create a new Alembic revision with a message."""
-    alembic_service.create_revision(message)
-    typer.echo(f"Created new revision with message: {message}")
+    """Create a new Alembic revision with a message."""
+    alembic_service.create_revision(message, scope=scope.value, autogenerate=autogenerate)
+    typer.echo(f"Created new {scope.value} revision: {message}")
 
 
 @app.command()
